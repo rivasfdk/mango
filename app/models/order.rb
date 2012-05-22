@@ -19,11 +19,19 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_start_date
-    Batch.where(:order_id=>self.id).minimum('created_at').strftime("%d/%m/%Y %H:%M:%S")
+    start_date = Batch.where(:order_id=>self.id).minimum('created_at')
+    unless start_date.nil?
+      return start_date.strftime("%d/%m/%Y %H:%M:%S")
+    else
+      return "??/??/???? ??:??:??"
+    end
   end
 
   def calculate_end_date
-    last_batch = Batch.find(:first, :conditions => ["number = ? and order_id = ?", Batch.where(:order_id=>self.id).maximum('number'), self.id])
+    last_batch = Batch.find(:first, :conditions => ["number = ? and order_id = ?", self.get_real_batches, self.id])
+    if last_batch.nil?
+      return "??/??/???? ??:??:??"
+    end
     end_date = BatchHopperLot.where(:batch_id=>last_batch.id).maximum('created_at')
     unless end_date.nil?
       return end_date.strftime("%d/%m/%Y %H:%M:%S")

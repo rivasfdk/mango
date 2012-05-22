@@ -37,4 +37,22 @@ class Batch < ActiveRecord::Base
     end
     return total
   end
+  
+    def calculate_start_date
+    start_date = BatchHopperLot.where(:batch_id=>self.id).minimum('created_at')
+    unless start_date.nil?
+      return start_date.strftime("%d/%m/%Y %H:%M:%S")
+    else
+      return "??/??/?? ??:??:??"
+    end    
+  end
+  
+  def calculate_end_date
+    end_date = BatchHopperLot.where(:batch_id=>self.id).maximum('created_at')
+    unless end_date.nil?
+      return end_date.strftime("%d/%m/%Y %H:%M:%S")
+    else
+      return "??/??/?? ??:??:??"
+    end
+  end
 end

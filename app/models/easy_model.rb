@@ -40,14 +40,11 @@ class EasyModel
       rtotal = Batch.get_real_total(o.id)
       rbatches = Batch.get_real_batches(o.id)
       stotal = o.recipe.get_total() * rbatches
-      var_kg = stotal - rtotal
-      var_perc = (rtotal * 100.0) / stotal
-      if var_perc > 100:
-        var_perc = 100 - var_perc
-      end
+      var_kg = rtotal - stotal
+      var_perc = (var_kg * 100.0) / stotal
       data['results'] << {
         'order' => o.code,
-        'date' => self.print_formatted_date(o.created_at),
+        'date' => o.calculate_start_date,
         'recipe_code' => o.recipe.code,
         'recipe_name' => o.recipe.name,
         'client_code' => o.client.code,
@@ -86,7 +83,7 @@ class EasyModel
       average_tons_per_hour = rtotal / (order_duration / 60) / 1000 rescue 0
       data['results'] << {
         'order' => o.code,
-        'date' => self.print_formatted_date(o.created_at),
+        'date' => o.calculate_start_date,
         'recipe_code' => o.recipe.code,
         'recipe_name' => o.recipe.name,
         'average_tons_per_hour' => average_tons_per_hour.to_s,
@@ -145,7 +142,7 @@ class EasyModel
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
     data['comment'] = @order.comment
-    data['product'] = "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
+    data['product'] = "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}" rescue ""
     data['start_date'] = @order.calculate_start_date()
     data['end_date'] = @order.calculate_end_date()
     data['prog_batches'] = @order.prog_batches.to_s
@@ -172,8 +169,8 @@ class EasyModel
     data = self.initialize_data('Detalle de Batch')
     data['order'] = order_code
     data['batch'] = batch_number
-    data['start_date'] = self.print_range_date(batch.start_date, true)
-    data['end_date'] = self.print_range_date(batch.end_date, true)
+    data['start_date'] = batch.calculate_start_date
+    data['end_date'] = batch.calculate_end_date
     data['results'] = []
 
     batches = BatchHopperLot.find :all, :include=>{:batch=>{:order=>{:recipe=>{:ingredient_recipe=>{:ingredient=>{}}}}}, :hopper_lot=>{:hopper=>{}, :lot=>{:ingredient=>{}}}}, :conditions=>["batches.number = '#{batch_number}' AND orders.code = '#{order_code}' AND lots.ingredient_id = ingredients_recipes.ingredient_id"]
@@ -359,8 +356,8 @@ class EasyModel
         content_code = Ingredient.find(lot.ingredient_id).code
         content_name = Ingredient.find(lot.ingredient_id).name
       else # PDT Warehouse
-        product_lot = ProductLot.find(warehouse.content_id)
-        lot_code = product_lot.code
+        lot = ProductLot.find(warehouse.content_id)
+        lot_code = lot.code
         content_code = Product.find(product_lot.product_id).code
         content_name = Product.find(product_lot.product_id).name
       end
