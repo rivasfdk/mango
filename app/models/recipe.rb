@@ -3,7 +3,7 @@ class Recipe < ActiveRecord::Base
   has_many :order
 
   validates_presence_of :name, :code
-  validates_uniqueness_of :code
+  #validates_uniqueness_of :code
   validates_length_of :name, :within => 3..40
   #validates_associated :ingredient_recipe
 
@@ -96,11 +96,30 @@ class Recipe < ActiveRecord::Base
           code = header[2]
           name = header[3].strip()
           total = header[5]
-          @recipe = Recipe.find_by_code(header[2])
-          if @recipe.nil?
-            @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
-            logger.debug("Creando encabezado de receta #{@recipe.inspect}")
+
+          # If the recipe code and version matches a previously stored recipe, activate such recipe (if it was unactive) and exit
+          @previously_stored_recipe = Recipe.find :first, :conditions => {:code => header[2], :version => header[1]}
+          unless @previously_stored_recipe.nil?
+            if @previously_stored_recipe.active
+              return true
+            else
+              @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
+              @current_active_recipe.active = false
+              @current_active_recipe.save
+              @previously_stored_recipe.active = true
+              @previously_stored_recipe.save
+            end
+            return true
           end
+          
+          @previous_version_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
+          unless @previous_version_recipe.nil?
+            @previous_version_recipe.active = false
+            @previous_version_recipe.save
+          end
+
+          @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
+          logger.debug("Creando encabezado de receta #{@recipe.inspect}")
 
           while (true)
             item = fd.gets()
@@ -117,7 +136,7 @@ class Recipe < ActiveRecord::Base
               :overwrite=>overwrite)
           end
           @recipe.total = total.to_f
-          @recipe.save
+          result = @recipe.save
           continue = fd.gets()
           break if continue.nil?
           continue = continue.split(';')
