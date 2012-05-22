@@ -32,6 +32,17 @@
   </div>
   <% end %>
 
+  <!-- Medicament recipes -->
+  <% if session[:permissions].include?('medicament_recipes') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('medicaments-recipes-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), medicament_recipes_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Recetas de medicamentos', medicament_recipes_path %></h2>
+      <p>Manejo de recetas de medicamentos</p>
+    </div>
+  </div>
+  <% end %>
+
   <!-- Hoppers -->
   <% if session[:permissions].include?('hoppers') %>
   <div class="module yui3-u-1-2">

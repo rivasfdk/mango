@@ -1,0 +1,2 @@
+module IngredientsMedicamentRecipesHelper
+end

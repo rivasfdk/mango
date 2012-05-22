@@ -1,0 +1,39 @@
+<% i = 0 %>
+<div id="ingredient_recipe_grid">
+  <%= form_for :ingredient_medicament_recipe, :url=>medicament_recipe_ingredients_medicament_recipes_path(@medicament_recipe) do |f| %>
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th>Cantidad<span class="order_arrow"></span></th>
+        <th class="actions_medium">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="2">
+          <%= f.collection_select :code, @ingredients, :code, :name, {:include_blank => true}, :class=>'chzn-select chzn-done chzn-field-normal' %>
+        </td>
+        <td><%= f.text_field :amount, :size=>4 %></td>
+        <td><%= submit_tag 'Agregar' %></td>
+      </tr>
+      <% @medicament_recipe.ingredient_medicament_recipe.each do |imr| %>
+        <% class_row, i = alternate_row_class(i) %>
+          <tr class="<%= class_row %>">
+          <td><%=h imr.ingredient.code %></td>
+          <td><%=h imr.ingredient.name %></td>
+          <td><%=h imr.amount %></td>
+          <td><%= render_action_delete(medicament_recipe_ingredient_medicament_recipe_path(@medicament_recipe, imr), 
+            "Desea eliminar el ingrediente '#{imr.ingredient.code} - #{imr.ingredient.name}'?") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div id="tablefooter">
+    <div id="pagination">
+      <!--= show_pagination @medicament_recipe %-->
+    </div>
+  </div>
+  <% end %>
+</div>

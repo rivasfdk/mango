@@ -13,6 +13,14 @@ module MenuHelper
       menu = menu_for_recipes_edit
     elsif c == 'recipes' and a == 'import'
       menu = menu_for_recipes_import
+    elsif c == 'medicament_recipes' and a == 'index'
+      menu = menu_for_medicament_recipes_index
+    elsif c == 'medicament_recipes' and a == 'show'
+      menu = menu_for_medicament_recipes_show
+    elsif c == 'medicament_recipes' and (a == 'new' or a == 'create')
+      menu = menu_for_medicament_recipes_new
+    elsif c == 'medicament_recipes' and (a == 'edit' or a == 'update')
+      menu = menu_for_medicament_recipes_edit
     elsif c == 'ingredients' and a == 'index'
       menu = menu_for_ingredients_index
     elsif c == 'ingredients' and (a == 'new' or a == 'create')
@@ -170,6 +178,42 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(recipes_path) +
       render_function('Importar', 'Importar receta', "submit_recipe_upload_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_medicament_recipes_index
+    menu = content_tag(:p, 'Lista de recetas de medicamentos')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nueva receta de medicamentos', new_medicament_recipe_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_medicament_recipes_show
+    menu = content_tag(:p, 'Detalle de receta de medicamentos')
+    menu += content_tag(:ul,
+      render_back(medicament_recipes_path) +
+      render_action('Editar', 'Editar receta de medicamentos', edit_medicament_recipe_path, 'button-edit.png')
+    )
+    return menu
+  end
+
+  def menu_for_medicament_recipes_new
+    menu = content_tag(:p, 'Crear nueva receta de medicamentos')
+    menu += content_tag(:ul,
+      render_back(medicament_recipes_path) +
+      render_function('Guardar', 'Guardar receta', "submit_medicament_recipe_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_medicament_recipes_edit
+    menu = content_tag(:p, 'Editar receta de medicamentos')
+    menu += content_tag(:ul,
+      render_back(medicament_recipe_path(params[:id])) +
+      render_function('Actualizar', 'Actualizar receta de medicamentos', "submit_medicament_recipe_edit_form()", 'button-execute.png')
     )
     return menu
   end

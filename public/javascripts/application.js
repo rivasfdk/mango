@@ -19,6 +19,14 @@ function submit_recipe_upload_form() {
     $('recipe_upload_form').submit();
 }
 
+function submit_medicament_recipe_new_form() {
+    $('medicament_recipe_new_form').submit();
+}
+
+function submit_medicament_recipe_edit_form() {
+    $('medicament_recipe_edit_form').submit();
+}
+
 function submit_ingredient_new_form() {
     $('ingredient_new_form').submit();
 }

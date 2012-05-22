@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120410014541) do
+ActiveRecord::Schema.define(:version => 20120521155650) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -89,12 +89,23 @@ ActiveRecord::Schema.define(:version => 20120410014541) do
     t.integer  "base_unit_id"
   end
 
+  create_table "ingredients_medicaments_recipes", :force => true do |t|
+    t.integer  "ingredient_id"
+    t.integer  "medicament_recipe_id"
+    t.float    "amount",               :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ingredients_medicaments_recipes", ["ingredient_id"], :name => "fk_ingredients_medicaments_recipes_ingredient_id"
+  add_index "ingredients_medicaments_recipes", ["medicament_recipe_id"], :name => "fk_ingredients_medicaments_recipes_medicament_recipe_id"
+
   create_table "ingredients_recipes", :force => true do |t|
     t.integer  "ingredient_id"
     t.integer  "recipe_id"
     t.float    "amount",        :null => false
-    t.integer  "priority"
-    t.float    "percentage"
+    t.integer  "priority",      :null => false
+    t.float    "percentage",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -113,19 +124,29 @@ ActiveRecord::Schema.define(:version => 20120410014541) do
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
 
+  create_table "medicaments_recipes", :force => true do |t|
+    t.string   "code",                         :null => false
+    t.string   "name",                         :null => false
+    t.boolean  "active",     :default => true
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", :force => true do |t|
     t.integer  "recipe_id"
     t.integer  "client_id"
     t.integer  "user_id"
     t.integer  "product_lot_id"
-    t.integer  "prog_batches",                         :null => false
+    t.integer  "prog_batches",                            :null => false
     t.integer  "real_batches"
-    t.string   "code",                                 :null => false
+    t.string   "code",                                    :null => false
     t.string   "comment"
-    t.boolean  "completed",         :default => false
-    t.boolean  "processed_in_baan", :default => false
+    t.boolean  "completed",            :default => false
+    t.boolean  "processed_in_baan",    :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "medicament_recipe_id"
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
@@ -174,7 +195,7 @@ ActiveRecord::Schema.define(:version => 20120410014541) do
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "recipes", :force => true do |t|
-    t.string   "code"
+    t.string   "code",                         :null => false
     t.string   "name",                         :null => false
     t.string   "version"
     t.float    "total",      :default => 0.0

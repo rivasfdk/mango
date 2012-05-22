@@ -1,0 +1,33 @@
+<% i = 0 %>
+<% if @medicament_recipes.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th class="actions">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @medicament_recipes.each do |mr| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td class="center"><%=h mr.code %></td>
+        <td><%=h mr.name %></td>
+        <td class="center">
+          <%= render_action_show(medicament_recipe_path(mr)) %>
+          <%= render_action_edit(edit_medicament_recipe_path(mr)) %>
+          <%= render_action_delete(medicament_recipe_path(mr), "Desea borrar la receta de medicamentos '#{mr.name}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @medicament_recipes %>
+  </div>
+</div>
+<% else %>
+<p>No hay recetas de medicamentos registradas</p>
+<% end %>

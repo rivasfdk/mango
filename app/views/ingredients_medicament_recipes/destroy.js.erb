@@ -1,0 +1,2 @@
+$('ingredient_medicament_recipe_grid').innerHTML = "<%= escape_javascript(render :partial=>'medicament_recipes/edit_grid',
+  :locals =>{:medicament_recipe => @medicament_recipe, :ingredients => @ingredients}) %>";

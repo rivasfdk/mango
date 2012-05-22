@@ -1,0 +1,11 @@
+<%= form_for :medicament_recipe do |f| %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%=h @medicament_recipe.code %></div>
+<label for="name" class="small">Nombre:</label>
+<div class="field"><%=h @medicament_recipe.name %></div>
+<label for="comment" class="small">Comentario:</label>
+<div class="field"><%=h @medicament_recipe.comment %></div>
+<div class="clearfix"></div>
+<% end %>
+<h5>Ingredientes</h5>
+<%= render :partial=>'show_grid', :locals =>{:medicament_recipe => @medicament_recipe} %>

@@ -36,6 +36,10 @@ ActionController::Routing::Routes.draw do |map|
     resources :ingredients_recipes
   end
 
+  resources :medicament_recipes do
+    resources :ingredients_medicament_recipes
+  end
+
   resources :roles do
     resources :permissions_roles
   end

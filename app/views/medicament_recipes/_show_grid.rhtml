@@ -1,0 +1,31 @@
+<% i = 0 %>
+<% if @medicament_recipe.ingredient_medicament_recipe.length > 0 %>
+<div id="ingredient_recipe_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th>Cantidad (Kg)<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @medicament_recipe.ingredient_medicament_recipe.each do |imr| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td class="center"><%=h imr.ingredient.code %></td>
+          <td><%=h imr.ingredient.name %></td>
+          <td class="center"><%=h imr.amount %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div id="tablefooter">
+    <div id="pagination">
+      <!--= show_pagination @medicament_recipe %-->
+    </div>
+  </div>
+</div>
+<% else %>
+<p>No hay ingredientes definidos para esta receta de medicamentos</p>
+<% end %>

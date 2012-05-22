@@ -5,6 +5,7 @@ class OrdersController < ApplicationController
 
   def new
     @recipes = Recipe.find :all, :order => 'name ASC'
+    @medicament_recipes = MedicamentRecipe.find :all, :order => 'name ASC'
     @clients = Client.find :all, :order => 'name ASC'
     @users = User.find :all, :order => 'name ASC'
     @product_lots = ProductLot.find :all, :order => 'code ASC'

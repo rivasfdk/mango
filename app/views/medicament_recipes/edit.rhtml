@@ -1,0 +1,5 @@
+<%= form_for :medicament_recipe, :url=>medicament_recipe_path(@medicament_recipe), :html=>{:method=>:put, :id=>'medicament_recipe_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+<% end %>
+<h5>Ingredientes</h5>
+<%= render :partial=>'edit_grid', :locals =>{:medicament_recipe => @medicament_recipe} %>
