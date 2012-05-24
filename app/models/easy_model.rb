@@ -26,7 +26,7 @@ class EasyModel
   end
 
   def self.daily_production(start_date, end_date)
-    @orders = Order.find :all, :include=>['batch', 'recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
+    @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
     return nil if @orders.length.zero?
 
     data = self.initialize_data('Produccion Diaria por Fabrica')
@@ -39,7 +39,7 @@ class EasyModel
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
       rbatches = Batch.get_real_batches(o.id)
-      stotal = o.recipe.get_total() * rbatches
+      stotal = (o.recipe.get_total() + o.medicament_recipe.get_total())* rbatches
       var_kg = rtotal - stotal
       var_perc = (var_kg * 100.0) / stotal
       data['results'] << {
@@ -100,15 +100,16 @@ class EasyModel
     return data
   end
 
-  def self.order_details(order)
-    @order = Order.find_by_code order, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:hopper=>{}, :lot=>{:ingredient=>{}}}}}, :recipe=>{:ingredient_recipe=>{:ingredient=>{}}}, :product_lot=>{:product=>{}}}, :conditions => ['lots.ingredient_id = ingredients_recipes.ingredient_id']
+  def self.order_details(order_code)
+    @order = Order.find_by_code order_code, :include => {:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}}
     return nil if @order.nil?
 
     ingredients = {}
     @order.recipe.ingredient_recipe.each do |ir|
-      ingredients[ir.ingredient.code] = {
-        'amount' => ir.amount.to_f,
-      }
+      ingredients[ir.ingredient.code] = ir.amount
+    end
+    @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+      ingredients[imr.ingredient.code] = imr.amount.to_f
     end
 
     details = {}
@@ -116,7 +117,7 @@ class EasyModel
     @order.batch.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.ingredient.code
-        std_amount = (ingredients.has_key?(key)) ? ingredients[key]['amount'] : 0
+        std_amount = (ingredients.has_key?(key)) ? ingredients[key] : 0
         unless details.has_key?(key)
           details[key] = {
             'ingredient' => bhl.hopper_lot.lot.ingredient.name,
@@ -130,7 +131,7 @@ class EasyModel
         else
           details[key]['real_kg'] += bhl.amount.to_f
         end
-        details[key]['std_kg'] = ingredients[key]['amount'] * @order.prog_batches
+        details[key]['std_kg'] = ingredients[key] * @order.get_real_batches
         total_real += details[key]['real_kg']
         details[key]['var_kg'] = details[key]['real_kg'] - details[key]['std_kg']
         details[key]['var_perc'] = details[key]['var_kg'] * 100 / details[key]['std_kg']
@@ -142,7 +143,7 @@ class EasyModel
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
     data['comment'] = @order.comment
-    data['product'] = "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}" rescue ""
+    data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
     data['start_date'] = @order.calculate_start_date()
     data['end_date'] = @order.calculate_end_date()
     data['prog_batches'] = @order.prog_batches.to_s
@@ -163,39 +164,48 @@ class EasyModel
     order = Order.find_by_code(order_code)
     return nil if order.nil?
 
-    batch = Batch.find :first, :include=>[:order], :conditions=>{:number=>batch_number, :orders=>{:code=>order_code}}
+    batch = Batch.find :first, :include => {:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient =>{}}}}}, :conditions => {:number => batch_number, :orders => {:code => order_code}}
     return nil if batch.nil?
 
     data = self.initialize_data('Detalle de Batch')
     data['order'] = order_code
+    data['recipe'] = "#{batch.order.recipe.code} - #{batch.order.recipe.name}"
     data['batch'] = batch_number
     data['start_date'] = batch.calculate_start_date
     data['end_date'] = batch.calculate_end_date
     data['results'] = []
 
-    batches = BatchHopperLot.find :all, :include=>{:batch=>{:order=>{:recipe=>{:ingredient_recipe=>{:ingredient=>{}}}}}, :hopper_lot=>{:hopper=>{}, :lot=>{:ingredient=>{}}}}, :conditions=>["batches.number = '#{batch_number}' AND orders.code = '#{order_code}' AND lots.ingredient_id = ingredients_recipes.ingredient_id"]
-    batches.each do |b|
-      real_kg = b.amount.to_f
-      std_kg = -1
-      b.batch.order.recipe.ingredient_recipe.each do |i|
-        if i.ingredient.id == b.hopper_lot.lot.ingredient.id
-          std_kg = i.amount.to_f
-          break
-        end
+    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}}, :conditions => {:batch_id => batch.id}
+
+    ingredients = {}
+    batch.order.recipe.ingredient_recipe.each do |ir|
+      ingredients[ir.ingredient.code] = ir.amount
+    end
+    batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+      ingredients[imr.ingredient.code] = imr.amount
+    end
+
+    batch_hopper_lots.each do |bhl|
+      real_kg = bhl.amount.to_f
+      std_kg = 0
+      var_kg = 0
+      var_perc = 0
+      if ingredients.has_key?(bhl.hopper_lot.lot.ingredient.code)
+        std_kg = ingredients[bhl.hopper_lot.lot.ingredient.code]
+        var_kg = real_kg - std_kg
+        var_perc = var_kg * 100 / std_kg rescue 0
       end
-      var_kg = real_kg - std_kg
-      var_perc = var_kg * 100 / std_kg
+
       data['results'] << {
-        'code' => b.hopper_lot.lot.ingredient.code,
-        'ingredient' => b.hopper_lot.lot.ingredient.name,
+        'code' => bhl.hopper_lot.lot.ingredient.code,
+        'ingredient' => bhl.hopper_lot.lot.ingredient.name,
         'real_kg' => real_kg,
         'std_kg' => std_kg,
         'var_kg' => var_kg,
         'var_perc' => var_perc,
-        'hopper' => b.hopper_lot.hopper.number,
-        'lot' => b.hopper_lot.lot.code,
+        'hopper' => bhl.hopper_lot.hopper.number,
+        'lot' => bhl.hopper_lot.lot.code,
       }
-      data['recipe'] = "#{b.batch.order.recipe.code} - #{b.batch.order.recipe.name}"
     end
 
     return data
@@ -227,7 +237,6 @@ class EasyModel
         b.batch_hopper_lot.each do |bhl|
           key = bhl.hopper_lot.lot.ingredient.code
           value = bhl.amount
-
           std[key] = std.fetch(key, 0) + nominal[key][1]
           real[key] = real.fetch(key, 0) + value
         end
@@ -253,18 +262,25 @@ class EasyModel
     data['results'] = []
 
     results = {}
-    batches = BatchHopperLot.find :all, :include=>{:hopper_lot=>{:lot=>{:ingredient=>{}}}, :batch=>{:order=>{:recipe=>{:ingredient_recipe=>{:ingredient=>{}}}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND lots.ingredient_id = ingredients_recipes.ingredient_id", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC'] #:conditions=>["batches.start_date >= '#{start_date}' AND batches.end_date <= '#{end_date}' AND lots.ingredient_id = ingredients_recipes.ingredient_id"]
-    batches.each do |b|
-      real_kg = b.amount.to_f
+    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:lot => {:ingredient=>{}}}, :batch => {:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
+
+    batch_hopper_lots.each do |bhl|
+      real_kg = bhl.amount.to_f
       std_kg = -1
-      b.batch.order.recipe.ingredient_recipe.each do |i|
-        if i.ingredient.id == b.hopper_lot.lot.ingredient.id
-          std_kg = i.amount.to_f
+      bhl.batch.order.recipe.ingredient_recipe.each do |ir|
+        if ir.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+          std_kg = ir.amount.to_f
+          break
+        end
+      end
+      bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+          std_kg = imr.amount.to_f
           break
         end
       end
 
-      key = b.hopper_lot.lot.code
+      key = bhl.hopper_lot.lot.code
       if results.has_key?(key)
         results[key]['real_kg'] += real_kg
         results[key]['std_kg'] += std_kg
@@ -275,8 +291,8 @@ class EasyModel
         var_perc = var_kg * 100 / std_kg
         results[key] = {
           'lot' => key,
-          'ingredient_code' => b.hopper_lot.lot.ingredient.code,
-          'ingredient_name' => b.hopper_lot.lot.ingredient.name,
+          'ingredient_code' => bhl.hopper_lot.lot.ingredient.code,
+          'ingredient_name' => bhl.hopper_lot.lot.ingredient.name,
           'real_kg' => real_kg,
           'std_kg' => std_kg,
           'var_kg' => var_kg,
@@ -569,8 +585,10 @@ class EasyModel
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
+    ingredients = []
     nominal = 0
     recipe.ingredient_recipe.each do |ir|
+      ingredients << ir.ingredient.id
       nominal += ir.amount
     end
 
@@ -580,9 +598,11 @@ class EasyModel
       std = 0
       real = 0
       o.batch.each do |b|
+        std += nominal
         b.batch_hopper_lot.each do |bhl|
-          std += nominal
-          real += bhl.amount
+          if ingredients.include? bhl.hopper_lot.lot.ingredient.id
+            real += bhl.amount
+          end
         end
       end
 
@@ -609,7 +629,7 @@ class EasyModel
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{:ingredient=>{}}}}}, :recipe=>{:ingredient_recipe=>{:ingredient=>{}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND client_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), client.id], :order=>['batches.start_date DESC']
+    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{:ingredient=>{}}}}}, :recipe=>{:ingredient_recipe=>{:ingredient=>{}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND client_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), client.id], :order=>['batches.start_date DESC']
 
     orders.each do |o|
       std = 0
@@ -619,10 +639,13 @@ class EasyModel
       o.recipe.ingredient_recipe.each do |ir|
         nominal += ir.amount
       end
+      o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        nominal += imr.amount
+      end
 
       o.batch.each do |b|
+        std += nominal
         b.batch_hopper_lot.each do |bhl|
-          std += nominal
           real += bhl.amount
         end
       end

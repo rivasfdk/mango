@@ -100,9 +100,7 @@ class Recipe < ActiveRecord::Base
           # If the recipe code and version matches a previously stored recipe, activate such recipe (if it was unactive) and exit
           @previously_stored_recipe = Recipe.find :first, :conditions => {:code => header[2], :version => header[1]}
           unless @previously_stored_recipe.nil?
-            if @previously_stored_recipe.active
-              return true
-            else
+            unless @previously_stored_recipe.active
               @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
               @current_active_recipe.active = false
               @current_active_recipe.save
