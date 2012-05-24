@@ -9,7 +9,7 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new params[:client]
-    @client.fabric = false
+    @client.factory = false
     if @client.save
       flash[:notice] = 'Cliente guardado con éxito'
       redirect_to :clients
