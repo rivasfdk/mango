@@ -21,8 +21,8 @@
         <td><%=h f.address %></td>
         <td><%=h f.email %></td>
         <td>
-          <%= render_action_edit(edit_factorie_path(f)) %>
-          <%= render_action_delete(factorie_path(f), "Desea borrar la fábrica '#{f.name}'?") %>
+          <%= render_action_edit(edit_factory_path(f)) %>
+          <%= render_action_delete(factory_path(f), "Desea borrar la fábrica '#{f.name}'?") %>
         </td>
       </tr>
     <% end %>

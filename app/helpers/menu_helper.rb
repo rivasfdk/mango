@@ -390,7 +390,7 @@ module MenuHelper
     menu = content_tag(:p, 'Lista de fábricas')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Crear', 'Crear nueva fábrica', new_factorie_path, 'button-add.png')
+      render_action('Crear', 'Crear nueva fábrica', new_factory_path, 'button-add.png')
     )
     return menu
   end
