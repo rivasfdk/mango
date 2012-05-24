@@ -1,0 +1,22 @@
+var clients = new Array();
+<% for client in @clients -%>
+  clients.push(new Array(<%= client.factory %>, '<%=h client.name %>', <%= client.id %>));
+<% end -%>
+
+function clientTypeSelected() {
+  factory = false
+  if ($('client_type_factory').checked)
+    factory = true
+  options = $('order_client_id').options;
+  options.length = 1;
+  clients.each(function(client) {
+    if (client[0] == factory)
+      options[options.length] = new Option(client[1], client[2]);
+  });
+}
+
+document.observe('dom:loaded', function() {
+  //clientTypeSelected()
+  $('client_type_client').observe('change', clientTypeSelected);
+  $('client_type_factory').observe('change', clientTypeSelected);
+});

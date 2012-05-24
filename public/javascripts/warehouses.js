@@ -18,4 +18,3 @@ function type_changed() {
       $('ing_label').hide();
     }
 }
-

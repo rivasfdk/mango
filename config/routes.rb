@@ -47,4 +47,5 @@ ActionController::Routing::Routes.draw do |map|
   root :to => "sessions#index"
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+  map.connect ':controller/:action.:format'
 end
