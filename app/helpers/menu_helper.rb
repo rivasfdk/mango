@@ -57,6 +57,12 @@ module MenuHelper
       menu = menu_for_clients_new
     elsif c == 'clients' and (a == 'edit' or a == 'update')
       menu = menu_for_clients_edit
+    elsif c == 'factories' and a == 'index'
+      menu = menu_for_factories_index
+    elsif c == 'factories' and (a == 'new' or a == 'create')
+      menu = menu_for_factories_new
+    elsif c == 'factories' and (a == 'edit' or a == 'update')
+      menu = menu_for_factories_edit
     elsif c == 'batches' and a == 'index'
       menu = menu_for_batches_index
     elsif c == 'batches' and (a == 'new' or a == 'create')
@@ -376,6 +382,33 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(clients_path) +
       render_function('Actualizar', 'Actualizar cliente', "submit_client_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_factories_index
+    menu = content_tag(:p, 'Lista de fábricas')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nueva fábrica', new_factorie_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_factories_new
+    menu = content_tag(:p, 'Crear nueva fábrica')
+    menu += content_tag(:ul,
+      render_back(factories_path) +
+      render_function('Guardar', 'Guardar fábrica', "submit_factory_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_factories_edit
+    menu = content_tag(:p, 'Editar fábrica')
+    menu += content_tag(:ul,
+      render_back(factories_path) +
+      render_function('Actualizar', 'Actualizar fábrica', "submit_factory_edit_form()", 'button-execute.png')
     )
     return menu
   end

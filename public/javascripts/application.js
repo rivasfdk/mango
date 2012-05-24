@@ -75,6 +75,14 @@ function submit_client_edit_form() {
     $('client_edit_form').submit();
 }
 
+function submit_factory_new_form() {
+    $('factory_new_form').submit();
+}
+
+function submit_factory_edit_form() {
+    $('factory_edit_form').submit();
+}
+
 function submit_batch_new_form() {
     $('batch_new_form').submit();
 }

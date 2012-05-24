@@ -131,6 +131,17 @@
   </div>
   <% end %>
 
+  <!-- Factories -->
+  <% if session[:permissions].include?('factories') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('factories-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), factories_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Fábricas', factories_path %></h2>
+      <p>Manejo de fábricas</p>
+    </div>
+  </div>
+  <% end %>
+
   <!-- Transaction Types -->
   <% if session[:permissions].include?('transaction_types') %>
   <div class="module yui3-u-1-2">

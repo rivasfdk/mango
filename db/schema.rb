@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524005257) do
+ActiveRecord::Schema.define(:version => 20120524013742) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -45,15 +45,16 @@ ActiveRecord::Schema.define(:version => 20120524005257) do
   add_index "batches", ["user_id"], :name => "fk_batches_user_id"
 
   create_table "clients", :force => true do |t|
-    t.string   "code",       :null => false
-    t.string   "name",       :null => false
-    t.string   "ci_rif",     :null => false
+    t.string   "code",                          :null => false
+    t.string   "name",                          :null => false
+    t.string   "ci_rif",                        :null => false
     t.string   "address"
     t.string   "tel1"
     t.string   "tel2"
     t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "factory",    :default => false
   end
 
   create_table "display_units", :force => true do |t|

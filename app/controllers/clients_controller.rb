@@ -1,6 +1,6 @@
 class ClientsController < ApplicationController
   def index
-    @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}
   end
 
   def edit
@@ -9,6 +9,7 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new params[:client]
+    @client.fabric = false
     if @client.save
       flash[:notice] = 'Cliente guardado con éxito'
       redirect_to :clients
