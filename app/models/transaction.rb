@@ -2,6 +2,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :transaction_type
   belongs_to :warehouse
   belongs_to :user
+  belongs_to :client
 
   validates_numericality_of :amount
   validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id, :document_number

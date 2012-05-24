@@ -6,12 +6,14 @@ class TransactionsController < ApplicationController
   def new
     @transaction_types = TransactionType.all
     @warehouses = Warehouse.all
+    @clients = Client.all
   end
 
   def edit
     @transaction = Transaction.find params[:id]
     @transaction_types = TransactionType.all
     @warehouses = Warehouse.all
+    @clients = Client.all
   end
 
   def create

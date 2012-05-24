@@ -5,4 +5,8 @@ class Client < ActiveRecord::Base
   validates_presence_of :name, :code, :ci_rif, :address, :tel1
   validates_length_of :ci_rif, :within => 3..10
   validates_length_of :name, :within => 3..40
+  
+  def to_collection_select
+    return "#{self.name}"
+  end
 end
