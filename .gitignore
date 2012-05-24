@@ -2,6 +2,7 @@
 .bundle
 log/*.log
 config/database.yml
+config/global.yml
 tmp/
 *.swp
 *.swo
