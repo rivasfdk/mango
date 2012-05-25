@@ -1,6 +1,6 @@
 class ProductLotsController < ApplicationController
   def index
-    @lots = ProductLot.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @lots = ProductLot.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
   end
 
   def new
