@@ -1,5 +1,6 @@
 class Lot < ActiveRecord::Base
   belongs_to :ingredient
+  belongs_to :client
   has_many :hopper_lot
 
   validates_uniqueness_of :code

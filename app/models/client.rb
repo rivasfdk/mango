@@ -1,5 +1,8 @@
 class Client < ActiveRecord::Base
   has_many :order
+  has_many :transactions
+  has_many :lots
+  has_many :product_lots
 
   validates_uniqueness_of :ci_rif, :code
   validates_presence_of :name, :code, :ci_rif, :address, :tel1

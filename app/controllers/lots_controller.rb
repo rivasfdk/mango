@@ -5,11 +5,13 @@ class LotsController < ApplicationController
 
   def new
     @ingredients = Ingredient.find :all, :order => 'name ASC'
+    @factories = Client.find :all, :conditions => {:factory => true}
   end
 
   def edit
     @lot = Lot.find params[:id]
     @ingredients = Ingredient.find :all, :order => 'name ASC'
+    @factories = Client.find :all, :conditions => {:factory => true}
   end
 
   def create

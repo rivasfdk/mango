@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524013742) do
+ActiveRecord::Schema.define(:version => 20120525004909) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(:version => 20120524013742) do
     t.integer  "ingredient_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "client_id"
+    t.boolean  "active",        :default => true
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
@@ -187,10 +189,12 @@ ActiveRecord::Schema.define(:version => 20120524013742) do
 
   create_table "products_lots", :force => true do |t|
     t.integer  "product_id"
-    t.string   "code",       :null => false
+    t.string   "code",                         :null => false
     t.date     "date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "client_id"
+    t.boolean  "active",     :default => true
   end
 
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"

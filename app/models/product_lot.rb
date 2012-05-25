@@ -1,5 +1,6 @@
 class ProductLot < ActiveRecord::Base
   belongs_to :product
+  belongs_to :client
   has_many :order
 
   validates_uniqueness_of :code
