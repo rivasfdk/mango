@@ -1,0 +1,32 @@
+<% i = 0 %>
+<% if @trucks.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Empresa de transporte<span class="order_arrow"></th>
+        <th>Placa<span class="order_arrow"></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @trucks.each do |item| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h item.carrier.name %></td>
+        <td><%=h item.license_plate %></td>
+        <td>
+          <%= render_action_edit(edit_truck_path(item)) %>
+          <%= render_action_delete(truck_path(item), "Desea borrar el camión de placa '#{item.license_plate}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @trucks %>
+  </div>
+</div>
+<% else %>
+<p>No hay camiones registrados</p>
+<% end %>

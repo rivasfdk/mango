@@ -1,0 +1,7 @@
+<%= render_error_messages(f.error_messages) %>
+<label for="carrier_id" class="small">Empresa de transporte:</label>
+<div class="field"><%= f.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><span>*</span></div>
+<label for="address" class="small">Placa:</label>
+<div class="field"><%= f.text_field :license_plate, :size=>'20' %><span>*</span></div>
+<div class="clearfix"></div>
+<br/><span class="required">* Campos obligatorios</span>

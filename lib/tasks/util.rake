@@ -54,6 +54,12 @@ namespace :db do
       run_fixture('warehouses_types')
     end
 
+    desc 'Load fixtures for ticket types'
+    task :ticket_types => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('tickets_types')
+    end
+
     desc 'Load fixtures for base units'
     task :base_units => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
@@ -78,6 +84,12 @@ namespace :db do
     task :orders_numbers => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
       run_fixture('orders_numbers')
+    end
+    
+    desc 'Initialize ticket number'
+    task :tickets_numbers => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('tickets_numbers')
     end
 
     desc 'Initialize permissions'
@@ -138,6 +150,8 @@ namespace :sys do
     Rake::Task['db:fixtures:base_units'].invoke
     Rake::Task['db:fixtures:transaction_types'].invoke
     Rake::Task['db:fixtures:orders_numbers'].invoke
+    Rake::Task['db:fixtures:tickets_numbers'].invoke
+    Rake::Task['db:fixtures:ticket_types'].invoke
     Rake::Task['db:fixtures:permissions'].invoke
     if RAILS_ENV == 'development'
       Rake::Task['db:fixtures:products'].invoke

@@ -155,6 +155,38 @@ function submit_role_edit_form() {
     $('role_edit_form').submit();
 }
 
+function submit_driver_new_form() {
+    $('driver_new_form').submit();
+}
+
+function submit_driver_edit_form() {
+    $('driver_edit_form').submit();
+}
+
+function submit_carrier_new_form() {
+    $('carrier_new_form').submit();
+}
+
+function submit_carrier_edit_form() {
+    $('carrier_edit_form').submit();
+}
+
+function submit_truck_new_form() {
+    $('truck_new_form').submit();
+}
+
+function submit_truck_edit_form() {
+    $('truck_edit_form').submit();
+}
+
+function submit_ticket_new_form() {
+    $('ticket_new_form').submit();
+}
+
+function submit_ticket_edit_form() {
+    $('ticket_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     hide_all_report_details();
     $(id).toggle();

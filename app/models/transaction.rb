@@ -3,9 +3,10 @@ class Transaction < ActiveRecord::Base
   belongs_to :warehouse
   belongs_to :user
   belongs_to :client
+  belongs_to :ticket
 
   validates_numericality_of :amount
-  validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id, :document_number
+  validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id
 
   before_save :create_code
   after_save :do_stock_update

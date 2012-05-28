@@ -1,0 +1,32 @@
+<% i = 0 %>
+<% if @drivers.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Nombre<span class="order_arrow"></th>
+        <th>CI<span class="order_arrow"></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @drivers.each do |item| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h item.name %></td>
+        <td><%= item.ci %></td>
+        <td>
+          <%= render_action_edit(edit_driver_path(item)) %>
+          <%= render_action_delete(driver_path(item), "Desea borrar el chofer '#{item.name}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @drivers %>
+  </div>
+</div>
+<% else %>
+<p>No hay choferes registrados</p>
+<% end %>

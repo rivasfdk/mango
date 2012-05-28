@@ -1,0 +1,34 @@
+<% i = 0 %>
+<% if @carriers.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></th>
+        <th>Nombre<span class="order_arrow"></th>
+        <th>RIF<span class="order_arrow"></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @carriers.each do |item| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h item.code %></td>
+        <td><%=h item.name %></td>
+        <td><%= item.rif %></td>
+        <td>
+          <%= render_action_edit(edit_carrier_path(item)) %>
+          <%= render_action_delete(carrier_path(item), "Desea borrar a la empresa de transporte '#{item.name}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @carriers %>
+  </div>
+</div>
+<% else %>
+<p>No hay empresas de transporte registradas</p>
+<% end %>

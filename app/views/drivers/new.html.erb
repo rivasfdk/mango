@@ -1,0 +1,4 @@
+<%= form_for :driver, :url=>drivers_path, :html=>{:id=>'driver_new_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>
