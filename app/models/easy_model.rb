@@ -108,8 +108,10 @@ class EasyModel
     @order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount.to_f
+    unless @order.medicament_recipe.nil?
+      @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount.to_f
+      end
     end
 
     details = {}
@@ -181,8 +183,10 @@ class EasyModel
     batch.order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount
+    unless batch.order.medicament_recipe.nil?
+      batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount
+      end
     end
 
     batch_hopper_lots.each do |bhl|
