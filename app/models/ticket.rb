@@ -10,11 +10,13 @@ class Ticket < ActiveRecord::Base
   before_save :generate_number
 
   def generate_number
-    ticket = TicketNumber.first
-    self.number = ticket.number.succ
-    self.open = true
-    ticket.number = self.number
-    ticket.save
+    unless self.id
+      ticket = TicketNumber.first
+      self.number = ticket.number.succ
+      self.open = true
+      ticket.number = self.number
+      ticket.save
+    end
   end
   
   def close

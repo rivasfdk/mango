@@ -68,10 +68,11 @@ class Order < ActiveRecord::Base
   end
 
   def create_code
-    order = OrderNumber.first
-    self.code = order.code.succ
-    order.code = self.code
-    order.save
+    unless self.id
+      order = OrderNumber.first
+      self.code = order.code.succ
+      order.code = self.code
+      order.save
+    end
   end
-
 end

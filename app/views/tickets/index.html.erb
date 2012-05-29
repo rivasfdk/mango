@@ -4,6 +4,7 @@
     <thead>
       <tr>
         <th>Número<span class="order_arrow"></th>
+        <th>Estado<span class="order_arrow"></th>
         <th>Tipo<span class="order_arrow"></th>
         <th>Peso de entrada<span class="order_arrow"></th>
         <th>Camión<span class="order_arrow"></th>
@@ -15,12 +16,18 @@
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td><%=h item.number %></td>
+        <% if item.open %>
+          <td>Abierto</td>
+        <% else %>
+          <td>Cerrado</td>
+        <% end %>
         <td><%=h item.ticket_type.code %></td>
         <td><%=h item.incoming_weight %></td>
         <td><%=h item.truck.license_plate %></td>
         <td>
-          <%= render_action_edit(edit_ticket_path(item)) %>
+          <% if item.open %>
           <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
+          <% end %>
         </td>
       </tr>
     <% end %>
