@@ -1,5 +1,35 @@
 class EasyModel
 
+  def self.ticket(ticket_id)
+    @ticket = Ticket.find ticket_id, :include => {:ticket_type => {}, :driver => {}, :truck => {:carrier => {}}, :transactions => {:warehouse => {}}}
+    return nil if @ticket.nil?
+
+    data = self.initialize_data("Ticket #{@ticket.number} - #{@ticket.ticket_type.code}")
+  
+    data['incoming_date'] = @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S")
+    data['outgoing_date'] = @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S")
+    
+    data['transactions'] = []
+    @ticket.transactions.each do |t|
+      data['transactions'] << {
+        'code' => t.warehouse.get_content.code,
+        'name' => t.warehouse.get_content.name,
+        'amount' => t.amount
+      }
+    end
+
+    data['carrier'] = @ticket.truck.carrier.name
+    data['license_plate'] = @ticket.truck.license_plate
+    data['gross_weight'] = @ticket.get_gross_weight
+    data['tare_weight'] = @ticket.get_tare_weight
+    data['net_weight'] = @ticket.get_net_weight
+    data['provider_weight'] = @ticket.provider_weight
+    data['provider_document_number'] = @ticket.provider_document_number
+    data['comment'] = @ticket.comment
+
+    return data
+  end
+
   def self.recipes
     @recipes = Recipe.find :all, :include => {:ingredient_recipe => :ingredient}
     return nil if @recipes.length.zero?
@@ -108,8 +138,10 @@ class EasyModel
     @order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount.to_f
+    unless @order.medicament_recipe.nil?
+      @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount.to_f
+      end
     end
 
     details = {}
@@ -181,8 +213,10 @@ class EasyModel
     batch.order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount
+    unless batch.order.medicament_recipe.nil?
+      batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount
+      end
     end
 
     batch_hopper_lots.each do |bhl|
@@ -273,10 +307,12 @@ class EasyModel
           break
         end
       end
-      bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-        if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-          std_kg = imr.amount.to_f
-          break
+      unless bhl.batch.order.medicament_recipe.nil?
+        bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+            std_kg = imr.amount.to_f
+            break
+          end
         end
       end
 
@@ -456,7 +492,7 @@ class EasyModel
     transactions.each do |t|
       income = 0
       outcome = 0
-      ingredient = t.warehouse.get_content.ingredient
+      ingredient = t.warehouse.get_content
 
       if t.transaction_type.sign == '+'
         income = t.amount
@@ -539,7 +575,7 @@ class EasyModel
     transactions.each do |t|
       income = 0
       outcome = 0
-      product = t.warehouse.get_content.product
+      product = t.warehouse.get_content
 
       if t.transaction_type.sign == '+'
         income = t.amount

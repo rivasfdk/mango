@@ -19,6 +19,11 @@ module ActionsHelper
     return link_to image + "Clonar", url, :class => 'action'
   end
 
+  def render_action_print(url)
+    image = image_tag('action-clone.png', :alt=>'Imprimir')
+    return link_to image + " Imprimir", url, :class => 'action'
+  end
+
   def render_action_delete(url, confirm)
     image = image_tag('action-delete.png', :alt=>'Borrar')
     return link_to image + " Eliminar", url, :class => 'action', :method => :delete, :confirm =>confirm

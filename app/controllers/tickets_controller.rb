@@ -39,13 +39,15 @@ class TicketsController < ApplicationController
     end
   end
 
-  def destroy
-    @ticket = Ticket.find params[:id]
-    if @ticket.open
-      @ticket.eliminatredirect_to :tickets
+  def print
+    data = EasyModel.ticket params[:id]
+    if data.nil?
+      flash[:notice] = 'El ticket no existe'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
     else
-      edit
-      render :edit
+      report = EasyReport::Report.new data, 'ticket.yml'
+      send_data report.render, :filename => "ticket_#{Ticket.find(params[:id]).number}.pdf", :type => "application/pdf"
     end
   end
 

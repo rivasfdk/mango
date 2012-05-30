@@ -7,6 +7,7 @@
         <th>Estado<span class="order_arrow"></th>
         <th>Tipo<span class="order_arrow"></th>
         <th>Peso de entrada<span class="order_arrow"></th>
+        <th>Peso de Salida<span class="order_arrow"></th>
         <th>Camión<span class="order_arrow"></th>
         <th class="actions_small">Acciones</th>
       </tr>
@@ -17,16 +18,19 @@
       <tr class="<%= class_row %>">
         <td><%=h item.number %></td>
         <% if item.open %>
-          <td>Abierto</td>
+        <td class="center">Abierto</td>
         <% else %>
-          <td>Cerrado</td>
+        <td class="center">Cerrado</td>
         <% end %>
         <td><%=h item.ticket_type.code %></td>
-        <td><%=h item.incoming_weight %></td>
-        <td><%=h item.truck.license_plate %></td>
+        <td class="right"><%=h item.incoming_weight %></td>
+        <td class="right"><%=h item.outgoing_weight.nil? ? "-" : item.outgoing_weight %></td>
+        <td class="center"><%=h item.truck.license_plate %></td>
         <td>
           <% if item.open %>
           <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
+          <% else %>
+          <%= render_action_print(print_ticket_path(item)) %>
           <% end %>
         </td>
       </tr>

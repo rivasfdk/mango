@@ -49,7 +49,7 @@ class Warehouse < ActiveRecord::Base
     end
   end
 
-  def get_content
+  def get_lot
     if self.warehouse_type_id == 1
       return Lot.find self.content_id, :include=>[:ingredient]
     elsif self.warehouse_type_id == 2
@@ -57,12 +57,20 @@ class Warehouse < ActiveRecord::Base
     end
   end
 
+  def get_content
+    if self.warehouse_type_id == 1
+      return Lot.find(self.content_id, :include=>[:ingredient]).ingredient
+    elsif self.warehouse_type_id == 2
+      return ProductLot.find(self.content_id, :include=>[:product]).product
+    end
+  end
+
   def to_collection_select
     content = get_content
     if self.warehouse_type_id == 1
-      return "#{self.code} (#{self.warehouse_type.code}): #{content.ingredient.name}"
+      return "#{self.code} (#{self.warehouse_type.code}): #{content.name}"
     elsif self.warehouse_type_id == 2
-      return "#{self.code} (#{self.warehouse_type.code}): #{content.product.name}"
+      return "#{self.code} (#{self.warehouse_type.code}): #{content.name}"
     end
   end
 

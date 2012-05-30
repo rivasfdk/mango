@@ -1,5 +1,5 @@
 class Ticket < ActiveRecord::Base
-  has_one :transaction
+  has_many :transactions
   belongs_to :truck
   belongs_to :driver
   belongs_to :ticket_type
@@ -21,5 +21,30 @@ class Ticket < ActiveRecord::Base
   
   def close
     puts "Herp"
+  end
+
+  def get_gross_weight
+    if self.ticket_type_id == 1 # Reception ticket
+      return incoming_weight
+    else # Dispatch ticket
+      return outgoing_weight.nil? ? -1 : outgoing_weight
+    end
+  end
+
+  def get_tare_weight
+    if self.ticket_type_id == 1 # Reception ticket
+      return outgoing_weight.nil? ? -1 : outgoing_weight
+    else # Dispatch ticket
+      return incoming_weight
+    end
+
+  end
+
+  def get_net_weight
+    if self.ticket_type_id == 1 # Reception ticket
+      return outgoing_weight.nil? ? -1 : incoming_weight - outgoing_weight
+    else # Dispatch ticket
+      return outgoing_weight.nil? ? -1 : outgoing_weight - incoming_weight
+    end
   end
 end
