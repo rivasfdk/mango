@@ -42,16 +42,6 @@ class TicketsController < ApplicationController
   def destroy
     @ticket = Ticket.find params[:id]
     if @ticket.open
-      @ticket.eliminatredirect_to :tickets
-    else
-      edit
-      render :edit
-    end
-  end
-
-  def destroy
-    @ticket = Ticket.find params[:id]
-    if @ticket.open
       @ticket.eliminate
       if @ticket.errors.size.zero?
         flash[:notice] = "Ticket eliminado con éxito"
