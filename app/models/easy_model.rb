@@ -39,7 +39,12 @@ class EasyModel
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
       rbatches = Batch.get_real_batches(o.id)
-      stotal = (o.recipe.get_total() + o.medicament_recipe.get_total())* rbatches
+      stotal = 0
+      unless o.medicament_recipe.nil?
+        stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
+      else
+        stotal = o.recipe.get_total()
+      end
       var_kg = rtotal - stotal
       var_perc = (var_kg * 100.0) / stotal
       data['results'] << {
@@ -108,8 +113,10 @@ class EasyModel
     @order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount.to_f
+    unless @order.medicament_recipe.nil?
+      @order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount.to_f
+      end
     end
 
     details = {}
@@ -181,8 +188,10 @@ class EasyModel
     batch.order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
-    batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-      ingredients[imr.ingredient.code] = imr.amount
+    unless batch.order.medicament_recipe.nil?
+      batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+        ingredients[imr.ingredient.code] = imr.amount
+      end
     end
 
     batch_hopper_lots.each do |bhl|
@@ -273,10 +282,12 @@ class EasyModel
           break
         end
       end
-      bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-        if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-          std_kg = imr.amount.to_f
-          break
+      unless bhl.batch.order.medicament_recipe.nil?
+        bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+            std_kg = imr.amount.to_f
+            break
+          end
         end
       end
 
@@ -639,8 +650,10 @@ class EasyModel
       o.recipe.ingredient_recipe.each do |ir|
         nominal += ir.amount
       end
-      o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-        nominal += imr.amount
+      unless o.medicament_recipe.nil?
+        o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          nominal += imr.amount
+        end
       end
 
       o.batch.each do |b|
