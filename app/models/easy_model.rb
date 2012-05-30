@@ -69,7 +69,12 @@ class EasyModel
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
       rbatches = Batch.get_real_batches(o.id)
-      stotal = (o.recipe.get_total() + o.medicament_recipe.get_total())* rbatches
+      stotal = 0
+      unless o.medicament_recipe.nil?
+        stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
+      else
+        stotal = o.recipe.get_total()
+      end
       var_kg = rtotal - stotal
       var_perc = (var_kg * 100.0) / stotal
       data['results'] << {
@@ -675,8 +680,10 @@ class EasyModel
       o.recipe.ingredient_recipe.each do |ir|
         nominal += ir.amount
       end
-      o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-        nominal += imr.amount
+      unless o.medicament_recipe.nil?
+        o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          nominal += imr.amount
+        end
       end
 
       o.batch.each do |b|
