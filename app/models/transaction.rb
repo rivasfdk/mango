@@ -51,11 +51,13 @@ class Transaction < ActiveRecord::Base
   end
 
   def create_code
-    last = Transaction.last
-    if last.nil?
-      self.code = '00000001'
-    else
-      self.code = last.code.succ
+    unless self.id
+      last = Transaction.last
+      if last.nil?
+        self.code = '00000001'
+      else
+        self.code = last.code.succ
+      end
     end
   end
 
