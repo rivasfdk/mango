@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'warehouses/recalculate' => "warehouses#recalculate", :via => :get, :as => 'recalculate_warehouses'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
   match 'roles/:id/clone' => "roles#clone", :via => :get, :as => 'clone_role'
+  match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   # Reports
   match 'reports/index' => "reports#index", :via => :get, :as => "reports"
@@ -29,8 +30,9 @@ ActionController::Routing::Routes.draw do |map|
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :hoppers, :products, :orders, :lots, :schedules, :batches,
-    :transaction_types, :product_lots, :warehouses, :permissions
+    :transaction_types, :product_lots, :warehouses, :permissions, :drivers, :carriers, :trucks
   resources :transactions, :except=>:edit
+  resources :tickets, :except=>:edit
 
   resources :recipes do
     resources :ingredients_recipes

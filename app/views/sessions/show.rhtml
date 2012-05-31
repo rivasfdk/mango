@@ -208,6 +208,50 @@
   </div>
   <% end %>
 
+  <!-- Drivers -->
+  <% if session[:permissions].include?('drivers') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('drivers-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), drivers_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Choferes', drivers_path %></h2>
+      <p>Gestion de choferes</p>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Carriers -->
+  <% if session[:permissions].include?('carriers') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('carriers-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), carriers_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Empresas de transporte', carriers_path %></h2>
+      <p>Gestion de empresas de transporte</p>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Trucks -->
+  <% if session[:permissions].include?('trucks') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('trucks-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), trucks_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Camiones', trucks_path %></h2>
+      <p>Gestion de camiones</p>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Tickets -->
+  <% if session[:permissions].include?('tickets') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('tickets-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), tickets_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Tickets', tickets_path %></h2>
+      <p>Gestion de tickets</p>
+    </div>
+  </div>
+  <% end %>
+
   <!-- Config -->
   <% if session[:permissions].include?('configuration') %>
   <div class="module yui3-u-1-2">

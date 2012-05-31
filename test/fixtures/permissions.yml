@@ -109,3 +109,8 @@ products_stock:
   module: reports
   action: products_stock
   mode: global
+recipe_import:
+  name: Recipes Import
+  module: recipes
+  action: import
+  mode: module

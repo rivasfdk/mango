@@ -1,0 +1,47 @@
+<% i = 0 %>
+<% if @tickets.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Número<span class="order_arrow"></th>
+        <th>Estado<span class="order_arrow"></th>
+        <th>Tipo<span class="order_arrow"></th>
+        <th>Peso de entrada<span class="order_arrow"></th>
+        <th>Peso de Salida<span class="order_arrow"></th>
+        <th>Camión<span class="order_arrow"></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @tickets.each do |item| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h item.number %></td>
+        <% if item.open %>
+        <td class="center">Abierto</td>
+        <% else %>
+        <td class="center">Cerrado</td>
+        <% end %>
+        <td><%=h item.ticket_type.code %></td>
+        <td class="right"><%=h item.incoming_weight %></td>
+        <td class="right"><%=h item.outgoing_weight.nil? ? "-" : item.outgoing_weight %></td>
+        <td class="center"><%=h item.truck.license_plate %></td>
+        <td>
+          <% if item.open %>
+          <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
+          <% else %>
+          <%= render_action_print(print_ticket_path(item)) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @tickets %>
+  </div>
+</div>
+<% else %>
+<p>No hay tickets abiertos registrados</p>
+<% end %>

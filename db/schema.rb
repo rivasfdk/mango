@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120525004909) do
+ActiveRecord::Schema.define(:version => 20120528063627) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -44,6 +44,18 @@ ActiveRecord::Schema.define(:version => 20120525004909) do
   add_index "batches", ["schedule_id"], :name => "fk_batches_schedule_id"
   add_index "batches", ["user_id"], :name => "fk_batches_user_id"
 
+  create_table "carriers", :force => true do |t|
+    t.string   "code",       :null => false
+    t.string   "rif",        :null => false
+    t.string   "name",       :null => false
+    t.string   "email"
+    t.string   "address"
+    t.string   "tel1"
+    t.string   "tel2"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "clients", :force => true do |t|
     t.string   "code",                          :null => false
     t.string   "name",                          :null => false
@@ -61,6 +73,16 @@ ActiveRecord::Schema.define(:version => 20120525004909) do
     t.integer  "base_unit_id"
     t.string   "code",         :null => false
     t.float    "rate",         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "drivers", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "ci",         :null => false
+    t.string   "address"
+    t.string   "tel1"
+    t.string   "tel2"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -200,7 +222,7 @@ ActiveRecord::Schema.define(:version => 20120525004909) do
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "recipes", :force => true do |t|
-    t.string   "code",                         :null => false
+    t.string   "code"
     t.string   "name",                         :null => false
     t.string   "version"
     t.float    "total",      :default => 0.0
@@ -225,6 +247,39 @@ ActiveRecord::Schema.define(:version => 20120525004909) do
     t.datetime "updated_at"
   end
 
+  create_table "tickets", :force => true do |t|
+    t.integer  "truck_id"
+    t.integer  "driver_id"
+    t.integer  "number"
+    t.boolean  "open",                     :default => true
+    t.float    "incoming_weight"
+    t.float    "outgoing_weight"
+    t.float    "provider_weight"
+    t.integer  "provider_document_number"
+    t.datetime "incoming_date"
+    t.datetime "outgoing_date"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ticket_type_id"
+  end
+
+  add_index "tickets", ["driver_id"], :name => "fk_tickets_driver_id"
+  add_index "tickets", ["truck_id"], :name => "fk_tickets_truck_id"
+
+  create_table "tickets_numbers", :force => true do |t|
+    t.string   "number",     :default => "0000000001"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_types", :force => true do |t|
+    t.string   "code",        :null => false
+    t.string   "description", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "transaction_types", :force => true do |t|
     t.string   "code",        :null => false
     t.string   "description", :null => false
@@ -243,10 +298,19 @@ ActiveRecord::Schema.define(:version => 20120525004909) do
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "document_number"
     t.integer  "processed_in_stock",  :default => 0
     t.integer  "client_id"
+    t.integer  "ticket_id"
   end
+
+  create_table "trucks", :force => true do |t|
+    t.integer  "carrier_id"
+    t.string   "license_plate", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "trucks", ["carrier_id"], :name => "fk_trucks_carrier_id"
 
   create_table "users", :force => true do |t|
     t.string   "name",                             :null => false

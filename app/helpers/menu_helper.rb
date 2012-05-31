@@ -121,8 +121,31 @@ module MenuHelper
       menu = menu_for_roles_edit
     elsif c == 'reports' and a == 'index'
       menu = menu_for_reports_index
+    elsif c == 'drivers' and a == 'index'
+      menu = menu_for_drivers_index
+    elsif c == 'drivers' and (a == 'new' or a == 'create')
+      menu = menu_for_drivers_new
+    elsif c == 'drivers' and (a == 'edit' or a == 'update')
+      menu = menu_for_drivers_edit
+    elsif c == 'carriers' and a == 'index'
+      menu = menu_for_carriers_index
+    elsif c == 'carriers' and (a == 'new' or a == 'create')
+      menu = menu_for_carriers_new
+    elsif c == 'carriers' and (a == 'edit' or a == 'update')
+      menu = menu_for_carriers_edit
+    elsif c == 'trucks' and a == 'index'
+      menu = menu_for_trucks_index
+    elsif c == 'trucks' and (a == 'new' or a == 'create')
+      menu = menu_for_trucks_new
+    elsif c == 'trucks' and (a == 'edit' or a == 'update')
+      menu = menu_for_trucks_edit
+    elsif c == 'tickets' and a == 'index'
+      menu = menu_for_tickets_index
+    elsif c == 'tickets' and (a == 'new' or a == 'create')
+      menu = menu_for_tickets_new
+    elsif c == 'tickets' and (a == 'edit' or a == 'update')
+      menu = menu_for_tickets_edit
     end
-
     return content_tag(:div, menu, :id => 'menu')
   end
 
@@ -665,6 +688,114 @@ module MenuHelper
   def menu_for_reports_index
     menu = content_tag(:p, 'Reportes')
     menu += content_tag(:ul, render_back(root_path))
+    return menu
+  end
+  
+  def menu_for_drivers_index
+    menu = content_tag(:p, 'Lista de choferes')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo chofer', new_driver_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_drivers_new
+    menu = content_tag(:p, 'Crear nuevo chofer')
+    menu += content_tag(:ul,
+      render_back(drivers_path) +
+      render_function('Guardar', 'Guardar chofer', "submit_driver_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_drivers_edit
+    menu = content_tag(:p, 'Editar chofer')
+    menu += content_tag(:ul,
+      render_back(drivers_path) +
+      render_function('Actualizar', 'Actualizar chofer', "submit_driver_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_carriers_index
+    menu = content_tag(:p, 'Lista de empresas de transporte')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nueva empresa de transporte', new_carrier_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_carriers_new
+    menu = content_tag(:p, 'Crear nueva empresa de transporte')
+    menu += content_tag(:ul,
+      render_back(carriers_path) +
+      render_function('Guardar', 'Guardar empresa de transporte', "submit_carrier_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_carriers_edit
+    menu = content_tag(:p, 'Editar empresa de transporte')
+    menu += content_tag(:ul,
+      render_back(carriers_path) +
+      render_function('Actualizar', 'Actualizar empresa de transporte', "submit_carrier_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+  
+  def menu_for_trucks_index
+    menu = content_tag(:p, 'Lista de camiones')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo camión', new_truck_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_trucks_new
+    menu = content_tag(:p, 'Crear nuevo camión')
+    menu += content_tag(:ul,
+      render_back(trucks_path) +
+      render_function('Guardar', 'Guardar camión', "submit_truck_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_trucks_edit
+    menu = content_tag(:p, 'Editar camión')
+    menu += content_tag(:ul,
+      render_back(trucks_path) +
+      render_function('Actualizar', 'Actualizar camión', "submit_truck_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_index
+    menu = content_tag(:p, 'Lista de tickets')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo ticket', new_ticket_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_new
+    menu = content_tag(:p, 'Crear nuevo ticket')
+    menu += content_tag(:ul,
+      render_back(tickets_path) +
+      render_function('Guardar', 'Guardar ticket', "submit_ticket_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_edit
+    menu = content_tag(:p, 'Editar ticket')
+    menu += content_tag(:ul,
+      render_back(tickets_path) +
+      render_function('Actualizar', 'Actualizar ticket', "submit_ticket_edit_form()", 'button-execute.png')
+    )
     return menu
   end
 end
