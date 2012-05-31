@@ -159,7 +159,7 @@ class EasyModel
     @order.batch.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.ingredient.code
-        std_amount = (ingredients.has_key?(key)) ? ingredients[key] : 0
+        std_amount = (ingredients.has_key?(key)) ? ingredients[key] * @order.get_real_batches : 0
         unless details.has_key?(key)
           details[key] = {
             'ingredient' => bhl.hopper_lot.lot.ingredient.name,
@@ -173,7 +173,6 @@ class EasyModel
         else
           details[key]['real_kg'] += bhl.amount.to_f
         end
-        details[key]['std_kg'] = ingredients[key] * @order.get_real_batches
         total_real += details[key]['real_kg']
         details[key]['var_kg'] = details[key]['real_kg'] - details[key]['std_kg']
         details[key]['var_perc'] = details[key]['var_kg'] * 100 / details[key]['std_kg']
