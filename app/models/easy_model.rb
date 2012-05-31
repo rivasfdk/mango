@@ -68,12 +68,12 @@ class EasyModel
     real_total = 0
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
-      rbatches = Batch.get_real_batches(o.id)
+      rbatches = o.get_real_batches
       stotal = 0
       unless o.medicament_recipe.nil?
         stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
       else
-        stotal = o.recipe.get_total()
+        stotal = o.recipe.get_total() * rbatches
       end
       var_kg = rtotal - stotal
       var_perc = (var_kg * 100.0) / stotal
@@ -108,8 +108,13 @@ class EasyModel
     real_total = 0
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
-      rbatches = Batch.get_real_batches(o.id)
-      stotal = o.recipe.get_total() * rbatches
+      rbatches = o.get_real_batches
+      stotal = 0
+      unless o.medicament_recipe.nil?
+        stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
+      else
+        stotal = o.recipe.get_total() * rbatches
+      end
       d = o.calculate_duration
       order_duration = d['duration']
       start_time = d['start_date']
