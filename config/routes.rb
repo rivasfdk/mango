@@ -34,7 +34,7 @@ ActionController::Routing::Routes.draw do |map|
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 
-  resources :recipes do
+  resources :recipes, :except=>:edit do
     resources :ingredients_recipes
   end
 
