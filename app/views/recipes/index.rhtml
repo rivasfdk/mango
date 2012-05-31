@@ -20,7 +20,6 @@
         <td class="center"><%=h r.active %></td>
         <td class="center">
           <%= render_action_show(recipe_path(r)) %>
-          <%= render_action_edit(edit_recipe_path(r)) %>
           <%= render_action_delete(recipe_path(r), "Desea borrar la receta '#{r.name}'?") %>
         </td>
       </tr>
