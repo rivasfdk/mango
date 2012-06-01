@@ -42,12 +42,12 @@ class TicketsController < ApplicationController
   def print
     data = EasyModel.ticket params[:id]
     if data.nil?
-      flash[:notice] = 'El ticket no existe'
+      flash[:notice] = 'El ticket se encuentra abierto'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
       report = EasyReport::Report.new data, 'ticket.yml'
-      send_data report.render, :filename => "ticket_#{Ticket.find(params[:id]).number}.pdf", :type => "application/pdf"
+      send_data report.render, :filename => "ticket_#{data['number']}.pdf", :type => "application/pdf"
     end
   end
 
