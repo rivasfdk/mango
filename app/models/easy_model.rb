@@ -9,14 +9,14 @@ class EasyModel
     data['number'] = @ticket.number
     data['incoming_date'] = @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S")
     data['outgoing_date'] = @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S")
-    if @ticket.ticket_type == 1 # Reception ticket
+    if @ticket.ticket_type_id == 1 # Reception ticket
       data['client_type'] = 'Proveedor'
     else # Dispatch ticket
       data['client_type'] = 'Cliente'
     end
     data['client_code'] = @ticket.transactions.first.client.code
     data['client_name'] = @ticket.transactions.first.client.name
-    date['driver_name'] = @ticket.truck.driver.name
+    date['driver_name'] = @ticket.driver.name
     date['driver_id'] = @ticket.truck.driver.ci
     data['carrier'] = @ticket.truck.carrier.name
     data['license_plate'] = @ticket.truck.license_plate

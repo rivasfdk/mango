@@ -178,8 +178,7 @@ module MenuHelper
   def menu_for_recipes_show
     menu = content_tag(:p, 'Detalle de receta')
     menu += content_tag(:ul,
-      render_back(recipes_path) +
-      render_action('Editar', 'Editar receta', edit_recipe_path, 'button-edit.png')
+      render_back(recipes_path)
     )
     return menu
   end
