@@ -12,17 +12,17 @@
       </tr>
     </thead>
     <tbody>
-    <% @warehouses.each do |t| %>
+    <% @warehouses.each do |w| %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
-        <td><%=h t.code %></td>
-        <td><%=h t.warehouse_type.code %></td>
-        <td><%=h t.get_content.to_collection_select %></td>
-        <td><%=h t.location %></td>
-        <td class="center"><%=h t.stock %></td>
+        <td><%=h w.code %></td>
+        <td><%=h w.warehouse_type.code %></td>
+        <td><%=h w.get_lot.to_collection_select %></td>
+        <td><%=h w.location %></td>
+        <td class="center"><%=h w.stock %></td>
         <td>
-          <%= render_action_edit(edit_warehouse_path(t)) %>
-          <%= render_action_delete(warehouse_path(t), "Desea borrar el almacen '#{t.code}'?") %>
+          <%= render_action_edit(edit_warehouse_path(w)) %>
+          <%= render_action_delete(warehouse_path(w), "Desea borrar el almacen '#{w.code}'?") %>
         </td>
       </tr>
     <% end %>
