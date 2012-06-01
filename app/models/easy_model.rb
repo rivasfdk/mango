@@ -16,8 +16,8 @@ class EasyModel
     end
     data['client_code'] = @ticket.transactions.first.client.code
     data['client_name'] = @ticket.transactions.first.client.name
-    date['driver_name'] = @ticket.driver.name
-    date['driver_id'] = @ticket.truck.driver.ci
+    data['driver_name'] = @ticket.driver.name
+    data['driver_id'] = @ticket.driver.ci
     data['carrier'] = @ticket.truck.carrier.name
     data['license_plate'] = @ticket.truck.license_plate
     data['gross_weight'] = @ticket.get_gross_weight
