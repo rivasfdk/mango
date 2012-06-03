@@ -6,79 +6,58 @@ report:
       margins: 15
     style:
       font_family: 'Helvetica'
-      font_size: 10
+      font_size: 8
       font_color: [0, 0, 0]
   header:
     1:
       text:
         field: company_name
-        margin: 30
+        margin: 10
         align: left
         style:
-          font_size: 11
+          font_size: 9
           font_weight: B
     2:
       text:
         field: company_rif
-        margin: 30
+        margin: 10
         align: left
         style:
-          font_size: 10
+          font_size: 8
     3:
       image:
         filename: default-report-logo.png
-        width: 20
-        height: 20
-        x: 20
-        y: 12
+        width: 8
+        height: 8
+        x: 15
+        y: 15
     4:
       text:
-        field: company_address
-        margin: 30
-        align: left
-        style:
-          font_size: 10
-    5:
-      breakline:
-    6:
-      pagenum:
-        pattern: "Pag. <PAGE>"
+        field: client_title
         align: right
+        width: 170
+        breakline: 0
+        style:
+          font_weight: B
+    5:
+      text:
+        field: client_code
+        align: right
+    6:
+      text:
+        field: client_name
+        align: right
+    7:
+      breakline:
   body:
     1:
-      text:
-        label: "Entrada: "
-        align: right
-        width: 120
-        breakline: 0
-        style:
-          font_weight: B
-    2:
-      text:
-        field: incoming_date
-        align: left
-        width: 50
-    3:
-      text:
-        label: "Salida: "
-        align: right
-        width: 120
-        breakline: 0
-        style:
-          font_weight: B
-    4:
-      text:
-        field: outgoing_date
-        align: left
-        width: 50
-    5:
       text:
         field: title
         align: center
         style:
-          font_size: 12
+          font_size: 8
           font_weight: B
-    6:
+    2:
       table:
         field: transactions
         heading:
@@ -86,29 +65,198 @@ report:
           style:
             font_weight: B
             bg_color: [220, 220, 220]
+        totalization:
+          label: Total
+          align: right
+          border: T
+          style:
+            font_weight: B
         columns:
           1:
             code:
               label: Codigo
-              align: left
+              align: center
               width: 20
           2:
             name:
               label: Nombre
               align: left
-              width: 25
+              width: 115
           3:
             amount:
               label: Cantidad
-              align: left
-              width: 25
-    7:
+              unit: Kg
+              totalize: true
+              align: right
+              width: 50
+    3:
       breakline:
+    4:
+      text:
+        label: Entrada
+        width: 40
+        breakline: 0
+        style:
+          font_weight: B
+    5:
+      text:
+        label: Salida
+        width: 40
+        breakline: 0
+        style:
+          font_weight: B
+    6:
+      text:
+        label: "Docum: "
+        width: 18
+        breakline: 0
+        style:
+          font_weight: B
+    7:
+      text:
+        field: provider_document_number
+        width: 20
+        breakline: 0    
+    8:
+      text:
+        label: "Bruto:"
+        width: 25
+        breakline: 0
+        style:
+          font_weight: B
+    9:
+      text:
+        field: gross_weight
+        width: 25
+    10:
+      text:
+        field: incoming_date
+        width: 40
+        breakline: 0
+    11:
+      text:
+        field: outgoing_date
+        width: 40
+        breakline: 0
+    12:
+      text:
+        label: "Placa: "
+        width: 18
+        breakline: 0
+        style:
+          font_weight: B
+    13:
+      text:
+        field: license_plate
+        width: 20
+        breakline: 0 
+    14:
+      text:
+        label: "Tara:"
+        width: 25
+        breakline: 0
+        style:
+          font_weight: B
+    15:
+      text:
+        field: tare_weight
+        width: 25
+    16:
+      text:
+        field: incoming_weight
+        width: 40
+        breakline: 0
+        
+    17:
+      text:
+        field: outgoing_weight
+        width: 40
+        breakline: 0
+    18:
+      text:
+        label: "Peso prov.:"
+        width: 18
+        breakline: 0
+        style:
+          font_weight: B
+    19:
+      text:
+        field: provider_weight
+        width: 20
+        breakline: 0
+    20:
+      text:
+        label: "Neto:"
+        width: 25
+        breakline: 0
+        style:
+          font_weight: B
+    21:
+      text:
+        field: net_weight
+        width: 25
+    22:
+      breakline:
+    23:
+      breakline:
+    24:
+      text:
+        label: "Comentario:"
+        width: 25
+        breakline: 0
+        style:
+          font_weight: B
+    25:
+      text:
+        field: comment
+        align: left
+        width: 30
+    26:
+      breakline:
+    27:
+      breakline:
+    28:
+      text:
+        label: "Transp:"
+        width: 12
+        breakline: 0
+        style:
+          font_weight: B
+    29:
+      text:
+        field: carrier
+        width: 30
+        breakline: 0
+    30:
+      text:
+        label: "__________________________"
+        width: 80
+        breakline: 0
+    31:
+      text:
+        label: "__________________________"
+        width: 70
+    32:
+      text:
+        label: "Despachador"
+        width: 160
+        breakline: 0
+        style:
+          font_weight: B
+    33:
+      text:
+        field: driver_name
+        width: -10
+        
+    34: 
+      text:
+        label: "user_name"
+        breakline: 0
+        width: 160
+    35:
+      text:
+        field: driver_id
+        width: -10
   footer:
     1:
-      text:
-        field: footer
-        align: center
-        style:
-          font_size: 8
-          font_color: [80, 80, 80]
+      breakline:
