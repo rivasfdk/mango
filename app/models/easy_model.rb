@@ -10,22 +10,25 @@ class EasyModel
     data['incoming_date'] = @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S")
     data['outgoing_date'] = @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S")
     if @ticket.ticket_type_id == 1 # Reception ticket
-      data['client_type'] = 'Proveedor'
+      data['client_title'] = 'Proveedor:'
     else # Dispatch ticket
-      data['client_type'] = 'Cliente'
+      data['client_title'] = 'Cliente:'
     end
+
     data['client_code'] = @ticket.transactions.first.client.code
     data['client_name'] = @ticket.transactions.first.client.name
-    date['driver_name'] = @ticket.driver.name
-    date['driver_id'] = @ticket.truck.driver.ci
+    data['driver_name'] = @ticket.driver.name
+    data['driver_id'] = @ticket.driver.ci
     data['carrier'] = @ticket.truck.carrier.name
     data['license_plate'] = @ticket.truck.license_plate
-    data['gross_weight'] = @ticket.get_gross_weight
-    data['tare_weight'] = @ticket.get_tare_weight
-    data['net_weight'] = @ticket.get_net_weight
-    data['provider_weight'] = @ticket.provider_weight
-    data['provider_document_number'] = @ticket.provider_document_number
-    data['comment'] = @ticket.comment
+    data['provider_document_number'] = @ticket.provider_document_number.to_s
+    data['incoming_weight'] = @ticket.incoming_weight.to_s + " Kg"
+    data['outgoing_weight'] = @ticket.outgoing_weight.to_s + " Kg"
+    data['provider_weight'] = @ticket.provider_weight.to_s + " Kg"
+    data['gross_weight'] = @ticket.get_gross_weight.to_s + " Kg"
+    data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
+    data['net_weight'] = @ticket.get_net_weight.to_s + " Kg"
+    data['comment'] = @ticket.comment.nil? ? "" : @ticket.comment
 
     data['transactions'] = []
     @ticket.transactions.each do |t|

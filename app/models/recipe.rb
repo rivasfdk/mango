@@ -97,9 +97,9 @@ class Recipe < ActiveRecord::Base
           name = header[3].strip()
           total = header[5]
 
-          # If the recipe code and version matches a previously stored recipe, activate such recipe (if it was unactive) and exit
           @previously_stored_recipe = Recipe.find :first, :conditions => {:code => header[2], :version => header[1]}
           unless @previously_stored_recipe.nil?
+            logger.debug("Receta: #{@previously_stored_recipe.code} version #{@previously_stored_recipe.version} ya existe")
             unless @previously_stored_recipe.active
               @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
               @current_active_recipe.active = false
@@ -107,34 +107,39 @@ class Recipe < ActiveRecord::Base
               @previously_stored_recipe.active = true
               @previously_stored_recipe.save
             end
-            return true
-          end
-          
-          @previous_version_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
-          unless @previous_version_recipe.nil?
-            @previous_version_recipe.active = false
-            @previous_version_recipe.save
-          end
+            while (true)
+              item = fd.gets()
+              break if item.nil?
+              item = item.split(';')
+              break if item.length == 1
+            end
+          else
+            @previous_version_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
+            unless @previous_version_recipe.nil?
+              @previous_version_recipe.active = false
+              @previous_version_recipe.save
+            end
 
-          @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
-          logger.debug("Creando encabezado de receta #{@recipe.inspect}")
+            @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
+            logger.debug("Creando encabezado de receta #{@recipe.inspect}")
 
-          while (true)
-            item = fd.gets()
-            break if item.nil?
-            item = item.split(';')
-            logger.debug("  * Ingrediente: #{item.inspect}")
-            break if item.length == 1
-            return false unless validate_field(item[0], 'D')
-            @recipe.add_ingredient(
-              :amount=>item[3].to_f,
-              :priority=>item[1].to_i,
-              :percentage=>0,
-              :ingredient=>item[2],
-              :overwrite=>overwrite)
+            while (true)
+              item = fd.gets()
+              break if item.nil?
+              item = item.split(';')
+              logger.debug("  * Ingrediente: #{item.inspect}")
+              break if item.length == 1
+              return false unless validate_field(item[0], 'D')
+              @recipe.add_ingredient(
+                :amount=>item[3].to_f,
+                :priority=>item[1].to_i,
+                :percentage=>0,
+                :ingredient=>item[2],
+                :overwrite=>overwrite)
+            end
+            @recipe.total = total.to_f
+            @recipe.save
           end
-          @recipe.total = total.to_f
-          result = @recipe.save
           continue = fd.gets()
           break if continue.nil?
           continue = continue.split(';')
