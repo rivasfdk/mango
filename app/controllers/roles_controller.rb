@@ -29,8 +29,10 @@ class RolesController < ApplicationController
 
   def create
     @role = Role.new params[:role]
-    params[:permissions].each do |p|
-      @role.permission_role << PermissionRole.new(:permission_id=>p)
+    unless params[:permissions].nil?
+      params[:permissions].each do |p|
+        @role.permission_role << PermissionRole.new(:permission_id=>p)
+      end
     end
     if @role.save
       flash[:notice] = 'Rol guardado con éxito'
@@ -45,8 +47,10 @@ class RolesController < ApplicationController
     @role = Role.find params[:id]
     @role.update_attributes(params[:role])
     @role.permission_role.clear
-    params[:permissions].each do |p|
-      pr = PermissionRole.create({:role_id=>@role.id, :permission_id=>p})
+    unless params[:permissions].nil?
+      params[:permissions].each do |p|
+        pr = PermissionRole.create({:role_id=>@role.id, :permission_id=>p})
+      end
     end
     if @role.save
       flash[:notice] = 'Rol guardado con éxito'
