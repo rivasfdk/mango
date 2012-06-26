@@ -7,6 +7,10 @@ class Recipe < ActiveRecord::Base
   validates_length_of :name, :within => 3..40
   #validates_associated :ingredient_recipe
 
+  def is_associated?()
+    Order.where(:recipe_id => self.id).any?
+  end
+
   def add_ingredient(args)
     logger.debug("Agregando ingrediente: #{args.inspect}")
     overwrite = args[:overwrite]

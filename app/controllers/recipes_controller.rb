@@ -10,6 +10,10 @@ class RecipesController < ApplicationController
   def edit
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
     @ingredients = Ingredient.find :all
+    if @recipe.is_associated?
+      flash[:notice] = "No se puede editar una receta asociada a una orden de producción"
+      redirect_to :recipes
+    end
   end
 
   def create
