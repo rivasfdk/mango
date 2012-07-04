@@ -191,6 +191,22 @@ class EasyModel
       end
     end
 
+    #Add recipe ingredients without any consumption in the order
+    ingredients.each do |key, value|
+      unless details.has_key?(key)
+        std_amount = value * @order.get_real_batches()
+        details[key] = {
+          'ingredient' => Ingredient.find_by_code(key).name,
+          'lot' => "N/A",
+          'hopper' => "N/A",
+          'real_kg' => 0,
+          'std_kg' => std_amount,
+          'var_kg' => std_amount,
+          'var_perc' => 100,
+        }
+      end
+    end
+
     data = self.initialize_data('Detalle de Orden de Produccion')
     data['order'] = @order.code
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
