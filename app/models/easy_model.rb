@@ -68,7 +68,7 @@ class EasyModel
   end
 
   def self.daily_production(start_date, end_date)
-    @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
+    @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
     return nil if @orders.length.zero?
 
     data = self.initialize_data('Produccion Diaria por Fabrica')
@@ -108,7 +108,7 @@ class EasyModel
   end
 
   def self.order_duration(start_date, end_date)
-    @orders = Order.find :all, :include=>['batch', 'recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
+    @orders = Order.find :all, :include=>['batch', 'recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
     return nil if @orders.length.zero?
 
     data = self.initialize_data('Duracion de Orden de Produccion')
