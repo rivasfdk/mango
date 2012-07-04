@@ -153,7 +153,7 @@ class EasyModel
   end
 
   def self.order_details(order_code)
-    @order = Order.find_by_code order_code, :include => {:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}}
+    @order = Order.find_by_code order_code, :include => {:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}, :client => {}}
     return nil if @order.nil?
 
     ingredients = {}
@@ -209,6 +209,7 @@ class EasyModel
 
     data = self.initialize_data('Detalle de Orden de Produccion')
     data['order'] = @order.code
+    data['client'] = "#{@order.client.code} - #{@order.client.name}"
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
     data['comment'] = @order.comment

@@ -60,7 +60,7 @@ report:
         width: 50
     3:
       text:
-        label: "Formula: "
+        label: "Cliente: "
         align: right
         width: 170
         breakline: 0
@@ -68,12 +68,12 @@ report:
           font_weight: B
     4:
       text:
-        field: recipe
+        field: client
         align: left
         width: 50
     5:
       text:
-        label: "Version: "
+        label: "Formula: "
         align: right
         width: 170
         breakline: 0
@@ -81,12 +81,12 @@ report:
           font_weight: B
     6:
       text:
-        field: version
+        field: recipe
         align: left
         width: 50
     7:
       text:
-        label: "Prod. Term.: "
+        label: "Version: "
         align: right
         width: 170
         breakline: 0
@@ -94,12 +94,12 @@ report:
           font_weight: B
     8:
       text:
-        field: product
+        field: version
         align: left
         width: 50
     9:
       text:
-        label: "Inicio: "
+        label: "Prod. Term.: "
         align: right
         width: 170
         breakline: 0
@@ -107,12 +107,12 @@ report:
           font_weight: B
     10:
       text:
-        field: start_date
+        field: product
         align: left
         width: 50
     11:
       text:
-        label: "Final: "
+        label: "Inicio: "
         align: right
         width: 170
         breakline: 0
@@ -120,12 +120,12 @@ report:
           font_weight: B
     12:
       text:
-        field: end_date
+        field: start_date
         align: left
         width: 50
     13:
       text:
-        label: "Batch Prog.: "
+        label: "Final: "
         align: right
         width: 170
         breakline: 0
@@ -133,11 +133,24 @@ report:
           font_weight: B
     14:
       text:
+        field: end_date
+        align: left
+        width: 50
+    15:
+      text:
+        label: "Batch Prog.: "
+        align: right
+        width: 170
+        breakline: 0
+        style:
+          font_weight: B
+    16:
+      text:
         field: prog_batches
         align: left
         width: 13
         breakline: 0
-    15:
+    17:
       text:
         label: "Batch Real.: "
         align: right
@@ -145,12 +158,12 @@ report:
         breakline: 0
         style:
           font_weight: B
-    16:
+    18:
       text:
         field: real_batches
         align: left
         width: 13
-    17:
+    19:
       text:
         label: "Cant. Prod. Term.: "
         align: right
@@ -158,21 +171,21 @@ report:
         breakline: 0
         style:
           font_weight: B
-    18:
+    20:
       text:
         field: product_total
         align: left
         width: 50
-    19:
+    21:
       breakline:
-    20:
+    22:
       text:
         field: title
         align: center
         style:
           font_size: 12
           font_weight: B
-    21:
+    23:
       table:
         field: results
         heading:
@@ -239,15 +252,15 @@ report:
               label: Tolva
               align: right
               width: 15
-    22:
+    24:
       breakline:
-    23:
+    25:
       text:
         label: "Comentario:"
         align: left
         style:
           font_weight: B
-    24:
+    26:
       text:
         field: comment
         align: left
