@@ -1,6 +1,15 @@
 class WarehousesController < ApplicationController
   def index
-    @warehouses = Warehouse.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    respond_to do |format|
+      format.html do
+        @warehouses = Warehouse.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+        render :html => @warehouses
+      end
+      format.json do
+        @warehouses = Warehouse.find :all
+        render :json => @warehouses, :methods => [:content_code, :content_name, :lot_code]
+      end
+    end
   end
 
   def new
