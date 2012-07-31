@@ -1,6 +1,15 @@
 class FactoriesController < ApplicationController
   def index
-    @factories = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => true}
+    respond_to do |format|
+      format.html do
+        @factories = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => true}
+        render :html => @factories
+      end
+      format.json do
+        @factories = Client.find :all, :conditions => {:factory => true}
+        render :json => @factories
+      end
+    end
   end
 
   def edit
