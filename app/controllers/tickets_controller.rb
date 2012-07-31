@@ -1,6 +1,15 @@
 class TicketsController < ApplicationController
   def index
-    @tickets = Ticket.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'number DESC'
+    respond_to do |format|
+      format.html do
+        @tickets = Ticket.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'number DESC'
+        render :html => @tickets
+      end
+      format.json do
+        @tickets = Ticket.find :all, :conditions => {:open => true}
+        render :json => @tickets, :include => {:ticket_type => {}, :driver => {}, :truck => {:include => {:carrier => {}}}}
+      end
+    end
   end
 
   def new
