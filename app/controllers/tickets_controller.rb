@@ -27,24 +27,43 @@ class TicketsController < ApplicationController
 
   def create
     @ticket = Ticket.new params[:ticket]
-    if @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
-      redirect_to :tickets
-    else
-      new
-      render :new
+    @ticket.incoming_date = Time.now
+    respond_to do |format|
+      format.html do
+        if @ticket.save
+          flash[:notice] = 'Ticket guardado con éxito'
+          redirect_to :tickets
+        else
+          new
+          render :new
+        end
+      end
+      format.json do
+        @ticket.save
+        render :json => @ticket.errors
+      end
     end
   end
 
   def update
     @ticket = Ticket.find params[:id]
     @ticket.update_attributes(params[:ticket])
-    if @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
-      redirect_to :tickets
-    else
-      edit
-      render :edit
+    @ticket.outgoing_date = Time.now
+    @ticket.open = false
+    respond_to do |format|
+      format.html do
+        if @ticket.save
+          flash[:notice] = 'Ticket guardado con éxito'
+          redirect_to :tickets
+        else
+          edit
+          render :edit
+        end
+      end
+      format.json do
+        @ticket.save
+        render :json => @ticket.errors
+      end
     end
   end
 
