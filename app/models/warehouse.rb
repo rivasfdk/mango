@@ -33,6 +33,39 @@ class Warehouse < ActiveRecord::Base
     return warehouses
   end
 
+  def content_code
+    if self.warehouse_type_id == 1
+      lot = Lot.find self.content_id
+      code = Ingredient.find(lot.ingredient_id).code
+    elsif self.warehouse_type_id == 2
+      productLot = ProductLot.find self.content_id
+      code = Product.find(productLot.product_id).code
+    end
+    return code
+  end
+  
+  def content_name
+    if self.warehouse_type_id == 1
+      lot = Lot.find self.content_id
+      name = Ingredient.find(lot.ingredient_id).name
+    elsif self.warehouse_type_id == 2
+      productLot = ProductLot.find self.content_id
+      name = Product.find(productLot.product_id).name
+    end
+    return name
+  end
+  
+  def lot_code
+    if self.warehouse_type_id == 1
+      lot = Lot.find self.content_id
+      code = lot.code
+    elsif self.warehouse_type_id == 2
+      productLot = ProductLot.find self.content_id
+      code = productLot.code
+    end
+    return code
+  end
+
   def recalculate
     transaction do
       stock = 0

@@ -6,9 +6,9 @@ class Transaction < ActiveRecord::Base
   belongs_to :ticket
 
   validates_numericality_of :amount
-  validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id
+  validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id, :user_id
 
-  before_save :create_code
+  before_save :create_code, :set_date
   after_save :do_stock_update
   after_destroy :undo_stock_update
 
@@ -58,6 +58,12 @@ class Transaction < ActiveRecord::Base
       else
         self.code = last.code.succ
       end
+    end
+  end
+
+  def set_date
+    unless self.id
+      self.date = Date.today
     end
   end
 
