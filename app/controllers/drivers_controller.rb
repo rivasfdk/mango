@@ -1,6 +1,15 @@
 class DriversController < ApplicationController
   def index
-    @drivers = Driver.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+    respond_to do |format|
+      format.html do
+        @drivers = Driver.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+        render :html => @drivers
+      end
+      format.json do
+        @drivers = Driver.find :all
+        render :json => @drivers
+      end
+    end
   end
 
   def edit
