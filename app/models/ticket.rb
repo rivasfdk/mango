@@ -4,6 +4,8 @@ class Ticket < ActiveRecord::Base
   belongs_to :driver
   belongs_to :ticket_type
   
+  accepts_nested_attributes_for :transactions
+  
   validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight, :provider_weight, :provider_document_number, :incoming_date
   validates_numericality_of :incoming_weight, :provider_weight, :provider_document_number, :greater_than => 0
   validates_uniqueness_of :provider_document_number

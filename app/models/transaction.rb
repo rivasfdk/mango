@@ -6,7 +6,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :ticket
 
   validates_numericality_of :amount
-  validates_presence_of :amount, :date, :transaction_type_id, :warehouse_id, :user_id
+  validates_presence_of :amount, :transaction_type_id, :warehouse_id, :user_id
 
   before_save :create_code, :set_date
   after_save :do_stock_update
