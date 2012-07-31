@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
   before_filter :check_authentication, :check_permissions
+  skip_before_filter :verify_authenticity_token
 
   helper :flash
   helper :modal
