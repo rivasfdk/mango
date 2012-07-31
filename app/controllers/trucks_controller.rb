@@ -1,6 +1,15 @@
 class TrucksController < ApplicationController
   def index
-    @trucks = Truck.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    respond_to do |format|
+      format.html do
+        @trucks = Truck.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+        render :html => @trucks
+      end
+      format.json do
+        @trucks = Truck.find :all
+        render :json => @trucks, :include => :carrier
+      end
+    end
   end
 
   def new
