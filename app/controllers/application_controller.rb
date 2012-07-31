@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   before_filter :check_authentication, :check_permissions
   skip_before_filter :verify_authenticity_token
-
+ 
   helper :flash
   helper :modal
   include ModalHelper::Modal
@@ -26,9 +26,13 @@ class ApplicationController < ActionController::Base
 
   def check_authentication
     unless session[:user]
-      #TODO Check usage
-      session[:request] = action_name
-      redirect_to :controller=>'sessions', :action=>'index'
+      respond_to do |format|
+        format.html do
+          session[:request] = action_name
+          redirect_to :controller=>'sessions', :action=>'index'
+        end
+        format.json { head :unauthorized }
+      end
     end
   end
 

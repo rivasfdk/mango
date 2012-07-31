@@ -21,11 +21,23 @@ class SessionsController < ApplicationController
       session[:permissions] = user.get_dashboard_permissions
       session[:per_page] = 12
       session[:company] = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['application']
-      redirect_to :action => 'show'
+      respond_to do |format|
+        format.html do
+          redirect_to :action => 'show'
+        end
+        format.json do
+          render :json => user, :except => [:password_hash, :password_salt]
+        end
+      end
     else
-      flash[:notice] = 'Credenciales inválidas'
-      flash[:type] = 'error'
-      redirect_to :action => 'index'
+      respond_to do |format|
+        format.html do
+          flash[:notice] = 'Credenciales inválidas'
+          flash[:type] = 'error'
+          redirect_to :action => 'index'
+        end
+        format.json { head :unauthorized }
+      end
     end
   end
 
