@@ -1,6 +1,15 @@
 class ClientsController < ApplicationController
   def index
-    @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}
+    respond_to do |format|
+      format.html do
+        @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}
+        render :html => @clients
+      end
+      format.json do
+        @clients = Client.find :all, :conditions => {:factory => false}
+        render :json => @clients
+      end
+    end
   end
 
   def edit
