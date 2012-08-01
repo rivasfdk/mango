@@ -1,6 +1,7 @@
 class Recipe < ActiveRecord::Base
   has_many :ingredient_recipe, :dependent => :destroy
   has_many :order
+  belongs_to :mixing_time
 
   validates_presence_of :name, :code
   #validates_uniqueness_of :code

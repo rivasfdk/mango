@@ -5,6 +5,8 @@
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
 <label for="version" class="small">Versión:</label>
 <div class="field"><%= f.text_field :version, :size=>'10' %></div>
+<label for="mixing_time_id" class="small">Tiempo de mezcla:</label>
+<div class="field"><%= f.collection_select :mixing_time_id, @mixing_times, :id, :code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %></div>
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_field :comment, :size=>'30' %></div>
 <label for="active" class="small">Activa:</label>

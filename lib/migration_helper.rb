@@ -8,7 +8,7 @@ module MigrationHelper
 
   def drop_foreign_key(org, field)
     constraint_name="fk_#{org}_#{field}"
-    sql="ALTER TABLE #{_org} DROP FOREIGN KEY #{constraint_name}"
+    sql="ALTER TABLE #{org} DROP FOREIGN KEY #{constraint_name}"
     execute sql
   end
 

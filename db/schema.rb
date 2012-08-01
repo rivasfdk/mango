@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120528063627) do
+ActiveRecord::Schema.define(:version => 20120731221527) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -158,6 +158,15 @@ ActiveRecord::Schema.define(:version => 20120528063627) do
     t.datetime "updated_at"
   end
 
+  create_table "mixing_times", :force => true do |t|
+    t.string   "code",        :null => false
+    t.integer  "wet_time",    :null => false
+    t.integer  "dry_time",    :null => false
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "orders", :force => true do |t|
     t.integer  "recipe_id"
     t.integer  "client_id"
@@ -223,14 +232,17 @@ ActiveRecord::Schema.define(:version => 20120528063627) do
 
   create_table "recipes", :force => true do |t|
     t.string   "code"
-    t.string   "name",                         :null => false
+    t.string   "name",                             :null => false
     t.string   "version"
-    t.float    "total",      :default => 0.0
-    t.boolean  "active",     :default => true
+    t.float    "total",          :default => 0.0
+    t.boolean  "active",         :default => true
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "mixing_time_id"
   end
+
+  add_index "recipes", ["mixing_time_id"], :name => "fk_recipes_mixing_time_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name",        :null => false

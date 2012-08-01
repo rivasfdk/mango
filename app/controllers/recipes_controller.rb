@@ -2,6 +2,10 @@ class RecipesController < ApplicationController
   def index
     @recipes = Recipe.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = ?', true]
   end
+  
+  def new
+    @mixing_times = MixingTime.find :all
+  end
 
   def show
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
@@ -9,11 +13,12 @@ class RecipesController < ApplicationController
 
   def edit
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
-    @ingredients = Ingredient.find :all
     if @recipe.is_associated?
       flash[:notice] = "No se puede editar una receta asociada a una orden de producción"
       redirect_to :recipes
     end
+    @ingredients = Ingredient.find :all
+    @mixing_times = MixingTime.find :all
   end
 
   def create

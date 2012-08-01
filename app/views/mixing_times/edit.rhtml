@@ -1,0 +1,4 @@
+<%= form_for :mixing_time, :url=>mixing_time_path(@mixing_time), :html=>{:method=>:put, :id=>'mixing_time_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

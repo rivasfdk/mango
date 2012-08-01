@@ -1,0 +1,36 @@
+<% i = 0 %>
+<% if @mixing_times.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Descripción<span class="order_arrow"></span></th>
+        <th>Tiempo seco<span class="order_arrow"></span></th>
+        <th>Tiempo húmedo<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @mixing_times.each do |mt| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h mt.code %></td>
+        <td><%=h mt.description %></td>
+        <td><%=h mt.wet_time %></td>
+        <td><%=h mt.dry_time %></td>
+        <td>
+          <%= render_action_edit(edit_mixing_time_path(mt)) %>
+          <%= render_action_delete(mixing_time_path(mt), "Desea borrar el tiempo de mezcla '#{mt.code}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @mixing_times %>
+  </div>
+</div>
+<% else %>
+<p>No hay tiempos de mezcla registrados</p>
+<% end %>

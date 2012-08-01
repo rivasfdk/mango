@@ -187,6 +187,14 @@ function submit_ticket_edit_form() {
     $('ticket_edit_form').submit();
 }
 
+function submit_mixing_time_new_form() {
+    $('mixing_time_new_form').submit();
+}
+
+function submit_mixing_time_edit_form() {
+    $('mixing_time_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     hide_all_report_details();
     $(id).toggle();

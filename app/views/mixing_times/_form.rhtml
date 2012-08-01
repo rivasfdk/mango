@@ -1,0 +1,11 @@
+<%= render_error_messages(f.error_messages) %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%= f.text_field :code, :size=>'20' %> <span>*</span></div>
+<label for="description" class="small">Descripción:</label>
+<div class="field"><%= f.text_field :description, :size=>'30' %></div>
+<label for="dry_time" class="small">Tiempo seco:</label>
+<div class="field"><%= f.text_field :dry_time, :size=>'20' %> <span>*</span></div>
+<label for="wet_time" class="small">Tiempo húmedo:</label>
+<div class="field"><%= f.text_field :wet_time, :size=>'20' %> <span>*</span></div>
+<div class="clearfix"></div>
+<br/><span class="required">* Campos obligatorios</span>
