@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120731221527) do
+ActiveRecord::Schema.define(:version => 20120801062706) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -267,7 +267,7 @@ ActiveRecord::Schema.define(:version => 20120731221527) do
     t.float    "incoming_weight"
     t.float    "outgoing_weight"
     t.float    "provider_weight"
-    t.integer  "provider_document_number"
+    t.string   "provider_document_number"
     t.datetime "incoming_date"
     t.datetime "outgoing_date"
     t.string   "comment"
