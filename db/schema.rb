@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120801062706) do
+ActiveRecord::Schema.define(:version => 20120802144721) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -301,18 +301,21 @@ ActiveRecord::Schema.define(:version => 20120801062706) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id",                :null => false
-    t.integer  "warehouse_id",                       :null => false
-    t.integer  "user_id",                            :null => false
-    t.string   "code",                               :null => false
-    t.date     "date",                               :null => false
-    t.float    "amount",                             :null => false
+    t.integer  "transaction_type_id",                    :null => false
+    t.integer  "warehouse_id",                           :null => false
+    t.integer  "user_id",                                :null => false
+    t.string   "code",                                   :null => false
+    t.date     "date",                                   :null => false
+    t.float    "amount",                                 :null => false
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "processed_in_stock",  :default => 0
     t.integer  "client_id"
     t.integer  "ticket_id"
+    t.boolean  "sack",                :default => false
+    t.integer  "sack_weight"
+    t.integer  "sacks"
   end
 
   create_table "trucks", :force => true do |t|

@@ -6,6 +6,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :ticket
 
   validates_numericality_of :amount
+  validates_numericality_of :sacks, :sack_weight, :allow_nil => true, :greater_than => 0
   validates_presence_of :amount, :transaction_type_id, :warehouse_id, :user_id
 
   before_save :create_code, :set_date

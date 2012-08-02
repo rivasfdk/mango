@@ -35,7 +35,7 @@ report:
       text:
         field: client_title
         align: right
-        width: 170
+        width: 150
         breakline: 0
         style:
           font_weight: B
@@ -81,8 +81,18 @@ report:
             name:
               label: Nombre
               align: left
-              width: 115
+              width: 85
           3:
+            sacks:
+              label: Sacos
+              align: center
+              width: 15
+          4:
+            sack_weight:
+              label: Kg/Saco
+              align: center
+              width: 15
+          5:
             amount:
               label: Cantidad
               unit: Kg
@@ -218,19 +228,19 @@ report:
     28:
       text:
         label: "Transp:"
-        width: 12
+        width: 11
         breakline: 0
         style:
           font_weight: B
     29:
       text:
         field: carrier
-        width: 30
+        width: 40
         breakline: 0
     30:
       text:
         label: "__________________________"
-        width: 80
+        width: 70
         breakline: 0
     31:
       text:
@@ -250,7 +260,7 @@ report:
         
     34: 
       text:
-        label: "user_name"
+        field: user_name
         breakline: 0
         width: 160
     35:

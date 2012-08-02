@@ -17,6 +17,7 @@ class EasyModel
 
     data['client_code'] = @ticket.transactions.first.client.code
     data['client_name'] = @ticket.transactions.first.client.name
+    data['user_name'] = @ticket.transactions.first.user.name
     data['driver_name'] = @ticket.driver.name
     data['driver_id'] = @ticket.driver.ci
     data['carrier'] = @ticket.truck.carrier.name
@@ -24,7 +25,7 @@ class EasyModel
     data['provider_document_number'] = @ticket.provider_document_number.to_s
     data['incoming_weight'] = @ticket.incoming_weight.to_s + " Kg"
     data['outgoing_weight'] = @ticket.outgoing_weight.to_s + " Kg"
-    data['provider_weight'] = @ticket.provider_weight.to_s + " Kg"
+    data['provider_weight'] = @ticket.provider_weight.nil? ? "" : @ticket.provider_weight.to_s + " Kg"
     data['gross_weight'] = @ticket.get_gross_weight.to_s + " Kg"
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
     data['net_weight'] = @ticket.get_net_weight.to_s + " Kg"
@@ -32,9 +33,17 @@ class EasyModel
 
     data['transactions'] = []
     @ticket.transactions.each do |t|
+      sacks = "-"
+      sack_weight = "-"
+      if t.sack
+        sacks = t.sacks.to_s
+        sack_weight = t.sack_weight.to_s + "Kg"
+      end
       data['transactions'] << {
         'code' => t.warehouse.get_content.code,
         'name' => t.warehouse.get_content.name,
+        'sacks' => sacks,
+        'sack_weight' => sack_weight,
         'amount' => t.amount
       }
     end
