@@ -1,6 +1,7 @@
 class Client < ActiveRecord::Base
   has_many :order
   has_many :transactions
+  has_many :tickets
   has_many :lots
   has_many :product_lots
 

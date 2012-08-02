@@ -48,6 +48,11 @@ class TicketsController < ApplicationController
   def update
     @ticket = Ticket.find params[:id]
     @ticket.update_attributes(params[:ticket])
+    @ticket.user = session[:user]
+    @ticket.transactions.each do |t|
+      t.user = @ticket.user
+      t.client = @ticket.client
+    end
     @ticket.outgoing_date = Time.now
     @ticket.open = false
     respond_to do |format|

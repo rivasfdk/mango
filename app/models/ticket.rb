@@ -3,6 +3,8 @@ class Ticket < ActiveRecord::Base
   belongs_to :truck
   belongs_to :driver
   belongs_to :ticket_type
+  belongs_to :user
+  belongs_to :client
   
   accepts_nested_attributes_for :transactions
   

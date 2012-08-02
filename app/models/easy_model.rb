@@ -1,7 +1,7 @@
 class EasyModel
 
   def self.ticket(ticket_id)
-    @ticket = Ticket.find ticket_id, :include => {:ticket_type => {}, :driver => {}, :truck => {:carrier => {}}, :transactions => {:warehouse => {}, :client => {}}}
+    @ticket = Ticket.find ticket_id, :include => {:ticket_type => {}, :driver => {}, :truck => {:carrier => {}}, :transactions => {:warehouse => {}}, :user => {}, :client => {}}
     return nil if @ticket.open?
 
     data = self.initialize_data("Ticket #{@ticket.number} - #{@ticket.ticket_type.code}")
@@ -15,9 +15,9 @@ class EasyModel
       data['client_title'] = 'Cliente:'
     end
 
-    data['client_code'] = @ticket.transactions.first.client.code
-    data['client_name'] = @ticket.transactions.first.client.name
-    data['user_name'] = @ticket.transactions.first.user.name
+    data['client_code'] = @ticket.client.code
+    data['client_name'] = @ticket.client.name
+    data['user_name'] = @ticket.user.name
     data['driver_name'] = @ticket.driver.name
     data['driver_id'] = @ticket.driver.ci
     data['carrier'] = @ticket.truck.carrier.name

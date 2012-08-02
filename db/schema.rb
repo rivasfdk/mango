@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120802144721) do
+ActiveRecord::Schema.define(:version => 20120802164811) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -274,10 +274,14 @@ ActiveRecord::Schema.define(:version => 20120802144721) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ticket_type_id"
+    t.integer  "user_id"
+    t.integer  "client_id"
   end
 
+  add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
   add_index "tickets", ["driver_id"], :name => "fk_tickets_driver_id"
   add_index "tickets", ["truck_id"], :name => "fk_tickets_truck_id"
+  add_index "tickets", ["user_id"], :name => "fk_tickets_user_id"
 
   create_table "tickets_numbers", :force => true do |t|
     t.string   "number",     :default => "0000000001"

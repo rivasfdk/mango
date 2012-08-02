@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   has_many :order
   has_many :batch
   has_many :transaction
+  has_many :tickets
   belongs_to :role
 
   validates_uniqueness_of :login
