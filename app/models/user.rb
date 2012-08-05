@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
     return nil
   end
 
+  def allow_manual
+    self.role.permissions.find(:all, :conditions => {:module => "tickets", :action => "manual"}).any?
+  end
+
   def get_dashboard_permissions
     permissions = []
 

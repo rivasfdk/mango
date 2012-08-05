@@ -1,5 +1,6 @@
 class Role < ActiveRecord::Base
   has_many :permission_role
+  has_many :permissions, :through => :permission_role
   has_one :user
 
   validates_presence_of :name, :description

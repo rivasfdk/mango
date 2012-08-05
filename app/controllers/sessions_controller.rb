@@ -26,7 +26,8 @@ class SessionsController < ApplicationController
           redirect_to :action => 'show'
         end
         format.json do
-          render :json => user, :except => [:password_hash, :password_salt]
+          @user = User.find user.id
+          render :json => @user, :methods => [:allow_manual],  :except => [:password_hash, :password_salt]
         end
       end
     else
