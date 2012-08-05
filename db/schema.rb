@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120802164811) do
+ActiveRecord::Schema.define(:version => 20120805210119) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -276,6 +276,8 @@ ActiveRecord::Schema.define(:version => 20120802164811) do
     t.integer  "ticket_type_id"
     t.integer  "user_id"
     t.integer  "client_id"
+    t.boolean  "manual_incoming",          :default => false
+    t.boolean  "manual_outgoing",          :default => false
   end
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
