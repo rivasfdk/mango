@@ -1,6 +1,15 @@
 class CarriersController < ApplicationController
   def index
-    @carriers = Carrier.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+    respond_to do |format|
+      format.html do
+        @carriers = Carrier.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+        render :html => @carriers
+      end
+      format.json do
+        @carriers = Carrier.find :all
+        render :json => @carriers
+      end
+    end
   end
 
   def edit
@@ -9,11 +18,19 @@ class CarriersController < ApplicationController
 
   def create
     @carrier = Carrier.new params[:carrier]
-    if @carrier.save
-      flash[:notice] = 'Empresa de transporte guardada con éxito'
-      redirect_to :carriers
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @carrier.save
+          flash[:notice] = 'Empresa de transporte guardada con éxito'
+          redirect_to :carriers
+        else
+          render :new
+        end
+      end
+      format.json do |format|
+        @carrier.save
+        render :json => @carrier.errors
+      end
     end
   end
 
