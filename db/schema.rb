@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120805210119) do
+ActiveRecord::Schema.define(:version => 20120807201526) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(:version => 20120805210119) do
     t.integer  "client_id"
     t.integer  "ticket_id"
     t.boolean  "sack",                :default => false
-    t.integer  "sack_weight"
+    t.float    "sack_weight"
     t.integer  "sacks"
   end
 
