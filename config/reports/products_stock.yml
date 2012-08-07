@@ -100,18 +100,18 @@ report:
            code:
               label: Codigo
               align: left
-              width: 20
+              width: 15
           2:
             product:
               label: Producto
               align: left
-              width: 45
+              width: 70
           3:
             income_kg:
               label: Entradas
               align: right
               unit: Kg
-              width: 40
+              width: 35
               totalize: true
               precision: 2
           4:
@@ -119,7 +119,7 @@ report:
               label: Salidas
               align: right
               unit: Kg
-              width: 40
+              width: 35
               totalize: true
               precision: 2
           5:
@@ -127,7 +127,7 @@ report:
               label: Disponible
               align: right
               unit: Kg
-              width: 40
+              width: 35
               totalize: true
               precision: 2
     8:

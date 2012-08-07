@@ -126,7 +126,7 @@ report:
       text:
         field: provider_document_number
         width: 20
-        breakline: 0    
+        breakline: 0
     8:
       text:
         label: "Bruto:"
@@ -139,89 +139,91 @@ report:
         field: gross_weight
         width: 25
     10:
+      breakline:
+    11:
       text:
         field: incoming_date
         width: 40
         breakline: 0
-    11:
+    12:
       text:
         field: outgoing_date
         width: 40
         breakline: 0
-    12:
+    13:
       text:
         label: "Placa: "
         width: 18
         breakline: 0
         style:
           font_weight: B
-    13:
+    14:
       text:
         field: license_plate
         width: 20
         breakline: 0 
-    14:
+    15:
       text:
         label: "Tara:"
         width: 25
         breakline: 0
         style:
           font_weight: B
-    15:
+    16:
       text:
         field: tare_weight
         width: 25
-    16:
+    17:
       text:
         field: incoming_weight
         width: 40
         breakline: 0
         
-    17:
+    18:
       text:
         field: outgoing_weight
         width: 40
         breakline: 0
-    18:
+    19:
       text:
         label: "Peso prov.:"
         width: 18
         breakline: 0
         style:
           font_weight: B
-    19:
+    20:
       text:
         field: provider_weight
         width: 20
         breakline: 0
-    20:
+    21:
       text:
         label: "Neto:"
         width: 25
         breakline: 0
         style:
           font_weight: B
-    21:
+    22:
       text:
         field: net_weight
         width: 25
-    22:
-      breakline:
     23:
       breakline:
     24:
+      breakline:
+    25:
       text:
         label: "Comentario:"
         width: 25
         breakline: 0
         style:
           font_weight: B
-    25:
+    26:
       text:
         field: comment
         align: left
         width: 30
-    26:
+    27:
       breakline:
     27:
       breakline:
