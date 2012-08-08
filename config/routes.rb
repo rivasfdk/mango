@@ -18,6 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'reports/order_details' => "reports#order_details", :via => :get, :as => "order_details_report"
   match 'reports/batch_details' => "reports#batch_details", :via => :get, :as => "batch_details_report"
   match 'reports/consumption_per_recipe' => "reports#consumption_per_recipe", :via => :get, :as => "consumption_per_recipe_report"
+  match 'reports/consumption_per_selected_ingredients' => "reports#consumption_per_selected_ingredients", :via => :get, :as => "consumption_per_selected_ingredients_report"
   match 'reports/consumption_per_ingredients' => "reports#consumption_per_ingredients", :via => :get, :as => "consumption_per_ingredients_report"
   match 'reports/consumption_per_client' => "reports#consumption_per_client", :via => :get, :as => "consumption_per_client_report"
   match 'reports/stock_adjustments' => "reports#stock_adjustments", :via => :get, :as => "stock_adjustments_report"
