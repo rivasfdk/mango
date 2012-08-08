@@ -826,7 +826,7 @@ module MenuHelper
     menu = content_tag(:p, 'Editar tiempo de mezcla')
     menu += content_tag(:ul,
       render_back(mixing_times_path) +
-      render_function('Actualizar', 'Actualizar tiempo de mezcla', "submit_mixing_times_edit_form()", 'button-execute.png')
+      render_function('Actualizar', 'Actualizar tiempo de mezcla', "submit_mixing_time_edit_form()", 'button-execute.png')
     )
     return menu
   end

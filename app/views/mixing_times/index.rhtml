@@ -16,8 +16,8 @@
       <tr class="<%= class_row %>">
         <td><%=h mt.code %></td>
         <td><%=h mt.description %></td>
-        <td><%=h mt.wet_time %></td>
         <td><%=h mt.dry_time %></td>
+        <td><%=h mt.wet_time %></td>
         <td>
           <%= render_action_edit(edit_mixing_time_path(mt)) %>
           <%= render_action_delete(mixing_time_path(mt), "Desea borrar el tiempo de mezcla '#{mt.code}'?") %>
