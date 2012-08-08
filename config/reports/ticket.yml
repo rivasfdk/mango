@@ -213,20 +213,19 @@ report:
       breakline:
     25:
       text:
-        label: "Comentario:"
-        width: 25
-        breakline: 0
-        style:
-          font_weight: B
+        field: comment1
+        align: left
+        width: 30
     26:
       text:
-        field: comment
+        field: comment2
         align: left
         width: 30
     27:
-      breakline:
-    27:
-      breakline:
+      text:
+        field: comment3
+        align: left
+        width: 30
     28:
       text:
         label: "Transp:"

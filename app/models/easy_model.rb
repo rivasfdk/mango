@@ -29,7 +29,21 @@ class EasyModel
     data['gross_weight'] = @ticket.get_gross_weight.to_s + " Kg"
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
     data['net_weight'] = @ticket.get_net_weight.to_s + " Kg"
-    data['comment'] = @ticket.comment.nil? ? "" : @ticket.comment
+
+    data['comment1'] = ""
+    data['comment2'] = ""
+    data['comment3'] = ""
+    
+    comments = @ticket.comment.split(/\n/)
+    if comments[0]
+      data['comment1'] = comments[0]
+    end
+    if comments[1]
+      data['comment2'] = comments[1]
+    end
+    if comments[2]
+      data['comment3'] = comments[2]
+    end
 
     data['transactions'] = []
     @ticket.transactions.each do |t|
