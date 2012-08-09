@@ -165,6 +165,10 @@ class Recipe < ActiveRecord::Base
     end
     return total
   end
+  
+  def to_collection_select
+    return "#{self.code} - #{self.name}"
+  end
 
   private
 
