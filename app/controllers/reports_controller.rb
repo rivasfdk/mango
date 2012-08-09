@@ -220,5 +220,44 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "produccion_por_cliente.pdf", :type => "application/pdf"
     end
   end
+  
+  def tickets_transactions
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    data = EasyModel.tickets_transactions(start_date, end_date, ticket_type_id, warehouse_type_id)
+    
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients.yml' : 'tickets_transactions_products.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima.pdf' : 'movimientos_producto_terminado.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+  end
+
+  def tickets_transactions_per_clients
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    clients_codes = params[:report][:clients_codes].delete(" ").split(",")
+    data = EasyModel.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, clients_codes)
+    
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients.yml' : 'tickets_transactions_products.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima_por_proveedor.pdf' : 'movimientos_producto_terminado_por_cliente.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+  end
 
 end

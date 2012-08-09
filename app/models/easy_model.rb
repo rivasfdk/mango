@@ -65,6 +65,64 @@ class EasyModel
     return data
   end
 
+  def self.tickets_transactions(start_date, end_date, ticket_type_id, warehouse_type_id)
+    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+
+    return nil if @tickets.length.zero?
+
+    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
+    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+
+    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['table1'] = []
+
+    @tickets.each do |ticket|
+      ticket.transactions.each do |transaction|
+        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+          next
+        end
+        data['table1'] << {
+          'number' => ticket.number,
+          'client' => ticket.client.name,
+          'content_name' => transaction.warehouse.content_name,
+          'amount' => transaction.amount,
+        }
+      end
+    end
+    return data
+  end
+
+  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, clients_codes)
+    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+
+    return nil if @tickets.length.zero?
+
+    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
+    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+
+    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['table1'] = []
+
+    @tickets.each do |ticket|
+      ticket.transactions.each do |transaction|
+        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+          next
+        end
+        data['table1'] << {
+          'number' => ticket.number,
+          'client' => ticket.client.name,
+          'content_name' => transaction.warehouse.content_name,
+          'amount' => transaction.amount,
+        }
+      end
+    end
+    return data
+  end
+
   def self.recipes
     @recipes = Recipe.find :all, :include => {:ingredient_recipe => :ingredient}
     return nil if @recipes.length.zero?
