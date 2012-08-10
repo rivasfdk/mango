@@ -151,6 +151,20 @@ class ReportsController < ApplicationController
     end
   end
 
+  def simple_stock
+    warehouse_type_id = params[:report][:warehouse_type_id]
+    data = EasyModel.simple_stock(warehouse_type_id)
+    if data.nil?
+      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      filename = (warehouse_type_id == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
+      report = EasyReport::Report.new data, 'simple_stock.yml'
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end   
+  end
+
   def ingredients_stock
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')

@@ -716,6 +716,23 @@ class EasyModel
     return data
   end
 
+  def self.simple_stock(warehouse_type_id)
+    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima' : 'Inventario de Producto Terminado'
+    data = self.initialize_data(title)
+    data['date'] = self.print_range_date(Date.today)
+    data['results'] = []
+
+    warehouses = Warehouse.where :warehouse_type_id => warehouse_type_id
+    warehouses.each do |w|
+      data['results'] << {
+        'code' => w.content_code,
+        'name' => w.content_name,
+        'stock' => w.stock
+      }
+    end
+    return data
+  end
+
   def self.ingredients_stock(start_date, end_date)
     data = self.initialize_data('Inventario de Materia Prima')
     data['since'] = self.print_range_date(start_date)

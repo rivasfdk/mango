@@ -113,6 +113,18 @@
   </div>
 
   <div class="report-content">
+    <h2 onclick="toggle_report_details('simple_stock')">Inventario al día</h2>
+    <div id="simple_stock" class="report-details">
+      <%= form_for :report, :url=>simple_stock_report_path do |f| %>
+        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
+        <br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="report-content">
     <h2 onclick="toggle_report_details('ingredients_stock')">Inventario de Materia Prima</h2>
     <div id="ingredients_stock" class="report-details">
       <%= form_for :report, :url=>ingredients_stock_report_path do |f| %>

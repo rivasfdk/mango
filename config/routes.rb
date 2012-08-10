@@ -23,6 +23,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'reports/consumption_per_client' => "reports#consumption_per_client", :via => :get, :as => "consumption_per_client_report"
   match 'reports/stock_adjustments' => "reports#stock_adjustments", :via => :get, :as => "stock_adjustments_report"
   match 'reports/lots_incomes' => "reports#lots_incomes", :via => :get, :as => "lots_incomes_report"
+  match 'reports/simple_stock' => "reports#simple_stock", :via => :get, :as => "simple_stock_report"
   match 'reports/ingredients_stock' => "reports#ingredients_stock", :via => :get, :as => "ingredients_stock_report"
   match 'reports/products_stock' => "reports#products_stock", :via => :get, :as => "products_stock_report"
   match 'reports/product_lots_dispatches' => "reports#product_lots_dispatches", :via => :get, :as => "product_lots_dispatches_report"
