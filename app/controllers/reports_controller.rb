@@ -260,4 +260,45 @@ class ReportsController < ApplicationController
     end
   end
 
+  def tickets_transactions_per_contents
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    contents_codes = params[:report][:contents_codes].delete(" ").split(",")
+    data = EasyModel.tickets_transactions_per_contents(start_date, end_date, ticket_type_id, warehouse_type_id, contents_codes)
+    
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients.yml' : 'tickets_transactions_products.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima_por_mp.pdf' : 'movimientos_producto_terminado_por_pt.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+  end
+
+  def tickets_transactions_per_contents_per_clients
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    contents_codes = params[:report][:contents_codes].delete(" ").split(",")
+    clients_codes = params[:report][:clients_codes].delete(" ").split(",")
+    data = EasyModel.tickets_transactions_per_contents_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, contents_codes, clients_codes)
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients.yml' : 'tickets_transactions_products.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima_por_mp_por_proveedor.pdf' : 'movimientos_producto_terminado_por_pt_por_cliente.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+  end
+
 end

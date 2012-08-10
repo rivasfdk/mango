@@ -205,5 +205,43 @@
       <% end %>
     </div>
   </div>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('tickets_transactions_per_contents')">Movimientos de Romana por Mat. Prima / Prod. Term.</h2>
+    <div id="tickets_transactions_per_contents" class="report-details">
+      <%= form_for :report, :url=>tickets_transactions_per_contents_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
+        <%= f.radio_button :ticket_type_id, 2%> Despachos
+        <br/><br/>
+        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
+        <br/><br/>
+        <%= f.label :contents_codes, "Códigos Mat. Prima / Prod. Term.: " %> <%= f.text_field :contents_codes, :size=>60 %><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('tickets_transactions_per_contents_per_clients')">Movimientos de Romana por Mat. Prima / Prod. Term. y por Cliente(s) / Proveedor(es)</h2>
+    <div id="tickets_transactions_per_contents_per_clients" class="report-details">
+      <%= form_for :report, :url=>tickets_transactions_per_contents_per_clients_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
+        <%= f.radio_button :ticket_type_id, 2%> Despachos
+        <br/><br/>
+        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
+        <br/><br/>
+        <%= f.label :contents_codes, "Códigos Mat. Prima / Prod. Term.: " %> <%= f.text_field :contents_codes, :size=>60 %>
+        <br/><br/><br/><br/>
+        <%= f.label :clients_codes, "Códigos Cliente(s) / Proveedor(es): " %> <%= f.text_field :clients_codes, :size=>60 %>
+        <br/><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
 </div>
 <div class="clearfix"></div>
