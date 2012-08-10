@@ -6,7 +6,7 @@ class Order < ActiveRecord::Base
   belongs_to :product_lot
   has_many :batch
 
-  validates_presence_of :recipe_id, :user_id
+  validates_presence_of :recipe_id, :user_id, :product_lot_id
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
   validates_associated :recipe, :client, :user
 
