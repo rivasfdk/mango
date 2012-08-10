@@ -23,6 +23,7 @@ class RecipesController < ApplicationController
 
   def create
     @recipe = Recipe.new params[:recipe]
+    @mixing_times = MixingTime.find :all
     if @recipe.save
       flash[:notice] = 'Receta guardada con éxito'
       redirect_to :recipes

@@ -3,7 +3,7 @@ class Recipe < ActiveRecord::Base
   has_many :order
   belongs_to :mixing_time
 
-  validates_presence_of :name, :code
+  validates_presence_of :name, :code, :mixing_time_id
   #validates_uniqueness_of :code
   validates_length_of :name, :within => 3..40
   #validates_associated :ingredient_recipe
