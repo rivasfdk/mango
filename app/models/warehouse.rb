@@ -1,6 +1,6 @@
 class Warehouse < ActiveRecord::Base
   belongs_to :warehouse_type
-  has_many :transaction
+  has_many :transaction, :dependent => :delete_all
 
   validates_uniqueness_of :code
   validates_presence_of :code, :location, :content_id
