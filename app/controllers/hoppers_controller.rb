@@ -4,11 +4,11 @@ class HoppersController < ApplicationController
   end
 
   def new
-    @lots = Lot.find_all
+    @lots = Lot.where :active => true, :in_use => true
   end
 
   def edit
-    @lots = Lot.find_all
+    @lots = Lot.where :active => true, :in_use => true
     @hopper = Hopper.find params[:id]
   end
 

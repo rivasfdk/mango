@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120807201526) do
+ActiveRecord::Schema.define(:version => 20120811070006) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20120807201526) do
     t.datetime "updated_at"
     t.integer  "client_id"
     t.boolean  "active",        :default => true
+    t.boolean  "in_use",        :default => true
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
