@@ -30,9 +30,19 @@ class EasyModel
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
     data['net_weight'] = @ticket.get_net_weight.to_s + " Kg"
 
-    data['comment1'] = ""
-    data['comment2'] = ""
-    data['comment3'] = ""
+    data['comment1'] = " "
+    data['comment2'] = " "
+    data['comment3'] = " "
+    data['comment4'] = " "
+    data['comment5'] = " "
+    
+    if @ticket.ticket_type_id == 1
+      data['dif_label'] = "Dif.:"
+      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).to_s + " Kg"
+    else
+      data['dif_label'] = ""
+      data['dif'] = ""
+    end
     
     comments = @ticket.comment.split(/\n/)
     if comments[0]
@@ -43,6 +53,12 @@ class EasyModel
     end
     if comments[2]
       data['comment3'] = comments[2]
+    end
+    if comments[3]
+      data['comment4'] = comments[2]
+    end
+    if comments[4]
+      data['comment5'] = comments[2]
     end
 
     data['transactions'] = []

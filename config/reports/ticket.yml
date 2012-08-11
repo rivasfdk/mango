@@ -208,63 +208,87 @@ report:
         field: net_weight
         width: 25
     23:
-      breakline:
+      text:
+        field: dif_label
+        align: right
+        width: 95
+        breakline: 0
+        style:
+          font_weight: B
     24:
-      breakline:
+      text:
+        field: dif
+        align: right
+        width: 20
+        
     25:
+      breakline:
+    26:
+      breakline:
+    27:
       text:
         field: comment1
         align: left
         width: 30
-    26:
+    28:
       text:
         field: comment2
         align: left
         width: 30
-    27:
+    29:
       text:
         field: comment3
         align: left
         width: 30
-    28:
+    30:
+      text:
+        field: comment4
+        align: left
+        width: 30
+    31:
+      text:
+        field: comment5
+        align: left
+        width: 30
+    32:
       text:
         label: "Transp:"
         width: 11
         breakline: 0
         style:
           font_weight: B
-    29:
+    33:
       text:
         field: carrier
-        width: 40
+        width: 45
         breakline: 0
-    30:
+    34:
       text:
         label: "__________________________"
         width: 70
         breakline: 0
-    31:
+    35:
       text:
         label: "__________________________"
         width: 70
-    32:
+    36:
       text:
         label: "Despachador"
         width: 160
         breakline: 0
         style:
           font_weight: B
-    33:
+    37:
       text:
         field: driver_name
         width: -10
         
-    34: 
+    38: 
       text:
         field: user_name
         breakline: 0
         width: 160
-    35:
+    39:
       text:
         field: driver_id
         width: -10
