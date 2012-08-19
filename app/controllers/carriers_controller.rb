@@ -2,11 +2,11 @@ class CarriersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @carriers = Carrier.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+        @carriers = Carrier.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC', :conditions => {:frequent => true}
         render :html => @carriers
       end
       format.json do
-        @carriers = Carrier.find :all
+        @carriers = Carrier.find :all, :conditions => {:frequent => true}
         render :json => @carriers
       end
     end
@@ -28,8 +28,11 @@ class CarriersController < ApplicationController
         end
       end
       format.json do |format|
-        @carrier.save
-        render :json => @carrier.errors
+        if @carrier.save
+          render :json => @carrier
+        else
+          render :json => @carrier.errors, :status => :unprocessable_entity
+        end
       end
     end
   end

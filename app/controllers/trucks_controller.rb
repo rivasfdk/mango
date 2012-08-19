@@ -2,11 +2,11 @@ class TrucksController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @trucks = Truck.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+        @trucks = Truck.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}
         render :html => @trucks
       end
       format.json do
-        @trucks = Truck.find :all
+        @trucks = Truck.find :all, :conditions => {:frequent => true}
         render :json => @trucks, :include => :carrier
       end
     end
@@ -23,11 +23,22 @@ class TrucksController < ApplicationController
 
   def create
     @truck = Truck.new params[:truck]
-    if @truck.save
-      flash[:notice] = 'Camión guardado con éxito'
-      redirect_to :trucks
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @truck.save
+          flash[:notice] = 'Camión guardado con éxito'
+          redirect_to :trucks
+        else
+          render :new
+        end
+      end
+      format.json do
+        if @truck.save
+          render :json => @truck, :include => :carrier
+        else
+          render :json => @truck.errors, :status => :unprocessable_entity
+        end
+      end
     end
   end
 

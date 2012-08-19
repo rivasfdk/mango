@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120811070006) do
+ActiveRecord::Schema.define(:version => 20120819202627) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -45,15 +45,16 @@ ActiveRecord::Schema.define(:version => 20120811070006) do
   add_index "batches", ["user_id"], :name => "fk_batches_user_id"
 
   create_table "carriers", :force => true do |t|
-    t.string   "code",       :null => false
-    t.string   "rif",        :null => false
-    t.string   "name",       :null => false
+    t.string   "code",                         :null => false
+    t.string   "rif"
+    t.string   "name",                         :null => false
     t.string   "email"
     t.string   "address"
     t.string   "tel1"
     t.string   "tel2"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "frequent",   :default => true
   end
 
   create_table "clients", :force => true do |t|
@@ -78,13 +79,14 @@ ActiveRecord::Schema.define(:version => 20120811070006) do
   end
 
   create_table "drivers", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "ci",         :null => false
+    t.string   "name",                         :null => false
+    t.string   "ci",                           :null => false
     t.string   "address"
     t.string   "tel1"
     t.string   "tel2"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "frequent",   :default => true
   end
 
   create_table "hoppers", :force => true do |t|
@@ -327,9 +329,10 @@ ActiveRecord::Schema.define(:version => 20120811070006) do
 
   create_table "trucks", :force => true do |t|
     t.integer  "carrier_id"
-    t.string   "license_plate", :null => false
+    t.string   "license_plate",                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "frequent",      :default => true
   end
 
   add_index "trucks", ["carrier_id"], :name => "fk_trucks_carrier_id"

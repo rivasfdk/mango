@@ -2,11 +2,11 @@ class DriversController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @drivers = Driver.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+        @drivers = Driver.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}, :order => 'name ASC'
         render :html => @drivers
       end
       format.json do
-        @drivers = Driver.find :all
+        @drivers = Driver.find :all, :conditions => {:frequent => true}
         render :json => @drivers
       end
     end
@@ -18,11 +18,22 @@ class DriversController < ApplicationController
 
   def create
     @driver = Driver.new params[:driver]
-    if @driver.save
-      flash[:notice] = 'Chofer guardado con éxito'
-      redirect_to :drivers
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @driver.save
+          flash[:notice] = 'Chofer guardado con éxito'
+          redirect_to :drivers
+        else
+          render :new
+        end
+      end
+      format.json do
+        if @driver.save
+          render :json => @driver
+        else
+          render :json => @driver.errors, :status => :unprocessable_entity
+        end
+      end
     end
   end
 
