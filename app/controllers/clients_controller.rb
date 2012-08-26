@@ -2,7 +2,7 @@ class ClientsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}
+        @clients = Client.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}, :order => ['code ASC']
         render :html => @clients
       end
       format.json do
