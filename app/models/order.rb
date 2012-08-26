@@ -18,12 +18,21 @@ class Order < ActiveRecord::Base
     return true
   end
 
-  def calculate_start_date
+  def calculate_short_start_date
     start_date = Batch.where(:order_id=>self.id).minimum('created_at')
     unless start_date.nil?
       return start_date.strftime("%d/%m/%Y")
     else
       return "??/??/????"
+    end
+  end
+
+  def calculate_start_date
+    start_date = Batch.where(:order_id=>self.id).minimum('created_at')
+    unless start_date.nil?
+      return start_date.strftime("%d/%m/%Y %H:%M:%S")
+    else
+      return "??/??/???? ??:??:??"
     end
   end
 
@@ -74,9 +83,5 @@ class Order < ActiveRecord::Base
       order.code = self.code
       order.save
     end
-  end
-  
-  def self.search()
-    
   end
 end

@@ -246,7 +246,7 @@ class EasyModel
       var_perc = (var_kg * 100.0) / stotal
       data['results'] << {
         'order' => o.code,
-        'date' => o.calculate_start_date,
+        'date' => o.calculate_short_start_date,
         'recipe_code' => o.recipe.code,
         'recipe_name' => o.recipe.name,
         'client_code' => o.client.code,
@@ -290,7 +290,7 @@ class EasyModel
       average_tons_per_hour = rtotal / (order_duration / 60) / 1000 rescue 0
       data['results'] << {
         'order' => o.code,
-        'date' => o.calculate_start_date,
+        'date' => o.calculate_short_start_date,
         'recipe_code' => o.recipe.code,
         'recipe_name' => o.recipe.name,
         'average_tons_per_hour' => average_tons_per_hour.to_s,
