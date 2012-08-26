@@ -1,4 +1,11 @@
 <% i = 0 %>
+<div id="searchform">
+<%= form_tag batches_path, :method => 'get' do %>
+  <label for="order_code">Código de orden:</label>
+  <%= text_field_tag :order_code, params[:order_code]%>
+  <%= submit_tag "Filtrar", :name => nil %>
+<% end %>
+</div>
 <% if @batches.length > 0 %>
 <table id="tabledata">
     <thead>
@@ -32,7 +39,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @batches %>
+    <%= will_paginate @batches %>
   </div>
 </div>
 <% else %>

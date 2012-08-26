@@ -152,7 +152,7 @@ class ReportsController < ApplicationController
   end
 
   def simple_stock
-    warehouse_type_id = params[:report][:warehouse_type_id]
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
     data = EasyModel.simple_stock(warehouse_type_id)
     if data.nil?
       flash[:notice] = 'No hay registros para general el reporte'

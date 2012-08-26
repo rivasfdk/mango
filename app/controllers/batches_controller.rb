@@ -1,6 +1,6 @@
 class BatchesController < ApplicationController
   def index
-    @batches = Batch.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @batches = Batch.search(params[:order_code], params[:page], session[:per_page])
   end
 
   def new

@@ -110,7 +110,7 @@ report:
             recipe_code:
               label: Receta
               align: left
-              width: 20
+              width: 25
           4:
             recipe_name:
               label: Desc. Receta
@@ -120,23 +120,23 @@ report:
             client_code:
               label: Cliente
               align: left
-              width: 25
+              width: 20
           6:
             client_name:
               label: Desc. Cliente
               align: left
-              width: 35
+              width: 40
           7:
             real_batches:
               label: Baches
               align: right
-              width: 13
+              width: 10
               totalize: true
           8:
             total_standard:
               label: Total Est.(Kg)
               align: right
-              width: 28
+              width: 25
               totalize: true
               precision: 2
           9:

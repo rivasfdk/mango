@@ -173,6 +173,10 @@ h5 {
     border-radius: 5px;
 }
 
+#searchform {
+    margin-bottom: 20px;
+}
+
 #footer {
     margin-top: 5px;
     margin-bottom: 20px;
