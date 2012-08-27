@@ -101,6 +101,8 @@ module MenuHelper
       menu = menu_for_warehouses_edit
     elsif c == 'warehouses' and a == 'recalculate'
       menu = menu_for_warehouses_recalculate
+    elsif c == 'warehouses' and a == 'adjust'
+      menu = menu_for_warehouses_adjust
     elsif c == 'transactions' and a == 'index'
       menu = menu_for_transactions_index
     elsif c == 'transactions' and (a == 'new' or a == 'create')
@@ -599,13 +601,22 @@ module MenuHelper
     menu = content_tag(:p, 'Editar almacén')
     menu += content_tag(:ul,
       render_back(warehouses_path) +
-      render_function('Actualizar', 'Actualizar turno', "submit_warehouse_edit_form()", 'button-execute.png')
+      render_function('Actualizar', 'Actualizar almacén', "submit_warehouse_edit_form()", 'button-execute.png')
     )
     return menu
   end
 
   def menu_for_warehouses_recalculate
     return content_tag(:p, 'Recalcular saldos')
+  end
+
+  def menu_for_warehouses_adjust
+    menu = content_tag(:p, 'Realizar ajuste de inventario')
+    menu += content_tag(:ul,
+      render_back(warehouses_path) +
+      render_function('Ajustar', 'Ajustar almacén', "submit_warehouse_adjust_form()", 'button-execute.png')
+    )
+    return menu
   end
 
   def menu_for_transactions_index

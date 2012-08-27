@@ -107,6 +107,20 @@ class Warehouse < ActiveRecord::Base
     end
   end
 
+  def adjust(amount, user_id)
+    diff = self.stock - amount
+    transaction = Transaction.new
+    transaction.warehouse = self
+    transaction.amount = diff.abs
+    transaction.user_id = user_id
+    if diff > 0
+      transaction.transaction_type_id = 3 #SA-AJU
+    else
+      transaction.transaction_type_id = 2 #EN-AJU
+    end
+    transaction.save
+  end
+
   private
 
   def select_content

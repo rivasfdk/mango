@@ -22,6 +22,7 @@
         <td class="center"><%=h w.stock %></td>
         <td>
           <%= render_action_edit(edit_warehouse_path(w)) %>
+          <%= render_action_adjust(adjust_warehouse_path(w)) %><br />
           <%= render_action_delete(warehouse_path(w), "Desea borrar el almacen '#{w.code}'?") %>
         </td>
       </tr>

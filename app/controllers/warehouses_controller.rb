@@ -80,5 +80,22 @@ class WarehousesController < ApplicationController
     end
     redirect_to :warehouses
   end
-
+  
+  def adjust
+    @warehouse = Warehouse.get params[:id]
+  end
+  
+  def do_adjust
+    amount = Float(params[:amount]) rescue -1
+    if amount >= 0
+      @warehouse = Warehouse.get params[:id]
+      @warehouse.adjust(amount, session[:user].id)
+      flash[:notice] = "Almacen ajustado exitosamente"
+      redirect_to :warehouses
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "El monto de ajuste es inválido"
+      redirect_to :warehouses
+    end    
+  end
 end
