@@ -48,4 +48,15 @@ class Ticket < ActiveRecord::Base
       return outgoing_weight.nil? ? -1 : outgoing_weight - incoming_weight
     end
   end
+  
+  def self.search(number, page, per_page)
+    if number and number != ""
+      paginate :all, :page => page,
+               :per_page => per_page,
+               :conditions => ['number = ?', number],
+               :order => 'number DESC'
+    else
+      paginate :all, :page => page, :per_page => per_page, :order => 'number DESC'
+    end
+  end
 end

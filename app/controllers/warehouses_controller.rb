@@ -84,7 +84,7 @@ class WarehousesController < ApplicationController
   def adjust
     @warehouse = Warehouse.get params[:id]
   end
-  
+
   def do_adjust
     amount = Float(params[:amount]) rescue -1
     if amount >= 0
@@ -96,6 +96,6 @@ class WarehousesController < ApplicationController
       flash[:type] = 'error'
       flash[:notice] = "El monto de ajuste es inválido"
       redirect_to :warehouses
-    end    
+    end
   end
 end

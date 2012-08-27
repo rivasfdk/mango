@@ -2,7 +2,7 @@ class TicketsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @tickets = Ticket.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'number DESC'
+        @tickets = Ticket.search(params[:number], params[:page], session[:per_page])
         render :html => @tickets
       end
       format.json do
