@@ -489,50 +489,51 @@ class EasyModel
     data['results'] = []
 
     results = {}
-    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:lot => {:ingredient=>{}}}, :batch => {:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
-
-    batch_hopper_lots.each do |bhl|
-      unless ingredients_codes.include? bhl.hopper_lot.lot.ingredient.code 
-        next
-      end
-      real_kg = bhl.amount.to_f
-      std_kg = -1
-      bhl.batch.order.recipe.ingredient_recipe.each do |ir|
-        if ir.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-          std_kg = ir.amount.to_f
-          break
+    batches = Batch.find :all, :include => {:batch_hopper_lot => {:hopper_lot => {:lot => {:ingredient => {}}}}, :order => {:recipe => {:ingredient_recipe => {}}, :medicament_recipe => {:ingredient_medicament_recipe => {}}}}, :conditions => ['start_date >= ? AND end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)]
+    
+    batches.each do |batch|
+      batch.batch_hopper_lot.each do |bhl|
+        unless ingredients_codes.include? bhl.hopper_lot.lot.ingredient.code 
+          next
         end
-      end
-      unless bhl.batch.order.medicament_recipe.nil?
-        bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-          if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-            std_kg = imr.amount.to_f
+        real_kg = bhl.amount.to_f
+        std_kg = -1
+        batch.order.recipe.ingredient_recipe.each do |ir|
+          if ir.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+            std_kg = ir.amount.to_f
             break
           end
         end
-      end
+        unless batch.order.medicament_recipe.nil?
+          batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+            if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+              std_kg = imr.amount.to_f
+              break
+            end
+          end
+        end
 
-      key = bhl.hopper_lot.lot.code
-      if results.has_key?(key)
-        results[key]['real_kg'] += real_kg
-        results[key]['std_kg'] += std_kg
-        results[key]['var_kg'] = results[key]['real_kg'] - results[key]['std_kg']
-        results[key]['var_perc'] = results[key]['var_kg'] * 100 / results[key]['std_kg']
-      else
-        var_kg = real_kg - std_kg
-        var_perc = var_kg * 100 / std_kg
-        results[key] = {
-          'lot' => key,
-          'ingredient_code' => bhl.hopper_lot.lot.ingredient.code,
-          'ingredient_name' => bhl.hopper_lot.lot.ingredient.name,
-          'real_kg' => real_kg,
-          'std_kg' => std_kg,
-          'var_kg' => var_kg,
-          'var_perc' => var_perc
-        }
+        key = bhl.hopper_lot.lot.code
+        if results.has_key?(key)
+          results[key]['real_kg'] += real_kg
+          results[key]['std_kg'] += std_kg
+          results[key]['var_kg'] = results[key]['real_kg'] - results[key]['std_kg']
+          results[key]['var_perc'] = results[key]['var_kg'] * 100 / results[key]['std_kg']
+        else
+          var_kg = real_kg - std_kg
+          var_perc = var_kg * 100 / std_kg
+          results[key] = {
+            'lot' => key,
+            'ingredient_code' => bhl.hopper_lot.lot.ingredient.code,
+            'ingredient_name' => bhl.hopper_lot.lot.ingredient.name,
+            'real_kg' => real_kg,
+            'std_kg' => std_kg,
+            'var_kg' => var_kg,
+            'var_perc' => var_perc
+          }
+        end
       end
     end
-
     results.each do |key, item|
       data['results'] << item
     end
@@ -547,47 +548,48 @@ class EasyModel
     data['results'] = []
 
     results = {}
-    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:lot => {:ingredient=>{}}}, :batch => {:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date DESC']
-
-    batch_hopper_lots.each do |bhl|
-      real_kg = bhl.amount.to_f
-      std_kg = -1
-      bhl.batch.order.recipe.ingredient_recipe.each do |ir|
-        if ir.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-          std_kg = ir.amount.to_f
-          break
-        end
-      end
-      unless bhl.batch.order.medicament_recipe.nil?
-        bhl.batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-          if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
-            std_kg = imr.amount.to_f
+    batches = Batch.find :all, :include => {:batch_hopper_lot => {:hopper_lot => {:lot => {:ingredient => {}}}}, :order => {:recipe => {:ingredient_recipe => {}}, :medicament_recipe => {:ingredient_medicament_recipe => {}}}}, :conditions => ['start_date >= ? AND end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)]
+    
+    batches.each do |batch|
+      batch.batch_hopper_lot.each do |bhl|
+        real_kg = bhl.amount.to_f
+        std_kg = -1
+        batch.order.recipe.ingredient_recipe.each do |ir|
+          if ir.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+            std_kg = ir.amount.to_f
             break
           end
         end
-      end
+        unless batch.order.medicament_recipe.nil?
+          batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+            if imr.ingredient.id == bhl.hopper_lot.lot.ingredient.id
+              std_kg = imr.amount.to_f
+              break
+            end
+          end
+        end
 
-      key = bhl.hopper_lot.lot.code
-      if results.has_key?(key)
-        results[key]['real_kg'] += real_kg
-        results[key]['std_kg'] += std_kg
-        results[key]['var_kg'] = results[key]['real_kg'] - results[key]['std_kg']
-        results[key]['var_perc'] = results[key]['var_kg'] * 100 / results[key]['std_kg']
-      else
-        var_kg = real_kg - std_kg
-        var_perc = var_kg * 100 / std_kg
-        results[key] = {
-          'lot' => key,
-          'ingredient_code' => bhl.hopper_lot.lot.ingredient.code,
-          'ingredient_name' => bhl.hopper_lot.lot.ingredient.name,
-          'real_kg' => real_kg,
-          'std_kg' => std_kg,
-          'var_kg' => var_kg,
-          'var_perc' => var_perc
-        }
+        key = bhl.hopper_lot.lot.code
+        if results.has_key?(key)
+          results[key]['real_kg'] += real_kg
+          results[key]['std_kg'] += std_kg
+          results[key]['var_kg'] = results[key]['real_kg'] - results[key]['std_kg']
+          results[key]['var_perc'] = results[key]['var_kg'] * 100 / results[key]['std_kg']
+        else
+          var_kg = real_kg - std_kg
+          var_perc = var_kg * 100 / std_kg
+          results[key] = {
+            'lot' => key,
+            'ingredient_code' => bhl.hopper_lot.lot.ingredient.code,
+            'ingredient_name' => bhl.hopper_lot.lot.ingredient.name,
+            'real_kg' => real_kg,
+            'std_kg' => std_kg,
+            'var_kg' => var_kg,
+            'var_perc' => var_perc
+          }
+        end
       end
     end
-
     results.each do |key, item|
       data['results'] << item
     end
