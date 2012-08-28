@@ -118,6 +118,7 @@ class Warehouse < ActiveRecord::Base
     else
       transaction.transaction_type_id = 2 #EN-AJU
     end
+    transaction.processed_in_stock = 1
     transaction.save
   end
 
