@@ -19,7 +19,6 @@ class Transaction < ActiveRecord::Base
 
   def process
     transaction do
-      do_stock_update
       self.processed_in_stock = 1
       unless self.save
         logger.error(self.errors.inspect)
