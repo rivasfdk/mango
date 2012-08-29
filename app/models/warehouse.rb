@@ -1,6 +1,6 @@
 class Warehouse < ActiveRecord::Base
   belongs_to :warehouse_type
-  has_many :transaction, :dependent => :delete_all
+  has_many :transaction
 
   validates_uniqueness_of :code
   validates_presence_of :code, :location, :content_id
@@ -67,18 +67,20 @@ class Warehouse < ActiveRecord::Base
   end
 
   def recalculate
-    transaction do
-      stock = 0
-      transactions = Transaction.find :all, :conditions => {:warehouse_id => self.id}, :include => [:transaction_type]
-      transactions.each do |t|
-        #puts "#{t.transaction_type.sign}#{t.amount}"
-        stock += ("#{t.transaction_type.sign}#{t.amount}".to_f)
+    stock = 0
+    transactions = Transaction.find :all, :conditions => {:warehouse_id => self.id}, :include => [:transaction_type]
+    transactions.each do |t|
+      puts "#{t.transaction_type.sign}#{t.amount}"
+      stock += ("#{t.transaction_type.sign}#{t.amount}".to_f)
+      if t.processed_in_stock == 0
+        t.toggle :processed_in_stock
       end
-      self.stock = stock
-      unless self.save
-        logger.error(self.errors.inspect)
-        raise StandardError, 'Problem updating warehouse stock'
-      end
+    end
+    self.stock = stock
+    unless self.save
+      logger.error(self.errors.inspect)
+      raise StandardError, 'Problem updating warehouse stock'
+      puts "Error"
     end
   end
 
