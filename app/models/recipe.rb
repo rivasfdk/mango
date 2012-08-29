@@ -169,6 +169,11 @@ class Recipe < ActiveRecord::Base
   def to_collection_select
     return "#{self.code} - #{self.name}"
   end
+  
+  def deactivate
+    self.active = false
+    self.save
+  end
 
   private
 

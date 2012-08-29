@@ -17,7 +17,7 @@
         <td class="center"><%=h r.code %></td>
         <td><%=h r.name %></td>
         <td class="center"><%=h r.version %></td>
-        <td class="center"><%=h r.active %></td>
+        <td class="center"><%= render_action_deactivate(deactivate_recipe_path(r), "Desea desactivar la receta '#{r.name}'?") %></td>
         <td class="center">
           <%= render_action_show(recipe_path(r)) %>
           <% unless r.is_associated? %>

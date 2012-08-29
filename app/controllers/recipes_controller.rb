@@ -63,6 +63,19 @@ class RecipesController < ApplicationController
     end
     redirect_to :recipes
   end
+  
+  def deactivate
+    @recipe = Recipe.find params[:id]
+    @recipe.deactivate
+    if @recipe.errors.size.zero?
+      flash[:notice] = "Receta desactivada con éxito"
+    else
+      logger.error("Error desactivando receta: #{@recipe.errors.inspect}")
+      flash[:type] = 'error'
+      flash[:notice] = "La receta no se ha podido desactivar"
+    end
+    redirect_to :recipes
+  end
 
   def upload
     if params[:recipe]['datafile'].nil?

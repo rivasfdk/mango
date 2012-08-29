@@ -4,6 +4,11 @@ module ActionsHelper
     return link_to image + " Mostrar", url, :class => 'action'
   end
 
+  def render_action_deactivate(url, confirm)
+    image = image_tag('action-reset.png', :alt=>'Desactivar')
+    return link_to image + " Desactivar", url, :class => 'action', :confirm => confirm
+  end
+
   def render_action_edit(url)
     image = image_tag('action-edit.png', :alt=>'Editar')
     return link_to image + "Editar", url, :class => 'action'
@@ -25,7 +30,7 @@ module ActionsHelper
   end
 
   def render_action_print(url)
-    image = image_tag('action-clone.png', :alt=>'Imprimir')
+    image = image_tag('action-print.png', :alt=>'Imprimir')
     return link_to image + " Imprimir", url, :class => 'action'
   end
 
