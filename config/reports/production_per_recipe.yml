@@ -85,15 +85,28 @@ report:
         align: left
         width: 50
     7:
-      breakline:
+      text:
+        label: "Version: "
+        align: right
+        width: 120
+        breakline: 0
+        style:
+          font_weight: B
     8:
+      text:
+        field: version
+        align: left
+        width: 50
+    9:
+      breakline:
+    10:
       text:
         field: title
         align: center
         style:
           font_size: 12
           font_weight: B
-    9:
+    11:
       table:
         field: results
         heading:
@@ -147,7 +160,7 @@ report:
               width: 35
               totalize: true
               precision: 2
-    10:
+    12:
       breakline:
   footer:
     1:

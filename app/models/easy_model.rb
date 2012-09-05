@@ -438,8 +438,8 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_recipe(start_date, end_date, recipe_code)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ?', recipe_code]
+  def self.consumption_per_recipe(start_date, end_date, recipe_code, recipe_version)
+    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version]
     return nil if recipe.nil?
 
     std = {}
@@ -448,6 +448,7 @@ class EasyModel
 
     data = self.initialize_data('Consumo por Receta')
     data['recipe'] = "#{recipe.code} - #{recipe.name}"
+    data['version'] = recipe.version
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
@@ -881,12 +882,13 @@ class EasyModel
     return data
   end
 
-  def self.production_per_recipe(start_date, end_date, recipe_code)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ?', recipe_code]
+  def self.production_per_recipe(start_date, end_date, recipe_code, recipe_version)
+    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version]
     return nil if recipe.nil?
 
     data = self.initialize_data('Produccion por Receta')
     data['recipe'] = "#{recipe.code} - #{recipe.name}"
+    data['version'] = recipe.version
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
