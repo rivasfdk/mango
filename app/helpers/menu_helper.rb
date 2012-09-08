@@ -9,7 +9,7 @@ module MenuHelper
       menu = menu_for_recipes_show
     elsif c == 'recipes' and (a == 'new' or a == 'create')
       menu = menu_for_recipes_new
-    elsif c == 'recipes' and (a == 'edit' or a == 'update')
+    elsif c == 'recipes' and (a == 'edit' or a == 'update' or a == 'clone')
       menu = menu_for_recipes_edit
     elsif c == 'recipes' and a == 'import'
       menu = menu_for_recipes_import

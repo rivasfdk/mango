@@ -3,6 +3,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'ingredients/search' => "ingredients#search", :via => :get, :as => 'ingredient_search'
   match 'ingredients/catalog' => "ingredients#catalog", :via => :get, :as => 'ingredient_catalog'
   match 'ingredients/select' => "ingredients#select", :via => :get, :as => 'ingredient_select'
+  match 'recipes/:id/clone' => "recipes#clone", :via => :get, :as => 'clone_recipe'
   match 'recipes/import' => "recipes#import", :via => :get, :as => 'recipe_import'
   match 'recipes/upload' => "recipes#upload", :via => :get, :as => 'recipe_upload'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'

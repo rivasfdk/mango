@@ -7,14 +7,16 @@
 <div class="field"><%=h @recipe.version %></div>
 <% unless @recipe.mixing_time.nil? %> 
 <label for="version" class="small">Tiempo de mezcla:</label>
-<div class="field"><%=h @recipe.mixing_time.code %></div>
+<div class="field"><%=h @recipe.mixing_time.description %></div>
 <% end %>
 <label for="total" class="small">Total:</label>
 <div class="field"><%=h @recipe.get_total() %> Kg</div>
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%=h @recipe.comment %></div>
+<label for="active" class="small">En uso:</label>
+<div class="field"><%=h @recipe.in_use ? "Sí" : "No"%></div>
 <label for="active" class="small">Activa:</label>
-<div class="field"><%=h @recipe.active %></div>
+<div class="field"><%=h @recipe.active ? "Sí" : "No"%></div>
 <div class="clearfix"></div>
 <% end %>
 <h5>Ingredientes</h5>

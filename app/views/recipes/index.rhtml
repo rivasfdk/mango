@@ -7,6 +7,7 @@
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Versión<span class="order_arrow"></span></th>
         <th>Activa<span class="order_arrow"></span></th>
+        <th>En uso<span class="order_arrow"></span></th>
         <th class="actions">Acciones</th>
       </tr>
     </thead>
@@ -17,13 +18,15 @@
         <td class="center"><%=h r.code %></td>
         <td><%=h r.name %></td>
         <td class="center"><%=h r.version %></td>
-        <td class="center"><%= render_action_deactivate(deactivate_recipe_path(r), "Desea desactivar la receta '#{r.name}'?") %></td>
+        <td class="center"><%= r.active ? "Sí" : "No" %></td>
+        <td class="center"><%= r.in_use ? "Sí" : "No" %></td>
         <td class="center">
           <%= render_action_show(recipe_path(r)) %>
+          <%= render_action_clone(clone_recipe_path(r), "Desea clonar la receta '#{r.name}'?") %>
+          <%= render_action_edit(edit_recipe_path(r)) %><br />
           <% unless r.is_associated? %>
-          <%= render_action_edit(edit_recipe_path(r)) %>
-          <% end %>
           <%= render_action_delete(recipe_path(r), "Desea borrar la receta '#{r.name}'?") %>
+          <% end %>
         </td>
       </tr>
     <% end %>

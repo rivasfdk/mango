@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120819202627) do
+ActiveRecord::Schema.define(:version => 20120908135312) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(:version => 20120819202627) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "mixing_time_id"
+    t.boolean  "in_use",         :default => true
   end
 
   add_index "recipes", ["mixing_time_id"], :name => "fk_recipes_mixing_time_id"

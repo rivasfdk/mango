@@ -167,7 +167,7 @@ class Recipe < ActiveRecord::Base
   end
   
   def to_collection_select
-    return "#{self.code} - #{self.name}"
+    return "#{self.code} - #{self.name} - V#{self.version}"
   end
   
   def deactivate

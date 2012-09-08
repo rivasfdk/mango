@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @recipes = Recipe.find :all, :conditions => {:active => true}, :order => 'name ASC'
+    @recipes = Recipe.find :all, :conditions => {:active => true, :in_use => true}, :order => 'name ASC'
     @medicament_recipes = MedicamentRecipe.find :all, :order => 'name ASC'
     @clients = Client.find :all, :order => 'name ASC'
     @users = User.find :all, :order => 'name ASC'

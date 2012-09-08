@@ -13,10 +13,6 @@ class RecipesController < ApplicationController
 
   def edit
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
-    if @recipe.is_associated?
-      flash[:notice] = "No se puede editar una receta asociada a una orden de producción"
-      redirect_to :recipes
-    end
     @ingredients = Ingredient.find :all
     @mixing_times = MixingTime.find :all
   end
@@ -30,6 +26,26 @@ class RecipesController < ApplicationController
     else
       render :new
     end
+  end
+
+  def clone
+    original_recipe = Recipe.find params[:id]
+    @recipe = original_recipe.clone
+    @recipe.version = @recipe.version.succ
+    @recipe.save
+ 
+    original_recipe.ingredient_recipe.each do |ir|
+      new_ir = ir.clone
+      new_ir.recipe_id = @recipe.id
+      new_ir.save
+    end
+
+    original_recipe.in_use = false
+    original_recipe.save
+    
+    @ingredients = Ingredient.find :all
+    @mixing_times = MixingTime.find :all
+    render :edit
   end
 
   def update

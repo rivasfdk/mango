@@ -24,9 +24,9 @@ module ActionsHelper
     return link_to image + "Recalcular", url, :class => 'action'
   end
 
-  def render_action_clone(url)
+  def render_action_clone(url, confirm)
     image = image_tag('action-clone.png', :alt=>'Clonar')
-    return link_to image + "Clonar", url, :class => 'action'
+    return link_to image + " Clonar", url, :class => 'action', :confirm => confirm
   end
 
   def render_action_print(url)
