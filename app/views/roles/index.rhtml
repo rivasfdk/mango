@@ -15,7 +15,7 @@
         <td><%=h r.name %></td>
         <td><%=h r.description %></td>
         <td>
-          <%= render_action_clone(clone_role_path(r)) %>
+          <%= render_action_clone(clone_role_path(r), "Desea clonar el rol '#{r.name}'?") %>
           <%= render_action_edit(edit_role_path(r)) %>
           <%= render_action_delete(role_path(r), "Desea borrar el rol '#{r.name}'?") %>
         </td>
