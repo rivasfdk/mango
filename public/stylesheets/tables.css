@@ -54,7 +54,7 @@
     background-color: #ededed;
 }
 
-#tablefooter {
+#tablefooter, #tabledata tfoot {
     background: #ccc url('../images/table-footer-bg.png') repeat-x 50% 50%;
     border: 1px solid #aaa;
     width: 100%;
@@ -87,6 +87,15 @@
 
 #tabledata thead th p {
     float: left;
+}
+
+#tabledata tfoot td {
+  border: 0px;
+}
+
+#tabledata tfoot .total {
+  text-align: left;
+  font-weight: bold;
 }
 
 .order_arrow {

@@ -23,12 +23,15 @@
         </tr>
       <% end %>
     </tbody>
+    <tfoot>
+      <td></td>
+      <td class="total">TOTAL</td>
+      <td class="total"><%= @recipe.get_total %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tfoot>
   </table>
-  <div id="tablefooter">
-    <div id="pagination">
-      <!--= show_pagination @recipe %-->
-    </div>
-  </div>
 </div>
 <% else %>
 <p>No hay ingredientes definidos para esta receta</p>
