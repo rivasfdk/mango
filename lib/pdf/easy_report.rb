@@ -140,7 +140,7 @@ module EasyReport
       config, show_head = get_table_cell_config(element)
       set_table_header(config, show_head)
       totals = set_table_body(element, config, show_head)
-      set_table_totalization(element, config, totals)
+      set_table_totalization(element, config, totals, show_head)
     end
 
     def render_breakline
@@ -396,11 +396,13 @@ module EasyReport
       return totals
     end
 
-    def set_table_totalization(element, config, totals)
+    def set_table_totalization(element, config, totals, show_head)
       index = 0
       label_width = 0
       totalization = get_totalization(element['totalization'])
       return if totalization.nil?
+
+      set_table_header(config, show_head) if check_page_break(DEFAULT_LINE_HEIGHT)
 
       config.each_index do |i|
         index = i
@@ -474,7 +476,7 @@ module EasyReport
         end
         sep = i if (c == ' ')
         l += cw[c[0]]/@k
-        #puts "len: #{l} c: #{c} cw: #{cw[c[0]]} nl: #{nl}"
+        puts "len: #{l} c: #{c} cw: #{cw[c[0]]} nl: #{nl}"
         if (l > wmax)
           if (sep == -1)
             i += 1 if i == j
