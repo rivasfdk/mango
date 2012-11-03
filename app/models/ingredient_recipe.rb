@@ -7,6 +7,7 @@ class IngredientRecipe < ActiveRecord::Base
 
   validates_associated :ingredient, :recipe
 
+  validates :ingredient_id, :uniqueness => {:scope => :recipe_id}
   #before_validation :validate_existence
   before_validation :fill_values
 
