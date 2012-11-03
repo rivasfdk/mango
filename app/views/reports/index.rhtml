@@ -85,7 +85,9 @@
       <%= form_for :report, :url=>consumption_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :client, "Código cliente: ", :class=>'small' %> <%= f.text_field :client, :size=>15 %><br/><br/><br/>
+        <label for="client_id" class="small">Cliente:</label>
+        <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -157,7 +159,9 @@
       <%= form_for :report, :url=>production_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :client, "Código Cliente: ", :class=>'small' %> <%= f.text_field :client, :size=>15 %><br/><br/><br/>
+        <label for="client_id2" class="small">Cliente:</label>
+        <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <br /><br /><br />
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -232,6 +236,45 @@
         <br/><br/><br/><br/>
         <%= f.label :clients_codes, "Códigos Cliente(s) / Proveedor(es): " %> <%= f.text_field :clients_codes, :size=>60 %>
         <br/><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('tickets_transactions_per_carrier')">Movimientos de Romana por Mat. Prima / Prod. Term. por Transportista</h2>
+    <div id="tickets_transactions_per_carrier" class="report-details">
+      <%= form_for :report, :url=>tickets_transactions_per_carrier_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
+        <%= f.radio_button :ticket_type_id, 2%> Despachos
+        <br/><br/>
+        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
+        <br/><br/>
+        <label for="carrier_id" class="small">Empresa de transporte:</label>
+        <%= f.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('tickets_transactions_per_driver')">Movimientos de Romana por Mat. Prima / Prod. Term. por Chofer</h2>
+    <div id="tickets_transactions_per_driver" class="report-details">
+      <%= form_for :report, :url=>tickets_transactions_per_driver_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
+        <%= f.radio_button :ticket_type_id, 2%> Despachos
+        <br/><br/>
+        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
+        <br/><br/>
+        <label for="driver_id" class="small">Chofer:</label>
+        <%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

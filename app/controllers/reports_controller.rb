@@ -1,5 +1,11 @@
 class ReportsController < ApplicationController
 
+  def index
+    @drivers = Driver.find :all, :conditions => ['frequent = true']
+    @carriers = Carrier.find :all, :conditions => ['frequent = true']
+    @clients = Client.find :all
+  end
+
   def recipes
     data = EasyModel.recipes
     if data.nil?
@@ -111,7 +117,7 @@ class ReportsController < ApplicationController
   def consumption_per_client
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.consumption_per_client(start_date, end_date, params[:report][:client])
+    data = EasyModel.consumption_per_client(start_date, end_date, params[:report][:client_id])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
@@ -229,7 +235,7 @@ class ReportsController < ApplicationController
   def production_per_client
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_client(start_date, end_date, params[:report][:client])
+    data = EasyModel.production_per_client(start_date, end_date, params[:report][:client_id2])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
@@ -318,6 +324,47 @@ class ReportsController < ApplicationController
       report = EasyReport::Report.new data, template
       send_data report.render, :filename => filename, :type => "application/pdf"
     end
+  end
+
+  def tickets_transactions_per_carrier
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    carrier_id = params[:report][:carrier_id].to_i
+    data = EasyModel.tickets_transactions_per_carrier(start_date, end_date, ticket_type_id, warehouse_type_id, carrier_id)
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients_per_carrier.yml' : 'tickets_transactions_products_per_carrier.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima_por_mp_por_transportista.pdf' : 'movimientos_producto_terminado_por_pt_por_transportista.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+  end
+
+  def tickets_transactions_per_driver
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ticket_type_id = params[:report][:ticket_type_id].to_i
+    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    driver_id = params[:report][:driver_id].to_i
+    data = EasyModel.tickets_transactions_per_driver(start_date, end_date, ticket_type_id, warehouse_type_id, driver_id)
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      template = (warehouse_type_id == 1) ? 'tickets_transactions_ingredients_per_driver.yml' : 'tickets_transactions_products_per_driver.yml'
+      filename = (warehouse_type_id == 1) ? 'movimientos_materia_prima_por_mp_por_chofer.pdf' : 'movimientos_producto_terminado_por_pt_por_chofer.pdf'
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end
+    
   end
 
 end

@@ -197,6 +197,69 @@ class EasyModel
     return data
   end
 
+  def self.tickets_transactions_per_carrier(start_date, end_date, ticket_type_id, warehouse_type_id, carrier_id)
+    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ? and trucks.carrier_id = ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), carrier_id], :order=>['tickets.number ASC']
+
+    return nil if @tickets.length.zero?
+
+    ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
+    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+
+    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    carrier = Carrier.find(carrier_id)
+    data['carrier'] = carrier.name
+    data['table1'] = []
+
+    @tickets.each do |ticket|
+      ticket.transactions.each do |transaction|
+        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+          next
+        end
+        data['table1'] << {
+          'number' => ticket.number,
+          'client' => ticket.client.name,
+          'content_name' => transaction.warehouse.content_name,
+          'amount' => transaction.amount,
+        }
+      end
+    end
+    return data
+  end
+
+  def self.tickets_transactions_per_driver(start_date, end_date, ticket_type_id, warehouse_type_id, driver_id)
+    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ? and driver_id = ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), driver_id], :order=>['tickets.number ASC']
+
+    return nil if @tickets.length.zero?
+
+    ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
+    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+
+    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    driver = Driver.find(driver_id)
+    data['driver'] = "#{carrier.code} - #{carrier.name}"
+    data['table1'] = []
+
+    @tickets.each do |ticket|
+      ticket.transactions.each do |transaction|
+        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+          next
+        end
+        data['table1'] << {
+          'number' => ticket.number,
+          'client' => ticket.client.name,
+          'content_name' => transaction.warehouse.content_name,
+          'amount' => transaction.amount,
+        }
+      end
+    end
+    return data
+
+  end
+
   def self.recipes
     @recipes = Recipe.find :all, :include => {:ingredient_recipe => :ingredient}
     return nil if @recipes.length.zero?
@@ -598,8 +661,8 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_client(start_date, end_date, client_code)
-    client = Client.find :first, :conditions => ['code = ?', client_code]
+  def self.consumption_per_client(start_date, end_date, client_id)
+    client = Client.find(client_id)
 
     data = self.initialize_data('Consumo por Cliente')
     data['client'] = "#{client.code} - #{client.name}"
@@ -958,8 +1021,8 @@ class EasyModel
     return data
   end
 
-  def self.production_per_client(start_date, end_date, client_code)
-    client = Client.find :first, :conditions => ['code = ?', client_code]
+  def self.production_per_client(start_date, end_date, client_id)
+    client = Client.find client_id rescue nil
     return nil if client.nil?
 
     data = self.initialize_data('Produccion por Cliente')
