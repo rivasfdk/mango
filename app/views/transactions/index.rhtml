@@ -10,7 +10,6 @@
         <th>Nro. Doc.<span class="order_arrow"></span></th>
         <th>Usuario<span class="order_arrow"></span></th>
         <th>Fecha<span class="order_arrow"></span></th>
-        <th class="actions_small">Acciones</th></th>
       </tr>
     </thead>
     <tbody>
@@ -24,9 +23,6 @@
         <td><%=h t.document_number %></td>
         <td><%=h t.user.login %></td>
         <td><%=h t.date %></td>
-        <td>
-          <%= render_action_delete(transaction_path(t), "Desea borrar la transacción '#{t.code}'?") %>
-        </td>
       </tr>
     <% end %>
     </tbody>
