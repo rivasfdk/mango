@@ -502,7 +502,7 @@ class EasyModel
   end
 
   def self.consumption_per_recipe(start_date, end_date, recipe_code, recipe_version)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version]
+    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['recipes.code = ? and recipes.version = ?', recipe_code, recipe_version]
     return nil if recipe.nil?
 
     std = {}
