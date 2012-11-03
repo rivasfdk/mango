@@ -76,6 +76,8 @@ class Warehouse < ActiveRecord::Base
         # Avoid triggering after_save do_stock_update callback
         ActiveRecord::Base.connection.update("UPDATE transactions SET processed_in_stock = 1 WHERE id = #{t.id}")
       end
+      # Avoid triggering after_save do_stock_update callback
+      ActiveRecord::Base.connection.update("UPDATE transactions SET stock_after = #{stock} WHERE id = #{t.id}")
     end
     self.stock = stock
     unless self.save

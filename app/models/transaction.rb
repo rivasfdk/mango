@@ -5,12 +5,12 @@ class Transaction < ActiveRecord::Base
   belongs_to :client
   belongs_to :ticket
 
+  validates_presence_of :transaction_type_id, :warehouse_id, :amount, :user_id
   validates_numericality_of :amount
   validates_numericality_of :sacks, :sack_weight, :allow_nil => true
-  validates_presence_of :amount, :transaction_type_id, :warehouse_id, :user_id
-
+  
   before_save :create_code, :set_date
-  after_save :do_stock_update
+  before_save :do_stock_update
   after_destroy :undo_stock_update
 
   def self.get_no_processed
@@ -71,11 +71,13 @@ class Transaction < ActiveRecord::Base
     warehouse = Warehouse.get(self.warehouse.id)
     warehouse.stock += self.amount
     warehouse.save
+    self.stock_after = warehouse.stock
   end
 
   def decrease_stock
     warehouse = Warehouse.get(self.warehouse.id)
     warehouse.stock -= self.amount
     warehouse.save
+    self.stock_after = warehouse.stock
   end
 end

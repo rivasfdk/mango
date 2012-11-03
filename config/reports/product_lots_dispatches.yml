@@ -1,8 +1,8 @@
 report:
   settings:
     page:
-      size: Letter
-      orientation: L
+      size: 'Half Letter'
+      orientation: P
       margins: 10
     style:
       font_family: 'Helvetica'

@@ -476,7 +476,7 @@ module EasyReport
         end
         sep = i if (c == ' ')
         l += cw[c[0]]/@k
-        puts "len: #{l} c: #{c} cw: #{cw[c[0]]} nl: #{nl}"
+        #puts "len: #{l} c: #{c} cw: #{cw[c[0]]} nl: #{nl}"
         if (l > wmax)
           if (sep == -1)
             i += 1 if i == j

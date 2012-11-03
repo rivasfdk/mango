@@ -116,6 +116,8 @@ class FPDF
                 format=[595.28,841.89]
             elsif format=='a5'
                 format=[420.94,595.28]
+            elsif format=='half letter'
+                format=[612,396]
             elsif format=='letter'
                 format=[612,792]
             elsif format=='legal'

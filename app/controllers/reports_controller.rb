@@ -153,7 +153,12 @@ class ReportsController < ApplicationController
 
   def simple_stock
     warehouse_type_id = params[:report][:warehouse_type_id].to_i
-    data = EasyModel.simple_stock(warehouse_type_id)
+    date = EasyModel.param_to_date(params[:report], 'date')
+    if params[:report][:group] == '1'
+      data = EasyModel.simple_stock(warehouse_type_id, date)
+    else
+      data = EasyModel.simple_stock_per_lot(warehouse_type_id, date)
+    end
     if data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'

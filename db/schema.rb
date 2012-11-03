@@ -302,6 +302,32 @@ ActiveRecord::Schema.define(:version => 20120913122112) do
     t.datetime "updated_at"
   end
 
+  create_table "transaction_notes", :force => true do |t|
+    t.integer  "user_id",                  :null => false
+    t.date     "date",                     :null => false
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "transaction_note_type_id"
+    t.integer  "number",                   :null => false
+    t.integer  "client_id"
+  end
+
+  add_index "transaction_notes", ["client_id"], :name => "fk_transaction_notes_client_id"
+
+  create_table "transaction_notes_numbers", :force => true do |t|
+    t.string   "number",     :default => "1"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "transaction_notes_types", :force => true do |t|
+    t.string   "code",        :null => false
+    t.string   "description", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "transaction_types", :force => true do |t|
     t.string   "code",        :null => false
     t.string   "description", :null => false

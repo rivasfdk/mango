@@ -114,34 +114,13 @@
   </div>
 
   <div class="report-content">
-    <h2 onclick="toggle_report_details('simple_stock')">Inventario al día</h2>
+    <h2 onclick="toggle_report_details('simple_stock')">Inventario por fecha</h2>
     <div id="simple_stock" class="report-details">
       <%= form_for :report, :url=>simple_stock_report_path do |f| %>
+        <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.date_select :date %><br /><br />
         <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('ingredients_stock')">Inventario de Materia Prima</h2>
-    <div id="ingredients_stock" class="report-details">
-      <%= form_for :report, :url=>ingredients_stock_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('products_stock')">Inventario de Producto Terminado</h2>
-    <div id="products_stock" class="report-details">
-      <%= form_for :report, :url=>products_stock_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado<br/><br/>
+        <%= f.check_box :group, :checked=>true %> &nbsp; <label for="group">Agrupar lotes</label><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

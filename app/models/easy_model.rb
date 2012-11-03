@@ -735,19 +735,50 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock(warehouse_type_id)
-    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima' : 'Inventario de Producto Terminado'
+  def self.simple_stock_per_lot(warehouse_type_id, date)
+    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima por lotes' : 'Inventario de Producto Terminado por lotes'
     data = self.initialize_data(title)
-    data['date'] = self.print_range_date(Date.today)
+    data['date'] = self.print_range_date(date)
     data['results'] = []
 
     warehouses = Warehouse.where :warehouse_type_id => warehouse_type_id
     warehouses.each do |w|
+      transaction = Transaction.first :conditions => ['warehouse_id = ? and date < ?', w.id, start_date_to_sql(date)], :order => ['date desc']
+      next if transaction.nil?
       data['results'] << {
-        'code' => w.content_code,
+        'code' => w.lot_code,
         'name' => w.content_name,
-        'stock' => w.stock
+        'stock' => transaction.stock_after
       }
+    end
+    return data
+  end
+
+  def self.simple_stock(warehouse_type_id, date)
+    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima' : 'Inventario de Producto Terminado'
+    data = self.initialize_data(title)
+    data['date'] = self.print_range_date(date)
+    data['results'] = []
+
+    results = {}
+
+    warehouses = Warehouse.where :warehouse_type_id => warehouse_type_id
+    warehouses.each do |w|
+      key = w.content_code
+      transaction = Transaction.first :conditions => ['warehouse_id = ? and date < ?', w.id, start_date_to_sql(date)], :order => ['date desc']
+      next if transaction.nil?
+      if results.has_key?(key)
+        results[key]['stock'] += transaction.stock_after
+      else
+        results[key] = {
+          'code' => w.content_code,
+          'name' => w.content_name,
+          'stock' => transaction.stock_after
+        }
+       end
+    end
+    results.each do |key, item|
+      data['results'] << item
     end
     return data
   end
