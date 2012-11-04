@@ -582,7 +582,7 @@ module MenuHelper
     menu = content_tag(:p, 'Lista de almacenes')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Recalcular', 'Recalcular saldos', recalculate_warehouses_path, 'button-recalculate.png') +
+      #render_action('Recalcular', 'Recalcular saldos', recalculate_warehouses_path, 'button-recalculate.png') +
       render_action('Crear', 'Crear nuevo almacén', new_warehouse_path, 'button-add.png')
     )
     return menu
