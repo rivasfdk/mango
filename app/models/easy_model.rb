@@ -440,7 +440,7 @@ class EasyModel
     data['total_real_kg'] = total_real
     data['results'] = []
 
-    details.each do |key, value|
+    details.sort_by {|k,v| k}.map do |key, value|
       element = {'code' => key}
       data['results'] << element.merge(value)
     end
@@ -463,7 +463,7 @@ class EasyModel
     data['end_date'] = batch.calculate_end_date
     data['results'] = []
 
-    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}}, :conditions => {:batch_id => batch.id}
+    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}}, :conditions => {:batch_id => batch.id}, :order=>['ingredients.code ASC']
 
     ingredients = {}
     batch.order.recipe.ingredient_recipe.each do |ir|
