@@ -533,8 +533,7 @@ class EasyModel
         end
       end
     end
-
-    nominal.each do |key, value|
+    nominal.sort_by {|k,v| k}.map do |key, value|
       data['results'] << {
         'code' => key,
         'ingredient' => value[0],
@@ -598,7 +597,7 @@ class EasyModel
         end
       end
     end
-    results.each do |key, item|
+    results.sort_by {|k,v| v['ingredient_code']}.map do |key, item|
       data['results'] << item
     end
 
@@ -613,7 +612,7 @@ class EasyModel
 
     results = {}
     batches = Batch.find :all, :include => {:batch_hopper_lot => {:hopper_lot => {:lot => {:ingredient => {}}}}, :order => {:recipe => {:ingredient_recipe => {}}, :medicament_recipe => {:ingredient_medicament_recipe => {}}}}, :conditions => ['start_date >= ? AND end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)]
-    
+
     batches.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         real_kg = bhl.amount.to_f
@@ -654,7 +653,8 @@ class EasyModel
         end
       end
     end
-    results.each do |key, item|
+
+    results.sort_by {|k,v| v['ingredient_code']}.map do |key, item|
       data['results'] << item
     end
 
@@ -683,8 +683,7 @@ class EasyModel
         end
       end
     end
-
-    real.each do |key, value|
+    real.sort_by {|k,v| k}.map do |key, value|
       data['results'] << {
         'code' => key,
         'ingredient' => name[key],
