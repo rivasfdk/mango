@@ -84,4 +84,65 @@ class Order < ActiveRecord::Base
       order.save
     end
   end
+
+  def repair(user, n_batch)
+    if self.batch.count == 0
+      self.prog_batches.times do |n|
+        batch = self.batch.new
+        batch.user = user
+        batch.number = n + 1
+        batch.schedule = Schedule.first
+        batch.start_date = Date.today
+        batch.end_date = Date.today
+        batch.save
+      end
+    end
+
+    hopper_ingredients = {}
+    hopper_lots = HopperLot.where :active => true
+    hopper_lots.each do |hl|
+      hopper_ingredients[hl.lot.ingredient.id] = hl.id
+    end
+
+    recipe_ingredients = {}
+    self.recipe.ingredient_recipe.each do |ir|
+      recipe_ingredients[ir.ingredient.id] = ir.amount
+    end
+
+    self.batch.each do |batch|
+      if batch.number > n_batch
+        break
+      end
+      batch_ingredients = []
+      batch.batch_hopper_lot.each do |bhl|
+        batch_ingredients << bhl.hopper_lot.lot.ingredient.id
+      end
+      recipe_ingredients.each do |key, value|
+        unless batch_ingredients.include? key
+          bhl = batch.batch_hopper_lot.new
+          bhl.hopper_lot_id = hopper_ingredients[key]
+          bhl.amount = value
+          bhl.save
+        end
+      end
+    end
+
+    extra_batches = Batch.find :all, :conditions => ['order_id = ? and number > ?', self.id, n_batches]
+    extra_batches.each do |b|
+      b.batch_hopper_lot.each do |bhl|
+        bhl.delete
+      end
+      b.delete
+    end
+
+    self.generate_transactions
+
+    self.prog_batches = n_batches
+    self.completed = true
+    self.save
+  end
+
+  def generate_transactions
+    
+  end
 end

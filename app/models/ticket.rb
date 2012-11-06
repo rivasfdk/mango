@@ -11,7 +11,7 @@ class Ticket < ActiveRecord::Base
   validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight
   validates_numericality_of :incoming_weight, :greater_than => 0
   validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
-  validates_numericality_of :provider_weight, :allow_nil => true, :greater_than => 0
+  validates_numericality_of :provider_weight, :allow_nil => true
   before_save :generate_number
 
   def generate_number
