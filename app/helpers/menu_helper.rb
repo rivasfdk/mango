@@ -802,8 +802,7 @@ module MenuHelper
   def menu_for_tickets_index
     menu = content_tag(:p, 'Lista de tickets')
     menu += content_tag(:ul,
-      render_back(root_path) +
-      render_action('Crear', 'Crear nuevo ticket', new_ticket_path, 'button-add.png')
+      render_back(root_path)
     )
     return menu
   end

@@ -135,18 +135,19 @@ class Order < ActiveRecord::Base
       b.delete
     end
 
-    self.generate_transactions(user)
-
     self.prog_batches = n_batch
     self.real_batches = n_batch
     self.completed = true
     self.save
+
+    self.generate_transactions(user)
   end
 
   def generate_transactions(user)
+    order = Order.find self.id
     consumptions = {}
-    self.batch.each do |batch|
-      batch.batch_hopper_lot.each do |bhl|
+    order.batch.each do |b|
+      b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.id
         if consumptions.has_key? key
           consumptions[key] += bhl.amount
