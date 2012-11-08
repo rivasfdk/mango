@@ -51,6 +51,14 @@ class Permission < ActiveRecord::Base
     return action == 'reprocess'
   end
 
+  def self.is_repair?(action)
+    return action == 'repair'
+  end
+
+  def self.is_do_repair?(action)
+    return action == 'do_repair'
+  end
+
   def self.get_all
     find :all, :order => 'module ASC, name ASC'
   end

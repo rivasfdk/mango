@@ -27,6 +27,9 @@
         <td class="center"><%=h o.completed %></td>
         <td class="center">
           <%= render_action_edit(edit_order_path(o)) %>
+          <% unless o.completed %>
+            <%= render_action_repair(repair_order_path(o)) %>
+          <% end %>
           <%= render_action_delete(order_path(o), "Desea borrar la orden '#{o.code}'?") %>
         </td>
       </tr>

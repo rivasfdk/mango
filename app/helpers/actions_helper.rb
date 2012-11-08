@@ -19,6 +19,11 @@ module ActionsHelper
     return link_to image + "Ajustar", url, :class => 'action'
   end
 
+  def render_action_repair(url)
+    image = image_tag('action-edit.png', :alt=>'Reparar')
+    return link_to image + "Reparar", url, :class => 'action'
+  end
+
   def render_action_recalculate(url)
     image = image_tag('action-reset.png', :alt=>'Recalcular')
     return link_to image + "Recalcular", url, :class => 'action'

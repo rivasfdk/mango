@@ -803,7 +803,7 @@ class EasyModel
     data['date'] = self.print_range_date(date)
     data['results'] = []
 
-    warehouses = Warehouse.where :warehouse_type_id => warehouse_type_id
+    warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
     warehouses.each do |w|
       transaction = Transaction.first :conditions => ['warehouse_id = ? and date < ?', w.id, start_date_to_sql(date)], :order => ['date desc']
       next if transaction.nil?
@@ -824,7 +824,7 @@ class EasyModel
 
     results = {}
 
-    warehouses = Warehouse.where :warehouse_type_id => warehouse_type_id
+    warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
     warehouses.each do |w|
       key = w.content_code
       transaction = Transaction.first :conditions => ['warehouse_id = ? and date < ?', w.id, start_date_to_sql(date)], :order => ['date desc']

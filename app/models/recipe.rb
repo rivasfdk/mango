@@ -40,6 +40,22 @@ class Recipe < ActiveRecord::Base
     logger.debug("Ingrediente agregado: #{item.inspect}")
   end
 
+  def validate
+    hopper_ingredients = []
+    hopper_lots = HopperLot.find :all, :conditions => ['active = true']
+    hopper_lots.each do |hl|
+      hopper_ingredients << hl.lot.ingredient.id
+    end
+    valid = true
+    self.ingredient_recipe.each do |ir|
+      unless hopper_ingredients.include? ir.ingredient.id
+        valid = false
+        break
+      end
+    end
+    return valid
+  end
+
   def import(filepath, overwrite)
     begin
       transaction do

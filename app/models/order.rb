@@ -85,7 +85,7 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def repair(user, n_batch)
+  def repair(user, n_batch)    
     if self.batch.count == 0
       self.prog_batches.times do |n|
         batch = self.batch.new
@@ -127,7 +127,7 @@ class Order < ActiveRecord::Base
       end
     end
 
-    extra_batches = Batch.find :all, :conditions => ['order_id = ? and number > ?', self.id, n_batches]
+    extra_batches = Batch.find :all, :conditions => ['order_id = ? and number > ?', self.id, n_batch]
     extra_batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
         bhl.delete
@@ -135,14 +135,51 @@ class Order < ActiveRecord::Base
       b.delete
     end
 
-    self.generate_transactions
+    self.generate_transactions(user)
 
-    self.prog_batches = n_batches
+    self.prog_batches = n_batch
+    self.real_batches = n_batch
     self.completed = true
     self.save
   end
 
-  def generate_transactions
-    
+  def generate_transactions(user)
+    consumptions = {}
+    self.batch.each do |batch|
+      batch.batch_hopper_lot.each do |bhl|
+        key = bhl.hopper_lot.lot.id
+        if consumptions.has_key? key
+          consumptions[key] += bhl.amount
+        else
+          consumptions[key] = bhl.amount
+        end
+      end
+    end
+    production = 0
+    consumptions.each do |key, value|
+      production += value
+      warehouse = Warehouse.find :first, :conditions => ['warehouse_type_id = 1 and content_id = ?', key]
+      if warehouse.nil?
+        return false
+      end
+      t = Transaction.new
+      t.transaction_type_id = 1
+      t.processed_in_stock = 1
+      t.amount = value
+      t.user = user
+      t.warehouse = warehouse
+      t.save
+    end
+    warehouse = Warehouse.find :first, :conditions => ['warehouse_type_id = 2 and content_id = ?', self.product_lot_id]
+    if warehouse.nil?
+      return false
+    end
+    t = Transaction.new
+    t.transaction_type_id = 6
+    t.processed_in_stock = 1
+    t.amount = production
+    t.user = user
+    t.warehouse = warehouse
+    t.save
   end
 end

@@ -51,6 +51,8 @@ module MenuHelper
       menu = menu_for_orders_new
     elsif c == 'orders' and (a == 'edit' or a == 'update')
       menu = menu_for_orders_edit
+    elsif c == 'orders' and a == 'repair'
+      menu = menu_for_orders_repair
     elsif c == 'clients' and a == 'index'
       menu = menu_for_clients_index
     elsif c == 'clients' and (a == 'new' or a == 'create')
@@ -385,6 +387,15 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(orders_path) +
       render_function('Actualizar', 'Actualizar orden de producción', "submit_order_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_orders_repair
+    menu = content_tag(:p, 'Reparar orden de producción')
+    menu += content_tag(:ul,
+      render_back(orders_path) +
+      render_function('Reparar', 'Reparar orden de producción', "submit_order_repair_form()", 'button-execute.png')
     )
     return menu
   end

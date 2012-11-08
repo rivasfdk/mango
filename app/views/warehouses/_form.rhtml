@@ -11,4 +11,6 @@
 <label for="pdt_content_id" class="small" id="pdt_label">Lote Producto:</label>
 <div class="field" id="pdt_select"><%= f.collection_select :pdt_content_id, @pdt_contents, :id, :to_collection_select, {:include_blank => true} %></div>
 <div class="clearfix"></div>
+<label for="active" class="small">Activo:</label>
+<div class="field"><%= f.check_box :active %></div>
 <br/><span class="required">* Campos obligatorios</span>

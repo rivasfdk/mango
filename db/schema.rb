@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120913122112) do
+ActiveRecord::Schema.define(:version => 20121108131548) do
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -353,6 +353,7 @@ ActiveRecord::Schema.define(:version => 20120913122112) do
     t.float    "sack_weight"
     t.integer  "sacks"
     t.string   "document_number"
+    t.float    "stock_after"
   end
 
   create_table "trucks", :force => true do |t|
@@ -378,12 +379,13 @@ ActiveRecord::Schema.define(:version => 20120913122112) do
 
   create_table "warehouses", :force => true do |t|
     t.integer  "warehouse_type_id"
-    t.integer  "content_id",                         :null => false
-    t.string   "code",                               :null => false
-    t.string   "location",                           :null => false
+    t.integer  "content_id",                          :null => false
+    t.string   "code",                                :null => false
+    t.string   "location",                            :null => false
     t.float    "stock",             :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",            :default => true
   end
 
   create_table "warehouses_types", :force => true do |t|

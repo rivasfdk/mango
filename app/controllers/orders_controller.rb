@@ -63,4 +63,34 @@ class OrdersController < ApplicationController
     end
     redirect_to :orders
   end
+
+  def repair
+    @order = Order.find params[:id]
+  end
+
+  def do_repair
+    n_batch = Integer(params[:n_batch]) rescue 0
+    @order = Order.find params[:id]
+
+    if @order.recipe.validate
+      if n_batch.between?(1,@order.prog_batches)
+        if @order.repair(session[:user], n_batch)
+          flash[:notice] = "Orden reparada exitosamente"
+          redirect_to :orders
+        else
+          flash[:type] = 'error'
+          flash[:notice] = "Faltan almacenes necesarios para generar las transacciones"
+          redirect_to :orders
+        end
+      else
+        flash[:type] = 'error'
+        flash[:notice] = "El numero de batches es inválido"
+        redirect_to :orders
+      end
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "Algunos ingredientes de la receta no se encuentran en las tolvas"
+      redirect_to :orders
+    end
+  end
 end

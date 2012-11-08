@@ -1,0 +1,11 @@
+<%= form_tag repair_order_path, :method => 'put', :id=>'order_repair_form' do %>
+  <label for="code" class="small">Código:</label>
+  <div class="field"><%=h @order.code %></div>
+  <label for="code" class="small">Receta:</label>
+  <div class="field"><%=h @order.recipe.name %></div>
+  <label for="prog_batches" class="small">Batches prog.:</label>
+  <div class="field"><%=h @order.prog_batches %></div>
+  <label for="amount" class="small">Batches a reparar:</label>
+  <div class="field"><%= text_field_tag :n_batch, params[:n_batch], :size=>'15' %> <span>*</span></div>
+  <div class="clearfix"></div>
+<% end %>

@@ -69,6 +69,10 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'reprocess' and Permission.is_reprocess?(action)
         valid = true
+      elsif pm.permission.action == 'repair' and Permission.is_repair?(action)
+        valid = true
+      elsif pm.permission.action == 'do_repair' and Permission.is_do_repair?(action)
+        valid = true
       elsif pm.permission.module == 'reports' and pm.permission.action == action
         valid = true
       end
