@@ -14,6 +14,7 @@ class Hopper < ActiveRecord::Base
         :lot => lots,
         :hopper_id => hop.id,
         :number => hop.number,
+        :name => hop.name,
       }
     end
     #actives.sort_by {|hop| hop[:number]}
@@ -45,6 +46,11 @@ class Hopper < ActiveRecord::Base
     h = HopperLot.new(:lot_id => id)
     h.hopper_id = self.id
     return h.save
+  end
+
+  def update_name(name)
+    self.name = name
+    self.save
   end
 
   def eliminate

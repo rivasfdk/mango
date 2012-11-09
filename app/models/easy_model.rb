@@ -1,5 +1,40 @@
 class EasyModel
 
+  def self.alarms(start_date, end_date)
+    @alarms = Alarm.find :all, :include => {:order => {}}, :conditions => ['date >= ? and date <=?', start_date_to_sql(start_date), end_date_to_sql(end_date)]
+    return nil if @alarms.length.zero?
+
+    data = self.initialize_data("Reporte de alarmas")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['table'] = []
+
+    @alarms.each do |alarm|
+      data['table'] << {
+          'order_code' => alarm.order.code,
+          'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
+          'description' => alarm.description,
+        }
+    end
+    return data
+  end
+  def self.alarms_per_order(order_code)
+    @order = Order.find_by_code order_code
+    return nil if @order.nil?
+    return nil if @order.alarms.empty?
+
+    data = self.initialize_data("Alarmas de Orden #{order_code}")
+    data['table'] = []
+
+    @order.alarms.each do |alarm|
+      data['table'] << {
+          'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
+          'description' => alarm.description,
+        }
+    end
+    return data
+  end
+
   def self.ticket(ticket_id)
     @ticket = Ticket.find ticket_id, :include => {:ticket_type => {}, :driver => {}, :truck => {:carrier => {}}, :transactions => {:warehouse => {}}, :user => {}, :client => {}}
     return nil if @ticket.open?

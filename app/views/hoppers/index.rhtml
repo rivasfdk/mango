@@ -4,6 +4,7 @@
     <thead>
       <tr>
         <th>Tolva<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th>
       </tr>
@@ -14,6 +15,7 @@
       <% ingredient = (obj[:lot].nil?) ? 'N/D' : "#{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
       <tr class="<%= class_row %>">
         <td><%=h obj[:number] %></td>
+        <td><%=h obj[:name] %></td>
         <td><%=h ingredient %></td>
         <td>
           <%= render_action_edit(edit_hopper_path(obj[:hopper_id])) %>

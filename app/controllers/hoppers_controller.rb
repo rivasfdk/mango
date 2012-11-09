@@ -29,7 +29,7 @@ class HoppersController < ApplicationController
 
   def update
     @hopper = Hopper.find params[:id]
-    if @hopper.update_lot(params[:hopper][:hopper_lot])
+    if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name])
       flash[:notice] = 'Tolva actualizada con éxito'
       redirect_to :hoppers
     else

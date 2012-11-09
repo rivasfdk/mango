@@ -1,0 +1,84 @@
+report:
+  settings:
+    page:
+      size: Letter
+      orientation: P
+      margins: 20
+    style:
+      font_family: 'Helvetica'
+      font_size: 10
+      font_color: [0, 0, 0]
+  header:
+    1:
+      text:
+        field: company_name
+        margin: 30
+        align: left
+        style:
+          font_size: 11
+          font_weight: B
+    2:
+      text:
+        field: company_rif
+        margin: 30
+        align: left
+        style:
+          font_size: 10
+    3:
+      image:
+        filename: default-report-logo.png
+        width: 20
+        height: 20
+        x: 20
+        y: 12
+    4:
+      text:
+        field: company_address
+        margin: 30
+        align: left
+        style:
+          font_size: 10
+    5:
+      breakline:
+    6:
+      pagenum:
+        pattern: "Pag. <PAGE>"
+        align: right
+  body:
+    1:
+      text:
+        field: title
+        align: center
+        style:
+          font_size: 12
+          font_weight: B
+    2:
+      table:
+        field: table
+        heading:
+          align: left
+          style:
+            font_weight: B
+            bg_color: [220, 220, 220]
+        columns:
+          1:
+           date:
+              label: Fecha
+              align: center
+              width: 40
+          2:
+            description:
+              label: Descripcion
+              align: left
+              width: 140
+    3:
+      breakline:
+
+  footer:
+    1:
+      text:
+        field: footer
+        align: center
+        style:
+          font_size: 8
+          font_color: [80, 80, 80]

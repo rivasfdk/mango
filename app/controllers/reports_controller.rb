@@ -367,4 +367,30 @@ class ReportsController < ApplicationController
     
   end
 
+  def alarms
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    data = EasyModel.alarms(start_date, end_date)
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'alarms.yml'
+      send_data report.render, :filename => 'alarmas.pdf', :type => 'application/pdf'
+    end
+  end
+
+  def alarms_per_order
+    data = EasyModel.alarms_per_order(params[:report][:order])
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'alarms_per_order.yml'
+      send_data report.render, :filename => 'alarmas_por_orden.pdf', :type => 'application/pdf'
+    end
+  end
 end

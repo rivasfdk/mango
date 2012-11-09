@@ -10,7 +10,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121108131548) do
+ActiveRecord::Schema.define(:version => 20121109201831) do
+
+  create_table "alarms", :force => true do |t|
+    t.integer  "order_id"
+    t.datetime "date"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -90,9 +100,10 @@ ActiveRecord::Schema.define(:version => 20121108131548) do
   end
 
   create_table "hoppers", :force => true do |t|
-    t.integer  "number",     :null => false
+    t.integer  "number",                      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name",       :default => " "
   end
 
   create_table "hoppers_lots", :force => true do |t|

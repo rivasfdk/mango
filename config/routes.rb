@@ -41,6 +41,8 @@ ActionController::Routing::Routes.draw do |map|
   match 'reports/tickets_transactions_per_driver' => "reports#tickets_transactions_per_driver", :via => :get, :as => "tickets_transactions_per_driver_report"
   match 'reports/production_per_recipe' => "reports#production_per_recipe", :via => :get, :as => "production_per_recipe_report"
   match 'reports/production_per_client' => "reports#production_per_client", :via => :get, :as => "production_per_client_report"
+  match 'reports/alarms' => "reports#alarms", :via => :get, :as => "alarms_report"
+  match 'reports/alarms_per_order' => "reports#alarms_per_order", :via => :get, :as => "alarms_per_order_report"
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :hoppers, :products, :orders, :lots, :schedules, :batches,
