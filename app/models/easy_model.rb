@@ -848,6 +848,8 @@ class EasyModel
         'stock' => transaction.stock_after
       }
     end
+
+    data['results'].sort! {|a,b| a['code'] <=> b['code']}
     return data
   end
 
@@ -872,9 +874,9 @@ class EasyModel
           'name' => w.content_name,
           'stock' => transaction.stock_after
         }
-       end
+      end
     end
-    results.each do |key, item|
+    results.sort_by {|k,v| k}.map do |key, item|
       data['results'] << item
     end
     return data
