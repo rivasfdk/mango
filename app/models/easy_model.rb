@@ -843,7 +843,7 @@ class EasyModel
 
     warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
     warehouses.each do |w|
-      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at < ?', w.id, start_date_to_sql(date)], :order => ['date desc']
+      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at <= ?', w.id, start_date_to_sql(date)], :order => ['created_at desc']
       next if transaction.nil?
       data['results'] << {
         'code' => w.lot_code,
@@ -867,7 +867,7 @@ class EasyModel
     warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
     warehouses.each do |w|
       key = w.content_code
-      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at < ?', w.id, start_date_to_sql(date)], :order => ['date desc']
+      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at <= ?', w.id, start_date_to_sql(date)], :order => ['created_at desc']
       next if transaction.nil?
       if results.has_key?(key)
         results[key]['stock'] += transaction.stock_after
