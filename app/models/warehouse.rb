@@ -127,6 +127,16 @@ class Warehouse < ActiveRecord::Base
     transaction.save
   end
 
+  def self.search(search, page, per_page)
+    if search and search != "0"
+      paginate :all, :page => page,
+               :per_page => per_page,
+               :conditions => ['warehouse_type_id = ? and active = true', search]
+    else
+      paginate :all, :page => page, :per_page => per_page
+    end
+  end
+
   private
 
   def select_content

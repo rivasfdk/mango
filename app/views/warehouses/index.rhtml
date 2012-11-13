@@ -1,4 +1,12 @@
 <% i = 0 %>
+<div id="searchform">
+<%= form_tag warehouses_path, :method => 'get' do %>
+  <%= radio_button_tag :warehouse_type_id, 0, :checked => true %> Todos
+  <%= radio_button_tag :warehouse_type_id, 1 %> Materia prima
+  <%= radio_button_tag :warehouse_type_id, 2 %> Producto terminado<br /><br />
+  <%= submit_tag "Filtrar", :name => nil %>
+<% end %>
+</div>
 <% if @warehouses.length > 0 %>
 <table id="tabledata">
     <thead>
@@ -30,7 +38,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @warehouses %>
+    <%= will_paginate @warehouses %>
   </div>
 </div>
 <% else %>

@@ -2,7 +2,7 @@ class WarehousesController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @warehouses = Warehouse.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = true']
+        @warehouses = Warehouse.search(params[:warehouse_type_id], params[:page], session[:per_page])
         render :html => @warehouses
       end
       format.json do
