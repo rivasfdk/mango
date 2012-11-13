@@ -275,7 +275,7 @@ class EasyModel
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     driver = Driver.find(driver_id)
-    data['driver'] = "#{carrier.code} - #{carrier.name}"
+    data['driver'] = "#{driver.ci} - #{driver.name}"
     data['table1'] = []
 
     @tickets.each do |ticket|
