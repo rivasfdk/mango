@@ -563,6 +563,9 @@ class EasyModel
         b.batch_hopper_lot.each do |bhl|
           key = bhl.hopper_lot.lot.ingredient.code
           value = bhl.amount
+          if nominal[key].nil?
+            next
+          end
           std[key] = std.fetch(key, 0) + nominal[key][1]
           real[key] = real.fetch(key, 0) + value
         end
@@ -1013,7 +1016,7 @@ class EasyModel
   end
 
   def self.production_per_recipe(start_date, end_date, recipe_code, recipe_version)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version]
+    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['recipes.code = ? and version = ?', recipe_code, recipe_version]
     return nil if recipe.nil?
 
     data = self.initialize_data('Produccion por Receta')
