@@ -92,6 +92,12 @@ namespace :db do
       run_fixture('tickets_numbers')
     end
 
+    desc 'Initialize last imported recipe name'
+    task :last_imported_recipes => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('last_imported_recipes')
+    end
+
     desc 'Initialize permissions'
     task :permissions => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'

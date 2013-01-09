@@ -9,6 +9,8 @@ ActionController::Routing::Routes.draw do |map|
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'warehouses/recalculate' => "warehouses#recalculate", :via => :get, :as => 'recalculate_warehouses'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
+  match 'transactions/export' => "transactions#export", :via => :get, :as => 'export_transactions'
+  match 'transactions/download' => "transactions#download", :via => :get, :as => 'download_transactions'
   match 'roles/:id/clone' => "roles#clone", :via => :get, :as => 'clone_role'
   match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
   match 'orders/:id/repair' => "orders#repair", :via => :get, :as => 'repair_order'

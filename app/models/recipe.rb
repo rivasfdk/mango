@@ -3,7 +3,7 @@ class Recipe < ActiveRecord::Base
   has_many :order
   belongs_to :mixing_time
 
-  validates_presence_of :name, :code, :mixing_time_id
+  validates_presence_of :name, :code#, :mixing_time_id
   #validates_uniqueness_of :code
   validates_length_of :name, :within => 3..40
   #validates_associated :ingredient_recipe
@@ -108,9 +108,12 @@ class Recipe < ActiveRecord::Base
   def import_new(filepath, overwrite)
     begin
       transaction do
+        file_total = 0
+        file_imported = 0
         fd = File.open(filepath, 'r')
         continue = fd.gets().split(';')
         while (continue)
+          file_total += 1
           header = continue
           return false unless validate_field(header[0], 'C')
           version = header[1]
@@ -122,6 +125,7 @@ class Recipe < ActiveRecord::Base
           unless @previously_stored_recipe.nil?
             logger.debug("Receta: #{@previously_stored_recipe.code} version #{@previously_stored_recipe.version} ya existe")
             unless @previously_stored_recipe.active
+              file_imported += 1
               @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
               @current_active_recipe.active = false
               @current_active_recipe.save
@@ -136,11 +140,11 @@ class Recipe < ActiveRecord::Base
             end
           else
             @previous_version_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
-            unless @previous_version_recipe.nil?
+            unless @previous_version_recipe.nil? 
               @previous_version_recipe.active = false
               @previous_version_recipe.save
             end
-
+            file_imported += 1
             @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
             logger.debug("Creando encabezado de receta #{@recipe.inspect}")
 
@@ -165,6 +169,11 @@ class Recipe < ActiveRecord::Base
           break if continue.nil?
           continue = continue.split(';')
         end
+        @last_imported_recipe = LastImportedRecipe.last
+        @last_imported_recipe.imported_recipes = file_imported
+        @last_imported_recipe.total_recipes = file_total
+        @last_imported_recipe.save
+        
       end
     rescue Exception => ex
       errors.add(:unknown, ex.message)

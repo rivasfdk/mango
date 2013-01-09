@@ -82,4 +82,11 @@ class TransactionsController < ApplicationController
     end
     redirect_to :transactions
   end
+  
+  def download
+	start_date = EasyModel.param_to_date(params[:transaction], 'start')
+    end_date = EasyModel.param_to_date(params[:transaction], 'end')
+	data = Transaction.generate_export_file(start_date, end_date)
+	send_data data, :filename => "transacciones.txt", :type => "text/plain"
+  end
 end

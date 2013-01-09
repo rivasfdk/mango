@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
   def index
     @recipes = Recipe.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = ?', true]
+    @last_imported_recipe = LastImportedRecipe.last
   end
   
   def new
@@ -111,6 +112,9 @@ class RecipesController < ApplicationController
       @recipe = Recipe.new
       if @recipe.import_new(filepath, overwrite)
         flash[:notice] = "Receta importada con éxito"
+        @last_imported_recipe = LastImportedRecipe.last
+        @last_imported_recipe.name = name
+        @last_imported_recipe.save
         redirect_to :action => 'index'
       else
         flash[:type] = 'error'

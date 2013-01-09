@@ -111,6 +111,8 @@ module MenuHelper
       menu = menu_for_transactions_new
     elsif c == 'transactions' and (a == 'edit' or a == 'update')
       menu = menu_for_transactions_edit
+    elsif c == 'transactions' and (a == 'export')
+      menu = menu_for_transactions_export
     elsif c == 'permissions' and a == 'index'
       menu = menu_for_permissions_index
     elsif c == 'permissions' and (a == 'new' or a == 'create')
@@ -635,6 +637,7 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Reprocesar', 'Recalcular consumos', reprocess_transactions_path, 'button-recalculate.png') +
+      render_action('Exportar', 'Exportar consumos', export_transactions_path, 'button-import.png') +
       render_action('Crear', 'Crear nueva transacción', new_transaction_path, 'button-add.png')
     )
     return menu
@@ -654,6 +657,14 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(transactions_path) +
       render_function('Actualizar', 'Actualizar transacción', "submit_transaction_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_transactions_export
+    menu = content_tag(:p, 'Exportar consumos')
+    menu += content_tag(:ul,
+      render_back(transactions_path)
     )
     return menu
   end

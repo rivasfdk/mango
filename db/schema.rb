@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121109201831) do
+ActiveRecord::Schema.define(:version => 20130108235657) do
 
   create_table "alarms", :force => true do |t|
     t.integer  "order_id"
@@ -148,6 +148,14 @@ ActiveRecord::Schema.define(:version => 20121109201831) do
 
   add_index "ingredients_recipes", ["ingredient_id"], :name => "fk_ingredients_recipes_ingredient_id"
   add_index "ingredients_recipes", ["recipe_id"], :name => "fk_ingredients_recipes_recipe_id"
+
+  create_table "lasts_imported_recipes", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "total_recipes",    :default => 0
+    t.integer  "imported_recipes", :default => 0
+  end
 
   create_table "lots", :force => true do |t|
     t.string   "code"
@@ -307,32 +315,6 @@ ActiveRecord::Schema.define(:version => 20121109201831) do
   end
 
   create_table "tickets_types", :force => true do |t|
-    t.string   "code",        :null => false
-    t.string   "description", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "transaction_notes", :force => true do |t|
-    t.integer  "user_id",                  :null => false
-    t.date     "date",                     :null => false
-    t.string   "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "transaction_note_type_id"
-    t.integer  "number",                   :null => false
-    t.integer  "client_id"
-  end
-
-  add_index "transaction_notes", ["client_id"], :name => "fk_transaction_notes_client_id"
-
-  create_table "transaction_notes_numbers", :force => true do |t|
-    t.string   "number",     :default => "1"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "transaction_notes_types", :force => true do |t|
     t.string   "code",        :null => false
     t.string   "description", :null => false
     t.datetime "created_at"

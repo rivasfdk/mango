@@ -1,5 +1,8 @@
 <% i = 0 %>
 <% if @recipes.length > 0 %>
+<% if @last_imported_recipe.name != '' %>
+<p><strong>Ultimo archivo importado:</strong> <%= @last_imported_recipe.name %> (<%= @last_imported_recipe.imported_recipes %> de <%= @last_imported_recipe.total_recipes %>)</p><br />
+<% end %>
 <table id="tabledata">
     <thead>
       <tr>
