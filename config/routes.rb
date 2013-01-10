@@ -15,6 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
   match 'orders/:id/repair' => "orders#repair", :via => :get, :as => 'repair_order'
   match 'orders/:id/repair' => "orders#do_repair", :via => :put, :as => 'repair_order'
+  match 'orders/:id/generate_transactions' => "orders#generate_transactions", :via => :put, :as => 'generate_transactions_order'
   match 'warehouses/:id/adjust' => "warehouses#adjust", :via => :get, :as => 'adjust_warehouse'
   match 'warehouses/:id/adjust' => "warehouses#do_adjust", :via => :put, :as => 'adjust_warehouse'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"

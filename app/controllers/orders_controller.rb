@@ -93,4 +93,10 @@ class OrdersController < ApplicationController
       redirect_to :orders
     end
   end
+  
+  def generate_transactions
+    @order = Order.find params[:id]
+    @order.generate_transactions(session[:user])
+    redirect_to :orders
+  end
 end
