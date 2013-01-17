@@ -6,8 +6,8 @@ class WarehousesController < ApplicationController
         render :html => @warehouses
       end
       format.json do
-        @warehouses = Warehouse.find :all
-        render :json => @warehouses, :methods => [:content_code, :content_name, :lot_code], :conditions => ['active = true']
+        @warehouses = Warehouse.find :all, :conditions => ['active = true']
+        render :json => @warehouses, :methods => [:content_code, :content_name, :lot_code]
       end
     end
   end
