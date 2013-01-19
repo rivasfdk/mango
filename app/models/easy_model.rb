@@ -90,10 +90,10 @@ class EasyModel
       data['comment3'] = comments[2]
     end
     if comments[3]
-      data['comment4'] = comments[2]
+      data['comment4'] = comments[3]
     end
     if comments[4]
-      data['comment5'] = comments[2]
+      data['comment5'] = comments[4]
     end
 
     data['transactions'] = []
