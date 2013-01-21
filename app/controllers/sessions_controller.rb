@@ -29,6 +29,10 @@ class SessionsController < ApplicationController
           @user = User.find user.id
           render :json => @user, :methods => [:allow_manual],  :except => [:password_hash, :password_salt]
         end
+        format.xml do
+          @user = User.find user.id
+          render :xml => @user, :except => [:password_hash, :password_salt]
+        end
       end
     else
       respond_to do |format|
@@ -38,6 +42,7 @@ class SessionsController < ApplicationController
           redirect_to :action => 'index'
         end
         format.json { head :unauthorized }
+        format.xml { head :unauthorized }
       end
     end
   end

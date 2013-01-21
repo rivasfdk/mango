@@ -6,7 +6,7 @@ gem "will_paginate", "~> 3.0.pre2"
 gem 'mysql2', '< 0.3'
 gem 'dynamic_form'
 gem 'railroad'
-
+gem 'rb-readline'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 

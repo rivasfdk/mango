@@ -1,7 +1,7 @@
 report:
   settings:
     page:
-      size: Letter
+      size: Half Letter
       orientation: P
       margins: 15
     style:

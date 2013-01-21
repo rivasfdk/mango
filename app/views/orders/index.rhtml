@@ -18,7 +18,7 @@
       <% class_row, i = alternate_row_class(i) %>
       <% client = o.client.nil? ? '' : o.client.name %>
       <tr class="<%= class_row %>">
-        <td class="center"><%=h o.code %></td>
+        <td class="center"><%= link_to o.code, print_order_path(o.id) %></td>
         <td class="center"><%=h o.created_at.strftime "%d/%m/%Y %H:%M:%S" %></td>
         <td><%= link_to o.recipe.name, recipe_path(o.recipe.id) %></td>
         <td><%=h client %></td>
