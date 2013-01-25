@@ -9,7 +9,7 @@
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Versión<span class="order_arrow"></span></th>
-        <th>Activa<span class="order_arrow"></span></th>
+        <th>Total Kg.<span class="order_arrow"></span></th>
         <th>En uso<span class="order_arrow"></span></th>
         <th class="actions">Acciones</th>
       </tr>
@@ -21,7 +21,7 @@
         <td class="center"><%=h r.code %></td>
         <td><%=h r.name %></td>
         <td class="center"><%=h r.version %></td>
-        <td class="center"><%= r.active ? "Sí" : "No" %></td>
+        <td class="right"><%=h r.get_total %></td>
         <td class="center"><%= r.in_use ? "Sí" : "No" %></td>
         <td class="center">
           <%= render_action_show(recipe_path(r)) %>
