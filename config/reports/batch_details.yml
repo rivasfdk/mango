@@ -176,6 +176,9 @@ report:
               unit: %
               width: 20
               precision: 1
+              perc_totalize: true
+              perc_num: 'var_kg'
+              perc_dem: 'std_kg'
           7:
             hopper:
               label: Tolva

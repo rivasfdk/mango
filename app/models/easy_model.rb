@@ -361,6 +361,67 @@ class EasyModel
     return data
   end
 
+  def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_code)
+    @orders = Order.find :all, :include=>['batch'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+    return nil if @orders.length.zero?
+    
+    @ingredient = Ingredient.find_by_code ingredient_code
+    return nil if @ingredient.nil?
+
+    data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['results'] = []
+    data['ingredient'] = "#{@ingredient.code} - #{@ingredient.name}"
+
+    @orders.each do |o|
+      order_ingredients = {}
+      o.recipe.ingredient_recipe.each do |ir|
+        order_ingredients[ir.ingredient.code] = ir.amount
+      end
+      unless o.medicament_recipe.nil?
+        o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          order_ingredients[imr.ingredient.code] = imr.amount
+        end
+      end
+
+      unless order_ingredients.has_key? ingredient_code
+        next
+      end
+      
+      total_std = order_ingredients[ingredient_code] * o.get_real_batches()
+      total_real = 0
+      
+      o.batch.each do |b|
+        b.batch_hopper_lot.each do |bhl|
+          if bhl.hopper_lot.lot.ingredient.code == ingredient_code
+            total_real += bhl.amount
+            next
+          end
+        end
+      end
+      
+      var_kg = total_real - total_std
+      var_perc = var_kg * 100 / total_std
+      rbatches = o.get_real_batches()
+      
+      data['results'] << {
+        'order' => o.code,
+        'date' => o.calculate_short_start_date,
+        'recipe_code' => o.recipe.code,
+        'recipe_name' => o.recipe.name,
+        'recipe_version' => o.recipe.version,
+        'real_batches' => rbatches.to_s,
+        'total_standard' => total_std.to_s,
+        'total_real' => total_real.to_s,
+        'var_kg' => var_kg.to_s,
+        'var_perc' => var_perc.to_s
+      }
+    end
+
+    return data
+  end
+
   def self.order_duration(start_date, end_date)
     @orders = Order.find :all, :include=>['batch', 'recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
     return nil if @orders.length.zero?

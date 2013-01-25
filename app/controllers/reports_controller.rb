@@ -99,6 +99,21 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
     end
   end
+  
+  def consumption_per_ingredient_per_orders
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    ingredient_code = params[:report]['ingredient_code']
+    data = EasyModel.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_code)
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'consumption_per_ingredient_per_orders.yml'
+      send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
+    end
+  end
 
   def consumption_per_ingredients
     start_date = EasyModel.param_to_date(params[:report], 'start')
