@@ -133,6 +133,7 @@ report:
               align: right
               unit: Kg
               width: 27
+              totalize: true
               precision: 2
           7:
             var_perc:

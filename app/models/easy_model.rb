@@ -347,6 +347,7 @@ class EasyModel
         'date' => o.calculate_short_start_date,
         'recipe_code' => o.recipe.code,
         'recipe_name' => o.recipe.name,
+        'recipe_version' => o.recipe.version,
         'client_code' => o.client.code,
         'client_name' => o.client.name,
         'real_batches' => rbatches.to_s,
@@ -537,6 +538,8 @@ class EasyModel
         var_perc = var_kg * 100 / std_kg rescue 0
       end
 
+      hopper_name = bhl.hopper_lot.hopper.name == " " ? bhl.hopper_lot.hopper.number : bhl.hopper_lot.hopper.name
+
       data['results'] << {
         'code' => bhl.hopper_lot.lot.ingredient.code,
         'ingredient' => bhl.hopper_lot.lot.ingredient.name,
@@ -544,7 +547,7 @@ class EasyModel
         'std_kg' => std_kg,
         'var_kg' => var_kg,
         'var_perc' => var_perc,
-        'hopper' => bhl.hopper_lot.hopper.number,
+        'hopper' => hopper_name,
         'lot' => bhl.hopper_lot.lot.code,
       }
     end

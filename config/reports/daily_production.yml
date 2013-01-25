@@ -91,13 +91,13 @@ report:
         totalization:
           precision: 2
           label: Totales
-          align: right
+          align: center
           border: T
           style:
             font_weight: B
         columns:
           1:
-           order :
+           order:
               label: Orden
               align: left
               width: 15
@@ -115,48 +115,58 @@ report:
             recipe_name:
               label: Desc. Receta
               align: left
-              width: 53
+              width: 43
           5:
+            recipe_version:
+              label: Version
+              align: center
+              width: 12
+          6:
             client_code:
               label: Cliente
               align: left
               width: 12
-          6:
+          7:
             client_name:
               label: Desc. Cliente
               align: left
               width: 40
-          7:
+          8:
             real_batches:
               label: Baches
               align: right
               width: 10
               totalize: true
-          8:
+          9:
             total_standard:
               label: Total Est.(Kg)
               align: right
               width: 25
               totalize: true
               precision: 2
-          9:
+          10:
             total_real:
               label: Total Real (Kg)
               align: right
               width: 28
               totalize: true
               precision: 2
-          10:
+          11:
             var_kg:
               label: Var (Kg)
               align: right
               width: 20
+              totalize: true
               precision: 2
-          11:
+          12:
             var_perc:
               label: Var (%)
               align: right
+              unit: %
               width: 15
+              perc_totalize: true
+              perc_num: 'var_kg'
+              perc_dem: 'total_standard'
               precision: 2
     8:
       breakline:

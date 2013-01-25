@@ -230,7 +230,7 @@ module EasyReport
       totalization = nil
       unless element.nil?
         totalization = {
-          'precision' => (element.has_key?('precision')) ? 2 : element['precision'],
+          'precision' => (element.has_key?('precision')) ? element['precision'] : 0,
           'label' => element['label'],
           'border' => get_border(element['border']),
           'align' => get_align(element['align']),
@@ -252,6 +252,10 @@ module EasyReport
         key = element['columns'][i].keys()[0]
         col = element['columns'][i][key]
         totalize = (col.has_key?('totalize')) ? col['totalize'] : false
+        perc_totalize = (col.has_key?('perc_totalize')) ? col['perc_totalize'] : false
+        perc_num = (col.has_key?('perc_num')) ? col['perc_num'] : 0
+        perc_dem = (col.has_key?('perc_dem')) ? col['perc_dem'] : 0
+        
         unit = (col.has_key?('unit')) ? " #{col['unit']}" : ''
 
         unless col['width'].nil?
@@ -265,6 +269,9 @@ module EasyReport
           'label' => col['label'],
           'width' => col['width'],
           'totalize' => totalize,
+          'perc_totalize' => perc_totalize,
+          'perc_num' => perc_num,
+          'perc_dem' => perc_dem,
           'precision' => col['precision'],
           'unit' => unit,
           'head' => {
@@ -372,6 +379,8 @@ module EasyReport
             else
               totals[column['field']] = row[column['field']].to_f
             end
+          elsif column['perc_totalize']
+            totals[column['field']] = totals[column['perc_num']] * 100 / totals [column['perc_dem']] rescue 0
           end
 
           field_text = row[column['field']]
@@ -407,6 +416,7 @@ module EasyReport
       config.each_index do |i|
         index = i
         break if config[i]['totalize']
+        break if config[i]['perc_totalize']
         label_width += config[i]['width']
       end
       x = GetX()
@@ -423,7 +433,12 @@ module EasyReport
         if totalization['precision']
           field_text = number_with_precision(totals[config[i]['field']].to_f, totalization['precision'].to_i)
         end
-        text = (config[i]['totalize']) ? "#{field_text}#{config[i]['unit']}" : ''
+        text = ''
+        if config[i]['totalize']
+          text = "#{field_text}#{config[i]['unit']}"
+        elsif config[i]['perc_totalize']
+          text = "#{field_text}#{config[i]['unit']}"
+        end
         x = GetX()
         y = GetY()
         fill = set_bg_color(totalization['style']['bg_color'])
