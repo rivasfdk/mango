@@ -18,7 +18,7 @@
       <% class_row, i = alternate_row_class(i) %>
       <% client = o.client.nil? ? '' : o.client.name %>
       <tr class="<%= class_row %>">
-        <td class="center"><%= link_to o.code, order_path(o.id) %></td>
+        <td class="center"><%=h o.code %></td>
         <td class="center"><%=h o.created_at.strftime "%d/%m/%Y %H:%M:%S" %></td>
         <td><%= link_to o.recipe.name, recipe_path(o.recipe.id) %></td>
         <td><%=h client %></td>
@@ -26,6 +26,7 @@
         <td class="center"><%=h o.real_batches %></td>
         <td class="center"><%=h o.completed %></td>
         <td class="center">
+          <%= render_action_show(order_path(o)) %>
           <%= render_action_edit(edit_order_path(o)) %>
           <% unless o.completed %>
             <%= render_action_repair(repair_order_path(o)) %>
