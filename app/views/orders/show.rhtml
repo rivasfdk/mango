@@ -1,0 +1,70 @@
+<%= form_for :order do |f| %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%=h @data['order'] %></div>
+<label for="client" class="small">Cliente:</label>
+<div class="field"><%=h @data['client'] %></div>
+<label for="client" class="small">Fórmula:</label>
+<div class="field"><%=h @data['recipe'] %></div>
+<label for="client" class="small">Version:</label>
+<div class="field"><%=h @data['version'] %></div>
+<label for="client" class="small">Prod. Term.:</label>
+<div class="field"><%=h @data['product'] %></div>
+<label for="client" class="small">Inicio:</label>
+<div class="field"><%=h @data['start_date'] %></div>
+<label for="client" class="small">Final:</label>
+<div class="field"><%=h @data['end_date'] %></div>
+<label for="client" class="small">Batch Prog.:</label>
+<div class="field"><%=h @data['prog_batches'] %></div>
+<label for="client" class="small">Batch Real.:</label>
+<div class="field"><%=h @data['real_batches'] %></div>
+<label for="client" class="small">Cant. Prod. Term.:</label>
+<div class="field"><%=h @data['total_real'] %></div>
+<div class="clearfix"></div>
+<% end %>
+<h5>Consumos totales</h5>
+<% i = 0 %>
+<% if @data['results'].length > 0 %>
+<div id="order_details_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Materia Prima<span class="order_arrow"></span></th>
+        <th>Lote<span class="order_arrow"></span></th>
+        <th>Estandar<span class="order_arrow"></span></th>
+        <th>Real<span class="order_arrow"></span></th>
+        <th>Var Kg.<span class="order_arrow"></span></th>
+        <th>Var %<span class="order_arrow"></span></th>
+        <th>Tolva<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @data['results'].each do |r| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td class="center"><%=h r['code'] %></td>
+          <td><%=h r['ingredient'] %></td>
+          <td class="center"><%=h r['lot'] %></td>
+          <td class="right"><%=h r['std_kg'] %></td>
+          <td class="right"><%=h r['real_kg'] %></td>
+          <td class="right"><%=h '%.2f' % r['var_kg'] %></td>
+          <td class="right"><%=h '%.2f' % r['var_perc'] %></td>
+          <td class="center"><%=h r['hopper'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td class="total">TOTAL</td>
+      <td></td>
+      <td><%=h @data['total_std'] %></td>
+      <td><%=h @data['total_real'] %></td>
+      <td><%=h '%.2f' % @data['total_var'] %></td>
+      <td><%=h '%.2f' % @data['total_var_perc'] %></td>
+      <td></td>
+    </tfoot>
+  </table>
+</div>
+<% else %>
+<p>No existen consumos de esta orden de producción</p>
+<% end %>

@@ -112,4 +112,9 @@ class OrdersController < ApplicationController
       send_data report.render, :filename => "detalle_orden_produccion.pdf", :type => "application/pdf"
     end
   end
+  
+  def show
+    order = Order.find params[:id]
+    @data = EasyModel.order_details(order.code)
+  end
 end

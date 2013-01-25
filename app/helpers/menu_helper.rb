@@ -47,6 +47,8 @@ module MenuHelper
       menu = menu_for_products_edit
     elsif c == 'orders' and a == 'index'
       menu = menu_for_orders_index
+    elsif c == 'orders' and a == 'show'
+      menu = menu_for_orders_show
     elsif c == 'orders' and (a == 'new' or a == 'create')
       menu = menu_for_orders_new
     elsif c == 'orders' and (a == 'edit' or a == 'update')
@@ -371,6 +373,15 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva orden de producción', new_order_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_orders_show
+    menu = content_tag(:p, 'Detalle de orden')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Generar Reporte', 'Generar Reporte de Orden de Producción', print_order_path, 'button-print.png')
     )
     return menu
   end

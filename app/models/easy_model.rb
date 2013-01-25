@@ -420,16 +420,16 @@ class EasyModel
     end
 
     details = {}
-    total_real = 0
     @order.batch.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.ingredient.code
         std_amount = (ingredients.has_key?(key)) ? ingredients[key] * @order.get_real_batches : 0
+        hopper_name = bhl.hopper_lot.hopper.name == " " ? bhl.hopper_lot.hopper.number : bhl.hopper_lot.hopper.name
         unless details.has_key?(key)
           details[key] = {
             'ingredient' => bhl.hopper_lot.lot.ingredient.name,
             'lot' => bhl.hopper_lot.lot.code,
-            'hopper' => bhl.hopper_lot.hopper.number,
+            'hopper' => hopper_name,
             'real_kg' => bhl.amount.to_f,
             'std_kg' => std_amount,
             'var_kg' => 0,
@@ -438,7 +438,6 @@ class EasyModel
         else
           details[key]['real_kg'] += bhl.amount.to_f
         end
-        total_real += details[key]['real_kg']
         details[key]['var_kg'] = details[key]['real_kg'] - details[key]['std_kg']
         details[key]['var_perc'] = details[key]['var_kg'] * 100 / details[key]['std_kg']
       end
@@ -459,8 +458,20 @@ class EasyModel
         }
       end
     end
+    
+    total_std = 0
+    total_real = 0
+    
+    details.each do |key, value|
+      total_std += value['std_kg']
+      total_real += value['real_kg']
+    end
+    
+    total_var = total_real - total_std
+    total_var_perc = total_var * 100 / total_std
 
     data = self.initialize_data('Detalle de Orden de Produccion')
+    data['id'] = @order.id
     data['order'] = @order.code
     data['client'] = "#{@order.client.code} - #{@order.client.name}"
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
@@ -471,14 +482,19 @@ class EasyModel
     data['end_date'] = @order.calculate_end_date()
     data['prog_batches'] = @order.prog_batches.to_s
     data['real_batches'] = @order.get_real_batches().to_s
-    data['product_total'] = "#{Batch.get_real_total(@order.id).to_s} Kg"
-    data['total_real_kg'] = total_real
+    data['total_std'] = total_std
+    data['total_real'] = total_real
+    data['total_var'] = total_var
+    data['total_var_perc'] = total_var_perc
+    data['product_total'] = "#{total_real} Kg"
     data['results'] = []
 
     details.sort_by {|k,v| k}.map do |key, value|
       element = {'code' => key}
       data['results'] << element.merge(value)
     end
+    
+    
 
     return data
   end
