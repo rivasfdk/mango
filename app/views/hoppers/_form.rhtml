@@ -5,6 +5,10 @@
 <label for="number" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'10' %></div>
 <label for="ingredient" class="small">Ingrediente (Lote):</label>
+<% if @current_lot.nil? %>
 <div class="field"><%= f.collection_select :hopper_lot, @lots, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
+<% else %>
+<div class="field"><%= f.collection_select :hopper_lot, @lots, :id, :to_collection_select, {:include_blank => true, :selected => @current_lot.id}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
+<% end %>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

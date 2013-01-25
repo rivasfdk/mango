@@ -1,6 +1,6 @@
 class HoppersController < ApplicationController
   def index
-    @hoppers = Hopper.find_active
+    @hoppers = Hopper.find_actives
   end
 
   def new
@@ -10,6 +10,7 @@ class HoppersController < ApplicationController
   def edit
     @lots = Lot.where :active => true, :in_use => true
     @hopper = Hopper.find params[:id]
+    @current_lot = @hopper.find_active.lot rescue nil
   end
 
   def create

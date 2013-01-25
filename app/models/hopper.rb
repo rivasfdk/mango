@@ -5,7 +5,7 @@ class Hopper < ActiveRecord::Base
   validates_presence_of :number
   validates_numericality_of :number, :only_integer => true, :greater_than_or_equal_to => 0
 
-  def self.find_active
+  def self.find_actives
     actives = []
     hoppers = Hopper.find :all, :order => 'number ASC'
     hoppers.each do |hop|
@@ -31,6 +31,10 @@ class Hopper < ActiveRecord::Base
       actives << ["Tolva #{hop.number} - #{lots.lot.ingredient.name} (L: #{lots.lot.code})", lots.id]
     end
     return actives
+  end
+  
+  def find_active
+    lot = HopperLot.find :first, :conditions => ['hopper_id = ? and active = ?', self.id, true]
   end
 
   def deactivate_all_lots
