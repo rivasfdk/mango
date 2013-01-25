@@ -112,16 +112,16 @@ report:
               align: left
               width: 40
           4:
-            real_kg:
-              label: Cant. Real
+            std_kg:
+              label: Cant. Est.
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           5:
-            std_kg:
-              label: Cant. Est.
+            real_kg:
+              label: Cant. Real.
               align: right
               unit: Kg
               width: 27
