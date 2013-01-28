@@ -232,7 +232,7 @@ class Recipe < ActiveRecord::Base
                :per_page => per_page,
                :conditions => ['code = ? and active = true', search]
     else
-      paginate :all, :page => page, :per_page => per_page
+      paginate :all, :page => page, :per_page => per_page, :conditions => ['active = true']
     end
   end
 end
