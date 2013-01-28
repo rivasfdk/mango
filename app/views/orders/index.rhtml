@@ -31,6 +31,7 @@
           <% unless o.completed %>
             <%= render_action_repair(repair_order_path(o)) %>
           <% end %>
+          <br />
           <%= render_action_delete(order_path(o), "Desea borrar la orden '#{o.code}'?") %>
         </td>
       </tr>

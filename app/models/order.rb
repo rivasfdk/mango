@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
   has_many :batch
   has_many :alarms
 
-  validates_presence_of :recipe_id, :user_id, :product_lot_id
+  validates_presence_of :recipe_id, :user_id, :product_lot_id, :client_id
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
   validates_associated :recipe, :client, :user
 
