@@ -192,7 +192,7 @@ class Order < ActiveRecord::Base
                :order => 'created_at DESC',
                :conditions => ['code = ?', search]
     else
-      paginate :all, :page => page, :per_page => per_page
+      paginate :all, :page => page, :per_page => per_page, :order => 'created_at DESC'
     end
   end
 end
