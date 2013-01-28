@@ -1,4 +1,11 @@
 <% i = 0 %>
+<div id="searchform">
+<%= form_tag recipes_path, :method => 'get' do %>
+  <label for="code">Código de receta:</label>
+  <%= text_field_tag :code, params[:code]%>
+  <%= submit_tag "Filtrar", :name => nil %>
+<% end %>
+</div>
 <% if @recipes.length > 0 %>
 <% if @last_imported_recipe.name != '' %>
 <p><strong>Ultimo archivo importado:</strong> <%= @last_imported_recipe.name %> (<%= @last_imported_recipe.imported_recipes %> de <%= @last_imported_recipe.total_recipes %>)</p><br />

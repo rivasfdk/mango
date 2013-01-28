@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   def index
-    @recipes = Recipe.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = ?', true]
+    @recipes = Recipe.search(params[:code], params[:page], session[:per_page])
     @last_imported_recipe = LastImportedRecipe.last
   end
   

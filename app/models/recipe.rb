@@ -224,5 +224,15 @@ class Recipe < ActiveRecord::Base
     value = string.strip().gsub('.', '')
     value = value.gsub(',', '.')
     return value.to_f
-  end 
+  end
+
+  def self.search(search, page, per_page)
+    if search and search != ""
+      paginate :all, :page => page,
+               :per_page => per_page,
+               :conditions => ['code = ? and active = true', search]
+    else
+      paginate :all, :page => page, :per_page => per_page
+    end
+  end
 end

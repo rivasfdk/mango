@@ -184,4 +184,15 @@ class Order < ActiveRecord::Base
     t.warehouse = warehouse
     t.save
   end
+  
+  def self.search(search, page, per_page)
+    if search and search != ""
+      paginate :all, :page => page,
+               :per_page => per_page,
+               :order => 'created_at DESC',
+               :conditions => ['code = ?', search]
+    else
+      paginate :all, :page => page, :per_page => per_page
+    end
+  end
 end

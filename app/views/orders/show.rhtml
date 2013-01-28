@@ -4,7 +4,7 @@
 <label for="client" class="small">Cliente:</label>
 <div class="field"><%=h @data['client'] %></div>
 <label for="client" class="small">Fórmula:</label>
-<div class="field"><%=h @data['recipe'] %></div>
+<div class="field"><%= link_to @data['recipe'], recipe_path(@data['recipe_id']) %></div>
 <label for="client" class="small">Version:</label>
 <div class="field"><%=h @data['version'] %></div>
 <label for="client" class="small">Prod. Term.:</label>

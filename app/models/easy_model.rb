@@ -536,6 +536,7 @@ class EasyModel
     data['id'] = @order.id
     data['order'] = @order.code
     data['client'] = "#{@order.client.code} - #{@order.client.name}"
+    data['recipe_id'] = @order.recipe.id
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
     data['comment'] = @order.comment

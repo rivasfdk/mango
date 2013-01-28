@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   def index
-    @orders = Order.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :order => 'created_at DESC'
+    @orders = Order.search(params[:code], params[:page], session[:per_page])
   end
 
   def new
