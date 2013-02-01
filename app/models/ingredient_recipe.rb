@@ -22,4 +22,8 @@ class IngredientRecipe < ActiveRecord::Base
     end
     return (errors.size > 0) ? false : true
   end
+  
+  def get_percentage
+    amount * 100 / self.recipe.get_total
+  end
 end

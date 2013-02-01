@@ -19,7 +19,7 @@
           <td><%=h ir.ingredient.name %></td>
           <td class="center"><%=h ir.amount %></td>
           <td class="center"><%=h ir.priority %></td>
-          <td class="center"><%=h ir.percentage %></td>
+          <td class="center"><%=h '%.2f' % ir.get_percentage %></td>
         </tr>
       <% end %>
     </tbody>
