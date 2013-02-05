@@ -18,7 +18,7 @@ class Transaction < ActiveRecord::Base
   end
   
   def self.generate_export_file(start_date, end_date)
-	return "data"
+    return "data"
   end
 
   def process
@@ -72,16 +72,14 @@ class Transaction < ActiveRecord::Base
   end
 
   def increase_stock
-    warehouse = Warehouse.get(self.warehouse.id)
-    warehouse.stock += self.amount
-    warehouse.save
-    self.stock_after = warehouse.stock
+    self.warehouse.stock += self.amount
+    self.warehouse.save
+    self.stock_after = self.warehouse.stock
   end
 
   def decrease_stock
-    warehouse = Warehouse.get(self.warehouse.id)
-    warehouse.stock -= self.amount
-    warehouse.save
-    self.stock_after = warehouse.stock
+    self.warehouse.stock -= self.amount
+    self.warehouse.save
+    self.stock_after = self.warehouse.stock
   end
 end
