@@ -16,7 +16,7 @@ class Transaction < ActiveRecord::Base
   def self.get_no_processed
     Transaction.find :all, :conditions=>['processed_in_stock = 0']
   end
-  
+
   def self.generate_export_file(start_date, end_date)
     return "data"
   end
