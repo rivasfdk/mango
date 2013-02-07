@@ -76,17 +76,6 @@
   </div>
   <% end %>
 
-  <!-- Warehouses -->
-  <% if session[:permissions].include?('warehouses') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('warehouses-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouses_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Almacenes', warehouses_path %></h2>
-      <p>Gestión de almacenes</p>
-    </div>
-  </div>
-  <% end %>
-
   <!-- Product Lots -->
   <% if session[:permissions].include?('product_lots') %>
   <div class="module yui3-u-1-2">

@@ -36,7 +36,7 @@ class EasyModel
   end
 
   def self.ticket(ticket_id)
-    @ticket = Ticket.find ticket_id, :include => {:ticket_type => {}, :driver => {}, :truck => {:carrier => {}}, :transactions => {:warehouse => {}}, :user => {}, :client => {}}
+    @ticket = Ticket.find ticket_id
     return nil if @ticket.open?
 
     data = self.initialize_data("Ticket #{@ticket.number} - #{@ticket.ticket_type.code}")
@@ -105,8 +105,8 @@ class EasyModel
         sack_weight = t.sack_weight.to_s + "Kg"
       end
       data['transactions'] << {
-        'code' => t.warehouse.get_content.code,
-        'name' => t.warehouse.get_content.name,
+        'code' => t.get_content.code,
+        'name' => t.get_content.name,
         'sacks' => sacks,
         'sack_weight' => sack_weight,
         'amount' => t.amount
@@ -116,28 +116,28 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions(start_date, end_date, ticket_type_id, warehouse_type_id)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions(start_date, end_date, ticket_type_id, content_type)
+    @tickets = Ticket.find :all, :include => {:transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['table1'] = []
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+        if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
@@ -145,28 +145,28 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, clients_codes)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, content_type, clients_codes)
+    @tickets = Ticket.find :all, :include => {:transactions => {}, :client => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['table1'] = []
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+        if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
@@ -174,28 +174,28 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_contents(start_date, end_date, ticket_type_id, warehouse_type_id, contents_codes)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_contents(start_date, end_date, ticket_type_id, content_type, contents_codes)
+    @tickets = Ticket.find :all, :include => {:transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['table1'] = []
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        unless contents_codes.include? transaction.warehouse.content_code
+        unless contents_codes.include? transaction.get_content.code
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
@@ -203,28 +203,28 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_contents_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, contents_codes, clients_codes)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, warehouse_type_id, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_contents_per_clients(start_date, end_date, ticket_type_id, content_type, contents_codes, clients_codes)
+    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['table1'] = []
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        unless contents_codes.include? transaction.warehouse.content_code
+        unless contents_codes.include? transaction.get_content.code
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
@@ -232,15 +232,15 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_carrier(start_date, end_date, ticket_type_id, warehouse_type_id, carrier_id)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ? and trucks.carrier_id = ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), carrier_id], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_carrier(start_date, end_date, ticket_type_id, content_type, carrier_id)
+    @tickets = Ticket.find :all, :include => {:transactions => {}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ? and trucks.carrier_id = ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), carrier_id], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     carrier = Carrier.find(carrier_id)
@@ -249,13 +249,13 @@ class EasyModel
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+        if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
@@ -263,15 +263,15 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_driver(start_date, end_date, ticket_type_id, warehouse_type_id, driver_id)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {:warehouse => {}}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and warehouses.warehouse_type_id = ? and outgoing_date >= ? and outgoing_date <= ? and driver_id = ?', ticket_type_id, warehouse_type_id, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), driver_id], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_driver(start_date, end_date, ticket_type_id, content_type, driver_id)
+    @tickets = Ticket.find :all, :include => {:transactions => {}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ? and driver_id = ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), driver_id], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
     ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
-    warehouse_type_title = (warehouse_type_id == 1) ? "Materia Prima" : "Producto Terminado"
+    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{warehouse_type_title}")
+    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     driver = Driver.find(driver_id)
@@ -280,44 +280,19 @@ class EasyModel
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
-        if warehouse_type_id == 2 and transaction.warehouse.content_code == "1000"
+        if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
-          'content_name' => transaction.warehouse.content_name,
+          'content_name' => transaction.get_content.name,
           'amount' => transaction.amount,
         }
       end
     end
     return data
 
-  end
-
-  def self.recipes
-    @recipes = Recipe.find :all, :include => {:ingredient_recipe => :ingredient}
-    return nil if @recipes.length.zero?
-
-    data = self.initialize_data('Recetas')
-    data['table1'] = []
-
-    @recipes.each do |r|
-      receta = "Receta: #{r.code} - #{r.name} Version: #{r.version}"
-      r.ingredient_recipe.each do |ing|
-        data['table1'] << {
-          'recipe' => receta,
-          'code' => ing.ingredient.code,
-          'name' => ing.ingredient.name,
-          'amount' => ing.amount.to_s,
-          'priority' => ing.priority.to_s,
-          'percentage' => ing.percentage.to_s
-        }
-      end
-    end
-
-    data['total'] = "Recetas procesadas: #{Recipe.count}"
-    return data
   end
 
   def self.daily_production(start_date, end_date)
@@ -824,29 +799,25 @@ class EasyModel
     end
     return nil if adjustment_type_ids.length.zero?
 
-    adjustments = Transaction.find :all, :include=>[:warehouse, :user], :conditions => {:transaction_type_id => adjustment_type_ids, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
+    adjustments = Transaction.find :all, :conditions => {:transaction_type_id => adjustment_type_ids, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
     return nil if adjustments.length.zero?
 
-    data = self.initialize_data('Ajustes de Inventario')
+    data = self.initialize_data('Ajustes de Existencias')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
     adjustments.each do |a|
-      warehouse = Warehouse.find(a.warehouse_id)
-      lot_code = ''
+      lot = a.get_lot
+      lot_code = lot.code
       content_code = ''
       content_name = ''
-      if warehouse.warehouse_type_id == 1 # ING Warehouse
-        lot = Lot.find(warehouse.content_id)
-        lot_code = lot.code
-        content_code = Ingredient.find(lot.ingredient_id).code
-        content_name = Ingredient.find(lot.ingredient_id).name
-      else # PDT Warehouse
-        lot = ProductLot.find(warehouse.content_id)
-        lot_code = lot.code
-        content_code = Product.find(lot.product_id).code
-        content_name = Product.find(lot.product_id).name
+      if a.content_type == 1 # content = lot 
+        content_code = lot.ingredient.code
+        content_name = lot.ingredient.name
+      else # content = product lot
+        content_code = lot.product.code
+        content_name = lot.product.name
       end
       transaction_type_id = a.transaction_type_id
       sign = TransactionType.find(transaction_type_id).sign
@@ -875,7 +846,7 @@ class EasyModel
     "Income code found: " + income_type.code
     return nil if income_type.nil?
 
-    incomes = Transaction.find :all, :include=>[:user], :conditions => {:transaction_type_id => income_type, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
+    incomes = Transaction.find :all, :conditions => {:transaction_type_id => income_type, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
     return nil if incomes.length.zero?
 
     data = self.initialize_data('Entradas de Materia Prima')
@@ -884,15 +855,13 @@ class EasyModel
     data['results'] = []
 
     incomes.each do |i|
-      warehouse = Warehouse.find(i.warehouse_id)
-      lot_code = ''
+      lot = i.get_lot
+      lot_code = lot.code
       content_code = ''
       content_name = ''
-      if warehouse.warehouse_type_id == 1
-        lot = Lot.find(warehouse.content_id)
-        lot_code = lot.code
-        content_code = Ingredient.find(lot.ingredient_id).code
-        content_name = Ingredient.find(lot.ingredient_id).name
+      if i.content_type == 1
+        content_code = lot.ingredient.code
+        content_name = lot.ingredient.name
         transaction_type_id = i.transaction_type_id
         sign = TransactionType.find(transaction_type_id).sign
         ttype_code = TransactionType.find(transaction_type_id).code
@@ -907,8 +876,7 @@ class EasyModel
           'content_name' => content_name,
           'amount' => amount.to_s,
           'user_name' => i.user.login,
-          'date' => self.print_formatted_date(i.date),
-          'adjusment_code' => ttype_code
+          'date' => self.print_formatted_date(i.date)
         }
       end
     end
@@ -916,19 +884,24 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock_per_lot(warehouse_type_id, date)
-    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima por lotes' : 'Inventario de Producto Terminado por lotes'
+  def self.simple_stock_per_lot(content_type, date)
+    title = (content_type == 1) ? 'Existencias de Materia Prima por lotes' : 'Existencias de Producto Terminado por lotes'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
     data['results'] = []
 
-    warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
-    warehouses.each do |w|
-      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at < ?', w.id, end_date_to_sql(date)], :order => ['created_at desc']
+    lots = []
+    if content_type == 1
+      lots = Lot.find :all, :conditions => {:active => true}
+    else
+      lots = ProductLot.find :all, :conditions => {:active => true}
+    end
+    lots.each do |l|
+      transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, lot.id, end_date_to_sql(date)], :order => ['created_at desc']
       next if transaction.nil?
       data['results'] << {
-        'code' => w.lot_code,
-        'name' => w.content_name,
+        'code' => l.code,
+        'name' => l.get_content.name,
         'stock' => transaction.stock_after
       }
     end
@@ -937,25 +910,30 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock(warehouse_type_id, date)
-    title = (warehouse_type_id == 1) ? 'Inventario de Materia Prima' : 'Inventario de Producto Terminado'
+  def self.simple_stock(content_type, date)
+    title = (content_type == 1) ? 'Existencias de Materia Prima' : 'Existencias de Producto Terminado'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
     data['results'] = []
 
     results = {}
 
-    warehouses = Warehouse.find :all, :conditions => ['warehouse_type_id = ? and active = true',warehouse_type_id]
-    warehouses.each do |w|
-      key = w.content_code
-      transaction = Transaction.first :conditions => ['warehouse_id = ? and created_at < ?', w.id, end_date_to_sql(date)], :order => ['created_at desc']
+    lots = []
+    if content_type == 1
+      lots = Lot.find :all, :conditions => {:active => true}
+    else
+      lots = ProductLot.find :all, :conditions => {:active => true}
+    end
+    lots.each do |l|
+      key = l.get_content.code
+      transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, l.id, end_date_to_sql(date)], :order => ['created_at desc']
       next if transaction.nil?
       if results.has_key?(key)
         results[key]['stock'] += transaction.stock_after
       else
         results[key] = {
-          'code' => w.content_code,
-          'name' => w.content_name,
+          'code' => key,
+          'name' => l.get_content.name,
           'stock' => transaction.stock_after
         }
       end
@@ -966,53 +944,6 @@ class EasyModel
     return data
   end
 
-  def self.ingredients_stock(start_date, end_date)
-    data = self.initialize_data('Inventario de Materia Prima')
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['results'] = []
-
-    stock = {}
-    transactions = Transaction.find :all, :include=>{:warehouse=>{}, :transaction_type=>{}}, :conditions=>{:warehouses=>{:warehouse_type_id=>1}, :transactions=>{:date=>(start_date)..((end_date) + 1.day)}} , :order=>['date DESC']
-    transactions.each do |t|
-      income = 0
-      outcome = 0
-      ingredient = t.warehouse.get_content
-
-      if t.transaction_type.sign == '+'
-        income = t.amount
-      elsif t.transaction_type.sign == '-'
-        outcome = t.amount
-      end
-
-      if stock.has_key?(ingredient.code)
-        stock[ingredient.code]['income'] += income
-        stock[ingredient.code]['outcome'] += outcome
-        stock[ingredient.code]['stock'] = stock[ingredient.code]['income'] - stock[ingredient.code]['outcome']
-      else
-        stock[ingredient.code] = {
-          'code' => ingredient.code,
-          'name' => ingredient.name,
-          'income' => income,
-          'outcome' => outcome,
-          'stock' => (income - outcome)
-        }
-      end
-    end
-
-    stock.each do |key, value|
-      data['results'] << {
-        'code' => value['code'],
-        'ingredient' => value['name'],
-        'income_kg' => value['income'].to_s,
-        'outcome_kg' => value['outcome'].to_s,
-        'stock_kg' => value['stock'].to_s,
-      }
-    end
-
-    return data
-  end
-
   def self.product_lots_dispatches(start_date, end_date, doc_number)
     if doc_number.blank?
       conditions = {:transaction_type_id=>5, :date=>(start_date)..((end_date) + 1.day)}
@@ -1020,7 +951,7 @@ class EasyModel
       conditions = {:transaction_type_id=>5, :transactions=>{:document_number=>doc_number}, :date=>(start_date)..((end_date) + 1.day)}
     end
 
-    dispatches = Transaction.find :all, :include=>[:warehouse, :transaction_type, :user], :conditions => conditions, :order=>['date DESC']
+    dispatches = Transaction.find :all, :conditions => conditions, :order=>['date DESC']
     return nil if dispatches.length.zero?
 
     data = self.initialize_data('Despacho de producto terminado')
@@ -1029,8 +960,8 @@ class EasyModel
     data['results'] = []
 
     dispatches.each do |d|
-      if d.warehouse.warehouse_type_id == 2
-        product_lot = ProductLot.find d.warehouse.content_id, :include=>[:product]
+      if d.content_type == 2
+        product_lot = d.get_lot
 
         data['results'] << {
           'lot_code' => product_lot.code,
@@ -1046,53 +977,6 @@ class EasyModel
       end
     end
     return nil if data['results'].empty?
-    return data
-  end
-
-  def self.products_stock(start_date, end_date)
-    stock = {}
-    data = self.initialize_data('Inventario de Producto Terminado')
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['results'] = []
-
-    transactions = Transaction.find :all, :include=>{:warehouse=>{}, :transaction_type=>{}}, :conditions=>{:date=>(start_date)..((end_date) + 1.day), :warehouses=>{:warehouse_type_id=>2}}, :order=>['date DESC']
-    transactions.each do |t|
-      income = 0
-      outcome = 0
-      product = t.warehouse.get_content
-
-      if t.transaction_type.sign == '+'
-        income = t.amount
-      elsif t.transaction_type.sign == '-'
-        outcome = t.amount
-      end
-
-      if stock.has_key?(product.code)
-        stock[product.code]['income'] += income
-        stock[product.code]['outcome'] += outcome
-        stock[product.code]['stock'] = stock[product.code]['income'] - stock[product.code]['outcome']
-      else
-        stock[product.code] = {
-          'code' => product.code,
-          'name' => product.name,
-          'income' => income,
-          'outcome' => outcome,
-          'stock' => (income - outcome)
-        }
-      end
-    end
-
-    stock.each do |key, value|
-      data['results'] << {
-        'code' => value['code'],
-        'product' => value['name'],
-        'income_kg' => value['income'].to_s,
-        'outcome_kg' => value['outcome'].to_s,
-        'stock_kg' => value['stock'].to_s,
-      }
-    end
-
     return data
   end
 

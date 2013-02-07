@@ -1,6 +1,15 @@
 class ProductLotsController < ApplicationController
   def index
-    @lots = ProductLot.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
+    respond_to do |format|
+      format.html do 
+        @lots = ProductLot.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
+        render :html => @lots
+      end
+      format.json do 
+        @lots = ProductLot.find :all, :conditions => {:active => true}
+        render :json => @lots, :methods => [:get_content]
+      end
+    end
   end
 
   def new
@@ -53,5 +62,23 @@ class ProductLotsController < ApplicationController
       end
     end
     redirect_to :product_lots
+  end
+
+  def adjust
+    @product_lot = ProductLot.find params[:id]
+  end
+
+  def do_adjust
+    amount = Float(params[:amount]) rescue -1
+    if amount >= 0
+      @product_lot = ProductLot.find params[:id]
+      @product_lot.adjust(amount, session[:user].id)
+      flash[:notice] = "Lote ajustado exitosamente"
+      redirect_to :product_lots
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "El monto de ajuste es inválido"
+      redirect_to :product_lots
+    end
   end
 end

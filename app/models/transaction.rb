@@ -1,11 +1,10 @@
 class Transaction < ActiveRecord::Base
   belongs_to :transaction_type
-  belongs_to :warehouse
   belongs_to :user
   belongs_to :client
   belongs_to :ticket
 
-  validates_presence_of :transaction_type_id, :warehouse_id, :amount, :user_id
+  validates_presence_of :transaction_type_id, :amount, :user_id
   validates_numericality_of :amount
   validates_numericality_of :sacks, :sack_weight, :allow_nil => true
   
@@ -28,6 +27,22 @@ class Transaction < ActiveRecord::Base
         logger.error(self.errors.inspect)
         raise StandardError, 'Problem reprocessing transaction'
       end
+    end
+  end
+
+  def get_lot
+    if self.content_type == 1
+      return Lot.find self.content_id
+    elsif self.content_type == 2
+      return ProductLot.find self.content_id
+    end
+  end
+
+  def get_content
+    if self.content_type == 1
+      return self.get_lot.ingredient
+    else
+      return self.get_lot.product
     end
   end
 
@@ -72,14 +87,16 @@ class Transaction < ActiveRecord::Base
   end
 
   def increase_stock
-    self.warehouse.stock += self.amount
-    self.warehouse.save
-    self.stock_after = self.warehouse.stock
+    lot = self.get_lot
+    lot.stock += self.amount
+    lot.save
+    self.stock_after = lot.stock
   end
 
   def decrease_stock
-    self.warehouse.stock -= self.amount
-    self.warehouse.save
-    self.stock_after = self.warehouse.stock
+    lot = self.get_lot
+    lot.stock -= self.amount
+    lot.save
+    self.stock_after = lot.stock
   end
 end

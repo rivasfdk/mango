@@ -103,6 +103,10 @@ function submit_lot_edit_form() {
     $('lot_edit_form').submit();
 }
 
+function submit_lot_adjust_form() {
+    $('lot_adjust_form').submit();
+}
+
 function submit_schedule_new_form() {
     $('schedule_new_form').submit();
 }
@@ -125,6 +129,10 @@ function submit_product_lot_new_form() {
 
 function submit_product_lot_edit_form() {
     $('product_lot_edit_form').submit();
+}
+
+function submit_product_lot_adjust_form() {
+    $('product_lot_adjust_form').submit();
 }
 
 function submit_warehouse_new_form() {
