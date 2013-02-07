@@ -20,6 +20,7 @@
         <td class="right"><%=h item.stock %></td>
         <td class="center">
           <%= render_action_edit(edit_lot_path(item)) %>
+          <%= render_action_adjust(adjust_lot_path(item)) %>
           <%= render_action_delete(lot_path(item), "Desea borrar el lote '#{item.code}'?") %>
         </td>
       </tr>

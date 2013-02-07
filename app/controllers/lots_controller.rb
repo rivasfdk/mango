@@ -71,7 +71,7 @@ class LotsController < ApplicationController
   def do_adjust
     amount = Float(params[:amount]) rescue -1
     if amount >= 0
-      @lot = Lot.get params[:id]
+      @lot = Lot.find params[:id]
       @lot.adjust(amount, session[:user].id)
       flash[:notice] = "Lote ajustado exitosamente"
       redirect_to :lots

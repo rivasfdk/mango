@@ -101,16 +101,6 @@ module MenuHelper
       menu = menu_for_product_lots_edit
     elsif c == 'product_lots' and a == 'adjust'
       menu = menu_for_product_lots_adjust
-    elsif c == 'warehouses' and a == 'index'
-      menu = menu_for_warehouses_index
-    elsif c == 'warehouses' and (a == 'new' or a == 'create')
-      menu = menu_for_warehouses_new
-    elsif c == 'warehouses' and (a == 'edit' or a == 'update')
-      menu = menu_for_warehouses_edit
-    elsif c == 'warehouses' and a == 'recalculate'
-      menu = menu_for_warehouses_recalculate
-    elsif c == 'warehouses' and a == 'adjust'
-      menu = menu_for_warehouses_adjust
     elsif c == 'transactions' and a == 'index'
       menu = menu_for_transactions_index
     elsif c == 'transactions' and (a == 'new' or a == 'create')
@@ -618,7 +608,7 @@ module MenuHelper
   def menu_for_product_lots_adjust
     menu = content_tag(:p, 'Realizar ajuste de existencia')
     menu += content_tag(:ul,
-      render_back(warehouses_path) +
+      render_back(product_lots_path) +
       render_function('Ajustar', 'Ajustar existencia', "submit_product_lot_adjust_form()", 'button-execute.png')
     )
     return menu
