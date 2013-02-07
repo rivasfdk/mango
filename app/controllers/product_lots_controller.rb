@@ -46,20 +46,25 @@ class ProductLotsController < ApplicationController
   end
 
   def destroy
-    @lot = ProductLot.find params[:id]
-    @lot.eliminate
-    if @lot.errors.size.zero?
-      flash[:notice] = "Lote eliminado con éxito"
-    else
-      logger.error("Error eliminando lote: #{@lot.errors.inspect}")
-      flash[:type] = 'error'
-      if not @lot.errors[:foreign_key].nil?
-        flash[:notice] = 'El lote no se puede eliminar porque tiene registros asociados'
-      elsif not @lot.errors[:unknown].nil?
-        flash[:notice] = @lot.errors[:unknown]
+    product_lot_transactions = Transaction.where :content_type => 2, :content_id => params[:id]
+    if product_lot_transactions.none?
+      @lot = ProductLot.find params[:id]
+      @lot.eliminate
+      if @lot.errors.size.zero?
+        flash[:notice] = "Lote eliminado con éxito"
       else
-        flash[:notice] = "El lote no se ha podido eliminar"
+        logger.error("Error eliminando lote: #{@lot.errors.inspect}")
+        flash[:type] = 'error'
+        if not @lot.errors[:foreign_key].nil?
+          flash[:notice] = 'El lote no se puede eliminar porque tiene registros asociados'
+        elsif not @lot.errors[:unknown].nil?
+          flash[:notice] = @lot.errors[:unknown]
+        else
+          flash[:notice] = "El lote no se ha podido eliminar"
+        end
       end
+    else
+      flash[:notice] = 'El lote no se puede eliminar porque tiene transacciones asociadas'
     end
     redirect_to :product_lots
   end
