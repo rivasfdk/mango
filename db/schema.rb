@@ -12,16 +12,6 @@
 
 ActiveRecord::Schema.define(:version => 20130108235657) do
 
-  create_table "alarms", :force => true do |t|
-    t.integer  "order_id"
-    t.datetime "date"
-    t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
-
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
     t.datetime "created_at"

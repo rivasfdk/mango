@@ -7,6 +7,15 @@ form label {
   margin-bottom: 2px;
 }
 
+#searchform label {
+  float: none;
+  clear: none;
+  display: inline;
+  text-align: right;
+  padding-right: 5px;
+  margin-bottom: 2px;
+}
+
 form label.small {
   width: 100px;
 }

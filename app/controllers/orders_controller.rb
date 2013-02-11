@@ -1,6 +1,8 @@
 class OrdersController < ApplicationController
   def index
-    @orders = Order.search(params[:code], params[:page], session[:per_page])
+    @orders = Order.search(params)
+    @clients = Client.all
+    @recipes = Recipe.find :all, :conditions => {:active => true}
   end
 
   def new

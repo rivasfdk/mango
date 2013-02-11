@@ -1,9 +1,23 @@
 <% i = 0 %>
 <div id="searchform">
 <%= form_tag orders_path, :method => 'get' do %>
-  <label for="code">Código de orden:</label>
-  <%= text_field_tag :code, params[:code]%>
-  <%= submit_tag "Filtrar", :name => nil %>
+  <%= check_box_tag(:by_code) %>
+  <%= label_tag(:code, "Código") %>
+  <%= text_field_tag(:code) %> <br /><br />
+  <%= check_box_tag(:by_date) %>
+  <%= label_tag(:by_date, "Fecha") %>
+  <%= label_tag(:start_date, "Desde:") %>
+  <%= select_date Date.today, :prefix => :start_date %>
+  <%= label_tag(:start_date, "Hasta:") %>
+  <%= select_date Date.today, :prefix => :end_date %>
+  <br /><br />
+  <%= check_box_tag(:by_recipe) %>
+  <%= label_tag(:by_recipe, "Receta") %>
+  <%= collection_select nil, :recipe_id, @recipes, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal chzn-small'%>
+  <%= check_box_tag(:by_client) %>
+  <%= label_tag(:by_client, "Cliente") %>
+  <%= collection_select nil, :client_id, @clients, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal chzn-small' %>
+  <br /><br /><%= submit_tag "Filtrar", :name => nil %>
 <% end %>
 </div>
 <% if @orders.length > 0 %>

@@ -4,6 +4,11 @@ select.chzn-select {
   height: 28px !important;
   min-height: 28px !important;
 }
+
+.chzn-small {
+  width: 350px !important;
+}
+
 .chzn-container {
   font-size: 13px;
   position: relative;

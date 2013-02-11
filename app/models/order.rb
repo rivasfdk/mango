@@ -185,14 +185,15 @@ class Order < ActiveRecord::Base
     t.save
   end
   
-  def self.search(search, page, per_page)
-    if search and search != ""
-      paginate :all, :page => page,
-               :per_page => per_page,
+  def self.search(params)
+    
+    if params[:code] and params[:code] != ""
+      paginate :all, :page => params[:page],
+               :per_page => params[:per_page],
                :order => 'created_at DESC',
-               :conditions => ['code = ?', search]
+               :conditions => ['code = ?', params[:code]]
     else
-      paginate :all, :page => page, :per_page => per_page, :order => 'created_at DESC'
+      paginate :all, :page => params[:page], :per_page => params[:per_page], :order => 'created_at DESC'
     end
   end
 end
