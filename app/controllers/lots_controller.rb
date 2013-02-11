@@ -21,6 +21,7 @@ class LotsController < ApplicationController
     @lot = Lot.find params[:id]
     @ingredients = Ingredient.find :all, :order => 'name ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
+    session[:return_to] ||= request.referer
   end
 
   def create
@@ -39,7 +40,7 @@ class LotsController < ApplicationController
     @lot.update_attributes(params[:lot])
     if @lot.save
       flash[:notice] = 'Lote guardado con éxito'
-      redirect_to :lots
+      redirect_to session[:return_to]
     else
       render :edit
     end
@@ -71,6 +72,7 @@ class LotsController < ApplicationController
   
   def adjust
     @lot = Lot.find params[:id]
+    session[:return_to] ||= request.referer
   end
 
   def do_adjust
@@ -79,7 +81,7 @@ class LotsController < ApplicationController
       @lot = Lot.find params[:id]
       @lot.adjust(amount, session[:user].id)
       flash[:notice] = "Lote ajustado exitosamente"
-      redirect_to :lots
+      redirect_to session.delete(:return_to)
     else
       flash[:type] = 'error'
       flash[:notice] = "El monto de ajuste es inválido"
