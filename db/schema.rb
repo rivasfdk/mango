@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207040446) do
+ActiveRecord::Schema.define(:version => 20130226001203) do
+
+  create_table "alarm_types", :force => true do |t|
+    t.string   "code"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "alarms", :force => true do |t|
     t.integer  "order_id"
@@ -18,6 +25,7 @@ ActiveRecord::Schema.define(:version => 20130207040446) do
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "alarm_type_id", :default => 1
   end
 
   add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
@@ -170,7 +178,6 @@ ActiveRecord::Schema.define(:version => 20130207040446) do
     t.float    "stock",         :default => 0.0
   end
 
-  add_index "lots", ["client_id"], :name => "fk_lots_client_id"
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
 
   create_table "medicaments_recipes", :force => true do |t|

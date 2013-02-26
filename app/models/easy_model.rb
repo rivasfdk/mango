@@ -1,7 +1,13 @@
 class EasyModel
 
-  def self.alarms(start_date, end_date)
-    @alarms = Alarm.find :all, :include => {:order => {}}, :conditions => ['date >= ? and date <=?', start_date_to_sql(start_date), end_date_to_sql(end_date)]
+  def self.alarms(start_date, end_date, alarm_type_id)
+    if alarm_type_id == 0
+      conditions = {:date=>(start_date)..((end_date) + 1.day)}
+    else
+      conditions = {:alarm_type_id=>alarm_type_id, :date=>(start_date)..((end_date) + 1.day)}
+    end
+    
+    @alarms = Alarm.find :all, :conditions => conditions
     return nil if @alarms.length.zero?
 
     data = self.initialize_data("Reporte de alarmas")
@@ -12,15 +18,22 @@ class EasyModel
     @alarms.each do |alarm|
       data['table'] << {
           'order_code' => alarm.order.code,
+          'alarm_type_code' => alarm.alarm_type.code,
           'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
           'description' => alarm.description,
         }
     end
     return data
   end
-  def self.alarms_per_order(order_code)
+
+  def self.alarms_per_order(order_code, alarm_type_id)
     @order = Order.find_by_code order_code
     return nil if @order.nil?
+    if alarm_type_id == 0
+      @alarms = @order.alarms
+    else
+      @alarms = Alarm.find :all, :conditions => ['alarm_type_id = ? and order_id = ?', alarm_type_id, @order.id]
+    end
     return nil if @order.alarms.empty?
 
     data = self.initialize_data("Alarmas de Orden #{order_code}")
@@ -28,6 +41,7 @@ class EasyModel
 
     @order.alarms.each do |alarm|
       data['table'] << {
+          'alarm_type_code' => alarm.alarm_type.code,
           'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
           'description' => alarm.description,
         }

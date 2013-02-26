@@ -48,12 +48,6 @@ namespace :db do
       run_fixture('lots')
     end
 
-    desc 'Load fixtures for warehouse types'
-    task :warehouse_types => :environment do
-      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
-      run_fixture('warehouses_types')
-    end
-
     desc 'Load fixtures for ticket types'
     task :ticket_types => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
@@ -78,6 +72,18 @@ namespace :db do
       r = Recipe.new
       r.import('test/receta_brill_nueva.txt', true)
       puts 'Loaded test recipes'
+    end
+
+    desc 'Load fixtures for alarm types'
+    task :alarm_types => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('alarm_types')
+    end
+
+    desc 'Load fixtures for last imported recipe'
+    task :lasts_imported_recipes => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('lasts_imported_recipes')
     end
 
     desc 'Initialize order number'
@@ -152,13 +158,13 @@ namespace :sys do
     Rake::Task['db:migrate'].invoke
     Rake::Task['db:fixtures:users'].invoke
     Rake::Task['db:fixtures:schedules'].invoke
-    Rake::Task['db:fixtures:warehouse_types'].invoke
     Rake::Task['db:fixtures:base_units'].invoke
     Rake::Task['db:fixtures:transaction_types'].invoke
     Rake::Task['db:fixtures:orders_numbers'].invoke
     Rake::Task['db:fixtures:tickets_numbers'].invoke
     Rake::Task['db:fixtures:ticket_types'].invoke
     Rake::Task['db:fixtures:permissions'].invoke
+    Rake::Task['db:fixtures:alarm_types'].invoke
     if RAILS_ENV == 'development'
       Rake::Task['db:fixtures:products'].invoke
       #Rake::Task['db:fixtures:recipes'].invoke

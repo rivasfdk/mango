@@ -1,0 +1,32 @@
+<% i = 0 %>
+<% if @alarm_types.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Descripción<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @alarm_types.each do |at| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h at.code %></td>
+        <td><%=h at.description %></td>
+        <td>
+          <%= render_action_edit(edit_alarm_type_path(at)) %>
+          <%= render_action_delete(alarm_type_path(at), "Desea borrar el tipo de alarma '#{at.code}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @alarm_types %>
+  </div>
+</div>
+<% else %>
+<p>No hay tipos de alarmas registradas</p>
+<% end %>

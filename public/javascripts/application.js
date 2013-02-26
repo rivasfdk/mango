@@ -211,6 +211,14 @@ function submit_mixing_time_edit_form() {
     $('mixing_time_edit_form').submit();
 }
 
+function submit_alarm_type_new_form() {
+    $('alarm_type_new_form').submit();
+}
+
+function submit_alarm_type_edit_form() {
+    $('alarm_type_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     hide_all_report_details();
     $(id).toggle();
