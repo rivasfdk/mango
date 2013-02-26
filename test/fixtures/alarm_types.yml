@@ -6,5 +6,4 @@
 #
 general:
   id: 1
-  code: GEN
   description: Alarma General

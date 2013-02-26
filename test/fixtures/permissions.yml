@@ -29,6 +29,11 @@ sa_des:
   module: transactions
   action: SA-DES
   mode: module
+recipe_import:
+  name: Recipes Import
+  module: recipes
+  action: import
+  mode: module
 recalculate:
   name: Recalculate stock
   module: warehouses
@@ -64,10 +69,30 @@ batch_details:
   module: reports
   action: batch_details
   mode: global
+alarms:
+  name: Report 'Alarms'
+  module: reports
+  action: alarms
+  mode: global
+alarms_per_order:
+  name: Report 'Alarms per order'
+  module: reports
+  action: alarms_per_order
+  mode: global
 consumption_per_recipe:
   name: Report 'Consumption per Recipe'
   module: reports
   action: consumption_per_recipe
+  mode: global
+consumption_per_selected_ingredients:
+  name: Report 'Consumption per Selected Ingredients'
+  module: reports
+  action: consumption_per_selected_ingredients
+  mode: global
+consumption_per_ingredient_per_orders:
+  name: Report 'Consumption per Ingredient per Order'
+  module: reports
+  action: consumption_per_ingredient_per_orders
   mode: global
 consumption_per_ingredients:
   name: Report 'Consumption per Ingredients'
@@ -89,18 +114,53 @@ lot_incomes:
   module: reports
   action: lots_incomes
   mode: global
+simple_stock:
+  name: Report 'Simple stock'
+  module: reports
+  action: simple_stock
+  mode: global
 product_lot_dispatches:
   name: Report 'Product Lot Dispatches'
   module: reports
   action: product_lots_dispatches
   mode: global
-products_stock:
-  name: Report 'Products stock'
+production_per_recipe:
+  name: Report 'Production per recipe'
   module: reports
-  action: products_stock
+  action: production_per_recipe
   mode: global
-recipe_import:
-  name: Recipes Import
-  module: recipes
-  action: import
-  mode: module
+production_per_client:
+  name: Report 'Production per client'
+  module: reports
+  action: production_per_client
+  mode: global
+tickets_transactions:
+  name: Report 'Ticket transactions'
+  module: reports
+  action: tickets_transactions
+  mode: global
+tickets_transactions_per_clients:
+  name: Report 'Ticket transactions per clients'
+  module: reports
+  action: tickets_transactions_per_clients
+  mode: global
+tickets_transactions_per_contents:
+  name: Report 'Ticket transactions per contents'
+  module: reports
+  action: tickets_transactions_per_contents
+  mode: global
+tickets_transactions_per_contents_per_clients:
+  name: Report 'Ticket transactions per contents per clients'
+  module: reports
+  action: tickets_transactions_per_contents_per_clients
+  mode: global
+tickets_transactions_per_carrier:
+  name: Report 'Ticket transactions per carrier'
+  module: reports
+  action: tickets_transactions_per_carrier
+  mode: global
+tickets_transactions_per_driver:
+  name: Report 'Ticket transactions per driver'
+  module: reports
+  action: tickets_transactions_per_driver
+  mode: global
