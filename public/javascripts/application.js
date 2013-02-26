@@ -225,8 +225,9 @@ function toggle_report_details(id) {
 }
 
 function hide_all_report_details() {
-    if($('recipes_report_details') != null)
-        $('recipes_report_details').hide();
+    $$('.report-details').each (function(item) {
+      item.hide()
+    });
 }
 
 function close_error_dialog() {

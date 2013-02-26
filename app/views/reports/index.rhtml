@@ -54,7 +54,7 @@
   <% if session[:user].has_report_permission?('alarms') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('alarms')">Alarmas</h2>
-    <div id="alarms" class="report_details">
+    <div id="alarms" class="report-details">
       <%= form_for :report, :url=>alarms_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
