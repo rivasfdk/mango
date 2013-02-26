@@ -10,7 +10,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108235657) do
+ActiveRecord::Schema.define(:version => 20130226163846) do
+
+  create_table "alarm_types", :force => true do |t|
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "alarms", :force => true do |t|
+    t.integer  "order_id"
+    t.datetime "date"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "alarm_type_id", :default => 1
+  end
+
+  add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -157,6 +174,7 @@ ActiveRecord::Schema.define(:version => 20130108235657) do
     t.integer  "client_id"
     t.boolean  "active",        :default => true
     t.boolean  "in_use",        :default => true
+    t.float    "stock",         :default => 0.0
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
@@ -238,6 +256,7 @@ ActiveRecord::Schema.define(:version => 20130108235657) do
     t.datetime "updated_at"
     t.integer  "client_id"
     t.boolean  "active",     :default => true
+    t.float    "stock",      :default => 0.0
   end
 
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
@@ -321,7 +340,6 @@ ActiveRecord::Schema.define(:version => 20130108235657) do
 
   create_table "transactions", :force => true do |t|
     t.integer  "transaction_type_id",                    :null => false
-    t.integer  "warehouse_id",                           :null => false
     t.integer  "user_id",                                :null => false
     t.string   "code",                                   :null => false
     t.date     "date",                                   :null => false
@@ -337,6 +355,8 @@ ActiveRecord::Schema.define(:version => 20130108235657) do
     t.integer  "sacks"
     t.string   "document_number"
     t.float    "stock_after"
+    t.integer  "content_id"
+    t.integer  "content_type"
   end
 
   create_table "trucks", :force => true do |t|
@@ -358,24 +378,6 @@ ActiveRecord::Schema.define(:version => 20130108235657) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "role_id"
-  end
-
-  create_table "warehouses", :force => true do |t|
-    t.integer  "warehouse_type_id"
-    t.integer  "content_id",                          :null => false
-    t.string   "code",                                :null => false
-    t.string   "location",                            :null => false
-    t.float    "stock",             :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",            :default => true
-  end
-
-  create_table "warehouses_types", :force => true do |t|
-    t.string   "code",        :null => false
-    t.string   "description", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
 end

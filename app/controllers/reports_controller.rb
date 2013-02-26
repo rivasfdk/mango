@@ -4,18 +4,7 @@ class ReportsController < ApplicationController
     @drivers = Driver.find :all, :conditions => ['frequent = true']
     @carriers = Carrier.find :all, :conditions => ['frequent = true']
     @clients = Client.find :all
-  end
-
-  def recipes
-    data = EasyModel.recipes
-    if data.nil?
-      flash[:notice] = 'No hay registros para generar el reporte'
-      flash[:type] = 'warn'
-      redirect_to :action => 'index'
-    else
-      report = EasyReport::Report.new data, 'recipes.yml'
-      send_data report.render, :filename => "recetas.pdf", :type => "application/pdf" #, :disposition => 'inline'
-    end
+    @alarm_types = AlarmType.find :all
   end
 
   def daily_production
@@ -385,7 +374,14 @@ class ReportsController < ApplicationController
   def alarms
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.alarms(start_date, end_date)
+    by_alarm_type = params[:report][:by_alarm_type_1].to_i
+    if by_alarm_type != 0
+      alarm_type_id = params[:report][:alarm_type_id_1].to_i
+    else
+      alarm_type_id = 0
+    end
+
+    data = EasyModel.alarms(start_date, end_date, alarm_type_id)
 
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
@@ -398,7 +394,13 @@ class ReportsController < ApplicationController
   end
 
   def alarms_per_order
-    data = EasyModel.alarms_per_order(params[:report][:order])
+    by_alarm_type = params[:report][:by_alarm_type_1].to_i
+    if by_alarm_type != 0
+      alarm_type_id = params[:report][:alarm_type_id_1].to_i
+    else
+      alarm_type_id = 0
+    end
+    data = EasyModel.alarms_per_order(params[:report][:order], alarm_type_id)
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

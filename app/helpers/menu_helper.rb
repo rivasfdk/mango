@@ -79,6 +79,8 @@ module MenuHelper
       menu = menu_for_lots_new
     elsif c == 'lots' and (a == 'edit' or a == 'update')
       menu = menu_for_lots_edit
+    elsif c == 'lots' and a == 'adjust'
+      menu = menu_for_lots_adjust
     elsif c == 'schedules' and a == 'index'
       menu = menu_for_schedules_index
     elsif c == 'schedules' and (a == 'new' or a == 'create')
@@ -97,16 +99,8 @@ module MenuHelper
       menu = menu_for_product_lots_new
     elsif c == 'product_lots' and (a == 'edit' or a == 'update')
       menu = menu_for_product_lots_edit
-    elsif c == 'warehouses' and a == 'index'
-      menu = menu_for_warehouses_index
-    elsif c == 'warehouses' and (a == 'new' or a == 'create')
-      menu = menu_for_warehouses_new
-    elsif c == 'warehouses' and (a == 'edit' or a == 'update')
-      menu = menu_for_warehouses_edit
-    elsif c == 'warehouses' and a == 'recalculate'
-      menu = menu_for_warehouses_recalculate
-    elsif c == 'warehouses' and a == 'adjust'
-      menu = menu_for_warehouses_adjust
+    elsif c == 'product_lots' and a == 'adjust'
+      menu = menu_for_product_lots_adjust
     elsif c == 'transactions' and a == 'index'
       menu = menu_for_transactions_index
     elsif c == 'transactions' and (a == 'new' or a == 'create')
@@ -159,6 +153,12 @@ module MenuHelper
       menu = menu_for_mixing_times_new
     elsif c == 'mixing_times' and (a == 'edit' or a == 'update')
       menu = menu_for_mixing_times_edit
+    elsif c == 'alarm_types' and a == 'index'
+      menu = menu_for_alarm_types_index
+    elsif c == 'alarm_types' and (a == 'new' or a == 'create')
+      menu = menu_for_alarm_types_new
+    elsif c == 'alarm_types' and (a == 'edit' or a == 'update')
+      menu = menu_for_alarm_types_edit
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -520,6 +520,15 @@ module MenuHelper
     )
     return menu
   end
+  
+  def menu_for_lots_adjust
+    menu = content_tag(:p, 'Realizar ajuste de existencia')
+    menu += content_tag(:ul,
+      render_back(lots_path) +
+      render_function('Ajustar', 'Ajustar existencia', "submit_lot_adjust_form()", 'button-execute.png')
+    )
+    return menu
+  end
 
   def menu_for_schedules_index
     menu = content_tag(:p, 'Lista de turnos')
@@ -601,6 +610,16 @@ module MenuHelper
     )
     return menu
   end
+
+  def menu_for_product_lots_adjust
+    menu = content_tag(:p, 'Realizar ajuste de existencia')
+    menu += content_tag(:ul,
+      render_back(product_lots_path) +
+      render_function('Ajustar', 'Ajustar existencia', "submit_product_lot_adjust_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
 
   def menu_for_warehouses_index
     menu = content_tag(:p, 'Lista de almacenes')
@@ -870,6 +889,33 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(mixing_times_path) +
       render_function('Actualizar', 'Actualizar tiempo de mezcla', "submit_mixing_time_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_alarm_types_index
+    menu = content_tag(:p, 'Lista de tipos de alarma')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo tipo de alarma', new_alarm_type_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_alarm_types_new
+    menu = content_tag(:p, 'Crear nuevo tipo de alarma')
+    menu += content_tag(:ul,
+      render_back(alarm_types_path) +
+      render_function('Guardar', 'Guardar tipo de alarma', "submit_alarm_type_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_alarm_types_edit
+    menu = content_tag(:p, 'Editar tipo de alarma')
+    menu += content_tag(:ul,
+      render_back(mixing_times_path) +
+      render_function('Actualizar', 'Actualizar tipo de alarma', "submit_alarm_type_edit_form()", 'button-execute.png')
     )
     return menu
   end

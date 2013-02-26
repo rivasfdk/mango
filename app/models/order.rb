@@ -160,28 +160,30 @@ class Order < ActiveRecord::Base
     production = 0
     consumptions.each do |key, value|
       production += value
-      warehouse = Warehouse.find :first, :conditions => ['warehouse_type_id = 1 and content_id = ?', key]
-      if warehouse.nil?
+      lot = Lot.find key
+      if lot.nil?
         return false
       end
       t = Transaction.new
       t.transaction_type_id = 1
+      t.content_type = 1
+      t.content_id = key
       t.processed_in_stock = 1
       t.amount = value
       t.user = user
-      t.warehouse = warehouse
       t.save
     end
-    warehouse = Warehouse.find :first, :conditions => ['warehouse_type_id = 2 and content_id = ?', self.product_lot_id]
-    if warehouse.nil?
+    product_lot = ProductLot.find self.product_lot_id
+    if product_lot.nil?
       return false
     end
     t = Transaction.new
     t.transaction_type_id = 6
+    t.content_type = 2
+    t.content_id = self.product_lot_id
     t.processed_in_stock = 1
     t.amount = production
     t.user = user
-    t.warehouse = warehouse
     t.save
   end
   

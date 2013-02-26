@@ -17,8 +17,11 @@ ActionController::Routing::Routes.draw do |map|
   match 'orders/:id/repair' => "orders#do_repair", :via => :put, :as => 'repair_order'
   match 'orders/:id/print' => "orders#print", :via => :get, :as => 'print_order'
   match 'orders/:id/generate_transactions' => "orders#generate_transactions", :via => :put, :as => 'generate_transactions_order'
-  match 'warehouses/:id/adjust' => "warehouses#adjust", :via => :get, :as => 'adjust_warehouse'
-  match 'warehouses/:id/adjust' => "warehouses#do_adjust", :via => :put, :as => 'adjust_warehouse'
+  match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
+  match 'lots/:id/adjust' => "lots#adjust", :via => :get, :as => 'adjust_lot'
+  match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
+  match 'product_lots/:id/adjust' => "product_lots#adjust", :via => :get, :as => 'adjust_product_lot'
+  match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   # Reports
   match 'reports/index' => "reports#index", :via => :get, :as => "reports"
@@ -51,7 +54,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :hoppers, :products, :orders, :lots, :schedules, :batches,
-    :transaction_types, :product_lots, :warehouses, :permissions, :drivers, :carriers, :trucks, :mixing_times
+    :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :mixing_times, :alarm_types
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 

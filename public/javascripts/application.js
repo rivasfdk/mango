@@ -103,6 +103,10 @@ function submit_lot_edit_form() {
     $('lot_edit_form').submit();
 }
 
+function submit_lot_adjust_form() {
+    $('lot_adjust_form').submit();
+}
+
 function submit_schedule_new_form() {
     $('schedule_new_form').submit();
 }
@@ -125,6 +129,10 @@ function submit_product_lot_new_form() {
 
 function submit_product_lot_edit_form() {
     $('product_lot_edit_form').submit();
+}
+
+function submit_product_lot_adjust_form() {
+    $('product_lot_adjust_form').submit();
 }
 
 function submit_warehouse_new_form() {
@@ -203,14 +211,21 @@ function submit_mixing_time_edit_form() {
     $('mixing_time_edit_form').submit();
 }
 
+function submit_alarm_type_new_form() {
+    $('alarm_type_new_form').submit();
+}
+
+function submit_alarm_type_edit_form() {
+    $('alarm_type_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     hide_all_report_details();
     $(id).toggle();
 }
 
 function hide_all_report_details() {
-    if($('recipes_report_details') != null)
-        $('recipes_report_details').hide();
+    $$('.report-details').invoke('hide')
 }
 
 function close_error_dialog() {

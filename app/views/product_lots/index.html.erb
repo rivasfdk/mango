@@ -6,6 +6,7 @@
         <th>Código<span class="order_arrow"></span></th>
         <th>Fecha<span class="order_arrow"></span></th>
         <th>Producto<span class="order_arrow"></span></th>
+        <th>Existencia<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
@@ -16,8 +17,10 @@
         <td class="center"><%=h item.code %></td>
         <td><%=h item.date %></td>
         <td><%=h item.product.name %></td>
+        <td class="right"><%=h item.stock %></td>
         <td class="center">
           <%= render_action_edit(edit_product_lot_path(item)) %>
+          <%= render_action_adjust(adjust_product_lot_path(item)) %>
           <%= render_action_delete(product_lot_path(item), "Desea borrar el lote '#{item.code}'?") %>
         </td>
       </tr>

@@ -5,14 +5,16 @@ class TransactionsController < ApplicationController
 
   def new
     @transaction_types = TransactionType.all
-    @warehouses = Warehouse.all
+    @lots = Lot.where :active => true
+    @products_lots = ProductLot.where :active => true
     @clients = Client.all
   end
 
   def edit
     @transaction = Transaction.find params[:id]
     @transaction_types = TransactionType.all
-    @warehouses = Warehouse.all
+    @lots = Lot.where :active => true
+    @products_lots = ProductLot.where :active => true
     @clients = Client.all
   end
 
@@ -20,9 +22,22 @@ class TransactionsController < ApplicationController
     ttype = TransactionType.find params[:transaction][:transaction_type_id]
     granted = session[:user].has_module_permission?('transactions', ttype.code)
     if granted
-      @transaction = Transaction.new params[:transaction]
+      @transaction = Transaction.new
+      @transaction.transaction_type_id = params[:transaction][:transaction_type_id]
+      content_type = (params[:content_type] == 'ingredient') ? 1 : 2
+      @transaction.content_type = content_type
+      if @transaction.content_type == 1
+        @transaction.content_id = params[:transaction][:lot_id]
+      elsif @transaction.content_type == 2:
+        @transaction.content_id = params[:transaction][:product_lot_id]
+      end
+      @transaction.date = Date.today
+      @transaction.amount = params[:transaction][:amount]
+      @transaction.document_number = params[:transaction][:document_number]
+      @transaction.comment = params[:transaction][:comment]
       @transaction.user = session[:user]
       @transaction.processed_in_stock = 1
+
       if @transaction.save
         flash[:notice] = 'Transacción guardada con éxito'
         redirect_to :transactions
