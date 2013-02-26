@@ -59,7 +59,7 @@
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <%= f.check_box :by_alarm_type_1, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
-        <%= f.collection_select :alarm_type_id_1, @alarm_types, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :alarm_type_id_1, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %><br/><br/>
       <% end %>
@@ -74,7 +74,7 @@
       <%= form_for :report, :url=>alarms_per_order_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/>
         <%= f.check_box :by_alarm_type_2, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
-        <%= f.collection_select :alarm_type_id_2, @alarm_types, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :alarm_type_id_2, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

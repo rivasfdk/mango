@@ -100,15 +100,10 @@ report:
               align: center
               width: 20
           3:
-            alarm_type_code:
-              label: Codigo Alarm.
-              align: center
-              width: 20
-          4:
            description:
               label: Descripcion
               align: left
-              width: 105
+              width: 125
     8:
       breakline:
   footer:

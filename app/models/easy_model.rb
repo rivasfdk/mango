@@ -18,7 +18,6 @@ class EasyModel
     @alarms.each do |alarm|
       data['table'] << {
           'order_code' => alarm.order.code,
-          'alarm_type_code' => alarm.alarm_type.code,
           'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
           'description' => alarm.description,
         }
@@ -41,7 +40,6 @@ class EasyModel
 
     @order.alarms.each do |alarm|
       data['table'] << {
-          'alarm_type_code' => alarm.alarm_type.code,
           'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
           'description' => alarm.description,
         }

@@ -10,10 +10,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226001203) do
+ActiveRecord::Schema.define(:version => 20130226163846) do
 
   create_table "alarm_types", :force => true do |t|
-    t.string   "code"
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
