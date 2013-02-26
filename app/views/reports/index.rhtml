@@ -1,6 +1,6 @@
 <%= javascript_include_tag "alarm_reports" %>
 <div class="yui3-u-1">
-
+  <% if session[:user].has_report_permission?('daily_production') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('daily_production')">Producción Diaria por Fábrica</h2>
     <div id="daily_production" class="report-details">
@@ -11,7 +11,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('order_duration') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('order_duration')">Duración de Orden</h2>
     <div id="order_duration" class="report-details">
@@ -22,7 +24,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('order_details') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('order_details')">Detalles de Orden de Producción</h2>
     <div id="order_details" class="report-details">
@@ -32,7 +36,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('batch_details') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('batch_details')">Detalles de Bache</h2>
     <div id="batch_details" class="report-details">
@@ -43,7 +49,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('alarms') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('alarms')">Alarmas</h2>
     <div id="alarms" class="report_details">
@@ -57,7 +65,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('alarms_per_order') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('alarms_per_order')">Alarmas por Orden de Producción</h2>
     <div id="alarms_per_order" class="report-details">
@@ -70,7 +80,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('consumption_per_recipe') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('consumption_per_recipe')">Consumo por Receta</h2>
     <div id="consumption_per_recipe" class="report-details">
@@ -83,7 +95,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('consumption_per_selected_ingredients') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('consumption_per_selected_ingredients')">Consumo por Ingredientes</h2>
     <div id="consumption_per_selected_ingredients" class="report-details">
@@ -95,7 +109,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('consumption_per_ingredient_per_orders') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
     <div id="consumption_per_ingredient_per_orders" class="report-details">
@@ -107,7 +123,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('consumption_per_ingredients') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
     <div id="consumption_per_ingredients" class="report-details">
@@ -118,7 +136,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('consumption_per_client') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('consumption_per_client')">Consumo por Cliente</h2>
     <div id="consumption_per_client" class="report-details">
@@ -132,7 +152,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('stock_adjustments') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('stock_adjustments')">Ajustes de Inventario</h2>
     <div id="stock_adjustments" class="report-details">
@@ -143,7 +165,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('lots_incomes') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('lots_incomes')">Entradas de Materia Prima</h2>
     <div id="lots_incomes" class="report-details">
@@ -154,7 +178,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('simple_stock') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('simple_stock')">Inventario por fecha</h2>
     <div id="simple_stock" class="report-details">
@@ -167,7 +193,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('product_lots_dispatches') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('product_lots_dispatches')">Despachos de Producto Terminado</h2>
     <div id="product_lots_dispatches" class="report-details">
@@ -179,7 +207,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('production_per_recipe') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('production_per_recipe')">Producción por Receta</h2>
     <div id="production_per_recipe" class="report-details">
@@ -192,7 +222,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('production_per_client') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('production_per_client')">Producción por Cliente</h2>
     <div id="production_per_client" class="report-details">
@@ -206,7 +238,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('tickets_transactions') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions')">Movimientos de Romana</h2>
     <div id="tickets_transactions" class="report-details">
@@ -223,7 +257,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('tickets_transactions_per_clients') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions_per_clients')">Movimientos de Romana por Cliente(s) / Proveedor(es)</h2>
     <div id="tickets_transactions_per_clients" class="report-details">
@@ -242,6 +278,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
+
+  <% if session[:user].has_report_permission?('tickets_transactions_per_contents') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions_per_contents')">Movimientos de Romana por Mat. Prima / Prod. Term.</h2>
     <div id="tickets_transactions_per_contents" class="report-details">
@@ -259,7 +298,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('tickets_transactions_per_contents_per_clients') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions_per_contents_per_clients')">Movimientos de Romana por Mat. Prima / Prod. Term. y por Cliente(s) / Proveedor(es)</h2>
     <div id="tickets_transactions_per_contents_per_clients" class="report-details">
@@ -280,7 +321,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
+  <% if session[:user].has_report_permission?('tickets_transactions_per_carrier') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions_per_carrier')">Movimientos de Romana por Mat. Prima / Prod. Term. por Transportista</h2>
     <div id="tickets_transactions_per_carrier" class="report-details">
@@ -300,6 +343,9 @@
       <% end %>
     </div>
   </div>
+  <% end %>
+
+  <% if session[:user].has_report_permission?('tickets_transactions_per_driver') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions_per_driver')">Movimientos de Romana por Mat. Prima / Prod. Term. por Chofer</h2>
     <div id="tickets_transactions_per_driver" class="report-details">
@@ -319,5 +365,6 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 </div>
 <div class="clearfix"></div>

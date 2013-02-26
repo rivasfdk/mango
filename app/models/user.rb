@@ -48,8 +48,18 @@ class User < ActiveRecord::Base
     self.password_hash = User.encrypt(pass, self.password_salt)
   end
 
+  def has_report_permission?(report_name)
+    valid = false
+    if self.role_id == 1 # Admin
+      @report_permission = Permission.find :first, :conditions => {:module => 'reports', :mode => 'global', :action => report_name}
+    else
+      @report_permission = PermissionRole.find :first, :include => {:permission => {}}, :conditions => ['role_id = ? and permissions.module = ? and permissions.mode = ? and permissions.action = ?', self.role_id, 'reports', 'global', report_name]
+    end
+    return @report_permission.present?
+  end    
+
   def has_global_permission?(controller, action)
-    return true if self.role_id == 1 # Again, don't you dare
+    return true if self.role_id == 1 # Admin
 
     valid = false
     permission_roles = PermissionRole.find_with_permissions(self.role_id, controller, 'global')

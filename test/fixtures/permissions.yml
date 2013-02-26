@@ -89,20 +89,10 @@ lot_incomes:
   module: reports
   action: lots_incomes
   mode: global
-ingredients_stock:
-  name: Report 'Ingredients Stock'
-  module: reports
-  action: ingredients_stock
-  mode: global
 product_lot_dispatches:
   name: Report 'Product Lot Dispatches'
   module: reports
   action: product_lots_dispatches
-  mode: global
-ingredient_variation:
-  name: Report 'Ingredient Variation'
-  module: reports
-  action: ingredient_variation
   mode: global
 products_stock:
   name: Report 'Products stock'
