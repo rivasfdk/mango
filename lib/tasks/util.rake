@@ -80,12 +80,6 @@ namespace :db do
       run_fixture('alarm_types')
     end
 
-    desc 'Load fixtures for last imported recipe'
-    task :lasts_imported_recipes => :environment do
-      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
-      run_fixture('lasts_imported_recipes')
-    end
-
     desc 'Initialize order number'
     task :orders_numbers => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
@@ -99,9 +93,9 @@ namespace :db do
     end
 
     desc 'Initialize last imported recipe name'
-    task :last_imported_recipes => :environment do
+    task :lasts_imported_recipes => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
-      run_fixture('last_imported_recipes')
+      run_fixture('lasts_imported_recipes')
     end
 
     desc 'Initialize permissions'
@@ -163,6 +157,7 @@ namespace :sys do
     Rake::Task['db:fixtures:orders_numbers'].invoke
     Rake::Task['db:fixtures:tickets_numbers'].invoke
     Rake::Task['db:fixtures:ticket_types'].invoke
+    Rake::Task['db:fixtures:lasts_imported_recipes'].invoke
     Rake::Task['db:fixtures:permissions'].invoke
     Rake::Task['db:fixtures:alarm_types'].invoke
     if RAILS_ENV == 'development'
