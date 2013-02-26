@@ -225,9 +225,7 @@ function toggle_report_details(id) {
 }
 
 function hide_all_report_details() {
-    $$('.report-details').each (function(item) {
-      item.hide()
-    });
+    $$('.report-details').invoke('hide')
 }
 
 function close_error_dialog() {
