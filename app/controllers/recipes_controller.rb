@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   def index
-    @recipes = Recipe.search(params[:code], params[:page], session[:per_page])
+    @recipes = Recipe.search(params)
     @last_imported_recipe = LastImportedRecipe.last
   end
   

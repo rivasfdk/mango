@@ -1,0 +1,16 @@
+<%= label_tag(:code, "Código") %>
+<%= text_field_tag :code, params[:code] %>
+<br /><br />
+<%= label_tag(:recipe_id, "Receta") %>
+<%= select_tag(:recipe_id, options_from_collection_for_select(@recipes, :id, :to_collection_select, params[:recipe_id]), :include_blank => true, :class=>'chzn-select chzn-field-normal chzn-small') %>
+<%= label_tag(:client_id, "Cliente") %>
+<%= select_tag('client_id', options_from_collection_for_select(@clients, :id, :name, params[:client_id]), :include_blank => true, :class=>'chzn-select chzn-field-normal chzn-small') %>
+<br /><br />
+<%= label_tag("Fecha") %>
+<%= label_tag(:start_date, "Desde:") %>
+<%= calendar_date_select_tag :start_date, params[:start_date] %>
+<%= label_tag(:end_date, "Hasta:") %>
+<%= calendar_date_select_tag :end_date, params[:end_date] %>
+<br /><br />
+<%= submit_tag "Filtrar", :name => nil %>
+<%= link_to "Limpiar campos", orders_path %>

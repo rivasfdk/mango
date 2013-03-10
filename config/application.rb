@@ -39,6 +39,6 @@ module Porcinas
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
     config.autoload_paths += %W(#{config.root}/lib)
-    #config.time_zone = "Caracas"
+    config.i18n.default_locale = :es
   end
 end

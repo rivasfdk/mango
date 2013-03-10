@@ -7,6 +7,7 @@ gem 'mysql2', '< 0.3'
 gem 'dynamic_form'
 gem 'railroad'
 gem 'rb-readline'
+gem 'calendar_date_select', :git => 'http://github.com/paneq/calendar_date_select.git', :branch => 'rails3test'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 

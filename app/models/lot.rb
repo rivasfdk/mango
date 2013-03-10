@@ -6,7 +6,7 @@ class Lot < ActiveRecord::Base
   has_many :hopper_lot
 
   validates_uniqueness_of :code
-  validates_presence_of :date, :ingredient_id
+  validates_presence_of :date, :ingredient
   validates_length_of :code, :within => 3..20
   validates_associated :ingredient
 

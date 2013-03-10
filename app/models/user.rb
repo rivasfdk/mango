@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   belongs_to :role
 
   validates_uniqueness_of :login
-  validates_presence_of :name, :login, :role_id
+  validates_presence_of :name, :login, :role
   validates_length_of :name, :login, :within => 3..40
 
   before_save :validate_password

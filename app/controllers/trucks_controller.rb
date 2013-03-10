@@ -29,6 +29,7 @@ class TrucksController < ApplicationController
           flash[:notice] = 'Camión guardado con éxito'
           redirect_to :trucks
         else
+          new
           render :new
         end
       end

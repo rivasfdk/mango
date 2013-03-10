@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
   has_many :batch
   has_many :alarms
 
-  validates_presence_of :recipe_id, :user_id, :product_lot_id, :client_id
+  validates_presence_of :recipe, :user, :product_lot, :client
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
   validates_associated :recipe, :client, :user
 
@@ -188,14 +188,12 @@ class Order < ActiveRecord::Base
   end
   
   def self.search(params)
-    
-    if params[:code] and params[:code] != ""
-      paginate :all, :page => params[:page],
-               :per_page => params[:per_page],
-               :order => 'created_at DESC',
-               :conditions => ['code = ?', params[:code]]
-    else
-      paginate :all, :page => params[:page], :per_page => params[:per_page], :order => 'created_at DESC'
-    end
+    @orders = Order.order('created_at DESC')
+    @orders = @orders.where(:code => params[:code]) if params[:code].present?
+    @orders = @orders.where(:recipe_id => params[:recipe_id]) if params[:recipe_id].present?
+    @orders = @orders.where(:client_id => params[:client_id]) if params[:client_id].present?
+    @orders = @orders.where('created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
+    @orders = @orders.where('created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
+    @orders.paginate :page => params[:page], :per_page => params[:per_page]
   end
 end

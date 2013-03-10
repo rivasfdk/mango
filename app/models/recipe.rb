@@ -226,13 +226,9 @@ class Recipe < ActiveRecord::Base
     return value.to_f
   end
 
-  def self.search(search, page, per_page)
-    if search and search != ""
-      paginate :all, :page => page,
-               :per_page => per_page,
-               :conditions => ['code = ? and active = true', search]
-    else
-      paginate :all, :page => page, :per_page => per_page, :conditions => ['active = true']
-    end
+  def self.search(params)
+    @recipes = Recipe.order("created_at asc")
+    @recipes = @recipes.where('code = ?', params[:code]) if params[:code].present?
+    @recipes.paginate :page => params[:page], :per_page => params[:per_page]
   end
 end

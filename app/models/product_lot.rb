@@ -6,7 +6,7 @@ class ProductLot < ActiveRecord::Base
   has_many :order
 
   validates_uniqueness_of :code
-  validates_presence_of :date, :product_id
+  validates_presence_of :date, :product
   validates_length_of :code, :within => 3..20
 
   def get_content

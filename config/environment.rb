@@ -5,3 +5,7 @@ require File.expand_path('../application', __FILE__)
 Porcinas::Application.initialize!
 
 require 'pdf/easy_report'
+
+CalendarDateSelect.format = :iso_date
+CalendarDateSelect.default_options.update(:locale => 'es')
+CalendarDateSelect.default_options.update(:popup => 'force')
