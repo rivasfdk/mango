@@ -394,9 +394,9 @@ class ReportsController < ApplicationController
   end
 
   def alarms_per_order
-    by_alarm_type = params[:report][:by_alarm_type_1].to_i
+    by_alarm_type = params[:report][:by_alarm_type_2].to_i
     if by_alarm_type != 0
-      alarm_type_id = params[:report][:alarm_type_id_1].to_i
+      alarm_type_id = params[:report][:alarm_type_id_2].to_i
     else
       alarm_type_id = 0
     end
