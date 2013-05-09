@@ -44,6 +44,11 @@ reprocess:
   module: transactions
   action: reprocess
   mode: global
+ticket_manual:
+  name: Ticket Manual
+  module: tickets
+  action: manual
+  mode: global
 reports:
   name: Report Consult
   module: reports
