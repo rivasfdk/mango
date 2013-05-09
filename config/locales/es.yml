@@ -240,6 +240,7 @@ es:
     address: "La dirección"
     tel1: "El teléfono 1"
     license_plate: "La placa"
+    ci_rif: "La Cédula/RIF"
     
         
         

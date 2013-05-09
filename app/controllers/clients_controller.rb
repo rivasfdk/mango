@@ -18,12 +18,22 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new params[:client]
-    @client.factory = false
-    if @client.save
-      flash[:notice] = 'Cliente guardado con éxito'
-      redirect_to :clients
-    else
-      render :new
+    respond_to do |format|
+      format.html do
+        if @client.save
+          flash[:notice] = 'Cliente guardado con éxito'
+          redirect_to :clients
+        else
+          render :new
+        end
+      end
+      format.json do
+        if @client.save
+          render :json => @client
+        else
+          render :json => @client.errors, :status => :unprocessable_entity
+        end
+      end
     end
   end
 
