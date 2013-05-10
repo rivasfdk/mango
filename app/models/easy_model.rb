@@ -935,6 +935,7 @@ class EasyModel
         'content_name' => content_name,
         'amount' => amount.to_s,
         'user_name' => a.user.login,
+        'comment' => a.comment,
         'date' => self.print_formatted_date(a.date),
         'adjustment_code' => ttype_code
       }

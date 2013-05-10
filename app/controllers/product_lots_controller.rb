@@ -77,15 +77,16 @@ class ProductLotsController < ApplicationController
 
   def do_adjust
     amount = Float(params[:amount]) rescue -1
+    comment = params[:comment]
     if amount >= 0
       @product_lot = ProductLot.find params[:id]
-      @product_lot.adjust(amount, session[:user].id)
+      @product_lot.adjust(amount, session[:user].id, comment)
       flash[:notice] = "Lote ajustado exitosamente"
       redirect_to session.delete(:return_to)
     else
       flash[:type] = 'error'
       flash[:notice] = "El monto de ajuste es inválido"
-      redirect_to :product_lots
+      redirect_to session.delete(:return_to)
     end
   end
 end

@@ -13,12 +13,12 @@ class Lot < ActiveRecord::Base
   def self.find_all
     find :all, :include => ['ingredient'], :order => 'code ASC'
   end
-  
+
   def get_content
     Ingredient.find self.ingredient_id
   end
 
   def to_collection_select
-   "#{self.ingredient.name} (L: #{self.code})"
+    "#{self.ingredient.name} (L: #{self.code})"
   end
 end

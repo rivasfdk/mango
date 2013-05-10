@@ -2,7 +2,7 @@ report:
   settings:
     page:
       size: Letter
-      orientation: P
+      orientation: L
       margins: 10
     style:
       font_family: 'Helvetica'
@@ -95,37 +95,37 @@ report:
               align: left
               width: 25
           2:
-            adjustment_code:
-              label: Cod. Ajuste
-              align: center
-              width: 20
-          3:
            lot_code :
               label: Lote
               align: left
-              width: 25
-          4:
+              width: 20
+          3:
             content_code:
               label: Cod. MP/Prod
               align: left
-              width: 25
-          5:
+              width: 20
+          4:
             content_name:
               label: Descripcion
               align: left
               width: 50
-          6:
+          5:
             amount:
               label: Cantidad
               align: right
               unit: Kg
               width: 30
               precision: 2
-          7:
+          6:
             user_name:
               label: Usuario
               align: left
               width: 25
+          7:
+            comment:
+              label: Comentario
+              align: left
+              width: 85
     8:
       breakline:
   footer:

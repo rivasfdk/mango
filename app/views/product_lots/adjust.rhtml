@@ -5,5 +5,7 @@
   <div class="field"><%=h @product_lot.stock %></div>
   <label for="amount" class="small">Nueva existencia:</label>
   <div class="field"><%= text_field_tag :amount, params[:amount], :size=>'15' %> <span>*</span></div>
+  <label for="comment" class="small">Comentario:</label>
+  <div class="field"><%= text_field_tag :comment, params[:comment], :size=>'50' %></div>
   <div class="clearfix"></div>
 <% end %>

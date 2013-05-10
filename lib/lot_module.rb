@@ -21,12 +21,13 @@ module LotModule
     end
   end
 
-  def adjust(amount, user_id)
+  def adjust(amount, user_id, comment)
     diff = self.stock - amount
     transaction = Transaction.new
     transaction.content_id = self.id
     transaction.content_type = self.is_a?(Lot) ? 1 : 2
     transaction.amount = diff.abs
+    transaction.comment = comment
     transaction.user_id = user_id
     if diff > 0
       transaction.transaction_type_id = 3 #SA-AJU
