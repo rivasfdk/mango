@@ -118,13 +118,23 @@ report:
             client:
               label: Cliente
               align: left
-              width: 120
+              width: 70
           3:
             content_name:
               label: Materia Prima
               align: left
-              width: 80
+              width: 70
           4:
+            sacks:
+              label: Sacos
+              align: right
+              width: 30
+          5:
+            sack_weight:
+              label: Kg/Sacos
+              align: right
+              width: 30
+          6:
             amount:
               label: Cantidad
               align: right

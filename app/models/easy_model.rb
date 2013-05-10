@@ -143,13 +143,24 @@ class EasyModel
 
     @tickets.each do |ticket|
       ticket.transactions.each do |transaction|
+        #TODO Right way to discard pallets transactions
         if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
+
+        sacks = "-"
+        sack_weight = "-"
+        if transaction.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
@@ -175,10 +186,19 @@ class EasyModel
         if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
+        sacks = "-"
+        sack_weight = "-"
+        if transaction.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
@@ -204,10 +224,20 @@ class EasyModel
         unless contents_codes.include? transaction.get_content.code
           next
         end
+
+        sacks = "-"
+        sack_weight = "-"
+        if transaction.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
@@ -233,10 +263,20 @@ class EasyModel
         unless contents_codes.include? transaction.get_content.code
           next
         end
+
+        sacks = "-"
+        sack_weight = "-"
+        if transaction.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
@@ -264,10 +304,19 @@ class EasyModel
         if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
+        sacks = "-"
+        sack_weight = "-"
+        if t.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
@@ -295,10 +344,19 @@ class EasyModel
         if content_type == 2 and transaction.get_content.code == "1000"
           next
         end
+        sacks = "-"
+        sack_weight = "-"
+        if t.sack
+          sacks = transaction.sacks.to_s
+          sack_weight = transaction.sack_weight.to_s + " Kg"
+        end
+
         data['table1'] << {
           'number' => ticket.number,
           'client' => ticket.client.name,
           'content_name' => transaction.get_content.name,
+          'sacks' => sacks,
+          'sack_weight' => sack_weight,
           'amount' => transaction.amount,
         }
       end
