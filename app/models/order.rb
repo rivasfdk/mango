@@ -140,15 +140,15 @@ class Order < ActiveRecord::Base
     self.prog_batches = n_batch
     self.real_batches = n_batch
     self.completed = true
+    self.repaired = true
     self.save
 
     self.generate_transactions(user)
   end
 
   def generate_transactions(user)
-    order = Order.find self.id
     consumptions = {}
-    order.batch.each do |b|
+    self.batch.each do |b|
       b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.id
         if consumptions.has_key? key

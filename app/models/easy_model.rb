@@ -625,6 +625,8 @@ class EasyModel
     data['total_var'] = total_var
     data['total_var_perc'] = total_var_perc
     data['product_total'] = "#{total_real} Kg"
+    data['real_production'] = @order.real_production.present? ? "#{@order.real_production} Kg" : "" 
+    data['repaired'] = @order.repaired ? "Si" : "No"
     data['results'] = []
 
     details.sort_by {|k,v| k}.map do |key, value|

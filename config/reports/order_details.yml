@@ -177,15 +177,41 @@ report:
         align: left
         width: 50
     21:
-      breakline:
+      text:
+        label: "Produccion Real: "
+        align: right
+        width: 170
+        breakline: 0
+        style:
+          font_weight: B
     22:
+      text:
+        field: real_production
+        align: left
+        width: 50
+    23:
+      text:
+        label: "Reparada: "
+        align: right
+        width: 170
+        breakline: 0
+        style:
+          font_weight: B
+    24:
+      text:
+        field: repaired
+        align: left
+        width: 50
+    25:
+      breakline:
+    26:
       text:
         field: title
         align: center
         style:
           font_size: 12
           font_weight: B
-    23:
+    27:
       table:
         field: results
         heading:
@@ -255,15 +281,15 @@ report:
               label: Tolva
               align: right
               width: 15
-    24:
+    28:
       breakline:
-    25:
+    29:
       text:
         label: "Comentario:"
         align: left
         style:
           font_weight: B
-    26:
+    30:
       text:
         field: comment
         align: left
