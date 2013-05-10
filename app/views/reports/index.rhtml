@@ -13,6 +13,19 @@
   </div>
   <% end %>
 
+  <% if session[:user].has_report_permission?('real_production') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('real_production')">Producción Real</h2>
+    <div id="real_production" class="report-details">
+      <%= form_for :report, :url=>real_production_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:user].has_report_permission?('order_duration') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('order_duration')">Duración de Orden</h2>

@@ -6,7 +6,7 @@ class EasyModel
     else
       conditions = {:alarm_type_id=>alarm_type_id, :date=>(start_date)..((end_date) + 1.day)}
     end
-    
+
     @alarms = Alarm.find :all, :conditions => conditions
     return nil if @alarms.length.zero?
 
@@ -374,8 +374,6 @@ class EasyModel
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    std_total = 0
-    real_total = 0
     @orders.each do |o|
       rtotal = Batch.get_real_total(o.id)
       rbatches = o.get_real_batches
@@ -400,6 +398,38 @@ class EasyModel
         'total_real' => rtotal.to_s,
         'var_kg' => var_kg.to_s,
         'var_perc' => var_perc.to_s
+      }
+    end
+
+    return data
+  end
+
+  def self.real_production(start_date, end_date)
+    @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+    return nil if @orders.length.zero?
+
+    data = self.initialize_data('Produccion Real')
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['results'] = []
+
+    @orders.each do |o|
+      rbatches = o.get_real_batches()
+      ttotal = Batch.get_real_total(o.id)
+      rtotal = o.real_production.present? ? o.real_production : ttotal
+      loss = rtotal - ttotal
+      loss_perc = (loss * 100.0) / ttotal
+      data['results'] << {
+        'order' => o.code,
+        'date' => o.calculate_short_start_date,
+        'recipe_name' => o.recipe.name,
+        'recipe_version' => o.recipe.version,
+        'client_name' => o.client.name,
+        'real_batches' => rbatches.to_s,
+        'theoric_total' => ttotal.to_s,
+        'real_total' => rtotal.to_s,
+        'loss' => loss.to_s,
+        'loss_perc' => loss_perc.to_s
       }
     end
 

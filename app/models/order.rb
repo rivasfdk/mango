@@ -10,6 +10,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :recipe, :user, :product_lot, :client
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
   validates_associated :recipe, :client, :user
+  validates_numericality_of :real_production, :allow_nil => true
 
   before_validation :validates_real_batchs
   before_save :create_code

@@ -27,6 +27,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'reports/index' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :get, :as => "recipes_report"
   match 'reports/daily_production' => "reports#daily_production", :via => :get, :as => "daily_production_report"
+  match 'reports/real_production' => "reports#real_production", :via => :get, :as => "real_production_report"
   match 'reports/order_duration' => "reports#order_duration", :via => :get, :as => "order_duration_report"
   match 'reports/order_details' => "reports#order_details", :via => :get, :as => "order_details_report"
   match 'reports/batch_details' => "reports#batch_details", :via => :get, :as => "batch_details_report"

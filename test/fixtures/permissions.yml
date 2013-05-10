@@ -59,6 +59,11 @@ daily_production:
   module: reports
   action: daily_production
   mode: global
+real_production:
+  name: Report 'Real Production'
+  module: reports
+  action: real_production
+  mode: global
 order_duration:
   name: Report 'Order Duration'
   module: reports
