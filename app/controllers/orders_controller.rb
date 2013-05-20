@@ -26,7 +26,7 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new params[:order]
-    @order.parameter_list = ParameterList.find_by_recipe_code(@order.recipe.code)
+    @order.parameter_list = ParameterList.find_by_recipe(@order.recipe.code)
     if @order.save
       flash[:notice] = 'Orden de producción guardada con éxito'
       redirect_to :orders
