@@ -226,6 +226,7 @@ es:
       transaction_type: "El tipo de transacción"
       truck: "El camión"
       user: "El usuario"
+      parameter_type: "El tipo de parámetro"
   attributes:
     << : *common
     description: "La descripción"
@@ -241,7 +242,3 @@ es:
     tel1: "El teléfono 1"
     license_plate: "La placa"
     ci_rif: "La Cédula/RIF"
-    
-        
-        
-        

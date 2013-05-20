@@ -1,0 +1,34 @@
+<% i = 0 %>
+<div id="ingredient_recipe_grid">
+  <%= form_for :parameter, :url=>parameter_list_parameters_path(@parameter_list) do |f| %>
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Parámetro<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+        <th class="actions_medium">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <%= f.collection_select :parameter_type_id, @parameters_types, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-done chzn-field-normal' %>
+        </td>
+        <td><%= f.text_field :value, :size=>4 %></td>
+        <td><%= submit_tag 'Agregar' %></td>
+      </tr>
+      <% @parameter_list.parameters.each do |p| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%=h p.parameter_type.name %></td>
+          <td><%=h p.value %></td>
+          <td><%= render_action_delete(parameter_list_parameter_path(@parameter_list, p), 
+            "Desea eliminar el parametro '#{p.parameter_type.name} = #{p.value}'?") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+  <% end %>
+</div>

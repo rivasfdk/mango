@@ -21,7 +21,7 @@ class AlarmTypesController < ApplicationController
     @alarm_type = AlarmType.find params[:id]
     @alarm_type.update_attributes(params[:alarm_type])
     if @alarm_type.save
-      flash[:notice] = 'Tipo de alarma guardada con éxito'
+      flash[:notice] = 'Tipo de alarma actualizada con éxito'
       redirect_to :alarm_types
     else
       render :edit

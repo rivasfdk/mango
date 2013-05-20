@@ -1,0 +1,22 @@
+<% i = 0 %>
+<div id="ingredient_recipe_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Parámetro<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @parameter_list.parameters.each do |p| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%=h p.parameter_type.name %></td>
+          <td><%=h p.value %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>

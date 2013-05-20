@@ -1,6 +1,7 @@
 class Order < ActiveRecord::Base
   belongs_to :recipe
   belongs_to :medicament_recipe
+  belongs_to :parameter_list
   belongs_to :client
   belongs_to :user
   belongs_to :product_lot

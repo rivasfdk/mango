@@ -21,3 +21,7 @@
 <% end %>
 <h5>Ingredientes</h5>
 <%= render :partial=>'show_grid', :locals =>{:recipe => @recipe} %>
+<% if @parameter_list %>
+  <h5>Parámetros</h5>
+  <%= render :partial=>'show_parameters_grid', :locals =>{:parameter_list => @parameter_list} %>
+<% end %>

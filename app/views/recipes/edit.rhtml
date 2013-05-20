@@ -9,3 +9,17 @@
   <br />
   <%= render :partial=>'show_grid', :locals =>{:recipe => @recipe} %>
 <% end %>
+<h5>Parámetros <a name="parameters"></a></h5>
+<% if @parameter_list %>
+  <% unless @parameter_list.is_associated? %>
+    <%= render :partial=>'edit_parameters_grid', :locals =>{:parameter_list => @parameter_list} %>
+  <% else %>
+    <p>La lista de parámetros tiene ordenes de producción asociadas y por ende no puede editarse</p>
+    <br />
+    <p><%= link_to "Haga click aquí para crear una nueva lista de parámetros a partir de esta lista", parameter_list_clone_path(@parameter_list.id) %></p>
+    <br />
+    <%= render :partial=>'show_parameters_grid', :locals =>{:parameter_list => @parameter_list} %>
+  <% end %>
+<% else %>
+  <p>Esta receta no tiene una lista de parámetros, <%= link_to "haga click aquí para crear una lista de parámetros", recipe_create_parameter_list_path(@recipe.id) %></p>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130510215114) do
+ActiveRecord::Schema.define(:version => 20130515235515) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -213,6 +213,7 @@ ActiveRecord::Schema.define(:version => 20130510215114) do
     t.integer  "medicament_recipe_id"
     t.float    "real_production"
     t.boolean  "repaired",             :default => false
+    t.integer  "parameter_list_id"
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
@@ -222,6 +223,30 @@ ActiveRecord::Schema.define(:version => 20130510215114) do
 
   create_table "orders_numbers", :force => true do |t|
     t.string   "code",       :default => "0000000001"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "parameters", :force => true do |t|
+    t.integer  "parameter_list_id"
+    t.integer  "parameter_type_id"
+    t.float    "value",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "parameters", ["parameter_list_id"], :name => "fk_parameters_parameter_list_id"
+  add_index "parameters", ["parameter_type_id"], :name => "fk_parameters_parameter_type_id"
+
+  create_table "parameters_lists", :force => true do |t|
+    t.string   "recipe_code",                   :null => false
+    t.boolean  "active",      :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "parameters_types", :force => true do |t|
+    t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

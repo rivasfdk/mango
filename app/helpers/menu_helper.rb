@@ -159,6 +159,12 @@ module MenuHelper
       menu = menu_for_alarm_types_new
     elsif c == 'alarm_types' and (a == 'edit' or a == 'update')
       menu = menu_for_alarm_types_edit
+    elsif c == 'parameter_types' and a == 'index'
+      menu = menu_for_parameter_types_index
+    elsif c == 'parameter_types' and (a == 'new' or a == 'create')
+      menu = menu_for_parameter_types_new
+    elsif c == 'parameter_types' and (a == 'edit' or a == 'update')
+      menu = menu_for_parameter_types_edit
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -914,8 +920,35 @@ module MenuHelper
   def menu_for_alarm_types_edit
     menu = content_tag(:p, 'Editar tipo de alarma')
     menu += content_tag(:ul,
-      render_back(mixing_times_path) +
+      render_back(alarm_types_path) +
       render_function('Actualizar', 'Actualizar tipo de alarma', "submit_alarm_type_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_parameter_types_index
+    menu = content_tag(:p, 'Lista de tipos de parámetros')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo tipo de parámetro', new_parameter_type_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_parameter_types_new
+    menu = content_tag(:p, 'Crear nuevo tipo de parámetro')
+    menu += content_tag(:ul,
+      render_back(parameter_types_path) +
+      render_function('Guardar', 'Guardar tipo de parámetro', "submit_parameter_type_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_parameter_types_edit
+    menu = content_tag(:p, 'Editar tipo de parámetro')
+    menu += content_tag(:ul,
+      render_back(parameter_types_path) +
+      render_function('Actualizar', 'Actualizar tipo de parámetro', "submit_parameter_type_edit_form()", 'button-execute.png')
     )
     return menu
   end

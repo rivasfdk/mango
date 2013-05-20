@@ -10,11 +10,14 @@ class RecipesController < ApplicationController
 
   def show
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
+    @parameter_list = ParameterList.find_by_recipe(@recipe.code)
   end
 
   def edit
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
     @ingredients = Ingredient.find :all
+    @parameter_list = ParameterList.find_by_recipe(@recipe.code)
+    @parameters_types = ParameterType.find :all
     @mixing_times = MixingTime.find :all
   end
 
@@ -92,6 +95,14 @@ class RecipesController < ApplicationController
       flash[:notice] = "La receta no se ha podido desactivar"
     end
     redirect_to :recipes
+  end
+
+  def create_parameter_list
+    @parameter_list = ParameterList.new
+    @recipe = Recipe.find params[:id]
+    @parameter_list.recipe_code = @recipe.code
+    @parameter_list.save
+    redirect_to request.referer + "#parameters"
   end
 
   def upload

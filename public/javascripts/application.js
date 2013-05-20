@@ -219,6 +219,14 @@ function submit_alarm_type_edit_form() {
     $('alarm_type_edit_form').submit();
 }
 
+function submit_parameter_type_new_form() {
+    $('parameter_type_new_form').submit();
+}
+
+function submit_parameter_type_edit_form() {
+    $('parameter_type_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     hide_all_report_details();
     $(id).toggle();

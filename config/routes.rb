@@ -6,6 +6,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'recipes/:id/clone' => "recipes#clone", :via => :get, :as => 'clone_recipe'
   match 'recipes/import' => "recipes#import", :via => :get, :as => 'recipe_import'
   match 'recipes/upload' => "recipes#upload", :via => :get, :as => 'recipe_upload'
+  match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'warehouses/recalculate' => "warehouses#recalculate", :via => :get, :as => 'recalculate_warehouses'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
@@ -23,6 +24,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'product_lots/:id/adjust' => "product_lots#adjust", :via => :get, :as => 'adjust_product_lot'
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
+  match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
   # Reports
   match 'reports/index' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :get, :as => "recipes_report"
@@ -55,7 +57,7 @@ ActionController::Routing::Routes.draw do |map|
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :hoppers, :products, :orders, :lots, :schedules, :batches,
-    :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :mixing_times, :alarm_types
+    :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :mixing_times, :alarm_types, :parameter_types
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 
@@ -65,6 +67,10 @@ ActionController::Routing::Routes.draw do |map|
 
   resources :medicament_recipes do
     resources :ingredients_medicament_recipes
+  end
+
+  resources :parameter_lists do
+    resources :parameters
   end
 
   resources :roles do
