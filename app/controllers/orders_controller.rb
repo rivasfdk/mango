@@ -39,6 +39,7 @@ class OrdersController < ApplicationController
   def update
     @order = Order.find params[:id]
     @order.update_attributes(params[:order])
+    @order.parameter_list = ParameterList.find_by_recipe(@order.recipe.code)
     if @order.save
       flash[:notice] = 'Orden de producción actualizada con éxito'
       redirect_to :orders
