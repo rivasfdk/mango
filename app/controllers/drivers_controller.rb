@@ -2,7 +2,7 @@ class DriversController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @drivers = Driver.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}, :order => 'name ASC'
+        @drivers = Driver.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}, :order => 'name ASC'
         render :html => @drivers
       end
       format.json do

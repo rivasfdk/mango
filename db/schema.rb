@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130515235515) do
+ActiveRecord::Schema.define(:version => 20130608130229) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -246,9 +246,10 @@ ActiveRecord::Schema.define(:version => 20130515235515) do
   end
 
   create_table "parameters_types", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name",          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "default_value", :null => false
   end
 
   create_table "permission_roles", :force => true do |t|

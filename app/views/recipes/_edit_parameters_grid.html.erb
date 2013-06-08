@@ -1,0 +1,30 @@
+<% i = 0 %>
+<div id="ingredient_recipe_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Parámetro<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+        <th>Nuevo valor<span class="order_arrow"></span></th>
+        <th class="actions_medium">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @parameter_list.parameters.each do |p| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <%= form_for :parameter, :url=>parameter_list_parameter_path(@parameter_list, p), :html=>{:method=>:put, :id=>'parameter_edit_form_' + p.id.to_s} do |f| %>
+            <td>
+              <%=h p.parameter_type.name %>
+            </td>
+            <td class="center"><%=h p.value %></td>
+            <td class="center"><%= f.text_field :value, :size=>4 %></td>
+            <td><%= submit_tag 'Actualizar' %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>

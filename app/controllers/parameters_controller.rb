@@ -32,4 +32,16 @@ class ParametersController < ApplicationController
     end
     redirect_to request.referer + "#parameters"
   end
+
+  def update
+    @parameter = Parameter.find params[:id]
+    @parameter.update_attributes(params[:parameter])
+    if @parameter.save
+      flash[:notice] = 'Parámetro actualizado con éxito'
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo actualizar el parámetro"
+    end
+    redirect_to request.referer + "#parameters"
+  end
 end

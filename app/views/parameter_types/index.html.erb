@@ -4,6 +4,7 @@
     <thead>
       <tr>
         <th>Nombre<span class="order_arrow"></span></th>
+        <th>Valor predeterminado<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th></th>
       </tr>
     </thead>
@@ -12,6 +13,7 @@
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td><%=h pt.name %></td>
+        <td><%=h pt.default_value %></td>
         <td>
           <%= render_action_edit(edit_parameter_type_path(pt)) %>
           <%= render_action_delete(parameter_type_path(pt), "Desea borrar el tipo de parámetro '#{pt.name}'?") %>

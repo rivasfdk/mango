@@ -1,6 +1,6 @@
 class MixingTimesController < ApplicationController
   def index
-    @mixing_times = MixingTime.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @mixing_times = MixingTime.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
   
   def edit

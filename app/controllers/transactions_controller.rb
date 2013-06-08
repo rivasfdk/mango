@@ -1,6 +1,6 @@
 class TransactionsController < ApplicationController
   def index
-    @transactions = Transaction.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @transactions = Transaction.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new

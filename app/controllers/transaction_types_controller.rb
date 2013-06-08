@@ -1,6 +1,6 @@
 class TransactionTypesController < ApplicationController
   def index
-    @transaction_types = TransactionType.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @transaction_types = TransactionType.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def edit

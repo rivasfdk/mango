@@ -1,7 +1,7 @@
 var clients = new Array();
-<% for client in @clients -%>
-  clients.push(new Array(<%= client.factory %>, '<%=h client.name %>', <%= client.id %>));
-<% end -%>
+<% for client in Client.all %>
+  clients.push(new Array(<%= client.factory %>, '<%= client.name %>', <%= client.id %>));
+<% end %>
 
 function clientTypeSelected() {
   factory = false

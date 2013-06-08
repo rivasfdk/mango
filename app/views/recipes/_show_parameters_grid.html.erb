@@ -12,7 +12,7 @@
         <% class_row, i = alternate_row_class(i) %>
         <tr class="<%= class_row %>">
           <td><%=h p.parameter_type.name %></td>
-          <td><%=h p.value %></td>
+          <td class="center"><%=h p.value %></td>
         </tr>
       <% end %>
     </tbody>

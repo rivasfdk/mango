@@ -1,6 +1,6 @@
 class ParameterTypesController < ApplicationController
   def index
-    @parameter_types = ParameterType.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @parameter_types = ParameterType.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def edit

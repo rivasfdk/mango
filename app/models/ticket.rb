@@ -56,7 +56,7 @@ class Ticket < ActiveRecord::Base
                :conditions => ['number = ?', number],
                :order => 'number DESC'
     else
-      paginate :all, :page => page, :per_page => per_page, :order => 'number DESC'
+      paginate :page => page, :per_page => per_page, :order => 'number DESC'
     end
   end
 end

@@ -1,6 +1,6 @@
 class AlarmTypesController < ApplicationController
   def index
-    @alarm_types = AlarmType.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @alarm_types = AlarmType.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def edit

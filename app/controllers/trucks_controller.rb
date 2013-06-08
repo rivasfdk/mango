@@ -2,7 +2,7 @@ class TrucksController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @trucks = Truck.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}
+        @trucks = Truck.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}
         render :html => @trucks
       end
       format.json do

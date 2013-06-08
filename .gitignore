@@ -9,3 +9,4 @@ tmp/
 *.swp
 *.swo
 config/setup_load_paths.rb
+.sass-cache/

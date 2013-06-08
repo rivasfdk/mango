@@ -1,4 +1,4 @@
-ActionController::Routing::Routes.draw do |map|
+Mango::Application.routes.draw do
 
   match 'ingredients/search' => "ingredients#search", :via => :get, :as => 'ingredient_search'
   match 'ingredients/catalog' => "ingredients#catalog", :via => :get, :as => 'ingredient_catalog'
@@ -78,7 +78,6 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   root :to => "sessions#index"
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action.:format'
+
+  match "/sessions/show" => "sessions#show"
 end

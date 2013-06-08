@@ -1,6 +1,6 @@
 class SchedulesController < ApplicationController
   def index
-    @schedules = Schedule.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @schedules = Schedule.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def edit

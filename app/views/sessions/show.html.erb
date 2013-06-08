@@ -64,17 +64,6 @@
     </div>
   </div>
   <% end %>
-  
-  <!-- Alarm types -->
-  <% if session[:permissions].include?('alarm_types') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('alarm-types-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), alarm_types_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Tipos de Alarmas', alarm_types_path %></h2>
-      <p>Manejo de tipos de alarma</p>
-    </div>
-  </div>
-  <% end %>
 
   <!-- Transactions -->
   <% if session[:permissions].include?('transactions') %>
@@ -153,17 +142,6 @@
   </div>
   <% end %>
 
-  <!-- Transaction Types -->
-  <% if session[:permissions].include?('transaction_types') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('transaction-types-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), transaction_types_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Tipos de Transacciones', transaction_types_path %></h2>
-      <p>Gestión de los tipos de transacciones</p>
-    </div>
-  </div>
-  <% end %>
-
   <!-- Schedules -->
   <% if session[:permissions].include?('schedules') %>
   <div class="module yui3-u-1-2">
@@ -193,17 +171,6 @@
     <div class="module-content">
       <h2><%= link_to 'Roles', roles_path %></h2>
       <p>Manejo de roles para usuarios</p>
-    </div>
-  </div>
-  <% end %>
-
-  <!-- Permissions -->
-  <% if session[:permissions].include?('permissions') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('permissions-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), permissions_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Permisos', permissions_path %></h2>
-      <p>Gestión de privilegios</p>
     </div>
   </div>
   <% end %>
@@ -262,16 +229,4 @@
     </div>
   </div>
   <% end %>
-
-  <!-- Config -->
-  <% if session[:permissions].include?('configuration') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('configuration-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), not_implemented_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Configuración', not_implemented_path %></h2>
-      <p>Configuración general del sistema</p>
-    </div>
-  </div>
-  <% end %>
-
 </div>

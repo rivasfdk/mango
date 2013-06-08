@@ -2,7 +2,7 @@ class LotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = Lot.paginate :all, :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
+        @lots = Lot.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
         render :html => @lots
       end
       format.json do 

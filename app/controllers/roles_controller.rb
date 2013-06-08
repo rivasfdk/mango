@@ -1,6 +1,6 @@
 class RolesController < ApplicationController
   def index
-    @roles = Role.paginate :all, :page=>params[:page], :per_page=>session[:per_page]
+    @roles = Role.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new
