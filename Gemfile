@@ -1,6 +1,6 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
-gem 'rails', '3.1.12'
+gem 'rails', '3.2.13'
 gem 'color-tools', '>= 1.3.0'
 gem "will_paginate", "~> 3.0"
 gem "mysql2", "~> 0.3.11"
