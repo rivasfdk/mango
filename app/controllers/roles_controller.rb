@@ -8,6 +8,7 @@ class RolesController < ApplicationController
   def new
     @current_permission = []
     @permissions = Permission.get_all
+    @user = User.find(session[:user_id])
   end
 
   def edit
