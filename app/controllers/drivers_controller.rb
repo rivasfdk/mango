@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class DriversController < ApplicationController
   def index
     respond_to do |format|

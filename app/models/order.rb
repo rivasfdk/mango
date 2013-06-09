@@ -88,11 +88,11 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def repair(user, n_batch)    
+  def repair(user_id, n_batch)    
     if self.batch.count == 0
       self.prog_batches.times do |n|
         batch = self.batch.new
-        batch.user = user
+        batch.user_id = user_id
         batch.number = n + 1
         batch.schedule = Schedule.first
         batch.start_date = Date.today
@@ -144,10 +144,10 @@ class Order < ActiveRecord::Base
     self.repaired = true
     self.save
 
-    self.generate_transactions(user)
+    self.generate_transactions(user_id)
   end
 
-  def generate_transactions(user)
+  def generate_transactions(user_id)
     consumptions = {}
     self.batch.each do |b|
       b.batch_hopper_lot.each do |bhl|
@@ -172,7 +172,7 @@ class Order < ActiveRecord::Base
       t.content_id = key
       t.processed_in_stock = 1
       t.amount = value
-      t.user = user
+      t.user_id = user_id
       t.save
     end
     product_lot = ProductLot.find self.product_lot_id
@@ -185,7 +185,7 @@ class Order < ActiveRecord::Base
     t.content_id = self.product_lot_id
     t.processed_in_stock = 1
     t.amount = production
-    t.user = user
+    t.user_id = user_id
     t.save
   end
   

@@ -707,7 +707,7 @@ class FPDF
                     ls=l
                     ns=ns+1
                 end
-                l=l+cw[c[0]]
+                l=l+cw[c[0].ord]
                 if l>wmax
                     # Automatic line break
                     if sep==-1
@@ -781,7 +781,7 @@ class FPDF
                 sep=i
                 ls=l
             end
-            l=l+cw[c];
+            l=l+cw[c.to_i];
             if l>wmax
                 # Automatic line break
                 if sep==-1
@@ -1348,11 +1348,11 @@ class FPDF
         end
         w=freadint(f)
         h=freadint(f)
-        bpc=f.read(1)[0]
+        bpc=f.read(1)[0].ord
         if bpc>8
             self.Error('16-bit depth not supported: '+file)
         end
-        ct=f.read(1)[0]
+        ct=f.read(1)[0].ord
         if ct==0
             colspace='DeviceGray'
         elsif ct==2
@@ -1362,13 +1362,13 @@ class FPDF
         else
             self.Error('Alpha channel not supported: '+file)
         end
-        if f.read(1)[0]!=0
+        if f.read(1)[0].ord!=0
             self.Error('Unknown compression method: '+file)
         end
-        if f.read(1)[0]!=0
+        if f.read(1)[0].ord!=0
             self.Error('Unknown filter method: '+file)
         end
-        if f.read(1)[0]!=0
+        if f.read(1)[0].ord!=0
             self.Error('Interlacing not supported: '+file)
         end
         f.read(4)
@@ -1389,11 +1389,11 @@ class FPDF
                 # Read transparency info
                 t=f.read(n)
                 if ct==0
-                    trns=[t[1]]
+                    trns=[t[1].ord]
                 elsif ct==2
-                    trns=[t[1],t[3],t[5]]
+                    trns=[t[1].ord,t[3].ord,t[5].ord]
                 else
-                    pos=t.index(0)
+                    pos=t.index(0.chr)
                     trns=[pos] unless pos.nil?
                 end
                 f.read(4)
@@ -1418,17 +1418,17 @@ class FPDF
     def freadint(f)
         # Read a 4-byte integer from file
         a = f.read(4).unpack('N')
-        return a[0]
+        return a[0].ord
     end
 
     def freadshort(f)
         a = f.read(2).unpack('n')
-        return a[0]
+        return a[0].ord
     end
 
     def freadbyte(f)
         a = f.read(1).unpack('C')
-        return a[0]
+        return a[0].ord
     end
 
     def textstring(s)

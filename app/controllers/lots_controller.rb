@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class LotsController < ApplicationController
   def index
     respond_to do |format|
@@ -80,7 +82,7 @@ class LotsController < ApplicationController
     comment = params[:comment]
     if amount >= 0
       @lot = Lot.find params[:id]
-      @lot.adjust(amount, session[:user].id, comment)
+      @lot.adjust(amount, session[:user_id], comment)
       flash[:notice] = "Lote ajustado exitosamente"
       redirect_to session.delete(:return_to)
     else

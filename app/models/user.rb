@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
     end
 
     perm.each do |pr|
-      permissions << pr.permission.module
+      permissions << pr.permission.module unless permissions.include? pr.permission.module
     end
     return permissions
   end
@@ -48,14 +48,18 @@ class User < ActiveRecord::Base
     self.password_hash = User.encrypt(pass, self.password_salt)
   end
 
-  def has_report_permission?(report_name)
-    valid = false
-    if self.role_id == 1 # Admin
-      @report_permission = Permission.find :first, :conditions => {:module => 'reports', :mode => 'global', :action => report_name}
+  def get_reports_permissions
+    report_permissions = []
+    if self.role_id == 1 # It's even nastier than I thought
+      perm = PermissionRole.find :all, :conditions=>{:permissions=>{:module=>'reports'}}, :include=>[:permission]
     else
-      @report_permission = PermissionRole.find :first, :include => {:permission => {}}, :conditions => ['role_id = ? and permissions.module = ? and permissions.mode = ? and permissions.action = ?', self.role_id, 'reports', 'global', report_name]
+      perm = PermissionRole.find :all, :conditions=>{:role_id=>self.role_id, :permissions=>{:module=>'reports'}}, :include=>[:permission]
     end
-    return @report_permission.present?
+
+    perm.each do |p|
+      report_permissions << p.permission.action unless report_permissions.include? p.permission.action
+    end
+    return report_permissions
   end    
 
   def has_global_permission?(controller, action)

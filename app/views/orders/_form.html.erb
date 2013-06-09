@@ -13,7 +13,7 @@
 </div>
 <label for="client_id" class="small"></label>
 <div class="field"><%= f.collection_select :client_id, @clients, :id, :name, {:include_blank => true} %> <span>*</span></div>
-<% if session[:user].admin? %>
+<% if @user.admin? %>
 <label for="user_id" class="small">Usuario:</label>
 <div class="field"><%= f.collection_select :user_id, @users, :id, :login, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
 <% else %>

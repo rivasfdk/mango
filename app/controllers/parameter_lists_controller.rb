@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class ParameterListsController < ApplicationController
   def clone
     original_parameter_list = ParameterList.find params[:id]

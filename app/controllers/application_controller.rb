@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
@@ -25,7 +27,7 @@ class ApplicationController < ActionController::Base
   PaginationHelper::DEFAULT_OPTIONS[:last_tooltip] = 'Última pág.'
 
   def check_authentication
-    unless session[:user]
+    unless session[:user_id]
       respond_to do |format|
         format.html do
           session[:request] = action_name
@@ -38,7 +40,7 @@ class ApplicationController < ActionController::Base
 
   def check_permissions
     return true if (controller_name == 'sessions')
-    granted = session[:user].has_global_permission?(controller_name, action_name)
+    granted = User.find(session[:user_id]).has_global_permission?(controller_name, action_name)
     return true if granted
     flash[:notice] = "No tiene permiso para acceder a ese recurso"
     flash[:type] = 'error'

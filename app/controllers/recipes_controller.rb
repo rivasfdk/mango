@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class RecipesController < ApplicationController
   def index
     @recipes = Recipe.search(params)

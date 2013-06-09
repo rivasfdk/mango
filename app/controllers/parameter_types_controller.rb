@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class ParameterTypesController < ApplicationController
   def index
     @parameter_types = ParameterType.paginate :page=>params[:page], :per_page=>session[:per_page]

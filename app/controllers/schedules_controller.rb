@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class SchedulesController < ApplicationController
   def index
     @schedules = Schedule.paginate :page=>params[:page], :per_page=>session[:per_page]

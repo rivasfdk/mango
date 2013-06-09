@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class HoppersController < ApplicationController
   def index
     @hoppers = Hopper.find_actives

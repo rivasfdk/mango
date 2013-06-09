@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class AlarmTypesController < ApplicationController
   def index
     @alarm_types = AlarmType.paginate :page=>params[:page], :per_page=>session[:per_page]

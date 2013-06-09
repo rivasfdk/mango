@@ -1,13 +1,15 @@
+# encoding: UTF-8
+
 class SessionsController < ApplicationController
   skip_before_filter :check_authentication
   layout 'login'
 
   def index
-    redirect_to :action=>'show' if session[:user]
+    redirect_to :action=>'show' if session[:user_id]
   end
 
   def show
-    if session[:user]
+    if session[:user_id]
       render :show, :layout => 'dashboard'
     else
       redirect_to :action=>'index'
@@ -17,8 +19,10 @@ class SessionsController < ApplicationController
   def create
     user = User.auth(params[:user][:login], params[:user][:password])
     if user
-      session[:user] = user
+      session[:user_id] = user.id
+      session[:user_name] = user.name
       session[:permissions] = user.get_dashboard_permissions
+      session[:reports_permissions] = user.get_reports_permissions
       session[:per_page] = 12
       session[:company] = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['application']
       respond_to do |format|
@@ -48,7 +52,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user] = nil
+    session[:user_id] = nil
     session[:per_page] = nil
     session[:company] = nil
     redirect_to :action=>'index'
@@ -63,6 +67,6 @@ class SessionsController < ApplicationController
   private
 
   def select_layout
-    session[:user].nil? ? 'login': 'dashboard'
+    session[:user_id].nil? ? 'login': 'dashboard'
   end
 end

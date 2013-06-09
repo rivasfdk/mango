@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module MenuHelper
 
   def render_menu

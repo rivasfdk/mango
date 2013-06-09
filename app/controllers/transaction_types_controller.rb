@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class TransactionTypesController < ApplicationController
   def index
     @transaction_types = TransactionType.paginate :page=>params[:page], :per_page=>session[:per_page]

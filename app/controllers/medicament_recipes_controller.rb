@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class MedicamentRecipesController < ApplicationController
   def index
     @medicament_recipes = MedicamentRecipe.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = ?', true]

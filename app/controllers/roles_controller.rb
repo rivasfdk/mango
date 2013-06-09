@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class RolesController < ApplicationController
   def index
     @roles = Role.paginate :page=>params[:page], :per_page=>session[:per_page]
@@ -15,6 +17,7 @@ class RolesController < ApplicationController
     @role.permission_role.each do |pr|
       @current_permission << pr.permission.id
     end
+    @user = User.find(session[:user_id])
   end
 
   def clone

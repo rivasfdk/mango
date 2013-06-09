@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class Recipe < ActiveRecord::Base
   has_many :ingredient_recipe, :dependent => :destroy
   has_many :order

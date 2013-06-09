@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class ParametersController < ApplicationController
   def create
     unless params[:parameter][:parameter_type_id].blank?

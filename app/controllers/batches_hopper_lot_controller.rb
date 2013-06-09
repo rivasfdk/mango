@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class BatchesHopperLotController < ApplicationController
 
   def create

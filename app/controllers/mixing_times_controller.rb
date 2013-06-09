@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class MixingTimesController < ApplicationController
   def index
     @mixing_times = MixingTime.paginate :page=>params[:page], :per_page=>session[:per_page]

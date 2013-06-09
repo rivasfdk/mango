@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class PermissionsController < ApplicationController
   def index
     @permissions = Permission.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'module ASC, name ASC'

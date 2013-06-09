@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class TransactionsController < ApplicationController
   def index
     @transactions = Transaction.paginate :page=>params[:page], :per_page=>session[:per_page]
@@ -20,7 +22,7 @@ class TransactionsController < ApplicationController
 
   def create
     ttype = TransactionType.find params[:transaction][:transaction_type_id]
-    granted = session[:user].has_module_permission?('transactions', ttype.code)
+    granted = User.find(session[:user_id]).has_module_permission?('transactions', ttype.code)
     if granted
       @transaction = Transaction.new
       @transaction.transaction_type_id = params[:transaction][:transaction_type_id]
@@ -35,7 +37,7 @@ class TransactionsController < ApplicationController
       @transaction.amount = params[:transaction][:amount]
       @transaction.document_number = params[:transaction][:document_number]
       @transaction.comment = params[:transaction][:comment]
-      @transaction.user = session[:user]
+      @transaction.user_id = session[:user_id]
       @transaction.processed_in_stock = 1
 
       if @transaction.save

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class UsersController < ApplicationController
   def index
     @users = User.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'

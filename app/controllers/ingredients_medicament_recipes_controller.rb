@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class IngredientsMedicamentRecipesController < ApplicationController
 def index
     @medicament_recipe = Recipe.find(params[:medicament_recipe_id], :include=>'ingredient_medicament_recipe')

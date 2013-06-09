@@ -13,7 +13,7 @@
     <tbody>
       <% @permissions.each do |p| %>
         <% class_row, i = alternate_row_class(i) %>
-        <% if session[:user].login == 'admin' %>
+        <% if @user.login == 'admin' %>
           <% disabled = false %>
         <% else %>
           <% disabled = false %>

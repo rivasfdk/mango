@@ -1,19 +1,19 @@
 <div id="header">
-    <div id="logo">
-        <%= link_to image_tag(session[:company]['logo'], :alt=>'company-logo', :width=>'72', :height=>'72'), root_path %>
-        <h1><%= session[:company]['name'] %></h1>
-        <p><%= session[:company]['address'] %></p>
-        <p>RIF: <%= session[:company]['rif'] %></p>
+  <div id="logo">
+    <%= link_to image_tag(session[:company]['logo'], :alt=>'company-logo', :width=>'72', :height=>'72'), root_path %>
+    <h1><%= session[:company]['name'] %></h1>
+    <p><%= session[:company]['address'] %></p>
+    <p>RIF: <%= session[:company]['rif'] %></p>
+  </div>
+  <div id="user-stats">
+    <p><strong><%= session[:user_name] %></strong> | </p>
+    <span><%= link_to 'cerrar sesión', session_url(session[:user_id]), :method => :delete %></span>
+    <div class="separator clearfix"></div>
+    <div id="mango-logo">
+      <%= image_tag('mango-logo.png', :alt=>'mango-logo', :width=>'22', :height=>'22') %>
+      <p class="branding">Mango v1.0</p>
+       <div class="clearfix"></div>
     </div>
-    <div id="user-stats">
-        <p><strong><%= session[:user].name %></strong> | </p>
-        <span><%= link_to 'cerrar sesión', session_url(session[:user]), :method => :delete %></span>
-        <div class="separator clearfix"></div>
-        <div id="mango-logo">
-            <%= image_tag('mango-logo.png', :alt=>'mango-logo', :width=>'22', :height=>'22') %>
-            <p class="branding">Mango v1.0</p>
-            <div class="clearfix"></div>
-        </div>
-    </div>
-    <div class="clearfix"></div>
+  </div>
+  <div class="clearfix"></div>
 </div>

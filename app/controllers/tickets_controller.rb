@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class TicketsController < ApplicationController
   def index
     respond_to do |format|
@@ -48,7 +50,7 @@ class TicketsController < ApplicationController
   def update
     @ticket = Ticket.find params[:id]
     @ticket.update_attributes(params[:ticket])
-    @ticket.user = session[:user]
+    @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|
       t.user = @ticket.user
       t.client = @ticket.client

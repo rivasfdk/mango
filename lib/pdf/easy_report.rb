@@ -54,15 +54,15 @@ module EasyReport
     def Header
       1.upto(@header.length) do |i|
         type = @header[i].keys()[0]
-        if type == 'image':
+        if type == 'image'
           render_image(@header[i][type])
-        elsif type == 'text':
+        elsif type == 'text'
           render_text(@header[i][type])
-        elsif type == 'date':
+        elsif type == 'date'
           render_date(@header[i][type])
-        elsif type == 'pagenum':
+        elsif type == 'pagenum'
           render_pagenum(@header[i][type])
-        elsif type == 'breakline':
+        elsif type == 'breakline'
           render_breakline
         end
       end
@@ -71,13 +71,13 @@ module EasyReport
     def Body
       1.upto(@body.length) do |i|
         type = @body[i].keys()[0]
-        if type == 'image':
+        if type == 'image'
           render_image(@body[i][type])
-        elsif type == 'text':
+        elsif type == 'text'
           render_text(@body[i][type])
-        elsif type == 'table':
+        elsif type == 'table'
           render_table(@body[i][type])
-        elsif type == 'breakline':
+        elsif type == 'breakline'
           render_breakline
         end
       end
@@ -87,9 +87,9 @@ module EasyReport
       SetY(-@page_margins)
       1.upto(@footer.length) do |i|
         type = @footer[i].keys()[0]
-        if type == 'image':
+        if type == 'image'
           render_image(@footer[i][type])
-        elsif type == 'text':
+        elsif type == 'text'
           render_text(@footer[i][type])
         end
       end
@@ -207,7 +207,7 @@ module EasyReport
     end
 
     def get_image_path(filename)
-      return "#{Rails.root.to_s}/public/images/#{filename}"
+      return "#{Rails.root.to_s}/app/assets/images/#{filename}"
     end
 
     def get_grouping(element)
@@ -490,7 +490,7 @@ module EasyReport
           next
         end
         sep = i if (c == ' ')
-        l += cw[c[0]]/@k
+        l += cw[c[0].ord]/@k
         #puts "len: #{l} c: #{c} cw: #{cw[c[0]]} nl: #{nl}"
         if (l > wmax)
           if (sep == -1)

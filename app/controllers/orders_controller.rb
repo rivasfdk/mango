@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class OrdersController < ApplicationController
   def index
     @orders = Order.search(params)
@@ -13,8 +15,9 @@ class OrdersController < ApplicationController
     @product_lots = ProductLot.find :all, :order => 'code ASC'
     @order = Order.new if @order.nil?
     @order_code = 'Autogenerado'
-    unless session[:user].admin?
-      @order.user_id = session[:user].id
+    @user = User.find session[:user_id]
+    unless @user.admin?
+      @order.user_id = @user.id
     end
   end
 
@@ -22,6 +25,7 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     new
     @order_code = @order.code
+    @user = User.find session[:user_id]
   end
 
   def create
@@ -78,12 +82,12 @@ class OrdersController < ApplicationController
 
     if @order.recipe.validate
       if n_batch.between?(1,@order.prog_batches)
-        if @order.repair(session[:user], n_batch)
+        if @order.repair(session[:user_id], n_batch)
           flash[:notice] = "Orden reparada exitosamente"
           redirect_to :orders
         else
           flash[:type] = 'error'
-          flash[:notice] = "Faltan almacenes necesarios para generar las transacciones"
+          flash[:notice] = "Faltan lotes necesarios para generar las transacciones"
           redirect_to :orders
         end
       else
@@ -100,7 +104,7 @@ class OrdersController < ApplicationController
   
   def generate_transactions
     @order = Order.find params[:id]
-    @order.generate_transactions(session[:user])
+    @order.generate_transactions(session[:user_id])
     redirect_to :orders
   end
   

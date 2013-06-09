@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class BatchesController < ApplicationController
   def index
     @batches = Batch.search(params)
@@ -5,7 +7,8 @@ class BatchesController < ApplicationController
 
   def new
     fill
-    @batch = Batch.new :user_id => session[:user].id
+    @batch = Batch.new :user_id => session[:user_id]
+    @user = User.find session[:user_id]
   end
 
   def edit
@@ -63,5 +66,6 @@ class BatchesController < ApplicationController
     @users = User.find :all, :order => 'name ASC'
     @schedules = Schedule.find :all, :order => 'name ASC'
     @hoppers = Hopper.actives_to_select
+    @user = User.find session[:user_id]
   end
 end
