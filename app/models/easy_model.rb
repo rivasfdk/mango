@@ -575,6 +575,7 @@ class EasyModel
         else
           details[key]['real_kg'] += bhl.amount.to_f
         end
+        details[key]['real_kg'] = details[key]['real_kg'].round(2)
         details[key]['var_kg'] = details[key]['real_kg'] - details[key]['std_kg']
         details[key]['var_perc'] = details[key]['var_kg'] * 100 / details[key]['std_kg']
       end
@@ -603,7 +604,10 @@ class EasyModel
       total_std += value['std_kg']
       total_real += value['real_kg']
     end
-    
+
+    total_std = total_std.round(2)
+    total_real = total_real.round(2)
+
     total_var = total_real - total_std
     total_var_perc = total_var * 100 / total_std
 
