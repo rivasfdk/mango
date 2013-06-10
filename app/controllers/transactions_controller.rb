@@ -30,7 +30,7 @@ class TransactionsController < ApplicationController
       @transaction.content_type = content_type
       if @transaction.content_type == 1
         @transaction.content_id = params[:transaction][:lot_id]
-      elsif @transaction.content_type == 2:
+      elsif @transaction.content_type == 2
         @transaction.content_id = params[:transaction][:product_lot_id]
       end
       @transaction.date = Date.today
