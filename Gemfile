@@ -19,3 +19,4 @@ end
 
 gem 'prototype-rails'
 
+gem 'passenger'
