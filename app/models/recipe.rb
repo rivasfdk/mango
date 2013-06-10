@@ -190,7 +190,7 @@ class Recipe < ActiveRecord::Base
     ingredients.each do |i|
       total+= i.amount
     end
-    return total
+    return total.round(2)
   end
   
   def to_collection_select
