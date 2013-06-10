@@ -34,6 +34,11 @@ recipe_import:
   module: recipes
   action: import
   mode: module
+recipe_create_parameter_list:
+  name: Recipe Create Parameter List
+  module: recipes
+  action: create_parameter_list
+  mode: module
 recalculate:
   name: Recalculate stock
   module: warehouses
