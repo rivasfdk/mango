@@ -5,7 +5,9 @@ class HopperLot < ActiveRecord::Base
 
   validates_associated :hopper, :lot
 
-  def before_save
+  before_save :update_active
+
+  def update_active
     HopperLot.update_all('active = false', "hopper_id = #{self.hopper_id}")
     self.active = true
   end

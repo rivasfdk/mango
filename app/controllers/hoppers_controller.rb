@@ -18,7 +18,7 @@ class HoppersController < ApplicationController
   def create
     @hopper = Hopper.new :number => params[:hopper][:number]
     if @hopper.save
-      if @hopper.update_lot(params[:hopper][:hopper_lot])
+      if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name])
         flash[:notice] = 'Tolva guardada con éxito'
       else
         flash[:notice] = 'La tolva fue guardada con éxito pero no se guardó el ingrediente asociado'
