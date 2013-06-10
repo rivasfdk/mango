@@ -36,7 +36,7 @@ class RecipesController < ApplicationController
 
   def clone
     original_recipe = Recipe.find params[:id]
-    @recipe = original_recipe.clone
+    @recipe = original_recipe.dup
     @recipe.version = @recipe.version.succ
     @recipe.save
  
