@@ -129,7 +129,7 @@ report:
             var_perc:
               label: Var %
               align: right
-              unit: %
+              unit: '%'
               width: 20
               precision: 2
     8:

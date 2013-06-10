@@ -152,7 +152,7 @@ report:
             loss_perc:
               label: Merma (%)
               align: right
-              unit: %
+              unit: '%'
               width: 20
               perc_totalize: true
               perc_num: 'loss'

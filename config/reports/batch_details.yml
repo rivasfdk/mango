@@ -173,7 +173,7 @@ report:
             var_perc:
               label: Var %
               align: center
-              unit: %
+              unit: '%'
               width: 20
               precision: 1
               perc_totalize: true

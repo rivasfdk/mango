@@ -165,7 +165,7 @@ report:
             var_perc:
               label: Var (%)
               align: right
-              unit: %
+              unit: '%'
               width: 15
               perc_totalize: true
               perc_num: 'var_kg'
