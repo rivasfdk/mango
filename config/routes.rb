@@ -5,7 +5,7 @@ Mango::Application.routes.draw do
   match 'ingredients/select' => "ingredients#select", :via => :get, :as => 'ingredient_select'
   match 'recipes/:id/clone' => "recipes#clone", :via => :get, :as => 'clone_recipe'
   match 'recipes/import' => "recipes#import", :via => :get, :as => 'recipe_import'
-  match 'recipes/upload' => "recipes#upload", :via => :get, :as => 'recipe_upload'
+  match 'recipes/upload' => "recipes#upload", :via => :post, :as => 'recipe_upload'
   match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'warehouses/recalculate' => "warehouses#recalculate", :via => :get, :as => 'recalculate_warehouses'

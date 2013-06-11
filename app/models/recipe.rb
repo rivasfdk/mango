@@ -123,14 +123,16 @@ class Recipe < ActiveRecord::Base
           name = header[3].strip()
           total = header[5]
 
-          @previously_stored_recipe = Recipe.find :first, :conditions => {:code => header[2], :version => header[1]}
+          @previously_stored_recipe = Recipe.find :first, :conditions => {:code => code, :version => version}
           unless @previously_stored_recipe.nil?
             logger.debug("Receta: #{@previously_stored_recipe.code} version #{@previously_stored_recipe.version} ya existe")
             unless @previously_stored_recipe.active
               file_imported += 1
               @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
-              @current_active_recipe.active = false
-              @current_active_recipe.save
+              unless @current_active_recipe.nil?
+                @current_active_recipe.active = false
+                @current_active_recipe.save
+              end
               @previously_stored_recipe.active = true
               @previously_stored_recipe.save
             end
