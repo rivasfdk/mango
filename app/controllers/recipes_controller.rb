@@ -119,7 +119,7 @@ class RecipesController < ApplicationController
       logger.info("Importando el archivo #{name}")
       tmpfile = Tempfile.new "recipe"
       filepath = tmpfile.path()
-      tmpfile.write(params[:recipe]['datafile'].read.force_encoding("ISO-8859-1").encode("UTF-8"))
+      tmpfile.write(params[:recipe]['datafile'].read.force_encoding("ISO-8859-1"))
       tmpfile.close()
 
       @recipe = Recipe.new
