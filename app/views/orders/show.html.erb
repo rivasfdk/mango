@@ -72,3 +72,7 @@
 <% else %>
 <p>No existen consumos de esta orden de producción</p>
 <% end %>
+<% if @parameter_list %>
+  <h5>Parámetros</h5>
+  <%= render :partial=>'recipes/show_parameters_grid', :locals =>{:parameter_list => @parameter_list} %>
+<% end %>

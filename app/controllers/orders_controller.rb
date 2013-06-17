@@ -123,5 +123,6 @@ class OrdersController < ApplicationController
   def show
     order = Order.find params[:id]
     @data = EasyModel.order_details(order.code)
+    @parameter_list = ParameterList.find :first, :conditions => {:id => order.parameter_list_id}
   end
 end
