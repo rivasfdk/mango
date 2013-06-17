@@ -568,7 +568,7 @@ class EasyModel
             'lot' => bhl.hopper_lot.lot.code,
             'hopper' => hopper_name,
             'real_kg' => bhl.amount.to_f,
-            'std_kg' => std_amount,
+            'std_kg' => std_amount.round(2),
             'var_kg' => 0,
             'var_perc' => 0,
           }
