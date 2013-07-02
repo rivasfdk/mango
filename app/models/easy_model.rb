@@ -1003,7 +1003,7 @@ class EasyModel
     else
       lots = ProductLot.find :all, :conditions => {:active => true}
     end
-    lots.each do |l|
+    lots.each do |lot|
       transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, lot.id, end_date_to_sql(date)], :order => ['created_at desc']
       next if transaction.nil?
       data['results'] << {
