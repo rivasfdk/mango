@@ -6,7 +6,7 @@ gem "will_paginate", "~> 3.0"
 gem "mysql2", "~> 0.3.11"
 gem 'dynamic_form'
 gem 'railroad'
-gem 'rb-readline', '~> 0.4.2'
+gem 'rb-readline', "~> 0.5.0"
 gem "therubyracer", "~> 0.11.4"
 gem 'calendar_date_select', :git => 'http://github.com/paneq/calendar_date_select.git', :branch => 'rails3test'
 

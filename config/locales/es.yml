@@ -227,6 +227,7 @@ es:
       truck: "El camión"
       user: "El usuario"
       parameter_type: "El tipo de parámetro"
+      scale: "La balanza"
   attributes:
     << : *common
     description: "La descripción"
@@ -242,6 +243,8 @@ es:
     tel1: "El teléfono 1"
     license_plate: "La placa"
     ci_rif: "La Cédula/RIF"
+    minimum_weight: "El peso mínimo"
+    maximum_weight: "El peso máximo"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateTickets < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :tickets do |t|
       t.references :truck

@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateIngredientsMedicamentsRecipes < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :ingredients_medicaments_recipes do |t|
       t.references :ingredient

@@ -1,13 +1,14 @@
 class Hopper < ActiveRecord::Base
+  belongs_to :scale
   has_many :hopper_lot
 
-  validates_uniqueness_of :number
-  validates_presence_of :number
+  validates_uniqueness_of :number, :scope => :scale_id
+  validates_presence_of :number, :scale
   validates_numericality_of :number, :only_integer => true, :greater_than_or_equal_to => 0
 
-  def self.find_actives
+  def self.find_actives(scale_id)
     actives = []
-    hoppers = Hopper.find :all, :order => 'number ASC'
+    hoppers = Hopper.find :all, :conditions => ['scale_id = ?', scale_id], :order => 'number ASC'
     hoppers.each do |hop|
       lots = HopperLot.find :first, :conditions => ['hopper_id = ? and active = ?', hop.id, true], :include => {:lot=>:ingredient}
       actives << {

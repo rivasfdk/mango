@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateOrders < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :orders do |t|
       t.references :recipe

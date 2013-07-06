@@ -1,0 +1,33 @@
+// Place all the styles related to the Scales controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.module {
+    margin-bottom: 20px;
+}
+.module img {
+    display: block;
+    float: left;
+    padding-right: 10px;
+}
+
+.module-content {
+    float: left;
+    width: 250px;
+    margin-left: 10px;
+}
+
+.module-content h2 {
+    font-size: 17px;
+    border-bottom: solid 1px #999;
+    margin-bottom: 8px;
+}
+
+#scales-content .module-content p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.module-content h2 a {
+    text-decoration: none;
+}

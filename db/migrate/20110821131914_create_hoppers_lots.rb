@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateHoppersLots < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :hoppers_lots do |t|
       t.references :hopper

@@ -3,6 +3,10 @@ module ActionsHelper
     image = image_tag('action-show.png', :alt=>'Mostrar')
     return link_to image + " Mostrar", url, :class => 'action'
   end
+  def render_action_show_hoppers(url)
+    image = image_tag('action-show.png', :alt=>'Mostrar tolvas')
+    return link_to image + " Mostrar tolvas", url, :class => 'action'
+  end
 
   def render_action_deactivate(url, confirm)
     image = image_tag('action-reset.png', :alt=>'Desactivar')

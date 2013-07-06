@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateProductsLots < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :products_lots do |t|
       t.references :product

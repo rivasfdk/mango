@@ -167,6 +167,14 @@ module MenuHelper
       menu = menu_for_parameter_types_new
     elsif c == 'parameter_types' and (a == 'edit' or a == 'update')
       menu = menu_for_parameter_types_edit
+    elsif c == 'scales' and a == 'index'
+      menu = menu_for_scales_index
+    elsif c == 'scales' and a == 'show'
+      menu = menu_for_scales_show
+    elsif c == 'scales' and (a == 'new' or a == 'create')
+      menu = menu_for_scales_new
+    elsif c == 'scales' and (a == 'edit' or a == 'update')
+      menu = menu_for_scales_edit
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -334,7 +342,7 @@ module MenuHelper
   def menu_for_hoppers_new
     menu = content_tag(:p, 'Crear nueva tolva')
     menu += content_tag(:ul,
-      render_back(hoppers_path) +
+      render_back(scale_path(params[:scale_id])) +
       render_function('Guardar', 'Guardar tolva', "submit_hopper_new_form()", 'button-execute.png')
     )
     return menu
@@ -343,7 +351,7 @@ module MenuHelper
   def menu_for_hoppers_edit
     menu = content_tag(:p, 'Editar tolva')
     menu += content_tag(:ul,
-      render_back(hoppers_path) +
+      render_back(scale_path(params[:scale_id])) +
       render_function('Actualizar', 'Actualizar tolva', "submit_hopper_edit_form()", 'button-execute.png')
     )
     return menu
@@ -951,6 +959,42 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(parameter_types_path) +
       render_function('Actualizar', 'Actualizar tipo de parámetro', "submit_parameter_type_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_scales_index
+    menu = content_tag(:p, 'Lista de balanzas')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nueva balanza', new_scale_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_scales_show
+    menu = content_tag(:p, "Lista de tolvas de #{@scale.name}")
+    menu += content_tag(:ul,
+      render_back(scales_path) +
+      render_action('Crear', 'Crear nueva tolva', new_scale_hopper_path(@scale), 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_scales_new
+    menu = content_tag(:p, 'Crear nueva balanza')
+    menu += content_tag(:ul,
+      render_back(scales_path) +
+      render_function('Guardar', 'Guardar tipo de parámetro', "submit_scale_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_scales_edit
+    menu = content_tag(:p, 'Editar balanza')
+    menu += content_tag(:ul,
+      render_back(scales_path) +
+      render_function('Actualizar', 'Actualizar balanza', "submit_scale_edit_form()", 'button-execute.png')
     )
     return menu
   end

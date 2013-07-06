@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class AddMixingTimeIdToRecipes < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     add_column :recipes, :mixing_time_id, :integer
     add_foreign_key :recipes, 'mixing_time_id', :mixing_times

@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateBatches < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :batches do |t|
       t.references :order

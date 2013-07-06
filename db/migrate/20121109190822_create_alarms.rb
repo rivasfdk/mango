@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateAlarms < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :alarms do |t|
       t.references :order

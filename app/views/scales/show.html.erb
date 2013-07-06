@@ -3,7 +3,7 @@
 <table id="tabledata">
     <thead>
       <tr>
-        <th>Tolva<span class="order_arrow"></span></th>
+        <th>Número<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th>
@@ -18,8 +18,8 @@
         <td><%=h obj[:name] %></td>
         <td><%=h ingredient %></td>
         <td>
-          <%= render_action_edit(edit_hopper_path(obj[:hopper_id])) %>
-          <%= render_action_delete(hopper_path(obj[:hopper_id]), "Desea borrar la tolva '#{obj[:number]}'?") %>
+          <%= render_action_edit(edit_scale_hopper_path(@scale.id, obj[:hopper_id])) %>
+          <%= render_action_delete(scale_hopper_path(@scale.id, obj[:hopper_id]), "Desea borrar la tolva '#{obj[:number]}'?") %>
         </td>
       </tr>
     <% end %>
@@ -31,5 +31,6 @@
   </div>
 </div>
 <% else %>
-<p>No hay tolvas registradas</p>
+<p>No hay tolvas asociadas a esta balanza</p>
 <% end %>
+

@@ -54,13 +54,13 @@
   </div>
   <% end %>
 
-  <!-- Hoppers -->
-  <% if session[:permissions].include?('hoppers') %>
+  <!-- Scales and hoppers -->
+  <% if session[:permissions].include?('scales') %>
   <div class="module yui3-u-1-2">
-    <%= link_to image_tag('tolvas-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), hoppers_path %>
+    <%= link_to image_tag('tolvas-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), scales_path %>
     <div class="module-content">
-      <h2><%= link_to 'Tolvas', hoppers_path %></h2>
-      <p>Gestión de tolvas y sus ingredientes</p>
+      <h2><%= link_to 'Balanzas y tolvas', scales_path %></h2>
+      <p>Gestión de balanzas y tolvas</p>
     </div>
   </div>
   <% end %>

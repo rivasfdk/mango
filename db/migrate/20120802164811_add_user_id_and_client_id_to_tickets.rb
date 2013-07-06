@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class AddUserIdAndClientIdToTickets < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     add_column :tickets, :user_id, :integer
     add_foreign_key :tickets, 'user_id', :users

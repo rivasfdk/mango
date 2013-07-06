@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateBatchHoppersLots < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :batch_hoppers_lots do |t|
       t.references :batch

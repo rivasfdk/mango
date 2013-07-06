@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateLots < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :lots do |t|
       t.string :code

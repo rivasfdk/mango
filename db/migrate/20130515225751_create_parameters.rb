@@ -1,7 +1,6 @@
-require 'migration_helper'
+include MigrationHelper
 
 class CreateParameters < ActiveRecord::Migration
-extend MigrationHelper
   def self.up
     create_table :parameters do |t|
       t.references :parameter_list
