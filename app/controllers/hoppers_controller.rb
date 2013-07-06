@@ -7,11 +7,13 @@ class HoppersController < ApplicationController
 
   def new
     @lots = Lot.where :active => true, :in_use => true
+    @scales = Scale.all
     session[:return_to] = request.referer
   end
 
   def edit
     @lots = Lot.where :active => true, :in_use => true
+    @scales = Scale.all
     @hopper = Hopper.find params[:id]
     @current_lot = @hopper.find_active.lot rescue nil
     session[:return_to] = request.referer
@@ -34,7 +36,7 @@ class HoppersController < ApplicationController
 
   def update
     @hopper = Hopper.find params[:id]
-    if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name])
+    if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name]) and @hopper.update_scale(params[:hopper][:scale_id])
       flash[:notice] = 'Tolva actualizada con éxito'
       redirect_to session[:return_to]
     else

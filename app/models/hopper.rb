@@ -25,11 +25,12 @@ class Hopper < ActiveRecord::Base
   def self.actives_to_select
     actives = []
 
-    hoppers = Hopper.find :all, :order => 'number ASC'
+    hoppers = Hopper.find :all, :include => :scale, :order => 'number ASC'
     hoppers.each do |hop|
       lots = HopperLot.find :first, :conditions => ['hopper_id = ? and active = ?', hop.id, true]
       next if lots.nil?
-      actives << ["Tolva #{hop.number} - #{lots.lot.ingredient.name} (L: #{lots.lot.code})", lots.id]
+      name = hop.name == " " ? hop.number : hop.name
+      actives << ["Tolva #{hop.name} - #{lots.lot.ingredient.name} (L: #{lots.lot.code})", lots.id]
     end
     return actives
   end
@@ -55,6 +56,11 @@ class Hopper < ActiveRecord::Base
 
   def update_name(name)
     self.name = name
+    self.save
+  end
+
+  def update_scale(scale_id)
+    self.scale_id = scale_id
     self.save
   end
 

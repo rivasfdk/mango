@@ -5,7 +5,7 @@
     <%= link_to image_tag('scale-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), scale_path(s) %>
     <div class="module-content">
       <h2><%= link_to s.name, scale_path(s) %></h2>
-      <p><%= render_action_show_hoppers(scale_path(s)) %></p>
+      <p><%= render_action_show_hoppers(scale_path(s)) + "(#{s.hoppers.count})" %></p>
       <p><%= render_action_edit(edit_scale_path(s)) %></p>
       <p><%= render_action_delete(scale_path(s), "Desea borrar la balanza '#{s.name}'?") %></p>
     </div>

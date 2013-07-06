@@ -4,6 +4,7 @@ class CreateScales < ActiveRecord::Migration
       t.string :name, :null => false
       t.float :maximum_weight, :null => false
       t.float :minimum_weight, :null => false
+      t.boolean :not_weighed, :default => false
       t.timestamps
     end
   end

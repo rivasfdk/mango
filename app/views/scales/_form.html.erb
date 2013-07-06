@@ -1,10 +1,13 @@
+<%= javascript_include_tag "scales" %>
 <%= render_error_messages(f.error_messages) %>
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
+<div id="scale_weights">
 <label for="minimum_weight" class="small">Peso mínimo:</label>
 <div class="field"><%= f.text_field :minimum_weight, :size=>'10' %> <span>*</span></div>
 <label for="maximum_weight" class="small">Peso máximo:</label>
 <div class="field"><%= f.text_field :maximum_weight, :size=>'10' %> <span>*</span></div>
+</div>
 <label for="active" class="small">No pesados:</label>
 <div class="field"><%= f.check_box :not_weighed %></div>
 <div class="clearfix"></div>
