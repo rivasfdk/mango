@@ -1,6 +1,6 @@
 class Ingredient < ActiveRecord::Base
   has_many :ingredient_recipe
-  #has_many :hopper_ingredient
+  has_many :ingredient_medicament_recipe
   has_many :lot
   belongs_to :base_unit
 

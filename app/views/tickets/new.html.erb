@@ -1,3 +1,4 @@
+<% title "Nuevo ticket" %>
 <%= form_for :ticket, :url=>tickets_path, :html=>{:id=>'ticket_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

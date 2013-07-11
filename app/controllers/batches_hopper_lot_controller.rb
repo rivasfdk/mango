@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 class BatchesHopperLotController < ApplicationController
-
   def create
     if not params[:batch_hopper_lot][:amount].blank? or not params[:batch_hopper_lot][:hopper_lot_id].blank?
       hopper_lot = HopperLot.find(params[:batch_hopper_lot][:hopper_lot_id])
@@ -14,7 +13,7 @@ class BatchesHopperLotController < ApplicationController
         b.save
         flash[:notice] = "Detalle agregado al batch"
       else
-        puts b.errors.inspect
+        logger.debug b.errors.inspect
         flash[:notice] = "No se pudo guardar el detalle"
         flash[:type] = 'error'
       end
@@ -35,7 +34,6 @@ class BatchesHopperLotController < ApplicationController
       flash[:type] = 'error'
       flash[:notice] = "No se pudo borrar el detalle de batch"
     end
-
     redirect_to edit_batche_path(params[:batch_id])
   end
 end

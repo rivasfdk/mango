@@ -58,7 +58,8 @@ class Batch < ActiveRecord::Base
 
   def self.search(params)
     @batches = Batch.order('batches.id DESC')
-    @batches = @batches.includes(:order).where('orders.code = ?', params[:order_code]) if params[:order_code].present?
+    @batches = @batches.includes(:order, :schedule, :user)
+    @batches = @batches.where('orders.code = ?', params[:order_code]) if params[:order_code].present?
     @batches.paginate :page => params[:page], :per_page => params[:per_page]
   end
 end

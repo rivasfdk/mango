@@ -1,3 +1,4 @@
+<% title "Editar orden de producción" %>
 <%= form_for :order, :url=>order_path(@order), :html=>{:method=>:put, :id => 'order_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f, :action=>'edit'} %>
   <br/>

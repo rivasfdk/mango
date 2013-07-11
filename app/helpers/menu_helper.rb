@@ -35,8 +35,6 @@ module MenuHelper
       menu = menu_for_users_new
     elsif c == 'users' and (a == 'edit' or a == 'update')
       menu = menu_for_users_edit
-    elsif c == 'hoppers' and a == 'index'
-      menu = menu_for_hoppers_index
     elsif c == 'hoppers' and (a == 'new' or a == 'create')
       menu = menu_for_hoppers_new
     elsif c == 'hoppers' and (a == 'edit' or a == 'update')
@@ -196,10 +194,10 @@ module MenuHelper
   end
 
   def menu_for_recipes_index
-    menu = content_tag(:p, 'Lista de recetas')
+    menu = content_tag(:p, 'Recetas')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Importar', 'Importar receta desde archivo', recipe_import_path, 'button-import.png')+
+      render_action('Importar', 'Importar recetas desde archivo', recipe_import_path, 'button-import.png')+
       render_action('Crear', 'Crear nueva receta', new_recipe_path, 'button-add.png')
     )
     return menu
@@ -214,7 +212,7 @@ module MenuHelper
   end
 
   def menu_for_recipes_new
-    menu = content_tag(:p, 'Crear nueva receta')
+    menu = content_tag(:p, 'Nueva receta')
     menu += content_tag(:ul,
       render_back(recipes_path) +
       render_function('Guardar', 'Guardar receta', "submit_recipe_new_form()", 'button-execute.png')
@@ -232,16 +230,16 @@ module MenuHelper
   end
 
   def menu_for_recipes_import
-    menu = content_tag(:p, 'Importar receta')
+    menu = content_tag(:p, 'Importar recetas')
     menu += content_tag(:ul,
       render_back(recipes_path) +
-      render_function('Importar', 'Importar receta', "submit_recipe_upload_form()", 'button-execute.png')
+      render_function('Importar', 'Importar recetas', "submit_recipe_upload_form()", 'button-execute.png')
     )
     return menu
   end
 
   def menu_for_medicament_recipes_index
-    menu = content_tag(:p, 'Lista de recetas de medicamentos')
+    menu = content_tag(:p, 'Recetas de medicamentos')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva receta de medicamentos', new_medicament_recipe_path, 'button-add.png')
@@ -259,7 +257,7 @@ module MenuHelper
   end
 
   def menu_for_medicament_recipes_new
-    menu = content_tag(:p, 'Crear nueva receta de medicamentos')
+    menu = content_tag(:p, 'Nueva receta de medicamentos')
     menu += content_tag(:ul,
       render_back(medicament_recipes_path) +
       render_function('Guardar', 'Guardar receta', "submit_medicament_recipe_new_form()", 'button-execute.png')
@@ -277,7 +275,7 @@ module MenuHelper
   end
 
   def menu_for_ingredients_index
-    menu = content_tag(:p, 'Lista de materias primas')
+    menu = content_tag(:p, 'Materias primas')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva materia prima', new_ingredient_path, 'button-add.png')
@@ -286,7 +284,7 @@ module MenuHelper
   end
 
   def menu_for_ingredients_new
-    menu = content_tag(:p, 'Crear nueva materia prima')
+    menu = content_tag(:p, 'Nueva materia prima')
     menu += content_tag(:ul,
       render_back(ingredients_path) +
       render_function('Guardar', 'Guardar materia prima', "submit_ingredient_new_form()", 'button-execute.png')
@@ -304,7 +302,7 @@ module MenuHelper
   end
 
   def menu_for_users_index
-    menu = content_tag(:p, 'Lista de usuarios')
+    menu = content_tag(:p, 'Usuarios')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo usuario', new_user_path, 'button-add.png')
@@ -313,7 +311,7 @@ module MenuHelper
   end
 
   def menu_for_users_new
-    menu = content_tag(:p, 'Crear nuevo usuario')
+    menu = content_tag(:p, 'Nuevo usuario')
     menu += content_tag(:ul,
       render_back(users_path) +
       render_function('Guardar', 'Guardar usuario', "submit_user_new_form()", 'button-execute.png')
@@ -330,17 +328,8 @@ module MenuHelper
     return menu
   end
 
-  def menu_for_hoppers_index
-    menu = content_tag(:p, 'Lista de tolvas')
-    menu += content_tag(:ul,
-      render_back(root_path) +
-      render_action('Crear', 'Crear nueva tolva', new_hopper_path, 'button-add.png')
-    )
-    return menu
-  end
-
   def menu_for_hoppers_new
-    menu = content_tag(:p, 'Crear nueva tolva')
+    menu = content_tag(:p, 'Nueva tolva')
     menu += content_tag(:ul,
       render_back(scale_path(params[:scale_id])) +
       render_function('Guardar', 'Guardar tolva', "submit_hopper_new_form()", 'button-execute.png')
@@ -358,7 +347,7 @@ module MenuHelper
   end
 
   def menu_for_products_index
-    menu = content_tag(:p, 'Lista de productos terminados')
+    menu = content_tag(:p, 'Productos terminados')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo producto terminado', new_product_path, 'button-add.png')
@@ -367,7 +356,7 @@ module MenuHelper
   end
 
   def menu_for_products_new
-    menu = content_tag(:p, 'Crear nuevo producto terminado')
+    menu = content_tag(:p, 'Nuevo producto terminado')
     menu += content_tag(:ul,
       render_back(products_path) +
       render_function('Guardar', 'Guardar producto terminado', "submit_product_new_form()", 'button-execute.png')
@@ -385,7 +374,7 @@ module MenuHelper
   end
 
   def menu_for_orders_index
-    menu = content_tag(:p, 'Lista de órdenes de producción')
+    menu = content_tag(:p, 'Órdenes de producción')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva orden de producción', new_order_path, 'button-add.png')
@@ -430,7 +419,7 @@ module MenuHelper
   end
 
   def menu_for_clients_index
-    menu = content_tag(:p, 'Lista de clientes')
+    menu = content_tag(:p, 'Clientes')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo cliente', new_client_path, 'button-add.png')
@@ -439,7 +428,7 @@ module MenuHelper
   end
 
   def menu_for_clients_new
-    menu = content_tag(:p, 'Crear nuevo cliente')
+    menu = content_tag(:p, 'Nuevo cliente')
     menu += content_tag(:ul,
       render_back(clients_path) +
       render_function('Guardar', 'Guardar cliente', "submit_client_new_form()", 'button-execute.png')
@@ -457,7 +446,7 @@ module MenuHelper
   end
 
   def menu_for_factories_index
-    menu = content_tag(:p, 'Lista de fábricas')
+    menu = content_tag(:p, 'Fábricas')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva fábrica', new_factory_path, 'button-add.png')
@@ -466,7 +455,7 @@ module MenuHelper
   end
 
   def menu_for_factories_new
-    menu = content_tag(:p, 'Crear nueva fábrica')
+    menu = content_tag(:p, 'Nueva fábrica')
     menu += content_tag(:ul,
       render_back(factories_path) +
       render_function('Guardar', 'Guardar fábrica', "submit_factory_new_form()", 'button-execute.png')
@@ -484,7 +473,7 @@ module MenuHelper
   end
 
   def menu_for_batches_index
-    menu = content_tag(:p, 'Lista de batches')
+    menu = content_tag(:p, 'Batches')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo batch', new_batche_path, 'button-add.png')
@@ -493,7 +482,7 @@ module MenuHelper
   end
 
   def menu_for_batches_new
-    menu = content_tag(:p, 'Crear nuevo batch')
+    menu = content_tag(:p, 'Nuevo batch')
     menu += content_tag(:ul,
       render_back(batches_path) +
       render_function('Guardar', 'Guardar batch', "submit_batch_new_form()", 'button-execute.png')
@@ -511,7 +500,7 @@ module MenuHelper
   end
 
   def menu_for_lots_index
-    menu = content_tag(:p, 'Lista de lotes de ingredientes')
+    menu = content_tag(:p, 'Lotes de materias primas')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo lote', new_lot_path, 'button-add.png')
@@ -520,7 +509,7 @@ module MenuHelper
   end
 
   def menu_for_lots_new
-    menu = content_tag(:p, 'Crear nuevo lote de ingredientes')
+    menu = content_tag(:p, 'Nuevo lote de materia prima')
     menu += content_tag(:ul,
       render_back(lots_path) +
       render_function('Guardar', 'Guardar lote', "submit_lot_new_form()", 'button-execute.png')
@@ -529,7 +518,7 @@ module MenuHelper
   end
 
   def menu_for_lots_edit
-    menu = content_tag(:p, 'Editar lote de ingredientes')
+    menu = content_tag(:p, 'Editar lote de materia prima')
     menu += content_tag(:ul,
       render_back(lots_path) +
       render_function('Actualizar', 'Actualizar lote', "submit_lot_edit_form()", 'button-execute.png')
@@ -547,7 +536,7 @@ module MenuHelper
   end
 
   def menu_for_schedules_index
-    menu = content_tag(:p, 'Lista de turnos')
+    menu = content_tag(:p, 'Turnos')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo turno', new_schedule_path, 'button-add.png')
@@ -556,7 +545,7 @@ module MenuHelper
   end
 
   def menu_for_schedules_new
-    menu = content_tag(:p, 'Crear nuevo turno')
+    menu = content_tag(:p, 'Nuevo turno')
     menu += content_tag(:ul,
       render_back(schedules_path) +
       render_function('Guardar', 'Guardar turno', "submit_schedule_new_form()", 'button-execute.png')
@@ -574,7 +563,7 @@ module MenuHelper
   end
 
   def menu_for_transaction_types_index
-    menu = content_tag(:p, 'Lista de tipos de transacciones')
+    menu = content_tag(:p, 'Tipos de transacciones')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo tipo de transacción', new_transaction_type_path, 'button-add.png')
@@ -583,7 +572,7 @@ module MenuHelper
   end
 
   def menu_for_transaction_types_new
-    menu = content_tag(:p, 'Crear nuevo tipo de transacción')
+    menu = content_tag(:p, 'Nuevo tipo de transacción')
     menu += content_tag(:ul,
       render_back(transaction_types_path) +
       render_function('Guardar', 'Guardar tipo de transacción', "submit_transaction_type_new_form()", 'button-execute.png')
@@ -601,7 +590,7 @@ module MenuHelper
   end
 
   def menu_for_product_lots_index
-    menu = content_tag(:p, 'Lista de lotes de producto terminado')
+    menu = content_tag(:p, 'Lotes de producto terminado')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo lote', new_product_lot_path, 'button-add.png')
@@ -610,7 +599,7 @@ module MenuHelper
   end
 
   def menu_for_product_lots_new
-    menu = content_tag(:p, 'Crear nuevo lote de producto terminado')
+    menu = content_tag(:p, 'Nuevo lote de producto terminado')
     menu += content_tag(:ul,
       render_back(product_lots_path) +
       render_function('Guardar', 'Guardar lote', "submit_product_lot_new_form()", 'button-execute.png')
@@ -636,50 +625,8 @@ module MenuHelper
     return menu
   end
 
-
-  def menu_for_warehouses_index
-    menu = content_tag(:p, 'Lista de almacenes')
-    menu += content_tag(:ul,
-      render_back(root_path) +
-      #render_action('Recalcular', 'Recalcular saldos', recalculate_warehouses_path, 'button-recalculate.png') +
-      render_action('Crear', 'Crear nuevo almacén', new_warehouse_path, 'button-add.png')
-    )
-    return menu
-  end
-
-  def menu_for_warehouses_new
-    menu = content_tag(:p, 'Crear nuevo almacén')
-    menu += content_tag(:ul,
-      render_back(warehouses_path) +
-      render_function('Guardar', 'Guardar almacén', "submit_warehouse_new_form()", 'button-execute.png')
-    )
-    return menu
-  end
-
-  def menu_for_warehouses_edit
-    menu = content_tag(:p, 'Editar almacén')
-    menu += content_tag(:ul,
-      render_back(warehouses_path) +
-      render_function('Actualizar', 'Actualizar almacén', "submit_warehouse_edit_form()", 'button-execute.png')
-    )
-    return menu
-  end
-
-  def menu_for_warehouses_recalculate
-    return content_tag(:p, 'Recalcular saldos')
-  end
-
-  def menu_for_warehouses_adjust
-    menu = content_tag(:p, 'Realizar ajuste de inventario')
-    menu += content_tag(:ul,
-      render_back(warehouses_path) +
-      render_function('Ajustar', 'Ajustar almacén', "submit_warehouse_adjust_form()", 'button-execute.png')
-    )
-    return menu
-  end
-
   def menu_for_transactions_index
-    menu = content_tag(:p, 'Lista de transacciones')
+    menu = content_tag(:p, 'Transacciones')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Reprocesar', 'Recalcular consumos', reprocess_transactions_path, 'button-recalculate.png') +
@@ -690,7 +637,7 @@ module MenuHelper
   end
 
   def menu_for_transactions_new
-    menu = content_tag(:p, 'Crear nueva transacción')
+    menu = content_tag(:p, 'Nueva transacción')
     menu += content_tag(:ul,
       render_back(transactions_path) +
       render_function('Guardar', 'Guardar transacción', "submit_transaction_new_form()", 'button-execute.png')
@@ -716,7 +663,7 @@ module MenuHelper
   end
 
   def menu_for_permissions_index
-    menu = content_tag(:p, 'Lista de permisos')
+    menu = content_tag(:p, 'Permisos')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo permiso', new_permission_path, 'button-add.png')
@@ -725,7 +672,7 @@ module MenuHelper
   end
 
   def menu_for_permissions_new
-    menu = content_tag(:p, 'Crear nuevo permiso')
+    menu = content_tag(:p, 'Nuevo permiso')
     menu += content_tag(:ul,
       render_back(permissions_path) +
       render_function('Guardar', 'Guardar permiso', "submit_permission_new_form()", 'button-execute.png')
@@ -743,7 +690,7 @@ module MenuHelper
   end
 
   def menu_for_roles_index
-    menu = content_tag(:p, 'Lista de roles')
+    menu = content_tag(:p, 'Roles')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo rol', new_role_path, 'button-add.png')
@@ -752,7 +699,7 @@ module MenuHelper
   end
 
   def menu_for_roles_new
-    menu = content_tag(:p, 'Crear nuevo rol')
+    menu = content_tag(:p, 'Nuevo rol')
     menu += content_tag(:ul,
       render_back(roles_path) +
       render_function('Guardar', 'Guardar rol', "submit_role_new_form()", 'button-execute.png')
@@ -776,7 +723,7 @@ module MenuHelper
   end
   
   def menu_for_drivers_index
-    menu = content_tag(:p, 'Lista de choferes')
+    menu = content_tag(:p, 'Choferes')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo chofer', new_driver_path, 'button-add.png')
@@ -785,7 +732,7 @@ module MenuHelper
   end
 
   def menu_for_drivers_new
-    menu = content_tag(:p, 'Crear nuevo chofer')
+    menu = content_tag(:p, 'Nuevo chofer')
     menu += content_tag(:ul,
       render_back(drivers_path) +
       render_function('Guardar', 'Guardar chofer', "submit_driver_new_form()", 'button-execute.png')
@@ -803,7 +750,7 @@ module MenuHelper
   end
 
   def menu_for_carriers_index
-    menu = content_tag(:p, 'Lista de empresas de transporte')
+    menu = content_tag(:p, 'Empresas de transporte')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva empresa de transporte', new_carrier_path, 'button-add.png')
@@ -812,7 +759,7 @@ module MenuHelper
   end
 
   def menu_for_carriers_new
-    menu = content_tag(:p, 'Crear nueva empresa de transporte')
+    menu = content_tag(:p, 'Nueva empresa de transporte')
     menu += content_tag(:ul,
       render_back(carriers_path) +
       render_function('Guardar', 'Guardar empresa de transporte', "submit_carrier_new_form()", 'button-execute.png')
@@ -830,7 +777,7 @@ module MenuHelper
   end
   
   def menu_for_trucks_index
-    menu = content_tag(:p, 'Lista de camiones')
+    menu = content_tag(:p, 'Camiones')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo camión', new_truck_path, 'button-add.png')
@@ -839,7 +786,7 @@ module MenuHelper
   end
 
   def menu_for_trucks_new
-    menu = content_tag(:p, 'Crear nuevo camión')
+    menu = content_tag(:p, 'Nuevo camión')
     menu += content_tag(:ul,
       render_back(trucks_path) +
       render_function('Guardar', 'Guardar camión', "submit_truck_new_form()", 'button-execute.png')
@@ -857,7 +804,7 @@ module MenuHelper
   end
 
   def menu_for_tickets_index
-    menu = content_tag(:p, 'Lista de tickets')
+    menu = content_tag(:p, 'Tickets')
     menu += content_tag(:ul,
       render_back(root_path)
     )
@@ -865,7 +812,7 @@ module MenuHelper
   end
 
   def menu_for_tickets_new
-    menu = content_tag(:p, 'Crear nuevo ticket')
+    menu = content_tag(:p, 'Nuevo ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
       render_function('Guardar', 'Guardar ticket', "submit_ticket_new_form()", 'button-execute.png')
@@ -883,7 +830,7 @@ module MenuHelper
   end
 
   def menu_for_mixing_times_index
-    menu = content_tag(:p, 'Lista de tiempos de mezcla')
+    menu = content_tag(:p, 'Tiempos de mezcla')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo tiempo de mezcla', new_mixing_time_path, 'button-add.png')
@@ -892,7 +839,7 @@ module MenuHelper
   end
 
   def menu_for_mixing_times_new
-    menu = content_tag(:p, 'Crear nuevo tiempo de mezcla')
+    menu = content_tag(:p, 'Nuevo tiempo de mezcla')
     menu += content_tag(:ul,
       render_back(mixing_times_path) +
       render_function('Guardar', 'Guardar tiempo de mezcla', "submit_mixing_time_new_form()", 'button-execute.png')
@@ -910,7 +857,7 @@ module MenuHelper
   end
 
   def menu_for_alarm_types_index
-    menu = content_tag(:p, 'Lista de tipos de alarma')
+    menu = content_tag(:p, 'Tipos de alarma')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo tipo de alarma', new_alarm_type_path, 'button-add.png')
@@ -919,7 +866,7 @@ module MenuHelper
   end
 
   def menu_for_alarm_types_new
-    menu = content_tag(:p, 'Crear nuevo tipo de alarma')
+    menu = content_tag(:p, 'Nuevo tipo de alarma')
     menu += content_tag(:ul,
       render_back(alarm_types_path) +
       render_function('Guardar', 'Guardar tipo de alarma', "submit_alarm_type_new_form()", 'button-execute.png')
@@ -937,7 +884,7 @@ module MenuHelper
   end
 
   def menu_for_parameter_types_index
-    menu = content_tag(:p, 'Lista de tipos de parámetros')
+    menu = content_tag(:p, 'Tipos de parámetros')
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nuevo tipo de parámetro', new_parameter_type_path, 'button-add.png')
@@ -946,7 +893,7 @@ module MenuHelper
   end
 
   def menu_for_parameter_types_new
-    menu = content_tag(:p, 'Crear nuevo tipo de parámetro')
+    menu = content_tag(:p, 'Nuevo tipo de parámetro')
     menu += content_tag(:ul,
       render_back(parameter_types_path) +
       render_function('Guardar', 'Guardar tipo de parámetro', "submit_parameter_type_new_form()", 'button-execute.png')
@@ -964,16 +911,16 @@ module MenuHelper
   end
 
   def menu_for_scales_index
-    menu = content_tag(:p, 'Lista de balanzas')
+    menu = content_tag(:p, 'Balanzas y tolvas')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Crear', 'Crear nueva balanza', new_scale_path, 'button-add.png')
+      render_action('Crear', 'Nueva balanza', new_scale_path, 'button-add.png')
     )
     return menu
   end
 
   def menu_for_scales_show
-    menu = content_tag(:p, "Lista de tolvas de #{@scale.name}")
+    menu = content_tag(:p, "Tolvas de #{@scale.name}")
     menu += content_tag(:ul,
       render_back(scales_path) +
       render_action('Crear', 'Crear nueva tolva', new_scale_hopper_path(@scale), 'button-add.png')
@@ -982,7 +929,7 @@ module MenuHelper
   end
 
   def menu_for_scales_new
-    menu = content_tag(:p, 'Crear nueva balanza')
+    menu = content_tag(:p, 'Nueva balanza')
     menu += content_tag(:ul,
       render_back(scales_path) +
       render_function('Guardar', 'Guardar tipo de parámetro', "submit_scale_new_form()", 'button-execute.png')

@@ -1,3 +1,4 @@
+<% title "Editar tipo de transacción" %>
 <%= form_for :transaction_type, :url=>transaction_type_path(@type), :html=>{:method=>:put, :id=>'transaction_type_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

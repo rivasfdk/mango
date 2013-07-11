@@ -61,6 +61,8 @@ Mango::Application.routes.draw do
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 
+  match 'hoppers/:id/set_as_main_hopper' => "hoppers#set_as_main_hopper", :via => :get, :as => "set_as_main_hopper"
+
   resources :recipes do
     resources :ingredients_recipes
   end

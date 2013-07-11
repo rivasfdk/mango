@@ -6,43 +6,46 @@ class HoppersController < ApplicationController
   end
 
   def new
-    @lots = Lot.where :active => true, :in_use => true
-    @scales = Scale.all
+    fill_new
     session[:return_to] = request.referer
   end
 
   def edit
-    @lots = Lot.where :active => true, :in_use => true
-    @scales = Scale.all
-    @hopper = Hopper.find params[:id]
-    @current_lot = @hopper.find_active.lot rescue nil
+    fill_edit
     session[:return_to] = request.referer
   end
 
   def create
-    @hopper = Hopper.new :number => params[:hopper][:number], :scale_id => params[:scale_id]
+    @hopper = Scale.find(params[:scale_id]).hoppers.new params[:hopper]
     if @hopper.save
-      if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name])
-        flash[:notice] = 'Tolva guardada con éxito'
-      else
-        flash[:notice] = 'La tolva fue guardada con éxito pero no se guardó el ingrediente asociado'
-      end
+      @hopper_lot = @hopper.hopper_lot.new params[:hopper_lot]
+      @hopper_lot.save
+      flash[:notice] = 'Tolva guardada con éxito'
       redirect_to session[:return_to]
     else
-      new
+      fill_new
       render :new
     end
   end
 
   def update
     @hopper = Hopper.find params[:id]
-    if @hopper.update_lot(params[:hopper][:hopper_lot]) and @hopper.update_name(params[:hopper][:name]) and @hopper.update_scale(params[:hopper][:scale_id])
+    @hopper.update_attributes(params[:hopper])
+    if @hopper.save
+      @hopper_lot = @hopper.hopper_lot.new params[:hopper_lot]
+      @hopper_lot.save
       flash[:notice] = 'Tolva actualizada con éxito'
       redirect_to session[:return_to]
     else
-      edit
+      fill_edit
       render :edit
     end
+  end
+
+  def set_as_main_hopper
+    @hopper = Hopper.find params[:id]
+    @hopper.set_as_main_hopper()
+    redirect_to request.referer
   end
 
   def destroy
@@ -66,7 +69,19 @@ class HoppersController < ApplicationController
 
   private
 
-  def fill
-    @lots
+  def fill_new
+    @lots = Lot.find :all,
+                     :include => :ingredient,
+                     :conditions => {:active => true, :in_use => true}
+    @scales = Scale.all
+  end
+
+  def fill_edit
+    @lots = Lot.find :all,
+                     :include => :ingredient,
+                     :conditions => {:active => true, :in_use => true}
+    @scales = Scale.all
+    @hopper = Hopper.find params[:id]
+    @current_lot = @hopper.current_lot
   end
 end

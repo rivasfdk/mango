@@ -1,3 +1,4 @@
+<% title "Editar tipo de parámetro" %>
 <%= form_for :parameter_type, :url=>parameter_type_path(@parameter_type), :html=>{:method=>:put, :id=>'parameter_type_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

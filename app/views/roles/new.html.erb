@@ -1,3 +1,4 @@
+<% title "Nuevo rol" %>
 <%= form_for :role, :url=>roles_path, :html=>{:id=>'role_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <h5>Permisos</h5>

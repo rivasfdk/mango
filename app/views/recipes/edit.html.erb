@@ -1,3 +1,4 @@
+<% title "Editar receta" %>
 <%= form_for :recipe, :url=>recipe_path(@recipe), :html=>{:method=>:put, :id=>'recipe_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
 <% end %>

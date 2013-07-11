@@ -1,3 +1,4 @@
+<% title "Editar tolva" %>
 <%= form_for :hopper, :url=>scale_hopper_path(@hopper.scale_id, @hopper.id), :html=>{:method=>:put, :id=>'hopper_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f, :edit => true} %>
   <br/>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130706150156) do
+ActiveRecord::Schema.define(:version => 20130711053901) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -108,11 +108,12 @@ ActiveRecord::Schema.define(:version => 20130706150156) do
   end
 
   create_table "hoppers", :force => true do |t|
-    t.integer  "number",                      :null => false
+    t.integer  "number",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",       :default => " "
-    t.integer  "scale_id",                    :null => false
+    t.integer  "scale_id",                      :null => false
+    t.boolean  "main",       :default => false
   end
 
   add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
@@ -221,6 +222,7 @@ ActiveRecord::Schema.define(:version => 20130706150156) do
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
+  add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
   add_index "orders", ["recipe_id"], :name => "fk_orders_recipe_id"
   add_index "orders", ["user_id"], :name => "fk_orders_user_id"
 
@@ -394,6 +396,7 @@ ActiveRecord::Schema.define(:version => 20130706150156) do
     t.float    "stock_after"
     t.integer  "content_id"
     t.integer  "content_type"
+    t.string   "code",                :default => "0"
   end
 
   create_table "trucks", :force => true do |t|

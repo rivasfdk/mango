@@ -1,3 +1,4 @@
+<% title "Editar empresa de transporte" %>
 <%= form_for :carrier, :url=>carrier_path(@carrier), :html=>{:method=>:put, :id=>'carrier_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

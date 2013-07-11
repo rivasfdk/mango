@@ -1,8 +1,9 @@
+<% title "Importar recetas" %>
 <%= form_for :recipe, :url=>recipe_upload_path, :html=>{:multipart=>true, :id=>'recipe_upload_form'} do |f| %>
   <% if not @recipe.nil? and @recipe.errors.length > 0 %>
     <%= f.error_messages %><br/>
   <% end %>
-  <label for="datefile">Por favor, seleccione el archivo de receta que desea importar</label>: <br/><br/>
+  <label for="datefile">Por favor, seleccione el archivo de recetas que desea importar</label>: <br/><br/>
   <%= f.file_field :datafile %><br/><br/>
   <%= f.check_box :overwrite, :checked=>true %> &nbsp; <label for="overwrite">Sobreescribir recetas existentes</label>
   <br/>

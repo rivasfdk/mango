@@ -1,3 +1,4 @@
+<% title "Editar rol" %>
 <%= form_for :role, :url=>role_path(@role), :html=>{:method=>:put, :id=>'role_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <h5>Permisos</h5>

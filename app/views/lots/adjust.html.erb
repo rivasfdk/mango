@@ -1,3 +1,4 @@
+<% title "Ajustar lote de materia prima" %>
 <%= form_tag adjust_lot_path, :method => 'put', :id=>'lot_adjust_form' do %>
   <label for="code" class="small">Lote:</label>
   <div class="field"><%=h @lot.to_collection_select %></div>

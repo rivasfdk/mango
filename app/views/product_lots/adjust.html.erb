@@ -1,3 +1,4 @@
+<% title "Ajustar lote de producto terminado" %>
 <%= form_tag adjust_product_lot_path, :method => 'put', :id=>'product_lot_adjust_form' do %>
   <label for="code" class="small">Lote:</label>
   <div class="field"><%=h @product_lot.to_collection_select %></div>

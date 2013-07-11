@@ -1,3 +1,4 @@
+<% title "Tolvas de #{@scale.name}" %>
 <% i = 0 %>
 <% if @hoppers.length > 0 %>
 <table id="tabledata">
@@ -6,17 +7,25 @@
         <th>Número<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
+        <th>Principal</th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
     <tbody>
     <% @hoppers.each do |obj| %>
       <% class_row, i = alternate_row_class(i) %>
-      <% ingredient = (obj[:lot].nil?) ? 'N/D' : "#{obj[:lot].lot.ingredient.code} - #{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
+      <% ingredient = "#{obj[:lot].lot.ingredient.code} - #{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
       <tr class="<%= class_row %>">
-        <td><%=h obj[:number] %></td>
-        <td><%=h obj[:name] %></td>
+        <td class="center"><%=h obj[:number] %></td>
+        <td class="center"><%=h obj[:name] %></td>
         <td><%=h ingredient %></td>
+        <td class="center">
+          <%= check_box_tag :main, 
+                            set_as_main_hopper_path(obj[:hopper_id]),
+                            obj[:main],
+                            :disabled => obj[:main],
+                            :onclick => "window.location = this.value;" %>
+        </td>
         <td>
           <%= render_action_edit(edit_scale_hopper_path(@scale.id, obj[:hopper_id])) %>
           <%= render_action_delete(scale_hopper_path(@scale.id, obj[:hopper_id]), "Desea borrar la tolva '#{obj[:number]}'?") %>

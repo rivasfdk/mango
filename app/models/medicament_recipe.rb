@@ -5,7 +5,11 @@ class MedicamentRecipe < ActiveRecord::Base
   validates_uniqueness_of :code
   validates_presence_of :name, :code
   validates_length_of :name, :within => 3..40
-  
+
+  def is_associated?()
+    Order.where(:medicament_recipe_id => self.id).any?
+  end
+
   def get_total
     total = 0
     ingredients = IngredientMedicamentRecipe.where(:medicament_recipe_id => self.id)

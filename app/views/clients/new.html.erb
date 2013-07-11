@@ -1,3 +1,4 @@
+<% title "Nuevo cliente" %>
 <%= form_for :client, :url=>clients_path, :html=>{:id=>'client_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

@@ -1,3 +1,4 @@
+<% title "Editar materia prima" %>
 <%= form_for :ingredient, :url=>ingredient_path(@ingredient), :html=>{:method=>:put, :id=>'ingredient_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

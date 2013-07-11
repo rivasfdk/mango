@@ -1,3 +1,4 @@
+<% title "Nueva tolva" %>
 <%= form_for :hopper, :url=>scale_hoppers_path(params[:scale_id]), :html=>{:id=>'hopper_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f, :edit => false} %>
   <br/>

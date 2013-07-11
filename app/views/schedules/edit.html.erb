@@ -1,3 +1,4 @@
+<% title "Editar turno" %>
 <%= form_for :schedule, :url=>schedule_path(@schedule), :html=>{:method=>:put, :id=>'schedule_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

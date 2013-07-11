@@ -1,3 +1,4 @@
+<% title "Edita permiso" %>
 <%= form_for :permission, :url=>permission_path(@permission), :html=>{:method=>:put, :id=>'permission_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

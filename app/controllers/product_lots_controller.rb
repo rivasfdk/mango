@@ -23,7 +23,7 @@ class ProductLotsController < ApplicationController
     @lot = ProductLot.find params[:id]
     @products = Product.find :all, :order => 'code ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
-    session[:return_to] = request.referer
+    session[:return_to] = request.referer.nil? ? :product_lots : request.referer
   end
 
   def create
@@ -74,7 +74,7 @@ class ProductLotsController < ApplicationController
 
   def adjust
     @product_lot = ProductLot.find params[:id]
-    session[:return_to] = request.referer
+    session[:return_to] = request.referer.nil? ? :product_lots : request.referer
   end
 
   def do_adjust

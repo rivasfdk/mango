@@ -23,7 +23,7 @@ class LotsController < ApplicationController
     @lot = Lot.find params[:id]
     @ingredients = Ingredient.find :all, :order => 'name ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
-    session[:return_to] = request.referer
+    session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def create
@@ -42,7 +42,7 @@ class LotsController < ApplicationController
     @lot.update_attributes(params[:lot])
     if @lot.save
       flash[:notice] = 'Lote guardado con éxito'
-      redirect_to session[:return_to]
+      redirect_to session.delete(:return_to)
     else
       render :edit
     end
@@ -74,7 +74,7 @@ class LotsController < ApplicationController
   
   def adjust
     @lot = Lot.find params[:id]
-    session[:return_to] = request.referer
+    session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def do_adjust

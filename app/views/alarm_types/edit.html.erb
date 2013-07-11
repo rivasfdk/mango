@@ -1,3 +1,4 @@
+<% title "Editar tipo de alarma" %>
 <%= form_for :alarm_type, :url=>alarm_type_path(@alarm_type), :html=>{:method=>:put, :id=>'alarm_type_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

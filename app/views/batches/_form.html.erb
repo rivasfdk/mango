@@ -2,7 +2,11 @@
 <label for="number" class="small">Número:</label>
 <div class="field"><%= f.text_field :number, :size=>'10' %> <span>*</span></div>
 <label for="code" class="small">Orden Prod.:</label>
-<div class="field"><%= f.collection_select :order_id, @orders, :id, :code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
+<% unless action == 'edit' %>
+  <div class="field"><%= f.collection_select :order_id, @orders, :id, :code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
+<% else %>
+  <div class="field"><%= @batch.order.code %></div>
+<% end %>
 <label for="start_date" class="small">Inicio:</label>
 <div class="field"><%= f.datetime_select :start_date, :include_seconds => true, :default=>DateTime.now, :size=>'10' %> <span>*</span></div>
 <label for="end_date" class="small">Fin:</label>

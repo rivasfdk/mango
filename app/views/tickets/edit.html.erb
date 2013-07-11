@@ -1,3 +1,4 @@
+<% title "Editar ticket" %>
 <%= form_for :ticket, :url=>ticket_path(@ticket), :html=>{:method=>:put, :id=>'ticket_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

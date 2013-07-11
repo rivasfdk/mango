@@ -1,3 +1,4 @@
+<% title "Editar balanza" %>
 <%= form_for :scale, :url=>scale_path(@scale), :html=>{:method=>:put, :id=>'scale_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>
