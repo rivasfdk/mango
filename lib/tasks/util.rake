@@ -21,7 +21,6 @@ namespace :db do
     task :users => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
       run_fixture('users')
-      run_fixture('clients')
     end
 
     desc 'Load test ingredients'
@@ -115,12 +114,9 @@ namespace :db do
         end
       end
       insert_fixture('permissions', Permission)
-      puts "Loaded #{Permission.count} permissions"
+      puts "Loaded fixtures for permissions (#{Permission.count})"
       run_fixture('roles')
       PermissionRole.generate_god_role
-      puts 'Created administrator role (superuser)'
-      PermissionRole.generate_scada_role
-      puts 'Created scada role'
     end
 
   end
@@ -149,7 +145,7 @@ namespace :sys do
     RAILS_ENV = ENV['RAILS_ENV'] || 'development'
     Rake::Task['db:drop'].invoke
     Rake::Task['db:create'].invoke
-    Rake::Task['db:migrate'].invoke
+    Rake::Task['db:schema:load'].invoke
     Rake::Task['db:fixtures:users'].invoke
     Rake::Task['db:fixtures:schedules'].invoke
     Rake::Task['db:fixtures:base_units'].invoke
@@ -159,18 +155,12 @@ namespace :sys do
     Rake::Task['db:fixtures:ticket_types'].invoke
     Rake::Task['db:fixtures:lasts_imported_recipes'].invoke
     Rake::Task['db:fixtures:permissions'].invoke
-    Rake::Task['db:fixtures:alarm_types'].invoke
-    if RAILS_ENV == 'development'
-      Rake::Task['db:fixtures:products'].invoke
-      #Rake::Task['db:fixtures:recipes'].invoke
-      #Rake::Task['db:fixtures:lots'].invoke
-    end
   end
 end
 
 def run_fixture(table)
   fixtures_dir = File.join(File.dirname(__FILE__), "../../test/fixtures")
-  Fixtures.create_fixtures(fixtures_dir, table)
+  ActiveRecord::Fixtures.create_fixtures(fixtures_dir, table)
   puts "Loaded fixtures for #{table}"
 end
 
