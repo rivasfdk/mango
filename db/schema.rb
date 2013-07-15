@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130712202437) do
+ActiveRecord::Schema.define(:version => 20130715135140) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -223,6 +223,7 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
   add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
+  add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"
   add_index "orders", ["recipe_id"], :name => "fk_orders_recipe_id"
   add_index "orders", ["user_id"], :name => "fk_orders_user_id"
@@ -237,8 +238,8 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
     t.integer  "parameter_list_id"
     t.integer  "parameter_type_id"
     t.float    "value",             :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   add_index "parameters", ["parameter_list_id"], :name => "fk_parameters_parameter_list_id"
@@ -247,14 +248,14 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
   create_table "parameters_lists", :force => true do |t|
     t.string   "recipe_code",                   :null => false
     t.boolean  "active",      :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "parameters_types", :force => true do |t|
     t.string   "name",          :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.float    "default_value", :null => false
   end
 
@@ -293,8 +294,6 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
     t.float    "stock",      :default => 0.0
   end
 
-  add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
-
   create_table "recipes", :force => true do |t|
     t.string   "code"
     t.string   "name",                             :null => false
@@ -321,9 +320,9 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
     t.string   "name",                              :null => false
     t.float    "maximum_weight"
     t.float    "minimum_weight"
+    t.boolean  "not_weighed",    :default => false
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
-    t.boolean  "not_weighed",    :default => false
   end
 
   create_table "schedules", :force => true do |t|
@@ -382,11 +381,10 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id",                    :null => false
-    t.integer  "user_id",                                :null => false
-    t.string   "code",                                   :null => false
-    t.date     "date",                                   :null => false
-    t.float    "amount",                                 :null => false
+    t.integer  "transaction_type_id"
+    t.integer  "user_id"
+    t.datetime "date"
+    t.float    "amount"
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -400,6 +398,7 @@ ActiveRecord::Schema.define(:version => 20130712202437) do
     t.float    "stock_after"
     t.integer  "content_id"
     t.integer  "content_type"
+    t.string   "code",                :default => "0"
   end
 
   create_table "trucks", :force => true do |t|
