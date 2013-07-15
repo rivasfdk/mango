@@ -245,6 +245,7 @@ es:
     ci_rif: "La Cédula/RIF"
     minimum_weight: "El peso mínimo"
     maximum_weight: "El peso máximo"
+    not_weighed: "No pesado"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"
