@@ -41,7 +41,7 @@ class RecipesController < ApplicationController
     @recipe.save
  
     original_recipe.ingredient_recipe.each do |ir|
-      new_ir = ir.clone
+      new_ir = ir.dup
       new_ir.recipe_id = @recipe.id
       new_ir.save
     end
