@@ -1,3 +1,4 @@
+<% title "Exportar transacciones" %>
 <%= form_for :transaction, :url=>download_transactions_path, :html=>{:multipart=>true, :id=>'download_transactions_form'} do |f| %>
   <label>Por favor, seleccione el rango de fecha de consumos a exportar:</label> <br/><br/>
 	<%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>

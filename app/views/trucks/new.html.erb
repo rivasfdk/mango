@@ -1,3 +1,4 @@
+<% title "Nuevo camión" %>
 <%= form_for :truck, :url=>trucks_path, :html=>{:id=>'truck_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

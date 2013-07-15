@@ -1,3 +1,4 @@
+<% title "Editar camión" %>
 <%= form_for :truck, :url=>truck_path(@truck), :html=>{:method=>:put, :id=>'truck_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>

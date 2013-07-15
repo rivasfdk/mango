@@ -1,3 +1,4 @@
+<% title "Nueva transacción" %>
 <%= form_for :transaction, :url=>transactions_path, :html=>{:id=>'transaction_new_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>
