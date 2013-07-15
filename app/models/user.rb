@@ -67,10 +67,10 @@ class User < ActiveRecord::Base
 
     valid = false
     permission_roles = PermissionRole.find_with_permissions(self.role_id, controller, 'global')
-    puts "GLOBAL::action: #{action} - controller: #{controller}"
+    logger.debug "GLOBAL::action: #{action} - controller: #{controller}"
     puts permission_roles.inspect
     permission_roles.each do |pm|
-      puts "GLOBAL::permission.action: #{pm.permission.action} - permission.module: #{pm.permission.module}"
+      logger.debug "GLOBAL::permission.action: #{pm.permission.action} - permission.module: #{pm.permission.module}"
       if pm.permission.action == 'consult' and Permission.is_consult?(action)
         valid = true
       elsif pm.permission.action == 'modify' and Permission.is_modify?(action)

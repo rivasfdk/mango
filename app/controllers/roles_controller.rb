@@ -28,6 +28,7 @@ class RolesController < ApplicationController
     role.permission_role.each do |pr|
       @current_permission << pr.permission.id
     end
+    @user = User.find(session[:user_id])
     render :new
   end
 

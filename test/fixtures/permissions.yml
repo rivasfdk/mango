@@ -33,12 +33,12 @@ recipe_import:
   name: Recipes Import
   module: recipes
   action: import
-  mode: module
+  mode: global
 recipe_create_parameter_list:
   name: Recipe Create Parameter List
   module: recipes
   action: create_parameter_list
-  mode: module
+  mode: global
 recalculate:
   name: Recalculate stock
   module: warehouses

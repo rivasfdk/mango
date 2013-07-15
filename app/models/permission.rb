@@ -46,7 +46,7 @@ class Permission < ActiveRecord::Base
   end
 
   def self.is_import?(action)
-    return action == 'import'
+    return (action == 'import' or action == 'upload')
   end
 
   def self.is_reprocess?(action)
