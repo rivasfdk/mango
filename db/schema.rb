@@ -222,6 +222,7 @@ ActiveRecord::Schema.define(:version => 20130715135140) do
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
+  add_index "orders", ["code"], :name => "index_orders_on_code"
   add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
   add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"
@@ -398,7 +399,6 @@ ActiveRecord::Schema.define(:version => 20130715135140) do
     t.float    "stock_after"
     t.integer  "content_id"
     t.integer  "content_type"
-    t.string   "code",                :default => "0"
   end
 
   create_table "trucks", :force => true do |t|
