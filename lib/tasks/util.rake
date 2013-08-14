@@ -5,12 +5,12 @@ namespace :doc do
   namespace :diagrams do
     desc 'Generate models diagrams'
     task :models do
-      sh "railroad -i -l -a -m -M | dot -Tpng | sed 's/font-size:14.00/font-size:11.00/g' > doc/models.png"
+      sh "railroady -i -l -a -m -M | dot -Tpng | sed 's/font-size:14.00/font-size:11.00/g' > doc/models.png"
     end
 
     desc 'Generate controllers diagrams'
     task :controllers do
-      sh "railroad -i -l -C | neato -Tpng | sed 's/font-size:14.00/font-size:11.00/g' > doc/controllers.png"
+      sh "railroady -i -l -C | neato -Tpng | sed 's/font-size:14.00/font-size:11.00/g' > doc/controllers.png"
     end
   end
 end

@@ -5,7 +5,7 @@ gem 'color-tools', '>= 1.3.0'
 gem "will_paginate", "~> 3.0"
 gem "mysql2", "~> 0.3.11"
 gem 'dynamic_form'
-gem 'railroad'
+gem 'railroady'
 gem "therubyracer", "~> 0.11.4"
 gem 'calendar_date_select', :git => 'http://github.com/paneq/calendar_date_select.git', :branch => 'rails3test'
 
