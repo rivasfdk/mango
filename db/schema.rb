@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130715135140) do
+ActiveRecord::Schema.define(:version => 20130729102507) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -402,7 +402,10 @@ ActiveRecord::Schema.define(:version => 20130715135140) do
     t.float    "stock_after"
     t.integer  "content_id"
     t.integer  "content_type"
+    t.integer  "order_id"
   end
+
+  add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
 
   create_table "trucks", :force => true do |t|
     t.integer  "carrier_id"

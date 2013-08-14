@@ -123,12 +123,12 @@ report:
             recipe_code:
               label: Receta
               align: left
-              width: 25
+              width: 35
           4:
             recipe_name:
               label: Desc. Receta
               align: left
-              width: 70
+              width: 60
           5:
             recipe_version:
               label: Version

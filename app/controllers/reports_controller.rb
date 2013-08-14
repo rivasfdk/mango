@@ -6,6 +6,7 @@ class ReportsController < ApplicationController
     @drivers = Driver.find :all, :conditions => ['frequent = true']
     @carriers = Carrier.find :all, :conditions => ['frequent = true']
     @clients = Client.find :all
+    @factories = Client.where :factory => true
     @alarm_types = AlarmType.find :all
   end
 
@@ -178,50 +179,28 @@ class ReportsController < ApplicationController
   end
 
   def simple_stock
-    warehouse_type_id = params[:report][:warehouse_type_id].to_i
+    content_type = params[:report][:content_type].to_i
     date = EasyModel.param_to_date(params[:report], 'date')
-    if params[:report][:group] == '1'
-      data = EasyModel.simple_stock(warehouse_type_id, date)
+	by_factory = params[:report][:by_factory].to_i
+    if by_factory != 0
+      factory_id = params[:report][:factory_id].to_i
     else
-      data = EasyModel.simple_stock_per_lot(warehouse_type_id, date)
+      factory_id = 0
+    end
+    if params[:report][:group] == '1'
+      data = EasyModel.simple_stock(content_type, factory_id, date)
+    else
+      data = EasyModel.simple_stock_per_lot(content_type, factory_id, date)
     end
     if data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      filename = (warehouse_type_id == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
+      filename = (content_type == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
       report = EasyReport::Report.new data, 'simple_stock.yml'
       send_data report.render, :filename => filename, :type => "application/pdf"
     end   
-  end
-
-  def ingredients_stock
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.ingredients_stock(start_date, end_date)
-    if data.nil?
-      flash[:notice] = 'No hay registros para generar el reporte'
-      flash[:type] = 'warn'
-      redirect_to :action => 'index'
-    else
-      report = EasyReport::Report.new data, 'ingredients_stock.yml'
-      send_data report.render, :filename => "inventario_materia_prima.pdf", :type => "application/pdf"
-    end
-  end
-
-  def products_stock
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.products_stock(start_date, end_date)
-    if data.nil?
-      flash[:notice] = 'No hay registros para generar el reporte'
-      flash[:type] = 'warn'
-      redirect_to :action => 'index'
-    else
-      report = EasyReport::Report.new data, 'products_stock.yml'
-      send_data report.render, :filename => "inventario_producto_terminado.pdf", :type => "application/pdf"
-    end
   end
 
   def product_lots_dispatches

@@ -7,6 +7,7 @@ class Order < ActiveRecord::Base
   belongs_to :product_lot
   has_many :batch
   has_many :alarms
+  has_many :transactions
 
   validates_presence_of :recipe, :user, :product_lot, :client
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
@@ -173,29 +174,43 @@ class Order < ActiveRecord::Base
       if lot.nil?
         return false
       end
-      t = Transaction.new
+      previous_transaction = Transaction.find :first, :conditions => ['content_type = 1 and content_id = ? and order_id = ?', key, self.id]
+      t = self.transactions.new
       t.transaction_type_id = 1
       t.content_type = 1
       t.content_id = key
       t.processed_in_stock = 1
-      t.amount = value
+      unless previous_transaction
+        t.amount = value
+      else
+        t.amount = value - previous_transaction.amount
+      end
       t.user_id = user_id
-      t.save
+      unless t.amount == 0
+        t.save
+      end
     end
     product_lot = ProductLot.find self.product_lot_id
     if product_lot.nil?
       return false
     end
-    t = Transaction.new
+    previous_transaction = Transaction.find :first, :conditions => ['content_type = 2 and content_id = ? and order_id = ?', self.product_lot_id, self.id]
+    t = self.transactions.new
     t.transaction_type_id = 6
     t.content_type = 2
     t.content_id = self.product_lot_id
     t.processed_in_stock = 1
-    t.amount = production
+    unless previous_transaction
+      t.amount = production
+    else
+      t.amount = production - previous_transaction.amount
+    end
     t.user_id = user_id
-    t.save
+    unless t.amount == 0
+      t.save
+    end
   end
-  
+
   def self.search(params)
     @orders = Order.order('created_at DESC')
     @orders = @orders.includes(:recipe, :client)

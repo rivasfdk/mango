@@ -463,19 +463,19 @@ class EasyModel
       unless order_ingredients.has_key? ingredient_code
         next
       end
-      
+
       total_std = order_ingredients[ingredient_code] * o.get_real_batches()
       total_real = 0
       
       o.batch.each do |b|
         b.batch_hopper_lot.each do |bhl|
-          if bhl.hopper_lot.lot.ingredient.code == ingredient_code
+          if bhl.hopper_lot.lot.ingredient_id == @ingredient.id
             total_real += bhl.amount
             next
           end
         end
       end
-      
+
       var_kg = total_real - total_std
       var_perc = var_kg * 100 / total_std
       rbatches = o.get_real_batches()
@@ -991,7 +991,7 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock_per_lot(content_type, date)
+  def self.simple_stock_per_lot(content_type, factory_id, date)
     title = (content_type == 1) ? 'Existencias de Materia Prima por lotes' : 'Existencias de Producto Terminado por lotes'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -999,25 +999,36 @@ class EasyModel
 
     lots = []
     if content_type == 1
-      lots = Lot.find :all, :conditions => {:active => true}
+      lots = Lot.order('code asc')
+	  lots = lots.where(:active => true)
+	  lots = lots.where(:client_id => factory_id) if factory_id != 0
     else
-      lots = ProductLot.find :all, :conditions => {:active => true}
+      lots = ProductLot.order('code asc')
+	  lots = lots.where(:active => true)
+	  lots = lots.where(:client_id => factory_id) if factory_id != 0
     end
     lots.each do |lot|
       transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, lot.id, end_date_to_sql(date)], :order => ['created_at desc']
-      next if transaction.nil?
-      data['results'] << {
-        'code' => l.code,
-        'name' => l.get_content.name,
-        'stock' => transaction.stock_after
-      }
+      if transaction
+        data['results'] << {
+          'code' => lot.code,
+          'name' => lot.get_content.name,
+          'stock' => transaction.stock_after
+        }
+      else
+        data['results'] << {
+          'code' => lot.code,
+          'name' => lot.get_content.name,
+          'stock' => 0
+        }
+      end
     end
 
     data['results'].sort! {|a,b| a['code'] <=> b['code']}
     return data
   end
 
-  def self.simple_stock(content_type, date)
+  def self.simple_stock(content_type, factory_id, date)
     title = (content_type == 1) ? 'Existencias de Materia Prima' : 'Existencias de Producto Terminado'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -1027,21 +1038,35 @@ class EasyModel
 
     lots = []
     if content_type == 1
-      lots = Lot.find :all, :conditions => {:active => true}
+      lots = Lot.order('code asc')
+      lots = lots.where(:active => true)
+      lots = lots.where(:client_id => factory_id) if factory_id != 0
     else
-      lots = ProductLot.find :all, :conditions => {:active => true}
+      lots = ProductLot.order('code asc')
+      lots = lots.where(:active => true)
+      lots = lots.where(:client_id => factory_id) if factory_id != 0
     end
+
+    return nil if lots.empty?
+
     lots.each do |l|
       key = l.get_content.code
       transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, l.id, end_date_to_sql(date)], :order => ['created_at desc']
-      next if transaction.nil?
-      if results.has_key?(key)
-        results[key]['stock'] += transaction.stock_after
+      if transaction
+        if results.has_key?(key)
+          results[key]['stock'] += transaction.stock_after
+        else
+          results[key] = {
+            'code' => key,
+            'name' => l.get_content.name,
+            'stock' => transaction.stock_after
+          }
+        end
       else
         results[key] = {
           'code' => key,
           'name' => l.get_content.name,
-          'stock' => transaction.stock_after
+          'stock' => 0
         }
       end
     end
@@ -1088,7 +1113,7 @@ class EasyModel
   end
 
   def self.production_per_recipe(start_date, end_date, recipe_code, recipe_version)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['recipes.code = ? and version = ?', recipe_code, recipe_version]
+    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version], :order => ['id desc']
     return nil if recipe.nil?
 
     data = self.initialize_data('Produccion por Receta')
@@ -1105,7 +1130,8 @@ class EasyModel
       nominal += ir.amount
     end
 
-    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{:ingredient=>{}}}}}, :client=>{}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND recipe_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), recipe.id], :order=>['batches.start_date DESC']
+    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{}}}}, :client=>{}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND recipe_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), recipe.id], :order=>['batches.start_date DESC']
+    return nil if orders.empty?
 
     orders.each do |o|
       std = 0
@@ -1113,7 +1139,7 @@ class EasyModel
       o.batch.each do |b|
         std += nominal
         b.batch_hopper_lot.each do |bhl|
-          if ingredients.include? bhl.hopper_lot.lot.ingredient.id
+          if ingredients.include? bhl.hopper_lot.lot.ingredient_id
             real += bhl.amount
           end
         end

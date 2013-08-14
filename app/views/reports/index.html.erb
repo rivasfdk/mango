@@ -1,5 +1,6 @@
 <% title "Reportes" %>
 <%= javascript_include_tag "alarm_reports" %>
+<%= javascript_include_tag "simple_stock_reports" %>
 <div class="yui3-u-1">
   <% if session[:reports_permissions].include?('daily_production') %>
   <div class="report-content">
@@ -159,7 +160,7 @@
       <%= form_for :report, :url=>consumption_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <label for="client_id" class="small">Cliente:</label>
+        <label for="client_id" class="small">Cliente/Fábrica:</label>
         <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
         <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
@@ -200,9 +201,11 @@
     <div id="simple_stock" class="report-details">
       <%= form_for :report, :url=>simple_stock_report_path do |f| %>
         <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.date_select :date %><br /><br />
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado<br/><br/>
+        <%= f.radio_button :content_type, 1, :checked => true %> Materia prima
+        <%= f.radio_button :content_type, 2%> Producto terminado<br/><br/>
         <%= f.check_box :group, :checked=>true %> &nbsp; <label for="group">Agrupar lotes</label><br/><br/>
+		<%= f.check_box :by_factory, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
+        <%= f.collection_select :factory_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -245,7 +248,7 @@
       <%= form_for :report, :url=>production_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <label for="client_id2" class="small">Cliente:</label>
+        <label for="client_id2" class="small">Cliente/Fábrica:</label>
         <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
         <br /><br /><br />
         <%= submit_tag 'Generar Reporte' %>

@@ -11,6 +11,7 @@ class Client < ActiveRecord::Base
   validates_length_of :name, :within => 3..40
   
   def to_collection_select
-    return "#{self.name}"
+    client_type = self.factory ? "(F)" : "(C)"
+    return "#{self.name} #{client_type}"
   end
 end
