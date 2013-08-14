@@ -54,11 +54,7 @@ class Permission < ActiveRecord::Base
   end
 
   def self.is_repair?(action)
-    return action == 'repair'
-  end
-
-  def self.is_do_repair?(action)
-    return action == 'do_repair'
+    return (action == 'repair' or action == 'do_repair')
   end
 
   def self.get_all

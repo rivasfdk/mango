@@ -16,7 +16,6 @@ function clientTypeSelected() {
 }
 
 document.observe('dom:loaded', function() {
-  //clientTypeSelected()
   $('client_type_client').observe('change', clientTypeSelected);
   $('client_type_factory').observe('change', clientTypeSelected);
 });

@@ -12,9 +12,16 @@ class Order < ActiveRecord::Base
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
   validates_associated :recipe, :client, :user
   validates_numericality_of :real_production, :allow_nil => true
+  validate :product_lot_factory
 
   before_validation :validates_real_batchs
   before_save :create_code
+
+  def product_lot_factory
+    if self.client.factory and not self.product_lot.client_id == self.client_id
+      errors.add(:product_lot, "no pertenece a la fabrica")
+    end  
+  end
 
   def validates_real_batchs
     self.real_batches = 0 if self.real_batches.nil?

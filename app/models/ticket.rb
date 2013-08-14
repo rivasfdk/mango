@@ -51,7 +51,7 @@ class Ticket < ActiveRecord::Base
   
   def self.search(number, page, per_page)
     if number and number != ""
-      paginate :all, :page => page,
+      paginate :page => page,
                :per_page => per_page,
                :conditions => ['number = ?', number],
                :order => 'number DESC'

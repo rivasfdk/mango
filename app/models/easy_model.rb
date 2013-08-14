@@ -38,7 +38,7 @@ class EasyModel
     data = self.initialize_data("Alarmas de Orden #{order_code}")
     data['table'] = []
 
-    @order.alarms.each do |alarm|
+    @alarms.each do |alarm|
       data['table'] << {
           'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
           'description' => alarm.description,

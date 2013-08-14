@@ -70,24 +70,19 @@ class User < ActiveRecord::Base
     logger.debug "GLOBAL::action: #{action} - controller: #{controller}"
     puts permission_roles.inspect
     permission_roles.each do |pm|
-      logger.debug "GLOBAL::permission.action: #{pm.permission.action} - permission.module: #{pm.permission.module}"
       if pm.permission.action == 'consult' and Permission.is_consult?(action)
         valid = true
       elsif pm.permission.action == 'modify' and Permission.is_modify?(action)
         valid = true
       elsif pm.permission.action == 'delete' and Permission.is_delete?(action)
         valid = true
-      elsif pm.permission.action == 'recalculate' and Permission.is_recalculate?(action)
-        valid = true
       elsif pm.permission.action == 'import' and Permission.is_import?(action)
-        valid = true
-      elsif pm.permission.action == 'reprocess' and Permission.is_reprocess?(action)
         valid = true
       elsif pm.permission.action == 'repair' and Permission.is_repair?(action)
         valid = true
-      elsif pm.permission.action == 'do_repair' and Permission.is_do_repair?(action)
+      elsif pm.permission.action == 'adjust' and Permission.is_adjust?(action)
         valid = true
-      elsif pm.permission.module == 'reports' and pm.permission.action == action
+      elsif pm.permission.action == action
         valid = true
       end
       return true if valid
