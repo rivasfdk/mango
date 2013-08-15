@@ -138,18 +138,6 @@ function submit_product_lot_adjust_form() {
     $('product_lot_adjust_form').submit();
 }
 
-function submit_warehouse_new_form() {
-    $('warehouse_new_form').submit();
-}
-
-function submit_warehouse_edit_form() {
-    $('warehouse_edit_form').submit();
-}
-
-function submit_warehouse_adjust_form() {
-    $('warehouse_adjust_form').submit();
-}
-
 function submit_transaction_new_form() {
     $('transaction_new_form').submit();
 }
@@ -204,14 +192,6 @@ function submit_ticket_new_form() {
 
 function submit_ticket_edit_form() {
     $('ticket_edit_form').submit();
-}
-
-function submit_mixing_time_new_form() {
-    $('mixing_time_new_form').submit();
-}
-
-function submit_mixing_time_edit_form() {
-    $('mixing_time_edit_form').submit();
 }
 
 function submit_alarm_type_new_form() {

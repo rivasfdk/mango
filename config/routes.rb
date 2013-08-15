@@ -8,7 +8,6 @@ Mango::Application.routes.draw do
   match 'recipes/upload' => "recipes#upload", :via => :post, :as => 'recipe_upload'
   match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
-  match 'warehouses/recalculate' => "warehouses#recalculate", :via => :get, :as => 'recalculate_warehouses'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
   match 'transactions/export' => "transactions#export", :via => :get, :as => 'export_transactions'
   match 'transactions/download' => "transactions#download", :via => :get, :as => 'download_transactions'
@@ -57,7 +56,7 @@ Mango::Application.routes.draw do
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
-    :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :mixing_times, :alarm_types, :parameter_types
+    :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 

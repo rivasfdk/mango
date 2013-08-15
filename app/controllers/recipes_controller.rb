@@ -5,10 +5,6 @@ class RecipesController < ApplicationController
     @recipes = Recipe.search(params)
     @last_imported_recipe = LastImportedRecipe.last
   end
-  
-  def new
-    @mixing_times = MixingTime.find :all
-  end
 
   def show
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
@@ -20,12 +16,10 @@ class RecipesController < ApplicationController
     @ingredients = Ingredient.find :all
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameters_types = ParameterType.find :all
-    @mixing_times = MixingTime.find :all
   end
 
   def create
     @recipe = Recipe.new params[:recipe]
-    @mixing_times = MixingTime.find :all
     if @recipe.save
       flash[:notice] = 'Receta guardada con éxito'
       redirect_to :recipes
@@ -50,7 +44,6 @@ class RecipesController < ApplicationController
     original_recipe.save
     
     @ingredients = Ingredient.find :all
-    @mixing_times = MixingTime.find :all
     render :edit
   end
 

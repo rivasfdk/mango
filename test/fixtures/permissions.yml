@@ -39,11 +39,6 @@ recipe_create_parameter_list:
   module: recipes
   action: create_parameter_list
   mode: global
-recalculate:
-  name: Recalculate stock
-  module: warehouses
-  action: recalculate
-  mode: global
 reprocess:
   name: Reprocess transactions
   module: transactions

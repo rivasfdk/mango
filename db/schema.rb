@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130729102507) do
+ActiveRecord::Schema.define(:version => 20130814234620) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -193,15 +193,6 @@ ActiveRecord::Schema.define(:version => 20130729102507) do
     t.datetime "updated_at",                   :null => false
   end
 
-  create_table "mixing_times", :force => true do |t|
-    t.string   "code",        :null => false
-    t.integer  "wet_time",    :null => false
-    t.integer  "dry_time",    :null => false
-    t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
   create_table "orders", :force => true do |t|
     t.integer  "recipe_id"
     t.integer  "client_id"
@@ -299,18 +290,15 @@ ActiveRecord::Schema.define(:version => 20130729102507) do
 
   create_table "recipes", :force => true do |t|
     t.string   "code"
-    t.string   "name",                             :null => false
+    t.string   "name",                         :null => false
     t.string   "version"
-    t.float    "total",          :default => 0.0
-    t.boolean  "active",         :default => true
+    t.float    "total",      :default => 0.0
+    t.boolean  "active",     :default => true
     t.text     "comment"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-    t.integer  "mixing_time_id"
-    t.boolean  "in_use",         :default => true
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.boolean  "in_use",     :default => true
   end
-
-  add_index "recipes", ["mixing_time_id"], :name => "fk_recipes_mixing_time_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name",        :null => false

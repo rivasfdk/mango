@@ -147,12 +147,6 @@ module MenuHelper
       menu = menu_for_tickets_new
     elsif c == 'tickets' and (a == 'edit' or a == 'update')
       menu = menu_for_tickets_edit
-    elsif c == 'mixing_times' and a == 'index'
-      menu = menu_for_mixing_times_index
-    elsif c == 'mixing_times' and (a == 'new' or a == 'create')
-      menu = menu_for_mixing_times_new
-    elsif c == 'mixing_times' and (a == 'edit' or a == 'update')
-      menu = menu_for_mixing_times_edit
     elsif c == 'alarm_types' and a == 'index'
       menu = menu_for_alarm_types_index
     elsif c == 'alarm_types' and (a == 'new' or a == 'create')
@@ -825,33 +819,6 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(tickets_path) +
       render_function('Actualizar', 'Actualizar ticket', "submit_ticket_edit_form()", 'button-execute.png')
-    )
-    return menu
-  end
-
-  def menu_for_mixing_times_index
-    menu = content_tag(:p, 'Tiempos de mezcla')
-    menu += content_tag(:ul,
-      render_back(root_path) +
-      render_action('Crear', 'Crear nuevo tiempo de mezcla', new_mixing_time_path, 'button-add.png')
-    )
-    return menu
-  end
-
-  def menu_for_mixing_times_new
-    menu = content_tag(:p, 'Nuevo tiempo de mezcla')
-    menu += content_tag(:ul,
-      render_back(mixing_times_path) +
-      render_function('Guardar', 'Guardar tiempo de mezcla', "submit_mixing_time_new_form()", 'button-execute.png')
-    )
-    return menu
-  end
-
-  def menu_for_mixing_times_edit
-    menu = content_tag(:p, 'Editar tiempo de mezcla')
-    menu += content_tag(:ul,
-      render_back(mixing_times_path) +
-      render_function('Actualizar', 'Actualizar tiempo de mezcla', "submit_mixing_time_edit_form()", 'button-execute.png')
     )
     return menu
   end
