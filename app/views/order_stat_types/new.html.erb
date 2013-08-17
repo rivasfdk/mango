@@ -1,0 +1,5 @@
+<% title "Nuevo tipo de estadística" %>
+<%= form_for :order_stat_type, :url=>order_stat_types_path, :html=>{:id=>'order_stat_type_new_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

@@ -82,6 +82,14 @@ function submit_client_edit_form() {
     $('client_edit_form').submit();
 }
 
+function submit_order_stat_type_new_form() {
+    $('order_stat_type_new_form').submit();
+}
+
+function submit_order_stat_type_edit_form() {
+    $('order_stat_type_edit_form').submit();
+}
+
 function submit_factory_new_form() {
     $('factory_new_form').submit();
 }

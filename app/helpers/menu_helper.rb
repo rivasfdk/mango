@@ -61,6 +61,12 @@ module MenuHelper
       menu = menu_for_clients_new
     elsif c == 'clients' and (a == 'edit' or a == 'update')
       menu = menu_for_clients_edit
+    elsif c == 'order_stat_types' and a == 'index'
+      menu = menu_for_order_stat_types_index
+    elsif c == 'order_stat_types' and (a == 'new' or a == 'create')
+      menu = menu_for_order_stat_types_new
+    elsif c == 'order_stat_types' and (a == 'edit' or a == 'update')
+      menu = menu_for_order_stat_types_edit
     elsif c == 'factories' and a == 'index'
       menu = menu_for_factories_index
     elsif c == 'factories' and (a == 'new' or a == 'create')
@@ -435,6 +441,33 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(clients_path) +
       render_function('Actualizar', 'Actualizar cliente', "submit_client_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_order_stat_types_index
+    menu = content_tag(:p, 'Tipos de estadísticas')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo tipo de estadística', new_order_stat_type_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_order_stat_types_new
+    menu = content_tag(:p, 'Nuevo tipo de estadística')
+    menu += content_tag(:ul,
+      render_back(order_stat_types_path) +
+      render_function('Guardar', 'Guardar cliente', "submit_order_stat_type_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_order_stat_types_edit
+    menu = content_tag(:p, 'Editar tipo de estadística')
+    menu += content_tag(:ul,
+      render_back(order_stat_type_path) +
+      render_function('Actualizar', 'Actualizar cliente', "submit_order_stat_type_edit_form()", 'button-execute.png')
     )
     return menu
   end

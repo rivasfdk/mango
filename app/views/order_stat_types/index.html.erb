@@ -1,0 +1,31 @@
+<% title "Tipos de estadísticas" %>
+<% i = 0 %>
+<% if @order_stat_types.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Descripción<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @order_stat_types.each do |ott| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h ott.description %></td>
+        <td>
+          <%= render_action_edit(edit_order_stat_type_path(ott)) %>
+          <%= render_action_delete(order_stat_type_path(ott), "Desea borrar el tipo de estadística '#{ott.description}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @order_stat_types %>
+  </div>
+</div>
+<% else %>
+<p>No hay tipos de estadísticas registradas</p>
+<% end %>

@@ -1,0 +1,5 @@
+<% title "Editar tipo de estadística" %>
+<%= form_for :order_stat_type, :url=>order_stat_type_path(@order_stat_type), :html=>{:method=>:put, :id=>'order_stat_type_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

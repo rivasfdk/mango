@@ -244,9 +244,9 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
   add_index "orders_stats", ["order_stat_type_id"], :name => "fk_orders_stats_order_stat_type_id"
 
   create_table "orders_stats_types", :force => true do |t|
-    t.string   "type",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "description", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "parameters", :force => true do |t|
