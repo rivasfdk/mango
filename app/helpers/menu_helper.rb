@@ -466,7 +466,7 @@ module MenuHelper
   def menu_for_order_stat_types_edit
     menu = content_tag(:p, 'Editar tipo de estadística')
     menu += content_tag(:ul,
-      render_back(order_stat_type_path) +
+      render_back(order_stat_types_path) +
       render_function('Actualizar', 'Actualizar cliente', "submit_order_stat_type_edit_form()", 'button-execute.png')
     )
     return menu
