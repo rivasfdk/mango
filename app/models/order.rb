@@ -8,6 +8,7 @@ class Order < ActiveRecord::Base
   has_many :batch
   has_many :alarms
   has_many :transactions
+  has_many :orders_stats
 
   validates_presence_of :recipe, :user, :product_lot, :client
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
@@ -19,9 +20,11 @@ class Order < ActiveRecord::Base
   before_save :create_code
 
   def product_lot_factory
-    if self.client.factory and not self.product_lot.client_id == self.client_id
-      errors.add(:product_lot, "no pertenece a la fabrica")
-    end  
+    if self.client and self.product_lot
+      if self.client.factory and not self.product_lot.client_id == self.client_id
+        errors.add(:product_lot, "no pertenece a la fabrica")
+      end
+    end
   end
 
   def validates_real_batchs

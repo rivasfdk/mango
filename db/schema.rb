@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130814234620) do
+ActiveRecord::Schema.define(:version => 20130816162437) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.integer  "alarm_type_id", :default => 1
   end
 
+  add_index "alarms", ["alarm_type_id"], :name => "alarms_alarm_type_id_fk"
   add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
 
   create_table "bases_units", :force => true do |t|
@@ -96,6 +97,8 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.datetime "updated_at",   :null => false
   end
 
+  add_index "display_units", ["base_unit_id"], :name => "display_units_base_unit_id_fk"
+
   create_table "drivers", :force => true do |t|
     t.string   "name",                         :null => false
     t.string   "ci",                           :null => false
@@ -136,6 +139,8 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.datetime "updated_at",   :null => false
     t.integer  "base_unit_id"
   end
+
+  add_index "ingredients", ["base_unit_id"], :name => "ingredients_base_unit_id_fk"
 
   create_table "ingredients_medicaments_recipes", :force => true do |t|
     t.integer  "ingredient_id"
@@ -182,6 +187,7 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.float    "stock",         :default => 0.0
   end
 
+  add_index "lots", ["client_id"], :name => "lots_client_id_fk"
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
 
   create_table "medicaments_recipes", :force => true do |t|
@@ -226,6 +232,23 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.datetime "updated_at",                           :null => false
   end
 
+  create_table "orders_stats", :force => true do |t|
+    t.integer  "order_id",           :null => false
+    t.integer  "order_stat_type_id", :null => false
+    t.float    "value",              :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "orders_stats", ["order_id"], :name => "fk_orders_stats_order_id"
+  add_index "orders_stats", ["order_stat_type_id"], :name => "fk_orders_stats_order_stat_type_id"
+
+  create_table "orders_stats_types", :force => true do |t|
+    t.string   "type",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "parameters", :force => true do |t|
     t.integer  "parameter_list_id"
     t.integer  "parameter_type_id"
@@ -258,6 +281,9 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.datetime "updated_at",    :null => false
   end
 
+  add_index "permission_roles", ["permission_id"], :name => "permission_roles_permission_id_fk"
+  add_index "permission_roles", ["role_id"], :name => "permission_roles_role_id_fk"
+
   create_table "permissions", :force => true do |t|
     t.string   "name",       :null => false
     t.string   "module",     :null => false
@@ -275,6 +301,8 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.integer  "base_unit_id"
   end
 
+  add_index "products", ["base_unit_id"], :name => "products_base_unit_id_fk"
+
   create_table "products_lots", :force => true do |t|
     t.integer  "product_id"
     t.string   "code",                         :null => false
@@ -286,6 +314,7 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.float    "stock",      :default => 0.0
   end
 
+  add_index "products_lots", ["client_id"], :name => "products_lots_client_id_fk"
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "recipes", :force => true do |t|
@@ -347,6 +376,7 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
   add_index "tickets", ["driver_id"], :name => "fk_tickets_driver_id"
+  add_index "tickets", ["ticket_type_id"], :name => "tickets_ticket_type_id_fk"
   add_index "tickets", ["truck_id"], :name => "fk_tickets_truck_id"
   add_index "tickets", ["user_id"], :name => "fk_tickets_user_id"
 
@@ -393,7 +423,11 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.integer  "order_id"
   end
 
+  add_index "transactions", ["client_id"], :name => "transactions_client_id_fk"
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
+  add_index "transactions", ["ticket_id"], :name => "transactions_ticket_id_fk"
+  add_index "transactions", ["transaction_type_id"], :name => "transactions_transaction_type_id_fk"
+  add_index "transactions", ["user_id"], :name => "transactions_user_id_fk"
 
   create_table "trucks", :force => true do |t|
     t.integer  "carrier_id"
@@ -415,5 +449,7 @@ ActiveRecord::Schema.define(:version => 20130814234620) do
     t.datetime "updated_at",                       :null => false
     t.integer  "role_id"
   end
+
+  add_index "users", ["role_id"], :name => "users_role_id_fk"
 
 end
