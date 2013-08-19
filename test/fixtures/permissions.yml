@@ -174,3 +174,11 @@ tickets_transactions_per_driver:
   module: reports
   action: tickets_transactions_per_driver
   mode: global
+stats:
+  name: Report 'Estadísticas de producción'
+  module: reports
+  action: stats
+order_stats:
+  name: Report 'Estadísticas de orden'
+  module: reports
+  action: order_stats

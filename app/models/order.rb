@@ -8,7 +8,7 @@ class Order < ActiveRecord::Base
   has_many :batch
   has_many :alarms
   has_many :transactions
-  has_many :orders_stats
+  has_many :order_stats
 
   validates_presence_of :recipe, :user, :product_lot, :client
   validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0

@@ -405,4 +405,31 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => 'alarmas_por_orden.pdf', :type => 'application/pdf'
     end
   end
+
+  def stats
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    data = EasyModel.stats(start_date, end_date)
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'stats.yml'
+      send_data report.render, :filename => 'estadisticas.pdf', :type => 'application/pdf'
+    end
+  end
+
+  def order_stats
+    data = EasyModel.order_stats(params[:report][:order])
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'order_stats.yml'
+      send_data report.render, :filename => 'estadisticas_de_orden.pdf', :type => 'application/pdf'
+    end
+  end
 end

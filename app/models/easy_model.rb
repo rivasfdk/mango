@@ -1,5 +1,15 @@
 class EasyModel
 
+  def self.stats(start_date, end_date)
+    @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+    return nil
+  end
+
+  def self.order_stats(order_code)
+    @order = Order.find_by_code order_code
+    return nil
+  end
+
   def self.alarms(start_date, end_date, alarm_type_id)
     if alarm_type_id == 0
       conditions = {:date=>(start_date)..((end_date) + 1.day)}

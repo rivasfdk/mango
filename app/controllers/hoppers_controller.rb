@@ -45,7 +45,7 @@ class HoppersController < ApplicationController
   def set_as_main_hopper
     @hopper = Hopper.find params[:id]
     @hopper.set_as_main_hopper()
-    redirect_to request.referer
+    redirect_to scale_path(@hopper.scale_id)
   end
 
   def destroy
