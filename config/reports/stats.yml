@@ -1,0 +1,154 @@
+report:
+  settings:
+    page:
+      size: Letter
+      orientation: L
+      margins: 10
+    style:
+      font_family: 'Helvetica'
+      font_size: 10
+      font_color: [0, 0, 0]
+  header:
+    1:
+      text:
+        field: company_name
+        margin: 30
+        align: left
+        style:
+          font_size: 11
+          font_weight: B
+    2:
+      text:
+        field: company_rif
+        margin: 30
+        align: left
+        style:
+          font_size: 10
+    3:
+      image:
+        filename: default-report-logo.png
+        width: 20
+        height: 20
+        x: 20
+        y: 12
+    4:
+      text:
+        field: company_address
+        margin: 30
+        align: left
+        style:
+          font_size: 10
+    5:
+      breakline:
+    6:
+      pagenum:
+        pattern: "Pag. <PAGE>"
+        align: right
+  body:
+    1:
+      text:
+        label: "Desde: "
+        align: right
+        width: 240
+        breakline: 0
+        style:
+          font_weight: B
+    2:
+      text:
+        field: since
+        align: left
+        width: 50
+    3:
+      text:
+        label: "Hasta: "
+        align: right
+        width: 240
+        breakline: 0
+        style:
+          font_weight: B
+    4:
+      text:
+        field: until
+        align: left
+        width: 50
+    5:
+      breakline:
+    6:
+      text:
+        field: title
+        align: center
+        style:
+          font_size: 12
+          font_weight: B
+    7:
+      table:
+        field: results
+        heading:
+          align: left
+          style:
+            font_weight: B
+            bg_color: [220, 220, 220]
+        totalization:
+          precision: 2
+          label: Totales
+          align: center
+          border: T
+          style:
+            font_weight: B
+        columns:
+          1:
+           order:
+              label: Orden
+              align: left
+              width: 15
+          2:
+            recipe_name:
+              label: Receta
+              align: left
+              width: 60
+          3:
+            real_batches:
+              label: Baches
+              align: center
+              width: 12
+              totalize: true
+          4:
+            tmp_batch_bal_macro:
+              label: Tmp.Batch.Bal.Macro
+              align: center
+              width: 35
+          5:
+            tmp_desc_bal_macro:
+              label: Tmp.Desc.Bal.Macro
+              align: center
+              width: 35
+          6:
+            batches_hora_mezc:
+              label: Batches/hora mezc.
+              align: center
+              width: 35
+          7:
+            tmp_mol_1:
+              label: Tmp.Mol.1
+              align: center
+              width: 20
+          8:
+            tmp_mol_2:
+              label: Tmp.Mol.2
+              align: center
+              width: 20
+          9:
+            tmp_mol_3:
+              label: Tmp.Mol.3
+              align: center
+              width: 20
+    8:
+      breakline:
+  footer:
+    1:
+      text:
+        field: footer
+        align: center
+        style:
+          font_size: 8
+          font_color: [80, 80, 80]

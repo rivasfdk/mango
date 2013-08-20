@@ -1,8 +1,61 @@
 class EasyModel
 
   def self.stats(start_date, end_date)
-    @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
-    return nil
+    @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}, :recipe => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+
+    data = self.initialize_data("Estadisticas de produccion")
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['results'] = []
+
+    @orders.each do |order|
+      n1, n2, n3, n4, n5, n6 = 0, 0, 0, 0, 0, 0
+      tmp_batch_bal_macro = 0
+      tmp_desc_bal_macro = 0
+      batches_hora_mezc = 0
+      tmp_mol_1 = 0
+      tmp_mol_2 = 0
+      tmp_mol_3 = 0
+      order.order_stats.each do |order_stat|
+        if order_stat.order_stat_type_id == 1
+          n1 += 1
+          tmp_batch_bal_macro += order_stat.value
+        elsif order_stat.order_stat_type_id == 2
+          n2 += 1
+          tmp_desc_bal_macro += order_stat.value
+        elsif order_stat.order_stat_type_id == 3
+          n2 += 1
+          tmp_mol_1 += order_stat.value
+        elsif order_stat.order_stat_type_id == 4
+          n2 += 1
+          tmp_mol_2 += order_stat.value
+        elsif order_stat.order_stat_type_id == 5
+          n2 += 1
+          tmp_mol_3 += order_stat.value
+        elsif order_stat.order_stat_type_id == 6
+          n6 += 1
+          batches_hora_mezc += order_stat.value
+        end
+      end
+      tmp_batch_bal_macro = n1.zero? ? 0 : tmp_batch_bal_macro / n1
+      tmp_desc_bal_macro = n2.zero? ? 0 : tmp_desc_bal_macro / n2
+      tmp_mol_1 = n3.zero? ? 0 : tmp_mol_1 / n3
+      tmp_mol_2 = n4.zero? ? 0 : tmp_mol_1 / n4
+      tmp_mol_3 = n5.zero? ? 0 : tmp_mol_1 / n5
+      batches_hora_mezc = n6.zero? ? 0 : batches_hora_mezc / n6
+      data['results'] << {
+        'order' => order.code,
+        'recipe_name' => order.recipe.name,
+        'real_batches' => order.get_real_batches,
+        'tmp_batch_bal_macro' => self.int_seconds_to_time_string(tmp_batch_bal_macro),
+        'tmp_desc_bal_macro' => self.int_seconds_to_time_string(tmp_desc_bal_macro),
+        'batches_hora_mezc' => batches_hora_mezc,
+        'tmp_mol_1' => self.int_seconds_to_time_string(tmp_mol_1),
+        'tmp_mol_2' => self.int_seconds_to_time_string(tmp_mol_2),
+        'tmp_mol_3' => self.int_seconds_to_time_string(tmp_mol_3),
+      }
+    end
+    return data
   end
 
   def self.order_stats(order_code)
@@ -1240,6 +1293,14 @@ class EasyModel
   def self.print_range_date(str_date, with_time=false)
     fmt = with_time ? "%d/%m/%Y %H:%M:%S" : "%d/%m/%Y"
     return str_date.strftime(fmt)
+  end
+
+  def self.int_seconds_to_time_string(seconds)
+    if seconds < 3600
+      return Time.at(seconds).gmtime.strftime('%Mm%Ss')
+    else
+      return Time.at(seconds).gmtime.strftime('%Hh%Mm:%Ss')
+    end
   end
 
   private

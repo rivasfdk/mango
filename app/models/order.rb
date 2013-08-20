@@ -84,8 +84,8 @@ class Order < ActiveRecord::Base
 
   def get_real_batches
     real_batches = 0
-    Batch.where(:order_id => self.id).each do |batch|
-      real_batches += 1 unless BatchHopperLot.where(:batch_id => batch.id).empty?
+    self.batch.each do |batch|
+      real_batches += 1 unless batch.batch_hopper_lot.count == 0
     end
     return real_batches
   end
