@@ -89,7 +89,7 @@ report:
             font_weight: B
             bg_color: [220, 220, 220]
         totalization:
-          precision: 2
+          precision: 0
           label: Totales
           align: center
           border: T
@@ -125,6 +125,7 @@ report:
           6:
             batches_hora_mezc:
               label: Batches/hora mezc.
+              precision: 0
               align: center
               width: 35
           7:

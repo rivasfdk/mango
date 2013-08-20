@@ -24,13 +24,13 @@ class EasyModel
           n2 += 1
           tmp_desc_bal_macro += order_stat.value
         elsif order_stat.order_stat_type_id == 3
-          n2 += 1
+          n3 += 1
           tmp_mol_1 += order_stat.value
         elsif order_stat.order_stat_type_id == 4
-          n2 += 1
+          n4 += 1
           tmp_mol_2 += order_stat.value
         elsif order_stat.order_stat_type_id == 5
-          n2 += 1
+          n5 += 1
           tmp_mol_3 += order_stat.value
         elsif order_stat.order_stat_type_id == 6
           n6 += 1
@@ -40,8 +40,8 @@ class EasyModel
       tmp_batch_bal_macro = n1.zero? ? 0 : tmp_batch_bal_macro / n1
       tmp_desc_bal_macro = n2.zero? ? 0 : tmp_desc_bal_macro / n2
       tmp_mol_1 = n3.zero? ? 0 : tmp_mol_1 / n3
-      tmp_mol_2 = n4.zero? ? 0 : tmp_mol_1 / n4
-      tmp_mol_3 = n5.zero? ? 0 : tmp_mol_1 / n5
+      tmp_mol_2 = n4.zero? ? 0 : tmp_mol_2 / n4
+      tmp_mol_3 = n5.zero? ? 0 : tmp_mol_3 / n5
       batches_hora_mezc = n6.zero? ? 0 : batches_hora_mezc / n6
       data['results'] << {
         'order' => order.code,
@@ -60,6 +60,26 @@ class EasyModel
 
   def self.order_stats(order_code)
     @order = Order.find_by_code order_code
+    if @order.nil?
+      return nil
+    end
+
+    data = self.initialize_data('Estadisticas de orden')
+    data['order'] = @order.code
+    data['client'] = "#{@order.client.code} - #{@order.client.name}"
+    data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
+    data['version'] = @order.recipe.version
+    data['comment'] = @order.comment
+    data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
+    data['start_date'] = @order.calculate_start_date()
+    data['end_date'] = @order.calculate_end_date()
+    data['prog_batches'] = @order.prog_batches.to_s
+    data['real_batches'] = @order.get_real_batches().to_s
+    data['product_total'] = "#{total_real} Kg"
+    data['real_production'] = @order.real_production.present? ? "#{@order.real_production} Kg" : "" 
+    data['repaired'] = @order.repaired ? "Si" : "No"
+    data['results'] = []
+
     return nil
   end
 
