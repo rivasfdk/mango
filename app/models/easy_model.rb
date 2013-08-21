@@ -1,5 +1,5 @@
 class EasyModel
-
+  #This method is nasty as fuck because it only works for PROPORCA
   def self.stats(start_date, end_date)
     @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}, :recipe => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
 
@@ -57,7 +57,7 @@ class EasyModel
     end
     return data
   end
-
+  #This one is also nasty as fuck for the same reason
   def self.order_stats(order_code)
     @order = Order.find_by_code order_code
     if @order.nil?
@@ -73,14 +73,21 @@ class EasyModel
     data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
     data['start_date'] = @order.calculate_start_date()
     data['end_date'] = @order.calculate_end_date()
-    data['prog_batches'] = @order.prog_batches.to_s
     data['real_batches'] = @order.get_real_batches().to_s
-    data['product_total'] = "#{total_real} Kg"
-    data['real_production'] = @order.real_production.present? ? "#{@order.real_production} Kg" : "" 
-    data['repaired'] = @order.repaired ? "Si" : "No"
     data['results'] = []
 
-    return nil
+    OrderStatType.all.each do |ost|
+      stats = OrderStat.find :all, :conditions => ['order_id = ? and order_stat_type_id = ?', @order.id, ost.id]
+      stat_value = stats.any? ? stats.inject(0.0) {|sum, stat| sum + stat.value }.to_f / stats.count : 0
+      unless ost.id == 6 #Ewwww
+        stat_value = self.int_seconds_to_time_string(stat_value)
+      end
+      data['results'] << {
+        'stat_name' => ost.description,
+        'stat_value' => stat_value
+      }
+    end
+    return data
   end
 
   def self.alarms(start_date, end_date, alarm_type_id)
