@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130816162437) do
+ActiveRecord::Schema.define(:version => 20130821005852) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -23,26 +23,25 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.integer  "order_id"
     t.datetime "date"
     t.string   "description"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "alarm_type_id", :default => 1
   end
 
-  add_index "alarms", ["alarm_type_id"], :name => "alarms_alarm_type_id_fk"
   add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "batch_hoppers_lots", :force => true do |t|
     t.integer  "batch_id"
     t.integer  "hopper_lot_id"
     t.float    "amount",        :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "batch_hoppers_lots", ["batch_id"], :name => "fk_batch_hoppers_lots_batch_id"
@@ -55,8 +54,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.integer  "number"
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "batches", ["order_id"], :name => "fk_batches_order_id"
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "address"
     t.string   "tel1"
     t.string   "tel2"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "frequent",   :default => true
   end
 
@@ -84,8 +83,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "tel1"
     t.string   "tel2"
     t.string   "email"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "factory",    :default => false
   end
 
@@ -93,11 +92,9 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.integer  "base_unit_id"
     t.string   "code",         :null => false
     t.float    "rate",         :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "display_units", ["base_unit_id"], :name => "display_units_base_unit_id_fk"
 
   create_table "drivers", :force => true do |t|
     t.string   "name",                         :null => false
@@ -105,15 +102,15 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "address"
     t.string   "tel1"
     t.string   "tel2"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "frequent",   :default => true
   end
 
   create_table "hoppers", :force => true do |t|
     t.integer  "number",                        :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "name",       :default => " "
     t.integer  "scale_id",                      :null => false
     t.boolean  "main",       :default => false
@@ -125,8 +122,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.integer  "hopper_id"
     t.integer  "lot_id"
     t.boolean  "active",     :default => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "hoppers_lots", ["hopper_id"], :name => "fk_hoppers_lots_hopper_id"
@@ -135,19 +132,17 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
   create_table "ingredients", :force => true do |t|
     t.string   "code",         :null => false
     t.string   "name",         :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "base_unit_id"
   end
-
-  add_index "ingredients", ["base_unit_id"], :name => "ingredients_base_unit_id_fk"
 
   create_table "ingredients_medicaments_recipes", :force => true do |t|
     t.integer  "ingredient_id"
     t.integer  "medicament_recipe_id"
     t.float    "amount",               :null => false
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ingredients_medicaments_recipes", ["ingredient_id"], :name => "fk_ingredients_medicaments_recipes_ingredient_id"
@@ -159,8 +154,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.float    "amount",        :null => false
     t.integer  "priority",      :null => false
     t.float    "percentage",    :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ingredients_recipes", ["ingredient_id"], :name => "fk_ingredients_recipes_ingredient_id"
@@ -168,8 +163,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
 
   create_table "lasts_imported_recipes", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "total_recipes",    :default => 0
     t.integer  "imported_recipes", :default => 0
   end
@@ -179,15 +174,14 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.date     "date"
     t.string   "location"
     t.integer  "ingredient_id"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "client_id"
     t.boolean  "active",        :default => true
     t.boolean  "in_use",        :default => true
     t.float    "stock",         :default => 0.0
   end
 
-  add_index "lots", ["client_id"], :name => "lots_client_id_fk"
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
 
   create_table "medicaments_recipes", :force => true do |t|
@@ -195,8 +189,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "name",                         :null => false
     t.boolean  "active",     :default => true
     t.text     "comment"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "orders", :force => true do |t|
@@ -210,8 +204,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "comment"
     t.boolean  "completed",            :default => false
     t.boolean  "processed_in_baan",    :default => false
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "medicament_recipe_id"
     t.float    "real_production"
     t.boolean  "repaired",             :default => false
@@ -228,8 +222,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
 
   create_table "orders_numbers", :force => true do |t|
     t.string   "code",       :default => "0000000001"
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "orders_stats", :force => true do |t|
@@ -277,44 +271,38 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
   create_table "permission_roles", :force => true do |t|
     t.integer  "permission_id"
     t.integer  "role_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "permission_roles", ["permission_id"], :name => "permission_roles_permission_id_fk"
-  add_index "permission_roles", ["role_id"], :name => "permission_roles_role_id_fk"
 
   create_table "permissions", :force => true do |t|
     t.string   "name",       :null => false
     t.string   "module",     :null => false
     t.string   "action",     :null => false
     t.string   "mode",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "products", :force => true do |t|
     t.string   "code",         :null => false
     t.string   "name",         :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "base_unit_id"
   end
-
-  add_index "products", ["base_unit_id"], :name => "products_base_unit_id_fk"
 
   create_table "products_lots", :force => true do |t|
     t.integer  "product_id"
     t.string   "code",                         :null => false
     t.date     "date"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "client_id"
     t.boolean  "active",     :default => true
     t.float    "stock",      :default => 0.0
   end
 
-  add_index "products_lots", ["client_id"], :name => "products_lots_client_id_fk"
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "recipes", :force => true do |t|
@@ -324,16 +312,16 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.float    "total",      :default => 0.0
     t.boolean  "active",     :default => true
     t.text     "comment"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "in_use",     :default => true
   end
 
   create_table "roles", :force => true do |t|
     t.string   "name",        :null => false
     t.string   "description", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "scales", :force => true do |t|
@@ -349,8 +337,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "name"
     t.time     "start_hour"
     t.time     "end_hour"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tickets", :force => true do |t|
@@ -365,8 +353,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.datetime "incoming_date"
     t.datetime "outgoing_date"
     t.string   "comment"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "updated_at",                                  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "ticket_type_id"
     t.integer  "user_id"
     t.integer  "client_id"
@@ -376,29 +364,28 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
   add_index "tickets", ["driver_id"], :name => "fk_tickets_driver_id"
-  add_index "tickets", ["ticket_type_id"], :name => "tickets_ticket_type_id_fk"
   add_index "tickets", ["truck_id"], :name => "fk_tickets_truck_id"
   add_index "tickets", ["user_id"], :name => "fk_tickets_user_id"
 
   create_table "tickets_numbers", :force => true do |t|
     t.string   "number",     :default => "0000000001"
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tickets_types", :force => true do |t|
     t.string   "code",        :null => false
     t.string   "description", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "transaction_types", :force => true do |t|
     t.string   "code",        :null => false
     t.string   "description", :null => false
     t.string   "sign",        :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "transactions", :force => true do |t|
@@ -408,8 +395,8 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.date     "date",                                   :null => false
     t.float    "amount",                                 :null => false
     t.string   "comment"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "processed_in_stock",  :default => 0
     t.integer  "client_id"
     t.integer  "ticket_id"
@@ -423,17 +410,13 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.integer  "order_id"
   end
 
-  add_index "transactions", ["client_id"], :name => "transactions_client_id_fk"
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
-  add_index "transactions", ["ticket_id"], :name => "transactions_ticket_id_fk"
-  add_index "transactions", ["transaction_type_id"], :name => "transactions_transaction_type_id_fk"
-  add_index "transactions", ["user_id"], :name => "transactions_user_id_fk"
 
   create_table "trucks", :force => true do |t|
     t.integer  "carrier_id"
     t.string   "license_plate",                   :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "frequent",      :default => true
   end
 
@@ -445,11 +428,9 @@ ActiveRecord::Schema.define(:version => 20130816162437) do
     t.string   "password_hash",                    :null => false
     t.string   "password_salt",                    :null => false
     t.boolean  "admin",         :default => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "role_id"
   end
-
-  add_index "users", ["role_id"], :name => "users_role_id_fk"
 
 end
