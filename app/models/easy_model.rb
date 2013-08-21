@@ -78,7 +78,7 @@ class EasyModel
 
     OrderStatType.all.each do |ost|
       stats = OrderStat.find :all, :conditions => ['order_id = ? and order_stat_type_id = ?', @order.id, ost.id]
-      stat_value = stats.any? ? stats.inject(0.0) {|sum, stat| sum + stat.value }.to_f / stats.count : 0
+      stat_value = stats.any? ? stats.inject(0.0) {|sum, stat| sum + stat.value } / stats.count : 0
       unless ost.id == 6 #Ewwww
         stat_value = self.int_seconds_to_time_string(stat_value)
       end
