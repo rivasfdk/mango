@@ -29,3 +29,8 @@ sa_des:
   code: SA-DES
   description: Salida por despacho
   sign: '-'
+en_pro:
+  id: 6
+  code: EN-PRO
+  description: Entrada por producción
+  sign: '+'
