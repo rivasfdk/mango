@@ -2,7 +2,7 @@ module LotModule
   def recalculate
     stock = 0
     content_type = self.is_a?(Lot) ? 1 : 2
-    transactions = Transaction.find :all, :conditions => ['content_id = ? and content_type = ?', self.id, content_type]
+    transactions = Transaction.where({:content_id => self.id, :content_type => content_type})
     transactions.each do |t|
       puts "#{t.transaction_type.sign}#{t.amount}"
       stock += ("#{t.transaction_type.sign}#{t.amount}".to_f)

@@ -2,10 +2,13 @@ class HopperLot < ActiveRecord::Base
   belongs_to :hopper
   belongs_to :lot
   has_many :batch_hopper_lot
+  has_many :hopper_lot_transactions
+
+  accepts_nested_attributes_for :hopper_lot_transactions
 
   validates_presence_of :hopper, :lot
 
-  before_save :update_active
+  before_save :update_active, :if => :new_record?
   after_save :update_main_hopper
 
   def update_active

@@ -33,7 +33,7 @@
         <td class="center"><%=h o.completed %></td>
         <td class="center">
           <%= render_action_show(order_path(o)) %>
-          <%= render_action_edit(edit_order_path(o)) %>
+          <%= render_action_edit(edit_order_path(o)) %> <br />
           <% unless o.completed %>
             <%= render_action_repair(repair_order_path(o)) %>
           <% end %>

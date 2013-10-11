@@ -6,7 +6,7 @@ class Batch < ActiveRecord::Base
 
   validates_uniqueness_of :order_id, :scope => [:number]
   validates_presence_of :order, :schedule, :user, :start_date, :end_date
-  validates_numericality_of :number, :only_integer => true, :greater_than_or_equal_to => 0
+  validates_numericality_of :number, :only_integer => true, :greater_than => 0
   validates_associated :order, :schedule, :user
 
   before_validation :check_associations

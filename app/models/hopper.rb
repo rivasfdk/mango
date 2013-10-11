@@ -2,14 +2,101 @@ class Hopper < ActiveRecord::Base
   belongs_to :scale
   has_many :hopper_lot
   validates_uniqueness_of :number, :scope => :scale_id
-  validates_presence_of :number, :name, :scale
-  validates_numericality_of :number, :only_integer => true, :greater_than_or_equal_to => 0
+  validates_presence_of :number, :name, :scale, :capacity
+  validates_numericality_of :number, :only_integer => true, :greater_than => 0
+  validates_numericality_of :capacity, :greater_than => 0
+
+  def capacity_in_kg
+    density = current_lot.density
+    (capacity.present? and density.present?) ? capacity * density : 0	
+  end
+
+  def capacity_in_kg_by_lot(lot_id)
+    lot = Lot.find(lot_id)
+    unless lot.nil?
+      (capacity.present? and lot.density.present?) ? capacity * lot.density : 0
+    else
+      0
+    end
+  end
+
+  def adjust(params, user_id)
+    new_stock = params[:new_stock].to_f
+    capacity_in_kg = self.capacity_in_kg
+    if new_stock <= 0
+      logger.debug("invalid stock")
+      false
+    elsif new_stock > capacity_in_kg
+      logger.debug("stock exceeds capacity")
+      false
+    elsif
+      hl = current_hopper_lot
+      amount = new_stock - hl.stock
+      hlt = current_hopper_lot.hopper_lot_transactions.new
+      hlt.hopper_lot_transaction_type_id = amount > 0 ? 3 : 5
+      hlt.amount = amount.abs
+      hlt.user_id = user_id
+      hlt.save
+    end
+  end
+
+  def change(params, user_id)
+    amount = params[:amount].to_f
+    new_lot_id = params[:lot_id].to_i
+    if current_lot.id == new_lot_id
+      logger.debug("lot can't be the same") 
+      false
+    elsif amount <= 0
+      logger.debug("invalid amount")
+      false
+    elsif amount > capacity_in_kg_by_lot(new_lot_id)
+      logger.debug("amount exceeds capacity")
+      false
+    else
+      hl = self.hopper_lot.new
+      hl.lot_id = new_lot_id
+      hl.save
+      hlt = hl.hopper_lot_transactions.new
+      hlt.hopper_lot_transaction_type_id = 1
+      hlt.amount = amount
+      hlt.user_id = user_id
+      hlt.save
+    end    
+  end
+
+  def fill(params, user_id)
+    hopper_lot = HopperLot.find :first,
+                                :conditions => {:hopper_id => self.id, :active => true}
+    amount = params[:amount].to_f
+    logger.debug("Stock: #{hopper_lot.stock}")
+    logger.debug("Capacidad en Kg: #{capacity_in_kg}")
+    if amount <= 0 or hopper_lot.stock + amount > capacity_in_kg
+      return false
+    end
+    hlt = hopper_lot.hopper_lot_transactions.new
+    hlt.hopper_lot_transaction_type_id = 1
+    hlt.user_id = user_id
+    hlt.amount = amount
+    hlt.save
+  end
+
+  def is_full?
+    chl = current_hopper_lot
+    lot = chl.lot
+    (capacity.present? and lot.density.present?) ? chl.stock >= capacity * lot.density : false
+  end
 
   def current_lot
     hopper_lot = HopperLot.find :first,
                                 :include => :lot,
                                 :conditions => ['hopper_id = ? and active = ?', self.id, true]
     return hopper_lot.nil? ? nil : hopper_lot.lot
+  end
+
+  def current_hopper_lot
+    HopperLot.find :first,
+                   :include => :lot,
+                   :conditions => ['hopper_id = ? and active = ?', self.id, true]
   end
 
   def set_as_main_hopper
@@ -68,12 +155,17 @@ class Hopper < ActiveRecord::Base
                                   :conditions => {:active => true, :hoppers => {:scale_id => scale_id}},
                                   :order => ['hoppers.number ASC']
     hoppers_lots.each do |hl|
+      stock_string = "#{hl.stock} Kg"
+      unless hl.hopper.capacity.nil? or hl.lot.density.nil?
+        stock_string = "#{hl.stock} Kg. (#{(hl.stock / (hl.hopper.capacity * hl.lot.density) * 100).round}%)"
+      end
       actives << {
         :lot => hl,
         :hopper_id => hl.hopper_id,
         :number => hl.hopper.number,
         :name => hl.hopper.name,
         :main => hl.hopper.main,
+        :stock_string => stock_string
       }
     end
     return actives

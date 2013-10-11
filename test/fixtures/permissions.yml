@@ -39,6 +39,26 @@ recipe_create_parameter_list:
   module: recipes
   action: create_parameter_list
   mode: global
+order_repair:
+  name: Order repair
+  module: orders
+  action: repair
+  mode: global
+order_generate_consumption:
+  name: Order generate consumption
+  module: orders
+  action: generate_consumption
+  mode: global
+order_consumption_exists:
+  name: Order consumption exists
+  module: orders
+  action: consumption_exists
+  mode: global
+order_close:
+  name: Order close
+  module: orders
+  action: close
+  mode: global
 reprocess:
   name: Reprocess transactions
   module: transactions
@@ -48,6 +68,16 @@ ticket_manual:
   name: Ticket Manual
   module: tickets
   action: manual
+  mode: global
+hopper_change:
+  name: Hopper change (lot)
+  module: hoppers
+  action: change
+  mode: global
+hopper_fill:
+  name: Hopper fill
+  module: hoppers
+  action: fill
   mode: global
 reports:
   name: Report Consult

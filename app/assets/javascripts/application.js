@@ -54,6 +54,18 @@ function submit_hopper_edit_form() {
     $('hopper_edit_form').submit();
 }
 
+function submit_hopper_change_form() {
+    $('hopper_change_form').submit();
+}
+
+function submit_hopper_fill_form() {
+    $('hopper_fill_form').submit();
+}
+
+function submit_hopper_adjust_form() {
+    $('hopper_adjust_form').submit();
+}
+
 function submit_product_new_form() {
     $('product_new_form').submit();
 }

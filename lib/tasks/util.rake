@@ -65,6 +65,12 @@ namespace :db do
       run_fixture('transaction_types')
     end
 
+    desc 'Load fixtures for hopper lot transaction types'
+    task :hoppers_lots_transaction_types => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('hoppers_lots_transaction_types')
+    end
+
     desc 'Load test recipes'
     task :recipes => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
@@ -150,6 +156,7 @@ namespace :sys do
     Rake::Task['db:fixtures:schedules'].invoke
     Rake::Task['db:fixtures:base_units'].invoke
     Rake::Task['db:fixtures:transaction_types'].invoke
+    Rake::Task['db:fixtures:hoppers_lots_transaction_types'].invoke
     Rake::Task['db:fixtures:orders_numbers'].invoke
     Rake::Task['db:fixtures:tickets_numbers'].invoke
     Rake::Task['db:fixtures:ticket_types'].invoke

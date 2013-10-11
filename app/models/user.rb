@@ -82,6 +82,10 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'adjust' and Permission.is_adjust?(action)
         valid = true
+      elsif pm.permission.action == 'change' and Permission.is_change?(action)
+        valid = true
+      elsif pm.permission.action == 'fill' and Permission.is_fill?(action)
+        valid = true
       elsif pm.permission.action == action
         valid = true
       end

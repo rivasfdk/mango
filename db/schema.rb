@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130821005852) do
+ActiveRecord::Schema.define(:version => 20131004215658) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(:version => 20130821005852) do
     t.string   "name",       :default => " "
     t.integer  "scale_id",                      :null => false
     t.boolean  "main",       :default => false
+    t.float    "capacity"
   end
 
   add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
@@ -124,10 +125,36 @@ ActiveRecord::Schema.define(:version => 20130821005852) do
     t.boolean  "active",     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "stock",      :default => 0.0
   end
 
   add_index "hoppers_lots", ["hopper_id"], :name => "fk_hoppers_lots_hopper_id"
   add_index "hoppers_lots", ["lot_id"], :name => "fk_hoppers_lots_lot_id"
+
+  create_table "hoppers_lots_transaction", :force => true do |t|
+    t.integer  "hopper_lot_transaction_type_id", :null => false
+    t.integer  "hopper_lot_id",                  :null => false
+    t.integer  "user_id",                        :null => false
+    t.string   "code",                           :null => false
+    t.date     "date",                           :null => false
+    t.float    "amount",                         :null => false
+    t.float    "stock_after",                    :null => false
+    t.string   "comment"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "hoppers_lots_transaction", ["hopper_lot_id"], :name => "fk_hoppers_lots_transaction_hopper_lot_id"
+  add_index "hoppers_lots_transaction", ["hopper_lot_transaction_type_id"], :name => "fk_hoppers_lots_transaction_hopper_lot_transaction_type_id"
+  add_index "hoppers_lots_transaction", ["user_id"], :name => "fk_hoppers_lots_transaction_user_id"
+
+  create_table "hoppers_lots_transaction_types", :force => true do |t|
+    t.string   "code",        :null => false
+    t.string   "description", :null => false
+    t.string   "sign",        :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "ingredients", :force => true do |t|
     t.string   "code",         :null => false
@@ -180,6 +207,7 @@ ActiveRecord::Schema.define(:version => 20130821005852) do
     t.boolean  "active",        :default => true
     t.boolean  "in_use",        :default => true
     t.float    "stock",         :default => 0.0
+    t.float    "density"
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
@@ -405,8 +433,8 @@ ActiveRecord::Schema.define(:version => 20130821005852) do
     t.integer  "sacks"
     t.string   "document_number"
     t.float    "stock_after"
-    t.integer  "content_id"
-    t.integer  "content_type"
+    t.integer  "content_id",                             :null => false
+    t.integer  "content_type",                           :null => false
     t.integer  "order_id"
   end
 

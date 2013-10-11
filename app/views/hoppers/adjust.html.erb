@@ -1,0 +1,11 @@
+<% title "Ajustar tolva" %>
+<%= form_for :adjust, :url=>adjust_scale_hopper_path(@hopper.scale_id, @hopper.id), :html=>{:id=>'hopper_adjust_form'} do |f| %>
+  <label for="code" class="small">Capacidad:</label>
+  <div class="field"><%=h @hopper.capacity_in_kg %></div>
+  <label for="code" class="small">Existencia actual:</label>
+  <div class="field"><%=h @current_hopper_lot.stock %></div>
+  <label for="new_stock" class="small">Nueva existencia:</label>
+  <div class="field"><%= f.text_field :new_stock, :size=>'10' %><span>*</span></div>
+  <div class="clearfix"></div>
+  <br/><span class="required">* Campos obligatorios</span>
+<% end %>

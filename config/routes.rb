@@ -17,6 +17,9 @@ Mango::Application.routes.draw do
   match 'orders/:id/repair' => "orders#do_repair", :via => :put, :as => 'repair_order'
   match 'orders/:id/print' => "orders#print", :via => :get, :as => 'print_order'
   match 'orders/:id/generate_transactions' => "orders#generate_transactions", :via => :put, :as => 'generate_transactions_order'
+  match 'orders/generate_consumption' => "orders#generate_consumption", :via => :post, :as => 'generate_consumption_order'
+  match 'orders/consumption_exists' => "orders#consumption_exists", :via => :get, :as => 'order_consumption_exists'
+  match 'orders/close' => "orders#close", :via => :post, :as => 'order_close'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
@@ -24,6 +27,9 @@ Mango::Application.routes.draw do
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
+  match 'scales/:scale_id/hoppers/:id/fill' => "hoppers#do_fill", :via => :post, :as => "hopper_fill"
+  match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post, :as => "hopper_change"
+  match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post, :as => "hopper_adjust"
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :post, :as => "recipes_report"
@@ -81,7 +87,13 @@ Mango::Application.routes.draw do
   end
 
   resources :scales do
-    resources :hoppers
+    resources :hoppers do
+      member do
+        get 'change'
+        get 'fill'
+        get 'adjust'
+      end
+    end
   end
 
   root :to => "sessions#index"

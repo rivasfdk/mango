@@ -4,7 +4,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :client
   belongs_to :ticket
 
-  validates_presence_of :transaction_type_id, :amount, :user_id
+  validates_presence_of :transaction_type_id, :amount, :user_id, :content_type, :content_id
   validates_numericality_of :amount
   validates_numericality_of :sacks, :sack_weight, :allow_nil => true
   
@@ -13,7 +13,7 @@ class Transaction < ActiveRecord::Base
   after_destroy :undo_stock_update
 
   def self.get_no_processed
-    Transaction.find :all, :conditions=>['processed_in_stock = 0']
+    Transaction.where :processed_in_stock => 0
   end
 
   def self.generate_export_file(start_date, end_date)

@@ -57,6 +57,14 @@ class Permission < ActiveRecord::Base
     return (action == 'repair' or action == 'do_repair')
   end
 
+  def self.is_change?(action)
+    return (action == 'change' or action == 'do_change')
+  end
+
+  def self.is_fill?(action)
+    return (action == 'fill' or action == 'do_fill')
+  end
+
   def self.get_all
     find :all, :order => 'module ASC, name ASC'
   end

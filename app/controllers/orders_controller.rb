@@ -107,6 +107,20 @@ class OrdersController < ApplicationController
     redirect_to :orders
   end
   
+  def generate_consumption
+    errors = Order.generate_consumption(params[:consumption], session[:user_id])
+    render xml: errors
+  end
+
+  def consumption_exists
+    render xml: {:exists => Order.consumption_exists(params)}
+  end
+
+  def close
+    @order = Order.find_by_code params[:order_code]
+    render xml: {:closed => @order.close(session[:user_id])}
+  end
+  
   def print
     @order = Order.find params[:id]
     data = EasyModel.order_details(@order.code)

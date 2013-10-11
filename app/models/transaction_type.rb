@@ -1,5 +1,5 @@
 class TransactionType < ActiveRecord::Base
-  has_many :transaction
+  has_many :transactions
 
   validates_uniqueness_of :code
   validates_presence_of :code, :description, :sign

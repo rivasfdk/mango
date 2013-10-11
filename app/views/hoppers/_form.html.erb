@@ -1,12 +1,12 @@
 <%= render_error_messages(f.error_messages) %>
 <label for="number" class="small">Número:</label>
 <div class="field"><%= f.text_field :number, :size=>'10' %> <span>*</span></div>
-<label for="number" class="small">Nombre:</label>
+<label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'10' %><span>*</span></div>
+<label for="capacity" class="small">Capacidad (m³):</label>
+<div class="field"><%= f.text_field :capacity, :size=>'10' %></div>
+<% unless @lots.nil? %>
 <label for="ingredient" class="small">Ingrediente (Lote):</label>
-<% if @current_lot %>
-<div class="field"><%= collection_select :hopper_lot, :lot_id, @lots, :id, :to_collection_select, {:selected => @current_lot.id}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
-<% else %>
 <div class="field"><%= collection_select :hopper_lot, :lot_id, @lots, :id, :to_collection_select, {}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
 <% end %>
 <div class="clearfix"></div>

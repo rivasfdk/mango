@@ -1,3 +1,5 @@
+include MangoModule
+
 class Order < ActiveRecord::Base
   belongs_to :recipe
   belongs_to :medicament_recipe
@@ -91,7 +93,7 @@ class Order < ActiveRecord::Base
   end
 
   def create_code
-    unless self.id
+    if self.new_record?
       order = OrderNumber.first
       self.code = order.code.succ
       order.code = self.code
@@ -155,14 +157,74 @@ class Order < ActiveRecord::Base
     self.repaired = true
     self.save
 
+    if is_mango_feature_available("transactions")
+      self.generate_transactions(user_id)
+    end
+  end
+
+  def self.generate_consumption(params, user_id)
+    errors = []
+    # Add some shitty error handling
+    if errors.empty?
+      order = Order.find_by_code params[:order_code]
+      batch = order.batch.find_or_create_by_number params[:batch_number]
+      if batch.new_record?
+        now = Time.now
+        batch.schedule = Schedule.get_current_schedule(now)
+        batch.user_id = user_id
+        batch.start_date = now
+        batch.end_date = now
+        batch.save
+        logger.debug("Errores de batch")
+        logger.debug(batch.errors.messages)
+      end
+      hopper_id = Hopper.where({:scale_id => params[:scale_id], 
+                                :number => params[:hopper_number]}).first.id
+      hopper_lot_id = HopperLot.where({:hopper_id => hopper_id,
+                                       :active => true}).first.id
+      batch_hopper_lot = batch.batch_hopper_lot.new
+      batch_hopper_lot.hopper_lot_id = hopper_lot_id
+      batch_hopper_lot.amount = params[:amount]
+      if batch_hopper_lot.save
+        if is_mango_feature_available("transactions")
+          batch_hopper_lot.generate_transaction(user_id)
+        end
+        if is_mango_feature_available("hoppers_transactions")
+          batch_hopper_lot.generate_hopper_transaction(user_id)
+        end
+      else
+        logger.debug("Errores de batch_hopper_lot")
+        logger.debug(batch_hopper_lot.errors.messages)
+      end
+    end
+    return errors
+  end
+
+  def self.consumption_exists(params)
+    logger.debug("revisando orden")
+    conditions = ['orders.code = ? and batches.number = ? and hoppers.scale_id = ? and hoppers.number = ?',
+                  params[:order_code], 
+                  params[:batch_number],
+                  params[:scale_id],
+                  params[:hopper_number]]
+    bhl = BatchHopperLot.includes({:batch => {:order => {}}, 
+                                   :hopper_lot => {:hopper => {}}}).where(conditions).first
+    bhl.nil?
+  end
+
+  def close(user_id)
     self.generate_transactions(user_id)
+    self.completed = true
+    self.save
   end
 
   def generate_transactions(user_id)
     consumptions = {}
-    self.batch.each do |b|
+    order_transactions = self.transactions
+    batches = Batch.includes({:batch_hopper_lot => {:hopper_lot => {}}}).where(:order_id => self.id)
+    batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
-        key = bhl.hopper_lot.lot.id
+        key = bhl.hopper_lot.lot_id
         if consumptions.has_key? key
           consumptions[key] += bhl.amount
         else
@@ -171,45 +233,38 @@ class Order < ActiveRecord::Base
       end
     end
     production = 0
-    consumptions.each do |key, value|
-      production += value
-      lot = Lot.find key
-      if lot.nil?
-        return false
+    consumptions.each do |key, amount|
+      production += amount
+      previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum}
+      unless previous_amount == 0
+        amount = amount - previous_amount
       end
-      previous_transaction = Transaction.find :first, :conditions => ['content_type = 1 and content_id = ? and order_id = ?', key, self.id]
-      t = self.transactions.new
-      t.transaction_type_id = 1
-      t.content_type = 1
-      t.content_id = key
-      t.processed_in_stock = 1
-      unless previous_transaction
-        t.amount = value
-      else
-        t.amount = value - previous_transaction.amount
-      end
-      t.user_id = user_id
-      unless t.amount == 0
+      unless amount == 0
+        t = self.transactions.new
+        t.amount = amount
+        t.transaction_type_id = 1
+        t.content_type = 1
+        t.content_id = key
+        t.processed_in_stock = 1
+        t.user_id = user_id
         t.save
       end
     end
-    product_lot = ProductLot.find self.product_lot_id
-    if product_lot.nil?
+    unless product_lot_id.present?
       return false
     end
-    previous_transaction = Transaction.find :first, :conditions => ['content_type = 2 and content_id = ? and order_id = ?', self.product_lot_id, self.id]
-    t = self.transactions.new
-    t.transaction_type_id = 6
-    t.content_type = 2
-    t.content_id = self.product_lot_id
-    t.processed_in_stock = 1
-    unless previous_transaction
-      t.amount = production
-    else
-      t.amount = production - previous_transaction.amount
+    previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 2) ? sum + t.amount : sum}
+    unless previous_amount == 0
+      production = production - previous_amount
     end
-    t.user_id = user_id
-    unless t.amount == 0
+    unless production == 0
+      t = self.transactions.new
+      t.amount = production
+      t.transaction_type_id = 6
+      t.content_type = 2
+      t.content_id = self.product_lot_id
+      t.processed_in_stock = 1
+      t.user_id = user_id
       t.save
     end
   end

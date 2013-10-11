@@ -43,6 +43,16 @@ module ActionsHelper
     return link_to image + " Imprimir", url, :class => 'action'
   end
 
+  def render_action_change_hopper_lot(url)
+    image = image_tag('action-edit.png', :alt=>'Cambiar lote')
+    return link_to image + " Cambiar lote", url, :class => 'action'
+  end
+
+  def render_action_fill_hopper(url)
+    image = image_tag('action-edit.png', :alt=>'Llenar')
+    return link_to image + " Llenar", url, :class => 'action'
+  end
+
   def render_action_delete(url, confirm)
     image = image_tag('action-delete.png', :alt=>'Borrar')
     return link_to image + " Eliminar", url, :class => 'action', :method => :delete, :confirm =>confirm

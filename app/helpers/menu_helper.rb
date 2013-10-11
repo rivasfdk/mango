@@ -39,6 +39,12 @@ module MenuHelper
       menu = menu_for_hoppers_new
     elsif c == 'hoppers' and (a == 'edit' or a == 'update')
       menu = menu_for_hoppers_edit
+    elsif c == 'hoppers' and a == 'change'
+      menu = menu_for_hoppers_change
+    elsif c == 'hoppers' and a == 'fill'
+      menu = menu_for_hoppers_fill
+    elsif c == 'hoppers' and a == 'adjust'
+      menu = menu_for_hoppers_adjust
     elsif c == 'products' and a == 'index'
       menu = menu_for_products_index
     elsif c == 'products' and (a == 'new' or a == 'create')
@@ -342,6 +348,31 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(scale_path(params[:scale_id])) +
       render_function('Actualizar', 'Actualizar tolva', "submit_hopper_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+  def menu_for_hoppers_change
+    menu = content_tag(:p, 'Cambiar lote de tolva')
+    menu += content_tag(:ul,
+      render_back(scale_path(params[:scale_id])) +
+      render_function('Cambiar', 'Cambiar lote de tolva', "submit_hopper_change_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_hoppers_fill
+    menu = content_tag(:p, 'Llenar tolva')
+    menu += content_tag(:ul,
+      render_back(scale_path(params[:scale_id])) +
+      render_function('Llenar', 'Llenar tolva', "submit_hopper_fill_form()", 'button-execute.png')
+    )
+    return menu
+  end
+  def menu_for_hoppers_adjust
+    menu = content_tag(:p, 'Ajustar existencia en tolva')
+    menu += content_tag(:ul,
+      render_back(scale_path(params[:scale_id])) +
+      render_function('Ajustar', 'Ajustar existencia en tolva', "submit_hopper_adjust_form()", 'button-execute.png')
     )
     return menu
   end

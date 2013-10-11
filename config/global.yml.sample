@@ -3,9 +3,10 @@ application:
   address: Dirección de pruebas
   rif: J-29828893-0
   logo: default-company-logo.png
-  footer: Reporte generado con Mango (Copyleft) 2011 - 2012
+  footer: Reporte generado con Mango
 reports:
     style:
       font_family: 'Helvetica'
       font_size: 10
       font_color: [0, 0, 0]
+special_features: [transactions, hoppers_transactions, romano, medicament_recipes, recipe_parameters, factories]

@@ -1,5 +1,6 @@
 class Carrier < ActiveRecord::Base
   has_many :trucks
+  accepts_nested_attributes_for :trucks
 
   validates_presence_of :name
   validates_length_of :name, :within => 3..40
