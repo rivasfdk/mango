@@ -9,11 +9,18 @@ class HopperLot < ActiveRecord::Base
   validates_presence_of :hopper, :lot
 
   before_save :update_active, :if => :new_record?
-  after_save :update_main_hopper
+  after_save :update_main_hopper, :check_hopper_stock
 
   def update_active
     HopperLot.update_all('active = false', ['hopper_id = ?', self.hopper_id])
     self.active = true
+  end
+  
+  def check_hopper_stock
+    level = ((self.stock / self.lot.density) / self.hopper.capacity * 100).round(2)
+    self.hopper.stock_below_minimum = self.hopper.scale.not_weighed ? false : level < Settings.first.hopper_minimum_level
+    self.hopper.save
+    true
   end
 
   def update_main_hopper

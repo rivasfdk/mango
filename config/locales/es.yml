@@ -248,6 +248,7 @@ es:
     not_weighed: "No pesado"
     capacity: "La capacidad"
     density: "La densidad"
+    hopper_minimum_level: "El nivel mínimo de tolva"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

@@ -54,6 +54,14 @@
     background-color: #ededed;
 }
 
+#tabledata .red_blank {
+    background-color: #FF8080;
+}
+
+#tabledata .red_alternate {
+    background-color: #FF6666;
+}
+
 #tablefooter, #tabledata tfoot {
     background: #ccc url('table-footer-bg.png') repeat-x 50% 50%;
     border: 1px solid #aaa;

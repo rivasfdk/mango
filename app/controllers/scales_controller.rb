@@ -2,7 +2,7 @@
 
 class ScalesController < ApplicationController
   def index
-    @scales = Scale.all
+    @scales, @hoppers_below_minimum = Scale.get_all
   end
 
   def show

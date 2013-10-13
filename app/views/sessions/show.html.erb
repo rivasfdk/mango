@@ -47,9 +47,18 @@
   <% if session[:permissions].include?('scales') %>
   <div class="module yui3-u-1-2">
     <%= link_to image_tag('tolvas-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), scales_path %>
+    <% if @critical_hoppers > 0 %>
+      <%= link_to @critical_hoppers, scales_path, :class => 'notify' %>
+    <% end %>
     <div class="module-content">
       <h2><%= link_to 'Balanzas y tolvas', scales_path %></h2>
-      <p>Gestión de balanzas y tolvas</p>
+      <% if @critical_hoppers == 1 %>
+        <p class="palert"><%= @critical_hoppers %> tolva en nivel crítico</p>
+      <% elsif @critical_hoppers > 1 %>
+        <p class="palert"><%= @critical_hoppers %> tolvas en nivel crítico</p>
+      <% else %>
+        <p>Gestión de balanzas y tolvas</p>
+      <% end %>
     </div>
   </div>
   <% end %>
@@ -80,9 +89,29 @@
   <% if session[:permissions].include?('lots') %>
   <div class="module yui3-u-1-2">
     <%= link_to image_tag('ingredients-lot-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lots_path %>
+    <% if @critical_lots > 0 %>
+      <%= link_to @critical_lots, lots_path, :class => 'notify' %>
+    <% end %>
     <div class="module-content">
       <h2><%= link_to 'Lotes de Materia Prima', lots_path %></h2>
-      <p>Registro de lotes de materia prima</p>
+      <% if @critical_lots == 1 %>
+        <p class="palert"><%= @critical_lots %> lote en nivel crítico</p>
+      <% elsif @critical_lots > 1 %>
+        <p class="palert"><%= @critical_lots %> lotes en nivel crítico</p>
+      <% else %>
+        <p>Gestión de lotes de materia prima</p>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Lot parameter lists -->
+  <% if session[:permissions].include?('lot_parameter_lists') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('lot-parameters.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lot_parameter_lists_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Características de lotes', lot_parameter_lists_path %></h2>
+      <p>Características de lotes de materia prima</p>
     </div>
   </div>
   <% end %>
@@ -215,6 +244,17 @@
     <div class="module-content">
       <h2><%= link_to 'Tickets', tickets_path %></h2>
       <p>Gestion de tickets</p>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Settings -->
+  <% if session[:permissions].include?('settings') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('settings-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), settings_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Configuración', settings_path %></h2>
+      <p>Configuración general del sistema</p>
     </div>
   </div>
   <% end %>

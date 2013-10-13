@@ -157,7 +157,7 @@ class Hopper < ActiveRecord::Base
     hoppers_lots.each do |hl|
       stock_string = "#{hl.stock} Kg"
       unless hl.hopper.capacity.nil? or hl.lot.density.nil?
-        stock_string = "#{hl.stock} Kg. (#{(hl.stock / (hl.hopper.capacity * hl.lot.density) * 100).round}%)"
+        stock_string = "#{hl.stock} Kg. (#{((hl.stock / hl.lot.density) / hl.hopper.capacity * 100).round(2)}%)"
       end
       actives << {
         :lot => hl,
@@ -165,7 +165,8 @@ class Hopper < ActiveRecord::Base
         :number => hl.hopper.number,
         :name => hl.hopper.name,
         :main => hl.hopper.main,
-        :stock_string => stock_string
+        :stock_string => stock_string,
+        :stock_below_minimum => hl.hopper.stock_below_minimum
       }
     end
     return actives

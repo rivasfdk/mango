@@ -1,0 +1,2 @@
+module LotParameterTypesHelper
+end

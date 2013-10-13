@@ -10,6 +10,8 @@ class SessionsController < ApplicationController
 
   def show
     if session[:user_id]
+      @critical_lots = Lot.where(:stock_below_minimal => true).count
+      @critical_hoppers = Hopper.where(:stock_below_minimum => true).count
       render :show, :layout => 'dashboard'
     else
       redirect_to :action=>'index'

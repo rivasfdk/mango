@@ -4,14 +4,22 @@ class Lot < ActiveRecord::Base
   belongs_to :ingredient
   belongs_to :client
   has_many :hopper_lot
+  has_one :lot_parameter_list
+
+  before_save :check_stock
 
   validates_uniqueness_of :code
   validates_presence_of :date, :ingredient
   validates_length_of :code, :within => 3..20
   validates_associated :ingredient
 
+  def check_stock
+    self.stock_below_minimal = self.stock < self.minimal_stock
+    true
+  end
+
   def self.find_all
-    find :all, :include => ['ingredient'], :order => 'code ASC'
+    includes(:ingredient).where(:active => true).order('code DESC')
   end
 
   def get_content

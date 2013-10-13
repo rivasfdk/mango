@@ -5,7 +5,9 @@ module MenuHelper
   def render_menu
     c = params[:controller]
     a = params[:action]
-    if c == 'recipes' and a == 'index'
+    if c == 'settings'
+      menu = menu_for_settings
+    elsif c == 'recipes' and a == 'index'
       menu = menu_for_recipes_index
     elsif c == 'recipes' and a == 'show'
       menu = menu_for_recipes_show
@@ -93,6 +95,12 @@ module MenuHelper
       menu = menu_for_lots_edit
     elsif c == 'lots' and a == 'adjust'
       menu = menu_for_lots_adjust
+    elsif c == 'lot_parameter_lists' and a == 'index'
+      menu = menu_for_lot_parameter_lists_index
+    elsif c == 'lot_parameter_lists' and a == 'show'
+      menu = menu_for_lot_parameter_lists_show
+    elsif c == 'lot_parameter_lists' and (a == 'edit' or a == 'update')
+      menu = menu_for_lot_parameter_lists_edit
     elsif c == 'schedules' and a == 'index'
       menu = menu_for_schedules_index
     elsif c == 'schedules' and (a == 'new' or a == 'create')
@@ -171,6 +179,12 @@ module MenuHelper
       menu = menu_for_parameter_types_new
     elsif c == 'parameter_types' and (a == 'edit' or a == 'update')
       menu = menu_for_parameter_types_edit
+    elsif c == 'lot_parameter_types' and a == 'index'
+      menu = menu_for_lot_parameter_types_index
+    elsif c == 'lot_parameter_types' and (a == 'new' or a == 'create')
+      menu = menu_for_lot_parameter_types_new
+    elsif c == 'lot_parameter_types' and (a == 'edit' or a == 'update')
+      menu = menu_for_lot_parameter_types_edit
     elsif c == 'scales' and a == 'index'
       menu = menu_for_scales_index
     elsif c == 'scales' and a == 'show'
@@ -197,6 +211,15 @@ module MenuHelper
 
   def render_back(url)
     return render_action('Volver', 'Volver', url, 'button-back.png')
+  end
+
+  def menu_for_settings
+    menu = content_tag(:p, 'Configuración')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_function('Guardar', 'Guardar receta', "submit_settings_edit_form()", 'button-execute.png')
+    )
+    return menu
   end
 
   def menu_for_recipes_index
@@ -593,6 +616,33 @@ module MenuHelper
     return menu
   end
 
+  def menu_for_lot_parameter_lists_index
+    menu = content_tag(:p, 'Características de lotes')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo lote', new_lot_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_lot_parameter_lists_show
+    menu = content_tag(:p, 'Características de lote')
+    menu += content_tag(:ul,
+      render_back(lot_parameter_lists_path) +
+      render_action('Editar', 'Editar características', edit_lot_parameter_list_path, 'button-edit.png')
+    )
+    return menu
+  end
+
+  def menu_for_lot_parameter_lists_edit
+    menu = content_tag(:p, 'Editar características de lote')
+    menu += content_tag(:ul,
+      render_back(lot_parameter_lists_path) #+
+      #render_function('Actualizar', 'Actualizar características', "submit_lot_parameter_list_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
   def menu_for_schedules_index
     menu = content_tag(:p, 'Turnos')
     menu += content_tag(:ul,
@@ -937,6 +987,33 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(parameter_types_path) +
       render_function('Actualizar', 'Actualizar tipo de parámetro', "submit_parameter_type_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_lot_parameter_types_index
+    menu = content_tag(:p, 'Tipos de características de lote')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Crear nuevo tipo de característica', new_lot_parameter_type_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_lot_parameter_types_new
+    menu = content_tag(:p, 'Nuevo tipo de característica de lote')
+    menu += content_tag(:ul,
+      render_back(lot_parameter_types_path) +
+      render_function('Guardar', 'Guardar tipo de característica', "submit_lot_parameter_type_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_lot_parameter_types_edit
+    menu = content_tag(:p, 'Editar tipo de característica de lote')
+    menu += content_tag(:ul,
+      render_back(lot_parameter_types_path) +
+      render_function('Actualizar', 'Actualizar tipo de característica de lote', "submit_lot_parameter_type_edit_form()", 'button-execute.png')
     )
     return menu
   end

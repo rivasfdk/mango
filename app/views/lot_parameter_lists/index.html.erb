@@ -1,0 +1,37 @@
+<% title "Características de materias primas" %>
+<% i = 0 %>
+<% if @lots.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Materia Prima<span class="order_arrow"></span></th>
+        <th class="actions_small">Características</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @lots.each do |item| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td class="center"><%=h item.code %></td>
+        <td><%=h item.ingredient.name %></td>
+        <td class="center">
+          <% if item.lot_parameter_list.present? %>
+            <%= render_action_show(lot_parameter_list_path(item.lot_parameter_list)) %>
+            <%= render_action_edit(edit_lot_parameter_list_path(item.lot_parameter_list)) %>
+          <% else %>
+            <%= render_action_create(create_lot_parameter_list_path(item.id), "Desea definir características para el lote '#{item.code} - #{item.ingredient.name}'?") %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @lots %>
+  </div>
+</div>
+<% else %>
+<p>No hay lotes registrados</p>
+<% end %>

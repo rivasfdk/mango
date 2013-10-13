@@ -1,0 +1,33 @@
+<% title "Tipos de características de lote" %>
+<% i = 0 %>
+<% if @lot_parameter_types.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th>Valor predeterminado<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @lot_parameter_types.each do |pt| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h pt.name %></td>
+        <td><%=h pt.default_value %></td>
+        <td>
+          <%= render_action_edit(edit_lot_parameter_type_path(pt)) %>
+          <%= render_action_delete(lot_parameter_type_path(pt), "Desea borrar el tipo de parámetro '#{pt.name}'?") %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @lot_parameter_types %>
+  </div>
+</div>
+<% else %>
+<p>No hay tipos de características registrados</p>
+<% end %>

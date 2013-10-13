@@ -12,9 +12,10 @@ class ParameterList < ActiveRecord::Base
   end
 
   def is_associated?
-    Order.where(:parameter_list_id => self.id).any?
+    self.orders.any?
   end
 
+  private
   def generate_parameters
     ParameterType.all.each do |pt|
       parameter = self.parameters.new
@@ -24,7 +25,6 @@ class ParameterList < ActiveRecord::Base
     end
   end
 
-  private
   def recipe_code_uniqueness
     if self.new_record? and ParameterList.find(:first, :conditions => ['recipe_code = ? and active = true', self.recipe_code])
       errors.add(:recipe_code, "ya tiene una lista de parametros asociada")

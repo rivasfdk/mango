@@ -3,6 +3,7 @@ module ActionsHelper
     image = image_tag('action-show.png', :alt=>'Mostrar')
     return link_to image + " Mostrar", url, :class => 'action'
   end
+
   def render_action_show_hoppers(url)
     image = image_tag('action-show.png', :alt=>'Mostrar tolvas')
     return link_to image + " Mostrar tolvas", url, :class => 'action'
@@ -56,6 +57,11 @@ module ActionsHelper
   def render_action_delete(url, confirm)
     image = image_tag('action-delete.png', :alt=>'Borrar')
     return link_to image + " Eliminar", url, :class => 'action', :method => :delete, :confirm =>confirm
+  end
+
+  def render_action_create(url, confirm)
+    image = image_tag('action-new.png', :alt=>'crear')
+    return link_to image + " Crear", url, :class => 'action', :method => :post, :confirm =>confirm
   end
 
   def render_remote_action_show(url)

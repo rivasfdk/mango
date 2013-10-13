@@ -17,6 +17,12 @@ end
 
 namespace :db do
   namespace :fixtures do
+    desc 'Load default settings'
+    task :settings => :environment do
+      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      run_fixture('settings')
+    end
+
     desc 'Load test user'
     task :users => :environment do
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
@@ -152,6 +158,7 @@ namespace :sys do
     Rake::Task['db:drop'].invoke
     Rake::Task['db:create'].invoke
     Rake::Task['db:schema:load'].invoke
+    Rake::Task['db:fixtures:settings'].invoke
     Rake::Task['db:fixtures:users'].invoke
     Rake::Task['db:fixtures:schedules'].invoke
     Rake::Task['db:fixtures:base_units'].invoke

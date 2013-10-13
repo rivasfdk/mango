@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131004215658) do
+ActiveRecord::Schema.define(:version => 20131013055236) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -108,13 +108,14 @@ ActiveRecord::Schema.define(:version => 20131004215658) do
   end
 
   create_table "hoppers", :force => true do |t|
-    t.integer  "number",                        :null => false
+    t.integer  "number",                                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",       :default => " "
-    t.integer  "scale_id",                      :null => false
-    t.boolean  "main",       :default => false
-    t.float    "capacity"
+    t.string   "name",                :default => " "
+    t.integer  "scale_id",                                :null => false
+    t.boolean  "main",                :default => false
+    t.float    "capacity",            :default => 1000.0, :null => false
+    t.boolean  "stock_below_minimum", :default => false
   end
 
   add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
@@ -204,13 +205,39 @@ ActiveRecord::Schema.define(:version => 20131004215658) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"
-    t.boolean  "active",        :default => true
-    t.boolean  "in_use",        :default => true
-    t.float    "stock",         :default => 0.0
+    t.boolean  "active",              :default => true
+    t.boolean  "in_use",              :default => true
+    t.float    "stock",               :default => 0.0
     t.float    "density"
+    t.float    "minimal_stock",       :default => 100.0
+    t.boolean  "stock_below_minimal", :default => false
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
+
+  create_table "lots_parameters", :force => true do |t|
+    t.integer  "lot_parameter_list_id"
+    t.integer  "lot_parameter_type_id"
+    t.float    "value"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "lots_parameters", ["lot_parameter_list_id"], :name => "fk_lots_parameters_lot_parameter_list_id"
+  add_index "lots_parameters", ["lot_parameter_type_id"], :name => "fk_lots_parameters_lot_parameter_type_id"
+
+  create_table "lots_parameters_lists", :force => true do |t|
+    t.integer  "lot_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "lots_parameters_types", :force => true do |t|
+    t.string   "name",          :null => false
+    t.float    "default_value"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "medicaments_recipes", :force => true do |t|
     t.string   "code",                         :null => false
@@ -369,6 +396,12 @@ ActiveRecord::Schema.define(:version => 20131004215658) do
     t.datetime "updated_at"
   end
 
+  create_table "settings", :force => true do |t|
+    t.float    "hopper_minimum_level", :default => 10.0, :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+  end
+
   create_table "tickets", :force => true do |t|
     t.integer  "truck_id"
     t.integer  "driver_id"
@@ -441,7 +474,7 @@ ActiveRecord::Schema.define(:version => 20131004215658) do
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
 
   create_table "trucks", :force => true do |t|
-    t.integer  "carrier_id"
+    t.integer  "carrier_id",                      :null => false
     t.string   "license_plate",                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

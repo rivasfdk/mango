@@ -18,6 +18,7 @@
     <% @hoppers.each do |obj| %>
       <% class_row, i = alternate_row_class(i) %>
       <% ingredient = "#{obj[:lot].lot.ingredient.code} - #{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
+      <% class_row = "red_" + class_row if obj[:stock_below_minimum] %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h obj[:number] %></td>
         <td class="center"><%=h obj[:name] %></td>

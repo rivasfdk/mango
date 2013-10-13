@@ -1,5 +1,5 @@
 class AddDensityToLots < ActiveRecord::Migration
-  def change
-    add_column :lots, :density, :float
+  def up
+    add_column :lots, :density, :float, :null => false, :default => 1
   end
 end

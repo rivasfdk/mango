@@ -7,7 +7,8 @@ class Permission < ActiveRecord::Base
   MODULES = ['batches', 'orders', 'recipes', 'hoppers', 'batches_hopper_lot', 'transactions', 'lots',
     'product_lots', 'ingredients', 'ingredients_recipes', 'products', 'clients', 'factories', 'transaction_types',
     'schedules', 'users', 'roles', 'permissions', 'reports', 'configuration', 'medicament_recipes', 'drivers', 'carriers', 
-    'trucks', 'tickets', 'alarm_types', 'parameters', 'parameter_types', 'parameter_lists', 'scales']
+    'trucks', 'tickets', 'alarm_types', 'parameters', 'parameter_types', 'parameter_lists', 'scales',
+    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings']
   # Permission actions
   ACTIONS = ['consult', 'modify', 'delete']
   MODES = ['global', 'module']

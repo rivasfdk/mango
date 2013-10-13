@@ -4,25 +4,29 @@ class LotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = Lot.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
+        @lots = Lot.paginate :page=>params[:page],
+                             :per_page=>session[:per_page],
+                             :include => :ingredient,
+                             :conditions => {:active => true},
+                             :order => ['stock_below_minimal DESC']
         render :html => @lots
       end
       format.json do 
-        @lots = Lot.find :all, :conditions => {:active => true}
+        @lots = Lot.where(:active => true)
         render :json => @lots, :methods => [:get_content]
       end
     end
   end
 
   def new
-    @ingredients = Ingredient.find :all, :order => 'name ASC'
-    @factories = Client.find :all, :conditions => {:factory => true}
+    @ingredients = Ingredient.order('name ASC')
+    @factories = Client.where(:factory => true)
   end
 
   def edit
     @lot = Lot.find params[:id]
-    @ingredients = Ingredient.find :all, :order => 'name ASC'
-    @factories = Client.find :all, :conditions => {:factory => true}
+    @ingredients = Ingredient.order('name ASC')
+    @factories = Client.where(:factory => true)
     session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 

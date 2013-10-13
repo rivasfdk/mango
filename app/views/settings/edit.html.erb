@@ -1,0 +1,5 @@
+<% title "Configuración" %>
+<%= form_for :settings, :url=>settings_path, :html=>{:method=>:put, :id=>'settings_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

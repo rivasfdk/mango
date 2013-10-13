@@ -88,8 +88,9 @@ class Transaction < ActiveRecord::Base
 
   def increase_stock
     lot = self.get_lot
-    lot.stock += self.amount
+    lot.stock += self.amount	
     lot.save
+    logger.debug(lot.save.errors.messages)
     self.stock_after = lot.stock
   end
 
@@ -97,6 +98,7 @@ class Transaction < ActiveRecord::Base
     lot = self.get_lot
     lot.stock -= self.amount
     lot.save
+    logger.debug(lot.errors.messages)
     self.stock_after = lot.stock
   end
 end

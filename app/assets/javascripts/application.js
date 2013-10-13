@@ -8,6 +8,10 @@ document.observe("dom:loaded", function() {
     hide_all_report_details();
 });
 
+function submit_settings_edit_form() {
+    $('settings_edit_form').submit();
+}
+
 function submit_recipe_new_form() {
     $('recipe_new_form').submit();
 }
@@ -228,6 +232,14 @@ function submit_parameter_type_new_form() {
 
 function submit_parameter_type_edit_form() {
     $('parameter_type_edit_form').submit();
+}
+
+function submit_lot_parameter_type_new_form() {
+    $('lot_parameter_type_new_form').submit();
+}
+
+function submit_lot_parameter_type_edit_form() {
+    $('lot_parameter_type_edit_form').submit();
 }
 
 function submit_scale_new_form() {

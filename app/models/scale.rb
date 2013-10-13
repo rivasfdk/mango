@@ -6,4 +6,13 @@ class Scale < ActiveRecord::Base
   validates_presence_of :maximum_weight, :minimum_weight, :unless => :not_weighed
   validates_numericality_of :minimum_weight, :greater_than_or_equal_to => 0, :less_than => :maximum_weight, :allow_nil => true
   validates_numericality_of :maximum_weight, :greater_than => 0, :allow_nil => true
+
+  def self.get_all
+    scales = Scale.includes(:hoppers)
+    hoppers_below_minimum = {}
+    scales.each do |scale|
+      hoppers_below_minimum[scale.id] = scale.hoppers.where(:stock_below_minimum => true).count
+    end
+    return scales, hoppers_below_minimum
+  end
 end

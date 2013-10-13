@@ -9,4 +9,4 @@ reports:
       font_family: 'Helvetica'
       font_size: 10
       font_color: [0, 0, 0]
-special_features: [transactions, hoppers_transactions, romano, medicament_recipes, recipe_parameters, factories]
+special_features: [transactions, hoppers_transactions, romano, medicament_recipes, recipe_parameters, factories, lot_parameters]
