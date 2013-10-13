@@ -79,6 +79,21 @@ hopper_fill:
   module: hoppers
   action: fill
   mode: global
+hopper_adjust:
+  name: Hopper adjust
+  module: hoppers
+  action: adjust
+  mode: global
+lot_adjust:
+  name: Lot adjust
+  module: lots
+  action: adjust
+  mode: global
+product_lot_adjust:
+  name: Product lot adjust
+  module: product_lots
+  action: adjust
+  mode: global
 reports:
   name: Report Consult
   module: reports
