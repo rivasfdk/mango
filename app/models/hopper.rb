@@ -33,7 +33,7 @@ class Hopper < ActiveRecord::Base
       hl = current_hopper_lot
       amount = new_stock - hl.stock
       hlt = current_hopper_lot.hopper_lot_transactions.new
-      hlt.hopper_lot_transaction_type_id = amount > 0 ? 3 : 5
+      hlt.hopper_lot_transaction_type_id = amount > 0 ? 3 : 4
       hlt.amount = amount.abs
       hlt.user_id = user_id
       hlt.save

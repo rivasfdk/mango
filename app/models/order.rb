@@ -53,11 +53,11 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_end_date
-    last_batch = Batch.find(:first, :conditions => ["number = ? and order_id = ?", self.get_real_batches, self.id])
+    last_batch = self.batch.last
     if last_batch.nil?
       return "??/??/???? ??:??:??"
     end
-    end_date = BatchHopperLot.where(:batch_id=>last_batch.id).maximum('created_at')
+    end_date = last_batch.batch_hopper_lot.last.created_at # last_batch.created_at for new orders
     unless end_date.nil?
       return end_date.strftime("%d/%m/%Y %H:%M:%S")
     else

@@ -8,11 +8,11 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @recipes = Recipe.find :all, :conditions => {:active => true, :in_use => true}, :order => 'name ASC'
-    @medicament_recipes = MedicamentRecipe.find :all, :conditions => {:active => true}, :order => 'name ASC'
-    @clients = Client.find :all, :order => 'name ASC'
-    @users = User.find :all, :order => 'name ASC'
-    @product_lots = ProductLot.find :all, :order => 'code ASC'
+    @recipes = Recipe.where({:active => true, :in_use => true}).order('name ASC')
+    @medicament_recipes = MedicamentRecipe.where(:active => true).order('name ASC')
+    @clients = Client.order('name ASC')
+    @users = User.order('name ASC')
+    @product_lots = ProductLot.order('code ASC')
     @order = Order.new if @order.nil?
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]

@@ -22,6 +22,10 @@ class Lot < ActiveRecord::Base
     includes(:ingredient).where(:active => true).order('code DESC')
   end
 
+  def content_id
+    self.ingredient_id
+  end
+
   def get_content
     Ingredient.find self.ingredient_id
   end

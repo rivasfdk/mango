@@ -78,6 +78,18 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('order_details_real') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('order_details_real')">Detalles de Orden de Producción (Físico)</h2>
+    <div id="order_details_real" class="report-details">
+      <%= form_for :report, :url=>order_details_real_report_path do |f| %>
+        <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('batch_details') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('batch_details')">Detalles de Bache</h2>
@@ -230,6 +242,20 @@
         <%= f.radio_button :content_type, 2%> Producto terminado<br/><br/>
         <%= f.check_box :group, :checked=>true %> &nbsp; <label for="group">Agrupar lotes</label><br/><br/>
 		<%= f.check_box :by_factory, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
+        <%= f.collection_select :factory_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <% if session[:reports_permissions].include?('simple_stock_projection') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('simple_stock_projection')">Proyección de inventario</h2>
+    <div id="simple_stock_projection" class="report-details">
+      <%= form_for :report, :url=>simple_stock_projection_report_path do |f| %>
+        <%= f.label :days, "Días: ", :class=>'small' %> <%= f.text_field :days, :size=>15 %><br/><br/>
+        <%= f.check_box :by_factory, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
         <%= f.collection_select :factory_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

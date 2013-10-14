@@ -119,6 +119,11 @@ order_details:
   module: reports
   action: order_details
   mode: global
+order_details_real:
+  name: Report 'Order Details Real'
+  module: reports
+  action: order_details_real
+  mode: global
 batch_details:
   name: Report 'Batch Details'
   module: reports
@@ -173,6 +178,16 @@ simple_stock:
   name: Report 'Simple stock'
   module: reports
   action: simple_stock
+  mode: global
+simple_stock_projection:
+  name: Report 'Simple stock projection'
+  module: reports
+  action: simple_stock_projection
+  mode: global
+simple_stock_per_lot:
+  name: Report 'Simple stock per lot'
+  module: reports
+  action: simple_stock_per_lot
   mode: global
 product_lot_dispatches:
   name: Report 'Product Lot Dispatches'

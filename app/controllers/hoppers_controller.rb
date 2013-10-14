@@ -76,7 +76,7 @@ class HoppersController < ApplicationController
 	  flash[:notice] = "Cambio de lote realizado con éxito"
 	else
 	  flash[:type] = 'error'
-      flash[:notice] = "No se pudo realizar el llenado de la tolva"
+      flash[:notice] = "No se pudo cambiar el lote de la tolva"
     end
 	redirect_to scale_path(@hopper.scale_id)
   end

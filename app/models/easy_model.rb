@@ -90,6 +90,26 @@ class EasyModel
     return data
   end
 
+  def self.order_details_real(order_code)
+    _order_details = order_details(order_code)
+    return nil if _order_details.nil?
+    return nil if _order_details["product_total"].to_f == 0
+    return nil unless _order_details["real_production"].present?
+    real_production = _order_details["real_production"].to_f
+    product_total = _order_details["product_total"].to_f
+    _order_details["results"].each do |result|
+      real_kg = result["real_kg"]
+      std_kg = result["std_kg"]
+      real_real_kg = real_kg * real_production / product_total # DAE fer reelz? LOL
+      var_kg = real_real_kg - std_kg
+      var_perc = var_kg / std_kg * 100
+      result["real_real_kg"] = real_real_kg  
+      result["var_kg"] = var_kg  
+      result["var_"] = var_perc  
+    end
+    _order_details
+  end
+
   def self.alarms(start_date, end_date, alarm_type_id)
     if alarm_type_id == 0
       conditions = {:date=>(start_date)..((end_date) + 1.day)}
@@ -647,11 +667,14 @@ class EasyModel
     end
 
     details = {}
+    n_batch = @order.batch.count
+    start_date = @order.batch.first.created_at
+    end_date = @order.batch.last.created_at
     @order.batch.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.ingredient.code
-        std_amount = (ingredients.has_key?(key)) ? ingredients[key] * @order.get_real_batches : 0
-        hopper_name = bhl.hopper_lot.hopper.name == " " ? bhl.hopper_lot.hopper.number : bhl.hopper_lot.hopper.name
+        std_amount = (ingredients.has_key?(key)) ? ingredients[key] * n_batch : 0
+        hopper_name = bhl.hopper_lot.hopper.name.present? ? bhl.hopper_lot.hopper.name : bhl.hopper_lot.hopper.number
         unless details.has_key?(key)
           details[key] = {
             'ingredient' => bhl.hopper_lot.lot.ingredient.name,
@@ -674,7 +697,7 @@ class EasyModel
     #Add recipe ingredients without any consumption in the order
     ingredients.each do |key, value|
       unless details.has_key?(key)
-        std_amount = value * @order.get_real_batches()
+        std_amount = value * n_batch
         details[key] = {
           'ingredient' => Ingredient.find_by_code(key).name,
           'lot' => "N/A",
@@ -713,7 +736,7 @@ class EasyModel
     data['start_date'] = @order.calculate_start_date()
     data['end_date'] = @order.calculate_end_date()
     data['prog_batches'] = @order.prog_batches.to_s
-    data['real_batches'] = @order.get_real_batches().to_s
+    data['real_batches'] = n_batch.to_s
     data['total_std'] = total_std
     data['total_real'] = total_real
     data['total_var'] = total_var
@@ -727,9 +750,6 @@ class EasyModel
       element = {'code' => key}
       data['results'] << element.merge(value)
     end
-    
-    
-
     return data
   end
 
@@ -754,6 +774,7 @@ class EasyModel
     batch.order.recipe.ingredient_recipe.each do |ir|
       ingredients[ir.ingredient.code] = ir.amount
     end
+
     unless batch.order.medicament_recipe.nil?
       batch.order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
         ingredients[imr.ingredient.code] = imr.amount
@@ -771,8 +792,7 @@ class EasyModel
         var_perc = var_kg * 100 / std_kg rescue 0
       end
 
-      hopper_name = bhl.hopper_lot.hopper.name == " " ? bhl.hopper_lot.hopper.number : bhl.hopper_lot.hopper.name
-
+      hopper_name = bhl.hopper_lot.hopper.name.present? ? bhl.hopper_lot.hopper.name : bhl.hopper_lot.hopper.number
       data['results'] << {
         'code' => bhl.hopper_lot.lot.ingredient.code,
         'ingredient' => bhl.hopper_lot.lot.ingredient.name,
@@ -1161,6 +1181,66 @@ class EasyModel
       end
     end
     results.sort_by {|k,v| k}.map do |key, item|
+      data['results'] << item
+    end
+    return data
+  end
+
+  def self.simple_stock_projection(factory_id, days)
+    days = days.to_i
+    return nil if days <= 0
+
+    data = self.initialize_data("Proyeccion de Materia Prima")
+    data['date'] = self.print_range_date(Date.today)
+    data['days'] = days.to_s
+    data['results'] = []
+
+    today = Date.today
+    lots = Lot.includes(:ingredient).order('ingredients.code ASC').where(:active => true)
+    lots = lots.where(:client_id => factory_id) if factory_id != 0
+
+    orders = Order.includes({:batch => {:batch_hopper_lot => {:hopper_lot => {:lot => {}}}}})
+    orders = orders.where(:created_at => ((today - days)..(today)))
+    orders = orders.where(:client_id => factory_id) if factory_id != 0
+
+    return nil, nil if orders.empty?
+
+    consumptions = {}
+    orders.each do |order|
+      order.batch.each do |batch|
+        batch.batch_hopper_lot.each do |bhl|
+          key = bhl.hopper_lot.lot.ingredient_id
+          if consumptions.has_key? key
+            consumptions[key] += bhl.amount
+          elsif bhl.amount > 0
+            consumptions[key] = bhl.amount
+          end
+        end
+      end
+    end
+
+    stocks = {}
+    lots.each do |lot|
+      key = lot.ingredient_id
+      if stocks.has_key? key
+        stocks[key]['stock'] += lot.stock
+      else
+        stocks[key] = {
+          'code' => lot.ingredient.code, 
+          'name' => lot.ingredient.name,
+          'stock' => lot.stock,
+          'projection' => "N/A"
+        }
+      end
+    end
+
+    consumptions.each do |key, amount|
+      if stocks.has_key? key
+        stocks[key]['projection'] = (stocks[key]['stock'] / (amount / days)).to_i
+      end
+    end
+
+    stocks.each do |key, item|
       data['results'] << item
     end
     return data

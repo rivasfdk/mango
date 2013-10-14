@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
       redirect_to :action => 'index'
     else
       report = EasyReport::Report.new data, 'real_production.yml'
-      send_data report.render, :filename => "produccion_real.pdf", :type => "application/pdf"
+      send_data report.render, :filename => "produccion_fisico.pdf", :type => "application/pdf"
     end
   end
 
@@ -61,6 +61,18 @@ class ReportsController < ApplicationController
     else
       report = EasyReport::Report.new data, 'order_details.yml'
       send_data report.render, :filename => "detalle_orden_produccion.pdf", :type => "application/pdf"
+    end
+  end
+
+  def order_details_real
+    data = EasyModel.order_details_real(params[:report][:order])
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'order_details_real.yml'
+      send_data report.render, :filename => "detalle_orden_produccion_fisico.pdf", :type => "application/pdf"
     end
   end
 
@@ -199,6 +211,26 @@ class ReportsController < ApplicationController
     else
       filename = (content_type == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
       report = EasyReport::Report.new data, 'simple_stock.yml'
+      send_data report.render, :filename => filename, :type => "application/pdf"
+    end   
+  end
+
+  def simple_stock_projection
+	by_factory = params[:report][:by_factory].to_i
+	days = params[:report][:days]
+    if by_factory != 0
+      factory_id = params[:report][:factory_id].to_i
+    else
+      factory_id = 0
+    end
+    data = EasyModel.simple_stock_projection(factory_id, days)
+    if data.nil?
+      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      filename = "proyeccion_materia_prima.pdf"
+      report = EasyReport::Report.new data, 'simple_stock_projection.yml'
       send_data report.render, :filename => filename, :type => "application/pdf"
     end   
   end

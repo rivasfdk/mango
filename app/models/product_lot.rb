@@ -9,6 +9,10 @@ class ProductLot < ActiveRecord::Base
   validates_presence_of :date, :product
   validates_length_of :code, :within => 3..20
 
+  def content_id
+    self.product_id
+  end
+
   def get_content
     Product.find self.product_id
   end
