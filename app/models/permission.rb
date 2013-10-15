@@ -70,6 +70,28 @@ class Permission < ActiveRecord::Base
     find :all, :order => 'module ASC, name ASC'
   end
 
+  def self.generate_globals(controller, actions)
+    failed = []
+    actions.each do |action|
+      p = Permission.where({:module => controller, :action => action,
+                           :mode => "global"}).first
+      name = "#{controller.capitalize} #{action}"
+      if p.nil?
+        logger.debug("Generating permission: #{name}")
+        p = Permission.new
+        p.name = name
+        p.module = controller
+        p.action = action
+        p.mode = "global"
+        p.save
+      else
+        failed << action
+        logger.debug("Permission: #{name} already exists")
+      end
+    end
+    failed
+  end
+
   private
 
   def associate_role

@@ -1,0 +1,5 @@
+<% title "Editar tipo de características" %>
+<%= form_for :product_lot_parameter_type, :url=>product_lot_parameter_type_path(@product_lot_parameter_type), :html=>{:method=>:put, :id=>'product_lot_parameter_type_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

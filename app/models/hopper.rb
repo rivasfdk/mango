@@ -5,6 +5,14 @@ class Hopper < ActiveRecord::Base
   validates_presence_of :number, :name, :scale, :capacity
   validates_numericality_of :number, :only_integer => true, :greater_than => 0
   validates_numericality_of :capacity, :greater_than => 0
+  before_save :check_stock, :unless => :new_record?
+
+  def check_stock
+    hopper_lot = current_hopper_lot
+    level = ((hopper_lot.stock / hopper_lot.lot.density) / self.capacity * 100).round(2)
+    self.stock_below_minimum = self.scale.not_weighed ? false : level < Settings.first.hopper_minimum_level
+    true
+  end
 
   def capacity_in_kg
     density = current_lot.density

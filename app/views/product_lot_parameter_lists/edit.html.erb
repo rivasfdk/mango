@@ -1,0 +1,11 @@
+<% title "Editar características de lote" %>
+<%= form_for :product_lot_parameter_list do |f| %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%=h @product_lot_parameter_list.product_lot.code %></div>
+<label for="name" class="small">Contenido:</label>
+<div class="field"><%=h @product_lot_parameter_list.product_lot.product.name %></div>
+<label for="active" class="small">Activo:</label>
+<div class="field"><%=h @product_lot_parameter_list.product_lot.active ? "Sí" : "No"%><br /><br /></div>
+<div class="clearfix"></div>
+<% end %>
+<%= render :partial=>'edit_product_lot_parameters_grid', :locals =>{:product_lot_parameter_list => @product_lot_parameter_list} %>

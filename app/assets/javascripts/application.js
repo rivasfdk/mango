@@ -242,6 +242,14 @@ function submit_lot_parameter_type_edit_form() {
     $('lot_parameter_type_edit_form').submit();
 }
 
+function submit_product_lot_parameter_type_new_form() {
+    $('product_lot_parameter_type_new_form').submit();
+}
+
+function submit_product_lot_parameter_type_edit_form() {
+    $('product_lot_parameter_type_edit_form').submit();
+}
+
 function submit_scale_new_form() {
     $('scale_new_form').submit();
 }

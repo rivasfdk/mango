@@ -11,12 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131013055236) do
+ActiveRecord::Schema.define(:version => 20131015134540) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "alarms", :force => true do |t|
@@ -208,7 +208,7 @@ ActiveRecord::Schema.define(:version => 20131013055236) do
     t.boolean  "active",              :default => true
     t.boolean  "in_use",              :default => true
     t.float    "stock",               :default => 0.0
-    t.float    "density"
+    t.float    "density",             :default => 1.0,   :null => false
     t.float    "minimal_stock",       :default => 100.0
     t.boolean  "stock_below_minimal", :default => false
   end
@@ -360,6 +360,30 @@ ActiveRecord::Schema.define(:version => 20131013055236) do
 
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
+  create_table "products_lots_parameters", :force => true do |t|
+    t.integer  "product_lot_parameter_list_id"
+    t.integer  "product_lot_parameter_type_id"
+    t.float    "value"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "products_lots_parameters", ["product_lot_parameter_list_id"], :name => "fk_products_lots_parameters_product_lot_parameter_list_id"
+  add_index "products_lots_parameters", ["product_lot_parameter_type_id"], :name => "fk_products_lots_parameters_product_lot_parameter_type_id"
+
+  create_table "products_lots_parameters_lists", :force => true do |t|
+    t.integer  "product_lot_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "products_lots_parameters_types", :force => true do |t|
+    t.string   "name",          :null => false
+    t.float    "default_value"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "recipes", :force => true do |t|
     t.string   "code"
     t.string   "name",                         :null => false
@@ -474,7 +498,7 @@ ActiveRecord::Schema.define(:version => 20131013055236) do
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
 
   create_table "trucks", :force => true do |t|
-    t.integer  "carrier_id",                      :null => false
+    t.integer  "carrier_id"
     t.string   "license_plate",                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

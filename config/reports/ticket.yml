@@ -76,12 +76,12 @@ report:
             code:
               label: Codigo
               align: center
-              width: 20
+              width: 30
           2:
             name:
               label: Nombre
               align: left
-              width: 85
+              width: 75
           3:
             sacks:
               label: Sacos

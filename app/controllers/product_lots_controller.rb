@@ -4,11 +4,14 @@ class ProductLotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = ProductLot.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:active => true}
+        @lots = ProductLot.paginate :page=>params[:page],
+                                    :per_page=>session[:per_page],
+                                    :conditions => {:active => true},
+                                    :order => ['id desc']
         render :html => @lots
       end
       format.json do 
-        @lots = ProductLot.find :all, :conditions => {:active => true}
+        @lots = ProductLot.where(:active => true).order('id desc')
         render :json => @lots, :methods => [:get_content]
       end
     end
@@ -17,6 +20,7 @@ class ProductLotsController < ApplicationController
   def new
     @products = Product.find :all, :order => 'code ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
+    session[:return_to] = request.referer.nil? ? :product_lots : request.referer
   end
 
   def edit
@@ -30,7 +34,7 @@ class ProductLotsController < ApplicationController
     @lot = ProductLot.new params[:lot]
     if @lot.save
       flash[:notice] = 'ProductLot. guardado con éxito'
-      redirect_to :product_lots
+      redirect_to redirect_to session[:return_to]
     else
       new
       render :new
@@ -42,7 +46,7 @@ class ProductLotsController < ApplicationController
     @lot.update_attributes(params[:lot])
     if @lot.save
       flash[:notice] = 'Lote guardado con éxito'
-      redirect_to session.delete(:return_to)
+      redirect_to session[:return_to]
     else
       render :edit
     end
@@ -84,11 +88,11 @@ class ProductLotsController < ApplicationController
       @product_lot = ProductLot.find params[:id]
       @product_lot.adjust(amount, session[:user_id], comment)
       flash[:notice] = "Lote ajustado exitosamente"
-      redirect_to session.delete(:return_to)
+      redirect_to session[:return_to]
     else
       flash[:type] = 'error'
       flash[:notice] = "El monto de ajuste es inválido"
-      redirect_to session.delete(:return_to)
+      redirect_to session[:return_to]
     end
   end
 end

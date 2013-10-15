@@ -8,6 +8,8 @@ Mango::Application.routes.draw do
   match 'recipes/upload' => "recipes#upload", :via => :post, :as => 'recipe_upload'
   match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'lot_parameter_lists/:lot_id/create' => "lot_parameter_lists#create", :via => :post, :as => 'create_lot_parameter_list'
+  match 'product_lot_parameter_lists/:product_lot_id/create' => "product_lot_parameter_lists#create", :via => :post, :as => 'create_product_lot_parameter_list'
+  match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
   match 'transactions/export' => "transactions#export", :via => :get, :as => 'export_transactions'
@@ -26,7 +28,6 @@ Mango::Application.routes.draw do
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
   match 'product_lots/:id/adjust' => "product_lots#adjust", :via => :get, :as => 'adjust_product_lot'
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
-  match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
   match 'scales/:scale_id/hoppers/:id/fill' => "hoppers#do_fill", :via => :post, :as => "hopper_fill"
   match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post, :as => "hopper_change"
@@ -70,7 +71,7 @@ Mango::Application.routes.draw do
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
-    :lot_parameter_types
+    :lot_parameter_types, :product_lot_parameter_types
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 
@@ -90,6 +91,10 @@ Mango::Application.routes.draw do
 
   resources :lot_parameter_lists do
     resources :lot_parameters
+  end
+
+  resources :product_lot_parameter_lists do
+    resources :product_lot_parameters
   end
 
   resources :roles do

@@ -105,13 +105,13 @@
   </div>
   <% end %>
 
-  <!-- Lot parameter lists -->
-  <% if session[:permissions].include?('lot_parameter_lists') %>
+  <!-- Laboratory -->
+  <% if session[:permissions].include?('lot_parameter_lists') or session[:permissions].include?('product_lot_parameter_lists') %>
   <div class="module yui3-u-1-2">
-    <%= link_to image_tag('lot-parameters.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lot_parameter_lists_path %>
+    <%= link_to image_tag('laboratory.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), laboratory_path %>
     <div class="module-content">
-      <h2><%= link_to 'Características de lotes', lot_parameter_lists_path %></h2>
-      <p>Características de lotes de materia prima</p>
+      <h2><%= link_to 'Laboratorio', laboratory_path %></h2>
+      <p>Características de materia prima y producto terminado</p>
     </div>
   </div>
   <% end %>

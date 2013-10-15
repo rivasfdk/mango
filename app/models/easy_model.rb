@@ -195,12 +195,13 @@ class EasyModel
     
     if @ticket.ticket_type_id == 1
       data['dif_label'] = "Dif.:"
-      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).to_s + " Kg"
+      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
     else
       data['dif_label'] = ""
       data['dif'] = ""
     end
-    
+
+    # I fucking hate easyreport
     comments = @ticket.comment.split(/\n/)
     if comments[0]
       data['comment1'] = comments[0]
@@ -227,7 +228,7 @@ class EasyModel
         sack_weight = t.sack_weight.to_s + "Kg"
       end
       data['transactions'] << {
-        'code' => t.get_content.code,
+        'code' => t.get_lot.code,
         'name' => t.get_content.name,
         'sacks' => sacks,
         'sack_weight' => sack_weight,

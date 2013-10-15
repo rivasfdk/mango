@@ -1,0 +1,59 @@
+// Place all the styles related to the Scales controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.module {
+    position: relative;
+    margin-bottom: 20px;
+}
+.module img {
+    display: block;
+    float: left;
+    padding-right: 10px;
+}
+
+.module-content {
+    float: left;
+    width: 250px;
+    margin-left: 10px;
+}
+
+.module-content h2 {
+    font-size: 17px;
+    border-bottom: solid 1px #999;
+    margin-bottom: 8px;
+}
+
+.palert {
+    font-size: 14px !important;
+    color: #FF3333 !important;
+}
+
+#scales-content .module-content p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.module-content h2 a {
+    text-decoration: none;
+}
+
+.notify {
+  position: absolute;
+  top: -5px;
+  left: 50px;
+  z-index: 1;
+  display: block;
+  background: url('notification-bubble.png') no-repeat;
+  padding-top: 1px;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+}
+
+a:hover {
+  text-decoration: none;
+}

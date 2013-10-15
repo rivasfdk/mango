@@ -3,7 +3,8 @@ class LotParameterListsController < ApplicationController
     @lots = Lot.paginate :page=>params[:page],
                          :per_page=>session[:per_page],
                          :include => :ingredient, 
-                         :conditions => {:active => true}
+                         :conditions => {:active => true},
+                         :order => ['id desc']
   end
 
   def show
@@ -34,14 +35,14 @@ class LotParameterListsController < ApplicationController
     if @lot_parameter_list.errors.size.zero?
       flash[:notice] = "Características de lote eliminado con éxito"
     else
-      logger.error("Error eliminando lote: #{@lot_parameter_list.errors.inspect}")
+      logger.error("Error eliminando características de lote: #{@lot_parameter_list.errors.inspect}")
       flash[:type] = 'error'
       if not @lot_parameter_list.errors[:foreign_key].nil?
-        flash[:notice] = 'El lote no se puede eliminar porque tiene registros asociados'
+        flash[:notice] = 'No se pueden eliminar las características del lote porque tiene registros asociados'
       elsif not @lot_parameter_list.errors[:unknown].nil?
-        flash[:notice] = @lot.errors[:unknown]
+        flash[:notice] = @lot_parameter_list.errors[:unknown]
       else
-        flash[:notice] = "El lote no se ha podido eliminar"
+        flash[:notice] = "Las características del lote no se han podido eliminar"
       end
     end
   end  

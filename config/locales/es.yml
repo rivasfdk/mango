@@ -249,6 +249,8 @@ es:
     capacity: "La capacidad"
     density: "La densidad"
     hopper_minimum_level: "El nivel mínimo de tolva"
+    value: "El valor"
+    default_value: "El valor predeterminado"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

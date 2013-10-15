@@ -8,11 +8,11 @@ class LotsController < ApplicationController
                              :per_page=>session[:per_page],
                              :include => :ingredient,
                              :conditions => {:active => true},
-                             :order => ['stock_below_minimal DESC']
+                             :order => ['stock_below_minimal desc, id desc']
         render :html => @lots
       end
       format.json do 
-        @lots = Lot.where(:active => true)
+        @lots = Lot.where(:active => true).order('stock_below_minimal desc, id desc')
         render :json => @lots, :methods => [:get_content]
       end
     end
@@ -21,6 +21,7 @@ class LotsController < ApplicationController
   def new
     @ingredients = Ingredient.order('name ASC')
     @factories = Client.where(:factory => true)
+    session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def edit
@@ -34,7 +35,7 @@ class LotsController < ApplicationController
     @lot = Lot.new params[:lot]
     if @lot.save
       flash[:notice] = 'Lote guardado con éxito'
-      redirect_to :lots
+      redirect_to session[:return_to]
     else
       new
       render :new
@@ -46,7 +47,7 @@ class LotsController < ApplicationController
     @lot.update_attributes(params[:lot])
     if @lot.save
       flash[:notice] = 'Lote guardado con éxito'
-      redirect_to session.delete(:return_to)
+      redirect_to session[:return_to]
     else
       render :edit
     end

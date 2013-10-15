@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
           redirect_to :controller=>'sessions', :action=>'index'
         end
         format.json { head :unauthorized }
+        format.xml { head :unauthorized }
       end
     end
   end

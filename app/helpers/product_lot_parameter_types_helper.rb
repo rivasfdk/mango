@@ -1,0 +1,2 @@
+module ProductLotParameterTypesHelper
+end

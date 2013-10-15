@@ -1,0 +1,21 @@
+<% title "Laboratorio" %>
+<div id="scales-content" class="yui3-g">
+  <% if session[:permissions].include?('lot_parameter_lists') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('ingredients-lot-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lot_parameter_lists_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Materia Prima', lot_parameter_lists_path %></h2>
+      <p>Características de lotes de materia prima</p>
+    </div>
+  </div>
+  <% end %>
+  <% if session[:permissions].include?('product_lot_parameter_lists') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('product-lots-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), product_lot_parameter_lists_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Producto terminado', product_lot_parameter_lists_path %></h2>
+      <p>Características de lotes de producto terminado</p>
+    </div>
+  </div>
+  <% end %>
+</div>

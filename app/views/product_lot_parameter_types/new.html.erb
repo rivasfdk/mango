@@ -1,0 +1,5 @@
+<% title "Nuevo tipo de parámetro" %>
+<%= form_for :product_lot_parameter_type, :url=>product_lot_parameter_types_path, :html=>{:id=>'product_lot_parameter_type_new_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

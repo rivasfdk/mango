@@ -1,5 +1,5 @@
 class LotParameterTypesController < ApplicationController
-def index
+  def index
     @lot_parameter_types = LotParameterType.paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 

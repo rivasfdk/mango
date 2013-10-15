@@ -82,6 +82,9 @@ class HoppersController < ApplicationController
   end
 
   def adjust
+    hopper = Hopper.find params[:id], :include => :hopper_lot
+    hopper_lot = hopper.current_hopper_lot
+    if 
     fill
   end
 

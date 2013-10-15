@@ -5,6 +5,8 @@ class ProductLot < ActiveRecord::Base
   belongs_to :client
   has_many :order
 
+  has_one :product_lot_parameter_list
+
   validates_uniqueness_of :code
   validates_presence_of :date, :product
   validates_length_of :code, :within => 3..20

@@ -1,0 +1,22 @@
+<% i = 0 %>
+<div id="product_lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @product_lot_parameter_list.product_lot_parameters.each do |p| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%=h p.product_lot_parameter_type.name %></td>
+          <td class="center"><%=h p.value %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>
