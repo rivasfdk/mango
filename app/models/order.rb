@@ -85,11 +85,7 @@ class Order < ActiveRecord::Base
   end
 
   def get_real_batches
-    real_batches = 0
-    self.batch.each do |batch|
-      real_batches += 1 unless batch.batch_hopper_lot.count == 0
-    end
-    return real_batches
+    self.batch.count
   end
 
   def create_code

@@ -1,10 +1,7 @@
 class AddStockBelowMinimumToHoppers < ActiveRecord::Migration
   def change
     add_column :hoppers, :stock_below_minimum, :boolean, :default => false
-    hoppers_lots = HopperLot.includes({:hopper => {}, :lot => {}}).where(:active => true)
-    hoppers_lots.each do |hl|
-      hl.check_hopper_stock
-    end
+    Settings.new(:hopper_minimum_level => 10).save if Settings.first.nil?
   end
   def down
     remove_column :hoppers, :stock_below_minimum

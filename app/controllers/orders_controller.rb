@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
     @order = Order.new if @order.nil?
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]
+    @can_edit_real_production = @user.has_global_permission?('orders', 'edit_real_production')
     unless @user.admin?
       @order.user_id = @user.id
     end

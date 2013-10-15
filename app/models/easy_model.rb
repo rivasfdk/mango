@@ -518,7 +518,7 @@ class EasyModel
     @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
     return nil if @orders.length.zero?
 
-    data = self.initialize_data('Produccion Real')
+    data = self.initialize_data('Produccion Fisico')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []

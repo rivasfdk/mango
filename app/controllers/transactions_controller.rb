@@ -2,7 +2,7 @@
 
 class TransactionsController < ApplicationController
   def index
-    @transactions = Transaction.paginate :page=>params[:page], :per_page=>session[:per_page]
+    @transactions = Transaction.paginate :page=>params[:page], :per_page=>session[:per_page], :order => ['id desc']
   end
 
   def new
@@ -35,7 +35,8 @@ class TransactionsController < ApplicationController
       end
       @transaction.date = Date.today
       @transaction.amount = params[:transaction][:amount]
-      @transaction.document_number = params[:transaction][:document_number]
+      last_document_number = Transaction.where('document_number is not null').last.document_number
+      @transaction.document_number = last_document_number.succ
       @transaction.comment = params[:transaction][:comment]
       @transaction.user_id = session[:user_id]
       @transaction.processed_in_stock = 1

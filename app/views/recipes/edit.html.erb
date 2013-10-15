@@ -10,6 +10,7 @@
   <br />
   <%= render :partial=>'show_grid', :locals =>{:recipe => @recipe} %>
 <% end %>
+<% if @parameter_list_enabled %>
 <h5>Parámetros <a name="parameters"></a></h5>
 <% if @parameter_list %>
   <% unless @parameter_list.is_associated? %>
@@ -23,4 +24,5 @@
   <% end %>
 <% else %>
   <p>Esta receta no tiene una lista de parámetros, <%= link_to "haga click aquí para crear una lista de parámetros", recipe_create_parameter_list_path(@recipe.id) %></p>
+<% end %>
 <% end %>

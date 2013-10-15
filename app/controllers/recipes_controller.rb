@@ -1,4 +1,5 @@
 # encoding: UTF-8
+include MangoModule
 
 class RecipesController < ApplicationController
   def index
@@ -15,6 +16,7 @@ class RecipesController < ApplicationController
     @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
     @ingredients = Ingredient.find :all
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
+    @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameters_types = ParameterType.find :all
   end
 

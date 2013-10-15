@@ -178,7 +178,7 @@ report:
         width: 50
     21:
       text:
-        label: "Produccion Real: "
+        label: "Produccion Fisico: "
         align: right
         width: 170
         breakline: 0

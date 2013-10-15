@@ -129,14 +129,14 @@ report:
               totalize: true
           7:
             theoric_total:
-              label: Prod. Teorica (Kg)
+              label: Prod. Teorico (Kg)
               align: right
               width: 25
               totalize: true
               precision: 2
           8:
             real_total:
-              label: Prod. Real (Kg)
+              label: Prod. Fisico (Kg)
               align: right
               width: 28
               totalize: true
