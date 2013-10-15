@@ -242,3 +242,8 @@ order_stats:
   name: Report 'Estadísticas de orden'
   module: reports
   action: order_stats
+  
+hopper_transactions:
+  name: Report 'Movimientos de tolva'
+  module: reports
+  action: hopper_transactions

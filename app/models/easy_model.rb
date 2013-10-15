@@ -1,4 +1,40 @@
 class EasyModel
+  def self.hopper_transactions(hopper_id, start_datetime, end_datetime)
+    hopper = Hopper.find_by_id hopper_id, :include => :scale
+    return nil if hopper.nil?
+
+    includes = {:hopper_lot => {:lot => {:ingredient => {}}}, 
+                :hopper_lot_transaction_type => {},
+                :user => {}}
+    hlts = HopperLotTransaction.includes(includes)
+    hlts = hlts.where(:created_at => (start_datetime..end_datetime))
+    hlts = hlts.where(['hoppers_lots.hopper_id = ?', hopper_id])   
+    return nil if hlts.empty?
+    
+    data = self.initialize_data("Movimientos de tolva #{hopper.name} (#{hopper.scale.name})")
+    data['since'] = self.print_range_date(start_datetime, true)
+    data['until'] = self.print_range_date(end_datetime, true)
+    data['results'] = []
+
+    hlts.each do |hlt|
+      amount = hlt.hopper_lot_transaction_type.sign == "+" ? hlt.amount : -1 * hlt.amount
+      data['results'] << {
+        'code' => hlt.hopper_lot.lot.code,
+        'ingredient' => hlt.hopper_lot.lot.ingredient.name,
+        'time' => hlt.created_at.strftime("%d/%m/%Y %H:%M:%S"),
+        'user' => hlt.user.login,
+        'type' => hlt.hopper_lot_transaction_type.code,
+        'amount' => amount,
+        'stock' => hlt.stock_after
+      }
+    end
+    return data
+  end
+
+  def self.hoppers_stock(datetime)
+  
+  end
+
   #This method is nasty as fuck because it only works for PROPORCA
   def self.stats(start_date, end_date)
     @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}, :recipe => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
@@ -7,6 +43,8 @@ class EasyModel
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
+
+    return nil if @orders.empty?
 
     @orders.each do |order|
       n1, n2, n3, n4, n5, n6 = 0, 0, 0, 0, 0, 0
@@ -1380,10 +1418,19 @@ class EasyModel
   # ================================================================
 
   def self.param_to_date(param, name)
-    day = param["#{name}(1i)"].to_i
+    year = param["#{name}(1i)"].to_i
     month = param["#{name}(2i)"].to_i
-    year = param["#{name}(3i)"].to_i
-    return Date.new(day, month, year)
+    day = param["#{name}(3i)"].to_i
+    return Date.new(year, month, day)
+  end
+
+  def self.param_to_datetime(param, name)
+    year = param["#{name}(1i)"].to_i
+    month = param["#{name}(2i)"].to_i
+    day = param["#{name}(3i)"].to_i
+    hour = param["#{name}(4i)"].to_i
+    min = param["#{name}(5i)"].to_i
+    return Time.new(year, month, day, hour, min)
   end
 
   def self.print_formatted_date(date)

@@ -17,7 +17,7 @@ class BatchHopperLot < ActiveRecord::Base
     t.amount = self.amount
     t.user_id = user_id
     t.save
-  end 
+  end
 
   def generate_hopper_transaction(user_id)
     unless self.hopper_lot.hopper.scale.not_weighed
@@ -26,8 +26,6 @@ class BatchHopperLot < ActiveRecord::Base
       hlt.amount = self.amount
       hlt.user_id = user_id
       hlt.save
-      logger.debug("hopper_lot_transaction errors")
-      logger.debug(hlt.errors.messages)
     end
   end
 

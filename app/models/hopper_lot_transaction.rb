@@ -12,7 +12,7 @@ class HopperLotTransaction < ActiveRecord::Base
   private
 
   def create_code
-    unless self.id
+    if self.new_record?
       last = HopperLotTransaction.last
       if last.nil?
         self.code = '00000001'
@@ -23,7 +23,7 @@ class HopperLotTransaction < ActiveRecord::Base
   end
 
   def set_date
-    unless self.id
+    if self.new_record?
       self.date = Date.today
     end
   end

@@ -187,8 +187,7 @@ class Hopper < ActiveRecord::Base
                                   :conditions => {:active => true},
                                   :order => ['hoppers.scale_id, hoppers.number ASC']
     hoppers_lots.each do |hl|
-      name = hl.hopper.name.present? ? hl.hopper.name : hl.hopper.number
-      actives << ["Tolva #{name} - #{hl.lot.ingredient.name} (L: #{hl.lot.code})", hl.id]
+      actives << ["Tolva #{hl.hopper.name} - #{hl.lot.ingredient.name} (L: #{hl.lot.code})", hl.id]
     end
     return actives
   end
@@ -206,5 +205,9 @@ class Hopper < ActiveRecord::Base
       end
     end
     Hopper.update_all('main = true', :id => main_hoppers.values)
+  end
+
+  def to_collection_select
+    "#{self.scale.name} - #{self.number} - #{self.name}"
   end
 end

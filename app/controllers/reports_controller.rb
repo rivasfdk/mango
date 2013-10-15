@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
     @clients = Client.find :all
     @factories = Client.where :factory => true
     @alarm_types = AlarmType.find :all
+    @hoppers = Hopper.includes(:scale).where('scales.not_weighed = ?', false)
   end
 
   def daily_production
@@ -86,6 +87,20 @@ class ReportsController < ApplicationController
     else
       report = EasyReport::Report.new data, 'batch_details.yml'
       send_data report.render, :filename => "detalle_batch.pdf", :type => "application/pdf"
+    end
+  end
+
+  def hopper_transactions
+    start_datetime = EasyModel.param_to_datetime(params[:report], 'start')
+    end_datetime = EasyModel.param_to_datetime(params[:report], 'end')
+    data = EasyModel.hopper_transactions(params[:report][:hopper_id], start_datetime, end_datetime)
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      report = EasyReport::Report.new data, 'hopper_transactions.yml'
+      send_data report.render, :filename => "movimientos_de_tolva.pdf", :type => "application/pdf"
     end
   end
 

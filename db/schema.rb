@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131015134540) do
+ActiveRecord::Schema.define(:version => 20131015201052) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20131015134540) do
     t.datetime "updated_at",                     :null => false
   end
 
+  add_index "hoppers_lots_transaction", ["created_at"], :name => "index_hoppers_lots_transaction_on_created_at"
   add_index "hoppers_lots_transaction", ["hopper_lot_id"], :name => "fk_hoppers_lots_transaction_hopper_lot_id"
   add_index "hoppers_lots_transaction", ["hopper_lot_transaction_type_id"], :name => "fk_hoppers_lots_transaction_hopper_lot_transaction_type_id"
   add_index "hoppers_lots_transaction", ["user_id"], :name => "fk_hoppers_lots_transaction_user_id"
@@ -268,7 +269,7 @@ ActiveRecord::Schema.define(:version => 20131015134540) do
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
-  add_index "orders", ["code"], :name => "index_orders_on_code"
+  add_index "orders", ["code"], :name => "orders_code"
   add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
   add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"

@@ -71,7 +71,7 @@ class HoppersController < ApplicationController
   end
 
   def do_change
-	@hopper = Hopper.find params[:id], :include => :hopper_lot
+	@hopper = Hopper.find params[:id]
 	if @hopper.change(params[:change], session[:user_id])
 	  flash[:notice] = "Cambio de lote realizado con éxito"
 	else
@@ -82,14 +82,19 @@ class HoppersController < ApplicationController
   end
 
   def adjust
-    hopper = Hopper.find params[:id], :include => :hopper_lot
-    hopper_lot = hopper.current_hopper_lot
-    if 
-    fill
+    @hopper = Hopper.find params[:id]
+    hopper_lot = @hopper.current_hopper_lot
+    if hopper_lot.stock < 0
+      flash[:type] = 'error'
+      flash[:notice] = "La tolva tiene existencia negativa, realice un ajuste primero"
+      redirect_to scale_path(hopper.scale_id)
+    else
+      fill
+    end
   end
 
   def do_adjust
-	@hopper = Hopper.find params[:id], :include => :hopper_lot
+	@hopper = Hopper.find params[:id]
 	if @hopper.adjust(params[:adjust], session[:user_id])
 	  flash[:notice] = "Ajuste realizado con éxito"
 	else
