@@ -87,7 +87,7 @@ class HoppersController < ApplicationController
     if hopper_lot.stock < 0
       flash[:type] = 'error'
       flash[:notice] = "La tolva tiene existencia negativa, realice un ajuste primero"
-      redirect_to scale_path(hopper.scale_id)
+      redirect_to scale_path(@hopper.scale_id)
     else
       fill
     end

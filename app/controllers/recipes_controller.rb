@@ -8,13 +8,14 @@ class RecipesController < ApplicationController
   end
 
   def show
-    @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
+    @recipe = Recipe.find params[:id], :include=> {:ingredient_recipe => {:ingredient => {}}}, :order=>'id desc'
+    @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
   end
 
   def edit
-    @recipe = Recipe.find(params[:id], :include=>'ingredient_recipe', :order=>'id desc')
-    @ingredients = Ingredient.find :all
+    @recipe = Recipe.find params[:id], :include=>{:ingredient_recipe => {:ingredient => {}}}, :order=>'id desc'
+    @ingredients = Ingredient.all
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameters_types = ParameterType.find :all
@@ -45,7 +46,7 @@ class RecipesController < ApplicationController
     original_recipe.in_use = false
     original_recipe.save
     
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.all
     render :edit
   end
 

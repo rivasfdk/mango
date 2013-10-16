@@ -8,7 +8,7 @@ class ParameterList < ActiveRecord::Base
   after_create :generate_parameters
 
   def self.find_by_recipe(recipe_code)
-    ParameterList.find(:first, :conditions => ['recipe_code = ? and active = true', recipe_code])
+    ParameterList.includes({:parameters => {:parameter_type => {}}}).where({:recipe_code => recipe_code, :active => true}).first
   end
 
   def is_associated?
@@ -26,7 +26,7 @@ class ParameterList < ActiveRecord::Base
   end
 
   def recipe_code_uniqueness
-    if self.new_record? and ParameterList.find(:first, :conditions => ['recipe_code = ? and active = true', self.recipe_code])
+    if self.new_record? and ParameterList.where({:recipe_code => self.recipe_code, :active => true}).any?
       errors.add(:recipe_code, "ya tiene una lista de parametros asociada")
     end
   end

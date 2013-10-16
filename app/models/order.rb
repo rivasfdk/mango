@@ -203,9 +203,8 @@ class Order < ActiveRecord::Base
                   params[:batch_number],
                   params[:scale_id],
                   params[:hopper_number]]
-    bhl = BatchHopperLot.includes({:batch => {:order => {}}, 
-                                   :hopper_lot => {:hopper => {}}}).where(conditions).first
-    bhl.nil?
+    BatchHopperLot.includes({:batch => {:order => {}}, 
+                             :hopper_lot => {:hopper => {}}}).where(conditions).any?
   end
 
   def close(user_id)
