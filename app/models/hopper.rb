@@ -29,63 +29,75 @@ class Hopper < ActiveRecord::Base
   end
 
   def adjust(params, user_id)
-    new_stock = params[:new_stock].to_f
-    capacity_in_kg = self.capacity_in_kg
-    if new_stock <= 0
-      logger.debug("invalid stock")
+    if is_a_number? params[:new_stock]
+      new_stock = params[:new_stock].to_f
+      capacity_in_kg = self.capacity_in_kg
+      if new_stock < 0
+        logger.debug("stock can't be negative")
+        false
+      elsif new_stock > capacity_in_kg
+        logger.debug("stock exceeds capacity")
+        false
+      elsif
+        hl = current_hopper_lot
+        amount = new_stock - hl.stock
+        hlt = current_hopper_lot.hopper_lot_transactions.new
+        hlt.hopper_lot_transaction_type_id = amount > 0 ? 3 : 4
+        hlt.amount = amount.abs
+        hlt.user_id = user_id
+        hlt.save
+      end
+    else
       false
-    elsif new_stock > capacity_in_kg
-      logger.debug("stock exceeds capacity")
-      false
-    elsif
-      hl = current_hopper_lot
-      amount = new_stock - hl.stock
-      hlt = current_hopper_lot.hopper_lot_transactions.new
-      hlt.hopper_lot_transaction_type_id = amount > 0 ? 3 : 4
-      hlt.amount = amount.abs
-      hlt.user_id = user_id
-      hlt.save
     end
   end
 
   def change(params, user_id)
-    amount = params[:amount].to_f
-    new_lot_id = params[:lot_id].to_i
-    if current_lot.id == new_lot_id
-      logger.debug("lot can't be the same") 
-      false
-    elsif amount <= 0
-      logger.debug("invalid amount")
-      false
-    elsif amount > capacity_in_kg_by_lot(new_lot_id)
-      logger.debug("amount exceeds capacity")
-      false
+    if is_a_number? params[:amount]
+      amount = params[:amount].to_f
+      new_lot_id = params[:lot_id].to_i
+      if current_lot.id == new_lot_id
+        logger.debug("lot can't be the same") 
+        false
+      elsif amount <= 0
+        logger.debug("amount can't be less than or equal to 0")
+        false
+      elsif amount > capacity_in_kg_by_lot(new_lot_id)
+        logger.debug("amount exceeds capacity")
+        false
+      else
+        hl = self.hopper_lot.new
+        hl.lot_id = new_lot_id
+        hl.save
+        hlt = hl.hopper_lot_transactions.new
+        hlt.hopper_lot_transaction_type_id = 1
+        hlt.amount = amount
+        hlt.user_id = user_id
+        hlt.save
+      end
     else
-      hl = self.hopper_lot.new
-      hl.lot_id = new_lot_id
-      hl.save
-      hlt = hl.hopper_lot_transactions.new
-      hlt.hopper_lot_transaction_type_id = 1
-      hlt.amount = amount
-      hlt.user_id = user_id
-      hlt.save
+      false
     end    
   end
 
   def fill(params, user_id)
     hopper_lot = HopperLot.find :first,
                                 :conditions => {:hopper_id => self.id, :active => true}
-    amount = params[:amount].to_f
-    logger.debug("Stock: #{hopper_lot.stock}")
-    logger.debug("Capacidad en Kg: #{capacity_in_kg}")
-    if amount <= 0 or hopper_lot.stock + amount > capacity_in_kg
+    if is_a_number? params[:amount]
+      amount = params[:amount].to_f
+      logger.debug("Stock: #{hopper_lot.stock}")
+      logger.debug("Capacidad en Kg: #{capacity_in_kg}")
+      if amount <= 0 or hopper_lot.stock + amount > capacity_in_kg
+        return false
+      end
+      hlt = hopper_lot.hopper_lot_transactions.new
+      hlt.hopper_lot_transaction_type_id = 1
+      hlt.user_id = user_id
+      hlt.amount = amount
+      hlt.save
+    else
       return false
     end
-    hlt = hopper_lot.hopper_lot_transactions.new
-    hlt.hopper_lot_transaction_type_id = 1
-    hlt.user_id = user_id
-    hlt.amount = amount
-    hlt.save
   end
 
   def is_full?
@@ -209,5 +221,9 @@ class Hopper < ActiveRecord::Base
 
   def to_collection_select
     "#{self.scale.name} - #{self.number} - #{self.name}"
+  end
+
+  def is_a_number?(s)
+    s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) != nil
   end
 end
