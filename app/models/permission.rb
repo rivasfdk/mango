@@ -66,6 +66,10 @@ class Permission < ActiveRecord::Base
     return (action == 'fill' or action == 'do_fill')
   end
 
+  def self.is_adjust?(action)
+    return (action == 'adjust' or action == 'do_adjust')
+  end
+
   def self.get_all
     find :all, :order => 'module ASC, name ASC'
   end
