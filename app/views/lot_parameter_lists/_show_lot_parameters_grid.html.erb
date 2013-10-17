@@ -5,14 +5,20 @@
       <tr>
         <th>Característica<span class="order_arrow"></span></th>
         <th>Valor<span class="order_arrow"></span></th>
+        <th>Unidad<span class="order_arrow"></span></th>
+        <th>Maximo<span class="order_arrow"></span></th>
+        <th>Mínimo<span class="order_arrow"></span></th>
       </tr>
     </thead>
     <tbody>
-      <% @lot_parameter_list.lot_parameters.each do |p| %>
+      <% @parameters.each do |p| %>
         <% class_row, i = alternate_row_class(i) %>
         <tr class="<%= class_row %>">
-          <td><%=h p.lot_parameter_type.name %></td>
-          <td class="center"><%=h p.value %></td>
+          <td><%=h p["name"] %></td>
+          <td class="center"><%=h p["value"] %></td>
+          <td class="center"><%=h p["unit"] %></td>
+          <td class="center"><%=h p["max"] %></td>
+          <td class="center"><%=h p["min"] %></td>
         </tr>
       <% end %>
     </tbody>

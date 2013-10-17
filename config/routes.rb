@@ -9,6 +9,8 @@ Mango::Application.routes.draw do
   match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'lot_parameter_lists/:lot_id/create' => "lot_parameter_lists#create", :via => :post, :as => 'create_lot_parameter_list'
   match 'product_lot_parameter_lists/:product_lot_id/create' => "product_lot_parameter_lists#create", :via => :post, :as => 'create_product_lot_parameter_list'
+  match 'ingredient_parameter_type_ranges/:id/create' => "ingredient_parameter_type_ranges#create", :via => :post, :as => 'create_ingredient_parameter_type_range'
+  match 'product_parameter_type_ranges/:id/create' => "product_parameter_type_ranges#create", :via => :post, :as => 'create_product_parameter_type_range'
   match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
@@ -68,11 +70,13 @@ Mango::Application.routes.draw do
   match 'reports/stats' => "reports#stats", :via => :post, :as => "stats_report"
   match 'reports/order_stats' => "reports#order_stats", :via => :post, :as => "order_stats_report"
   match 'reports/hopper_transactions' => "reports#hopper_transactions", :via => :post, :as => "hopper_transactions_report"
+  match 'reports/order_lots_parameters' => "reports#order_lots_parameters", :via => :post, :as => "order_lots_parameters_report"
+  
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
-    :lot_parameter_types, :product_lot_parameter_types
+    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
 

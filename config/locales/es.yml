@@ -251,6 +251,8 @@ es:
     hopper_minimum_level: "El nivel mínimo de tolva"
     value: "El valor"
     default_value: "El valor predeterminado"
+    max: "El valor máximo"
+    min: "El valor mínimo"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

@@ -1,4 +1,45 @@
 class EasyModel
+  def self.order_lots_parameters(order_code)
+    joins = {:lot => {:hopper_lot => {:batch_hopper_lot => {:batch => {:order => {}}}}}}
+    includes = {:lot_parameters => {:lot_parameter_type => {}},
+                :lot => {:ingredient => {}}}
+    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where(['orders.code = ?', order_code]).order('ingredients.code asc')
+
+    joins = {:product_lot => {:order => {}}}
+    includes = {:product_lot_parameters => {:product_lot_parameter_type => {}},
+                :product_lot => {:product => {}}}
+    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where(['orders.code = ?', order_code]).first
+
+    return nil if lot_parameter_lists.empty? and product_lot_parameter_list.nil?
+
+    order = Order.find_by_code order_code
+    data = self.initialize_data("Caracteristicas de la orden #{order_code}")
+    data['order'] = order.code
+    data['client'] = "#{order.client.code} - #{order.client.name}"
+    data['recipe'] = "#{order.recipe.code} - #{order.recipe.name}"
+    data['version'] = order.recipe.version
+    data['product'] = order.product_lot.nil? ? "" : "#{order.product_lot.product.code} - #{order.product_lot.product.name}"
+    data['start_date'] = order.calculate_start_date()
+    data['end_date'] = order.calculate_end_date()
+    data['tables'] = []
+
+    lot_parameter_lists.each do |lpl|
+      data['tables'] << {
+        "title" => "#{lpl.lot.ingredient.name} (Lote #{lpl.lot.code})",
+        "table" => lpl.parameters_with_range
+      }
+    end
+
+	unless product_lot_parameter_list.nil?
+	  data['tables'] << {
+        "title" => "#{product_lot_parameter_list.product_lot.product.name} (Lote #{product_lot_parameter_list.product_lot.code})",
+        "table" => product_lot_parameter_list.parameters_with_range
+      }
+    end
+
+    return data
+  end
+
   def self.hopper_transactions(hopper_id, start_datetime, end_datetime)
     hopper = Hopper.find_by_id hopper_id, :include => :scale
     return nil if hopper.nil?

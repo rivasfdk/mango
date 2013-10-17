@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131015201052) do
+ActiveRecord::Schema.define(:version => 20131016185318) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -177,6 +177,18 @@ ActiveRecord::Schema.define(:version => 20131015201052) do
   add_index "ingredients_medicaments_recipes", ["ingredient_id"], :name => "fk_ingredients_medicaments_recipes_ingredient_id"
   add_index "ingredients_medicaments_recipes", ["medicament_recipe_id"], :name => "fk_ingredients_medicaments_recipes_medicament_recipe_id"
 
+  create_table "ingredients_parameters_types_ranges", :force => true do |t|
+    t.integer  "ingredient_id",         :null => false
+    t.integer  "lot_parameter_type_id", :null => false
+    t.float    "max"
+    t.float    "min"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "ingredients_parameters_types_ranges", ["ingredient_id"], :name => "fk_ingredients_parameters_types_ranges_ingredient_id"
+  add_index "ingredients_parameters_types_ranges", ["lot_parameter_type_id"], :name => "fk_ingredients_parameters_types_ranges_lot_parameter_type_id"
+
   create_table "ingredients_recipes", :force => true do |t|
     t.integer  "ingredient_id"
     t.integer  "recipe_id"
@@ -238,6 +250,8 @@ ActiveRecord::Schema.define(:version => 20131015201052) do
     t.float    "default_value"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "unit"
+    t.string   "code",          :null => false
   end
 
   create_table "medicaments_recipes", :force => true do |t|
@@ -383,7 +397,21 @@ ActiveRecord::Schema.define(:version => 20131015201052) do
     t.float    "default_value"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "unit"
+    t.string   "code",          :null => false
   end
+
+  create_table "products_parameters_types_ranges", :force => true do |t|
+    t.integer  "product_id",                    :null => false
+    t.integer  "product_lot_parameter_type_id", :null => false
+    t.float    "max"
+    t.float    "min"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "products_parameters_types_ranges", ["product_id"], :name => "fk_product_id"
+  add_index "products_parameters_types_ranges", ["product_lot_parameter_type_id"], :name => "fk_product_lot_parameter_type_id"
 
   create_table "recipes", :force => true do |t|
     t.string   "code"

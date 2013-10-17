@@ -1,0 +1,37 @@
+<% title "Rango de caracteristicas por producto terminado" %>
+<% i = 0 %>
+<% if @products.length > 0 %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @products.each do |prod| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td><%=h prod.code %></td>
+        <td><%=h prod.name %></td>
+        <td class="center">
+          <% if prod.product_parameter_type_ranges.any? %>
+            <%= render_action_show(product_parameter_type_range_path(prod)) %>
+            <%= render_action_edit(edit_product_parameter_type_range_path(prod)) %>
+          <% else %>
+            <%= render_action_create(create_product_parameter_type_range_path(prod), "Desea definir rangos para '#{prod.name}'?") %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <%=raw show_pagination @products %>
+  </div>
+</div>
+<% else %>
+<p>No hay productos registrados</p>
+<% end %>

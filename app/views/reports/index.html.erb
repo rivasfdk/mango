@@ -323,6 +323,18 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('order_lots_parameters') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('order_lots_parameters')">Características de orden de producción (Laboratorio)</h2>
+    <div id="order_lots_parameters" class="report-details">
+      <%= form_for :report, :url=>order_lots_parameters_report_path do |f| %>
+        <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('tickets_transactions') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('tickets_transactions')">Movimientos de Romana</h2>

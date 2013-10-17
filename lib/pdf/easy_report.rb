@@ -1,6 +1,7 @@
 # Based on Table with MultiCells script by Olivier Plathey 
 # and the work of Bojan Mihelac in FPDF:Table <http://source.mihelac.org>
 # Author: Wil Alvarez <wil.alejandro@gmail.com> - 2011-07-28
+# Modified by: Eleazar Meza <meza.eleazar@gmail.com> - 2013-10-16
 
 require 'pdf/fpdf'
 
@@ -34,9 +35,9 @@ module EasyReport
       'style' => DEFAULT_HEADING_STYLE
     }
 
-    def initialize(data, config_filename)
+    def initialize(data, template)
       @data = data
-      load_config(config_filename)
+      load_config(template)
       super(@config['page']['orientation'], 'mm', @config['page']['size'])
       set_font(DEFAULT_STYLE)
       SetCreator('Mango v1.0')
@@ -97,9 +98,13 @@ module EasyReport
 
   private
 
-    def load_config(filename)
-      filepath = "#{Rails.root.to_s}/config/reports/#{filename}"
-      config = YAML::load(File.open(filepath))
+    def load_config(template)
+      unless template.is_a? Hash
+        filepath = "#{Rails.root.to_s}/config/reports/#{template}"
+        config = YAML::load(File.open(filepath))
+      else
+        config = template
+      end
       @config = config['report']['settings']
       @header = config['report']['header']
       @body = config['report']['body']

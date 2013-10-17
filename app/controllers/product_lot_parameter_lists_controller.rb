@@ -11,6 +11,8 @@ class ProductLotParameterListsController < ApplicationController
     @product_lot_parameter_list = ProductLotParameterList.find params[:id],
                                                                :include => {:product_lot_parameters => {:product_lot_parameter_type => {}},
                                                                :product_lot => {:product => {}}}
+    @parameters = @product_lot_parameter_list.parameters_with_range
+    session[:return_to] = request.referer
   end
 
   def edit

@@ -1,0 +1,24 @@
+<% i = 0 %>
+<div id="ingredient_parameter_types_ranges_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Máximo<span class="order_arrow"></span></th>
+        <th>Mínimo<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @ingredient.ingredient_parameter_type_ranges.each do |r| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%=h r.lot_parameter_type.name %></td>
+          <td class="center"><%=h r.max %></td>
+          <td class="center"><%=h r.min %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>

@@ -291,6 +291,24 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "produccion_por_cliente.pdf", :type => "application/pdf"
     end
   end
+
+  def order_lots_parameters
+    data = EasyModel.order_lots_parameters(params[:report][:order])
+
+    if data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
+    else
+      data, template = DynamicTemplate.generate data, 'order_lots_parameters.yml'
+      logger.debug("Plantilla")
+      logger.debug(template)
+      logger.debug("Datos")
+      logger.debug(data)
+      report = EasyReport::Report.new data, template
+      send_data report.render, :filename => "caracteristicas_de_orden.pdf", :type => "application/pdf"
+    end
+  end
   
   def tickets_transactions
     start_date = EasyModel.param_to_date(params[:report], 'start')

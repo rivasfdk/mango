@@ -1,0 +1,30 @@
+<% i = 0 %>
+<div id="edit_ingredient_parameter_types_ranges_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Máximo<span class="order_arrow"></span></th>
+        <th>Mínimo<span class="order_arrow"></span></th>
+        <th class="actions_medium">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @ingredient.ingredient_parameter_type_ranges.each do |r| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <%= form_for :ingredient_parameter_type_range, :url=>ingredient_parameter_type_range_path(r), :html=>{:method=>:put, :id=>'ingredient_parameter_type_range_edit_form_' + r.id.to_s} do |f| %>
+            <td>
+              <%=h r.lot_parameter_type.name %>
+            </td>
+            <td class="center"><%= f.text_field :max, :value => r.max, :size=>4 %></td>
+            <td class="center"><%= f.text_field :min, :value => r.min, :size=>4 %></td>
+            <td><%= submit_tag 'Actualizar' %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>

@@ -83,14 +83,7 @@ class HoppersController < ApplicationController
 
   def adjust
     @hopper = Hopper.find params[:id]
-    hopper_lot = @hopper.current_hopper_lot
-    if hopper_lot.stock < 0
-      flash[:type] = 'error'
-      flash[:notice] = "La tolva tiene existencia negativa, realice un ajuste primero"
-      redirect_to scale_path(@hopper.scale_id)
-    else
-      fill
-    end
+    @current_hopper_lot = @hopper.current_hopper_lot
   end
 
   def do_adjust
@@ -107,6 +100,11 @@ class HoppersController < ApplicationController
   def fill
     @hopper = Hopper.find params[:id]
     @current_hopper_lot = @hopper.current_hopper_lot
+    if @current_hopper_lot.stock < 0
+      flash[:type] = 'error'
+      flash[:notice] = "La tolva tiene existencia negativa, realice un ajuste primero"
+      redirect_to scale_path(@hopper.scale_id)
+    end
   end
 
   def do_fill

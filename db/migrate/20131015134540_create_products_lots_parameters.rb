@@ -3,8 +3,8 @@ include MigrationHelper
 class CreateProductsLotsParameters < ActiveRecord::Migration
   def up
     create_table :products_lots_parameters do |t|
-      t.references :product_lot_parameter_list
-      t.references :product_lot_parameter_type
+      t.references :product_lot_parameter_list, :null => false
+      t.references :product_lot_parameter_type, :null => false
       t.float :value
       t.timestamps
     end

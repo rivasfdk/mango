@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   def index
     @orders = Order.search(params)
     @clients = Client.all
-    @recipes = Recipe.find :all, :conditions => {:active => true}
+    @recipes = Recipe.all(:group => "code")
   end
 
   def new

@@ -4,6 +4,16 @@ module ActionsHelper
     return link_to image + " Mostrar", url, :class => 'action'
   end
 
+  def render_action_show_parameters(url)
+    image = image_tag('action-show.png', :alt=>'Mostrar características')
+    return link_to image + " Mostrar características", url, :class => 'action'
+  end
+
+  def render_action_edit_ranges(url)
+    image = image_tag('action-edit.png', :alt=>'Editar rangos')
+    return link_to image + " Editar rangos", url, :class => 'action'
+  end
+
   def render_action_show_hoppers(url)
     image = image_tag('action-show.png', :alt=>'Mostrar tolvas')
     return link_to image + " Mostrar tolvas", url, :class => 'action'
