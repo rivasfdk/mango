@@ -16,7 +16,21 @@ class ProductLotParameterListsController < ApplicationController
   end
 
   def edit
-    show
+    @product_lot_parameter_list = ProductLotParameterList.find params[:id],
+                                                               :include => {:product_lot_parameters => {:product_lot_parameter_type => {}},
+                                                               :product_lot => {:product => {}}}
+    session[:return_to] = request.referer
+  end
+
+  def update
+    @product_lot_parameter_list = ProductLotParameterList.find params[:id]
+    @product_lot_parameter_list.update_attributes(params[:product_lot_parameter_list])
+    if @product_lot_parameter_list.save
+      flash[:notice] = 'Características actualizadas con éxito'
+      redirect_to session[:return_to]
+    else
+      render :edit
+    end
   end
 
   def create

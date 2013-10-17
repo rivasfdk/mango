@@ -269,8 +269,7 @@ module MenuHelper
   def menu_for_ingredient_parameter_type_ranges_show
     menu = content_tag(:p, "Rangos para #{@ingredient.name}")
     menu += content_tag(:ul,
-      render_back(session[:return_to]) + 
-      render_action('Editar', 'Editar rangos', edit_ingredient_parameter_type_range_path(@ingredient.id), 'button-edit.png')
+      render_back(session[:return_to]) 
     )
     return menu
   end
@@ -278,7 +277,8 @@ module MenuHelper
   def menu_for_ingredient_parameter_type_ranges_edit
     menu = content_tag(:p, "Editar rangos para #{@ingredient.name}")
     menu += content_tag(:ul,
-      render_back(session[:return_to])
+      render_back(session[:return_to]) + 
+      render_function('Guardar', 'Guardar rangos', "submit_ingredient_edit_form()", 'button-execute.png')
     )
     return menu
   end
@@ -294,8 +294,7 @@ module MenuHelper
   def menu_for_product_parameter_type_ranges_show
     menu = content_tag(:p, "Rangos para #{@product.name}")
     menu += content_tag(:ul,
-      render_back(session[:return_to]) + 
-      render_action('Editar', 'Editar rangos', edit_product_parameter_type_range_path(@product.id), 'button-edit.png')
+      render_back(session[:return_to])
     )
     return menu
   end
@@ -303,7 +302,8 @@ module MenuHelper
   def menu_for_product_parameter_type_ranges_edit
     menu = content_tag(:p, "Editar rangos para #{@product.name}")
     menu += content_tag(:ul,
-      render_back(session[:return_to])
+      render_back(session[:return_to]) +
+      render_function('Guardar', 'Guardar rangos', "submit_product_edit_form()", 'button-execute.png')
     )
     return menu
   end
@@ -717,8 +717,7 @@ module MenuHelper
   def menu_for_lot_parameter_lists_show
     menu = content_tag(:p, 'Características de lote de materia prima')
     menu += content_tag(:ul,
-      render_back(session[:return_to]) +
-      render_action('Editar', 'Editar características', edit_lot_parameter_list_path, 'button-edit.png')
+      render_back(session[:return_to])
     )
     return menu
   end
@@ -726,8 +725,8 @@ module MenuHelper
   def menu_for_lot_parameter_lists_edit
     menu = content_tag(:p, 'Editar características de lote de materia prima')
     menu += content_tag(:ul,
-      render_back(session[:return_to]) #+
-      #render_function('Actualizar', 'Actualizar características', "submit_lot_parameter_list_edit_form()", 'button-execute.png')
+      render_back(session[:return_to]) +
+      render_function('Actualizar', 'Actualizar características', "submit_lot_parameter_list_edit_form()", 'button-execute.png')
     )
     return menu
   end
@@ -744,8 +743,7 @@ module MenuHelper
   def menu_for_product_lot_parameter_lists_show
     menu = content_tag(:p, 'Características de lote de producto terminado')
     menu += content_tag(:ul,
-      render_back(session[:return_to]) +
-      render_action('Editar', 'Editar características', edit_product_lot_parameter_list_path, 'button-edit.png')
+      render_back(session[:return_to])
     )
     return menu
   end
@@ -753,8 +751,8 @@ module MenuHelper
   def menu_for_product_lot_parameter_lists_edit
     menu = content_tag(:p, 'Editar características de lote de producto terminado')
     menu += content_tag(:ul,
-      render_back(session[:return_to]) #+
-      #render_function('Actualizar', 'Actualizar características', "submit_lot_parameter_list_edit_form()", 'button-execute.png')
+      render_back(session[:return_to]) +
+      render_function('Actualizar', 'Actualizar características', "submit_product_lot_parameter_list_edit_form()", 'button-execute.png')
     )
     return menu
   end

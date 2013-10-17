@@ -16,7 +16,21 @@ class LotParameterListsController < ApplicationController
   end
 
   def edit
-    show
+    @lot_parameter_list = LotParameterList.find params[:id],
+                                                :include => {:lot_parameters => {:lot_parameter_type => {}},
+                                                :lot => {:ingredient => {}}}
+    session[:return_to] = request.referer
+  end
+
+  def update
+    @lot_parameter_list = LotParameterList.find params[:id]
+    @lot_parameter_list.update_attributes(params[:lot_parameter_list])
+    if @lot_parameter_list.save
+      flash[:notice] = 'Características actualizadas con éxito'
+      redirect_to session[:return_to]
+    else
+      render :edit
+    end
   end
 
   def create

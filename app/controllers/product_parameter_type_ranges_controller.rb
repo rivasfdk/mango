@@ -6,8 +6,8 @@ def index
   end
 
   def show
-    session[:return_to] = request.referer
     @product = Product.find params[:id], :include => {:product_parameter_type_ranges => {:product_lot_parameter_type => {}}}
+    session[:return_to] = request.referer
   end
 
   def edit
@@ -15,15 +15,14 @@ def index
   end
 
   def update
-    @product_parameter_type_range = ProductParameterTypeRange.find params[:id]
-    @product_parameter_type_range.update_attributes(params[:product_parameter_type_range])
-    if @product_parameter_type_range.save
-      flash[:notice] = 'Rango actualizado con éxito'
+    @product = Product.find params[:id]
+    @product.update_attributes(params[:product])
+    if @product.save
+      flash[:notice] = 'Rangos actualizados con éxito'
+      redirect_to session[:return_to]
     else
-      flash[:type] = 'error'
-      flash[:notice] = "No se pudo actualizar el rango"
+      render :edit
     end
-    redirect_to request.referer
   end
 
   def create

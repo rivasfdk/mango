@@ -1,2 +1,29 @@
 <% title "Editar rangos para #{@product.name}" %>
-<%= render :partial=>'edit_product_parameter_types_ranges_grid', :locals =>{:product => @product} %>
+<%= form_for @product, :url => product_parameter_type_range_path(@product), :html=>{:method=>:put, :id=>'product_edit_form'} do |f| %>
+<% i = 0 %>
+<div id="edit_product_parameter_types_ranges_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Máximo<span class="order_arrow"></span></th>
+        <th>Mínimo<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :product_parameter_type_ranges do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td>
+            <%= builder.object.product_lot_parameter_type.name %>
+          </td>
+          <td class="center"><%= builder.text_field :max, :size=>10, :style => "text-align:right;" %></td>
+          <td class="center"><%= builder.text_field :min, :size=>10, :style => "text-align:right;" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+</div>
+<% end %>

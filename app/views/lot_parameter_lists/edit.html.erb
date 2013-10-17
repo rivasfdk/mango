@@ -1,5 +1,6 @@
 <% title "Editar características de lote" %>
-<%= form_for :lot_parameter_list do |f| %>
+<%= form_for @lot_parameter_list, :html=>{:method=>:put, :id=>'lot_parameter_list_edit_form'} do |f| %>
+<%= render_error_messages(f.error_messages) %>
 <label for="code" class="small">Código:</label>
 <div class="field"><%=h @lot_parameter_list.lot.code %></div>
 <label for="name" class="small">Contenido:</label>
@@ -9,5 +10,25 @@
 <label for="active" class="small">Activo:</label>
 <div class="field"><%=h @lot_parameter_list.lot.active ? "Sí" : "No"%><br /><br /></div>
 <div class="clearfix"></div>
+<% i = 0 %>
+<div id="lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :lot_parameters do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%= builder.object.lot_parameter_type.name %></td>
+          <td class="center"><%= builder.text_field :value, :size => 10, :style => "text-align:right;" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot></tfoot>
+  </table>
+</div>
 <% end %>
-<%= render :partial=>'edit_lot_parameters_grid', :locals =>{:lot_parameter_list => @lot_parameter_list} %>

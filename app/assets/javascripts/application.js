@@ -8,6 +8,12 @@ document.observe("dom:loaded", function() {
     hide_all_report_details();
 });
 
+function submit_product_lot_parameter_list_edit_form() {
+    $('product_lot_parameter_list_edit_form').submit();
+}
+function submit_lot_parameter_list_edit_form() {
+    $('lot_parameter_list_edit_form').submit();
+}
 function submit_settings_edit_form() {
     $('settings_edit_form').submit();
 }

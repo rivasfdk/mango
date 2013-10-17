@@ -2,6 +2,8 @@ class ProductLotParameterList < ActiveRecord::Base
   has_many :product_lot_parameters, :dependent => :destroy
   belongs_to :product_lot
 
+  accepts_nested_attributes_for :product_lot_parameters
+
   validates_presence_of :product_lot
 
   after_create :generate_product_lot_parameters

@@ -3,6 +3,8 @@ class Product < ActiveRecord::Base
   belongs_to :base_unit
   has_many :product_parameter_type_ranges
 
+  accepts_nested_attributes_for :product_parameter_type_ranges
+
   validates_uniqueness_of :code
   validates_presence_of :name, :code
   validates_length_of :code, :name, :within => 3..40

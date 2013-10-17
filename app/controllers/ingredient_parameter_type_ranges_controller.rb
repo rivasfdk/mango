@@ -6,8 +6,8 @@ class IngredientParameterTypeRangesController < ApplicationController
   end
 
   def show
-    session[:return_to] = request.referer
     @ingredient = Ingredient.find params[:id], :include => {:ingredient_parameter_type_ranges => {:lot_parameter_type => {}}}
+    session[:return_to] = request.referer
   end
 
   def edit
@@ -15,15 +15,14 @@ class IngredientParameterTypeRangesController < ApplicationController
   end
 
   def update
-    @ingredient_parameter_type_range = IngredientParameterTypeRange.find params[:id]
-    @ingredient_parameter_type_range.update_attributes(params[:ingredient_parameter_type_range])
-    if @ingredient_parameter_type_range.save
-      flash[:notice] = 'Rango actualizado con éxito'
+    @ingredient = Ingredient.find params[:id]
+    @ingredient.update_attributes(params[:ingredient])
+    if @ingredient.save
+      flash[:notice] = 'Rangos actualizados con éxito'
+      redirect_to session[:return_to]
     else
-      flash[:type] = 'error'
-      flash[:notice] = "No se pudo actualizar el rango"
+      render :edit
     end
-    redirect_to request.referer
   end
 
   def create
