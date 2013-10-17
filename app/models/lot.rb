@@ -15,6 +15,10 @@ class Lot < ActiveRecord::Base
 
   def check_stock
     self.stock_below_minimal = self.stock < self.minimal_stock
+    hoppers = Hopper.includes(:hopper_lot).where(['hoppers_lots.active = true and hoppers_lots.lot_id = ?', self.id])
+    hoppers.each do |hopper|
+      hopper.save
+    end
     true
   end
 
