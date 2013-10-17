@@ -9,8 +9,8 @@ class CreateIngredientsParametersTypesRanges < ActiveRecord::Migration
       t.float :min
       t.timestamps
     end
-    add_foreign_key 'ingredients_parameters_types_ranges', 'ingredient_id', 'ingredients'
-    add_foreign_key 'ingredients_parameters_types_ranges', 'lot_parameter_type_id', 'lots_parameters_types'
+    add_foreign_key 'ingredients_parameters_types_ranges', 'ingredient_id', 'ingredients', 'fk_ingredient_id'
+    add_foreign_key 'ingredients_parameters_types_ranges', 'lot_parameter_type_id', 'lots_parameters_types', 'fk_lot_parameter_type_id'
   end
 
   def down
