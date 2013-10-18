@@ -205,9 +205,10 @@ class EasyModel
     data['table'] = []
 
     @alarms.each do |alarm|
+      date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
       data['table'] << {
           'order_code' => alarm.order.code,
-          'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
+          'date' => date,
           'description' => alarm.description,
         }
     end
@@ -215,21 +216,23 @@ class EasyModel
   end
 
   def self.alarms_per_order(order_code, alarm_type_id)
-    @order = Order.find_by_code order_code
-    return nil if @order.nil?
+    order = Order.find_by_code order_code
+    return nil if order.nil?
+    alarms = []
     if alarm_type_id == 0
-      @alarms = @order.alarms
+      alarms = Alarm.where(:order_id => order.id)
     else
-      @alarms = Alarm.find :all, :conditions => ['alarm_type_id = ? and order_id = ?', alarm_type_id, @order.id]
+      alarms = Alarm.where(:alarm_type_id => alarm_type_id, :order_id => order.id)
     end
-    return nil if @order.alarms.empty?
+    return nil if alarms.empty?
 
     data = self.initialize_data("Alarmas de Orden #{order_code}")
     data['table'] = []
 
-    @alarms.each do |alarm|
+    alarms.each do |alarm|
+      date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
       data['table'] << {
-          'date' => alarm.date.strftime("%d/%m/%Y %H:%M:%S"),
+          'date' => date,
           'description' => alarm.description,
         }
     end
