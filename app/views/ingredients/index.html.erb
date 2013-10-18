@@ -16,9 +16,10 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h ing.code %></td>
         <td><%=h ing.name %></td>
-        <td>
+        <td class="center">
           <%= render_action_edit(edit_ingredient_path(ing)) %>
-          <%= render_action_delete(ingredient_path(ing), "Desea borrar la materia prima '#{ing.name}'?") %>
+          <%= render_action_delete(ingredient_path(ing), "Desea borrar la materia prima '#{ing.name}'?") %><br />
+          <%= render_action_show_lots(ingredient_lots_path(ing)) %>
         </td>
       </tr>
     <% end %>

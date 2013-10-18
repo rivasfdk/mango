@@ -9,6 +9,7 @@ Mango::Application.routes.draw do
   match 'recipes/:id/create_parameter_list' => "recipes#create_parameter_list", :via => :get, :as => 'recipe_create_parameter_list'
   match 'lot_parameter_lists/:lot_id/create' => "lot_parameter_lists#create", :via => :post, :as => 'create_lot_parameter_list'
   match 'product_lot_parameter_lists/:product_lot_id/create' => "product_lot_parameter_lists#create", :via => :post, :as => 'create_product_lot_parameter_list'
+  match 'ingredients/:id/lots' => "ingredients#lots", :via => :get, :as => 'ingredient_lots'
   match 'ingredient_parameter_type_ranges/:id/create' => "ingredient_parameter_type_ranges#create", :via => :post, :as => 'create_ingredient_parameter_type_range'
   match 'product_parameter_type_ranges/:id/create' => "product_parameter_type_ranges#create", :via => :post, :as => 'create_product_parameter_type_range'
   match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'

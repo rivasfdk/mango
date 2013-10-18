@@ -4,6 +4,11 @@ module ActionsHelper
     return link_to image + " Mostrar", url, :class => 'action'
   end
 
+  def render_action_show_lots(url)
+    image = image_tag('action-show.png', :alt=>'Ver lotes')
+    return link_to image + " Ver lotes", url, :class => 'action'
+  end
+
   def render_action_show_parameters(url)
     image = image_tag('action-show.png', :alt=>'Mostrar características')
     return link_to image + " Mostrar características", url, :class => 'action'

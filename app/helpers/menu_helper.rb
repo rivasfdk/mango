@@ -43,6 +43,8 @@ module MenuHelper
       menu = menu_for_medicament_recipes_edit
     elsif c == 'ingredients' and a == 'index'
       menu = menu_for_ingredients_index
+    elsif c == 'ingredients' and a == 'lots'
+      menu = menu_for_ingredients_lots
     elsif c == 'ingredients' and (a == 'new' or a == 'create')
       menu = menu_for_ingredients_new
     elsif c == 'ingredients' and (a == 'edit' or a == 'update')
@@ -394,6 +396,14 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(root_path) +
       render_action('Crear', 'Crear nueva materia prima', new_ingredient_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_ingredients_lots
+    menu = content_tag(:p, "Lotes de #{@ingredient.name}")
+    menu += content_tag(:ul,
+      render_back(ingredients_path)
     )
     return menu
   end

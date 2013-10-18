@@ -107,3 +107,13 @@ html, body {
     margin-right: 5px;
     line-height: 20px;
 }
+
+.stock_ok {
+  font-weight: bold;
+  color: green;
+}
+
+.stock_minimum {
+  font-weight: bold;
+  color: red;
+}

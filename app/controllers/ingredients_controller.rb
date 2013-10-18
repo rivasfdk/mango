@@ -49,7 +49,17 @@ class IngredientsController < ApplicationController
     end
     redirect_to :ingredients
   end
-  
+
+  def lots
+    @ingredient = Ingredient.find params[:id]
+    @lots = Lot.includes(:ingredient).where(:ingredient_id => @ingredient.id, :active => true).paginate :page=>params[:page], :per_page=>session[:per_page]
+    @stock = 0
+    @lots.each do |lot|
+      @stock += lot.stock
+    end
+    session[:return_to] = request.referer
+  end
+
   def search
     pattern = params['ingredient']['pattern'] + '%'
     opt = params['ingredient']['option'].to_i
