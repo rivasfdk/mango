@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131016185318) do
+ActiveRecord::Schema.define(:version => 20131018004923) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -159,11 +159,13 @@ ActiveRecord::Schema.define(:version => 20131016185318) do
   end
 
   create_table "ingredients", :force => true do |t|
-    t.string   "code",         :null => false
-    t.string   "name",         :null => false
+    t.string   "code",                                   :null => false
+    t.string   "name",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "base_unit_id"
+    t.float    "minimum_stock",       :default => 0.0,   :null => false
+    t.boolean  "stock_below_minimum", :default => false, :null => false
   end
 
   create_table "ingredients_medicaments_recipes", :force => true do |t|
@@ -218,12 +220,10 @@ ActiveRecord::Schema.define(:version => 20131016185318) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"
-    t.boolean  "active",              :default => true
-    t.boolean  "in_use",              :default => true
-    t.float    "stock",               :default => 0.0
-    t.float    "density",             :default => 1.0,   :null => false
-    t.float    "minimal_stock",       :default => 100.0
-    t.boolean  "stock_below_minimal", :default => false
+    t.boolean  "active",        :default => true
+    t.boolean  "in_use",        :default => true
+    t.float    "stock",         :default => 0.0
+    t.float    "density",       :default => 1.0,  :null => false
   end
 
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"

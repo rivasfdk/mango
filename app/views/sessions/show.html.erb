@@ -63,13 +63,42 @@
   </div>
   <% end %>
 
-  <!-- Transactions -->
-  <% if session[:permissions].include?('transactions') %>
+  <!-- Ingredients -->
+  <% if session[:permissions].include?('ingredients') %>
   <div class="module yui3-u-1-2">
-    <%= link_to image_tag('transactions-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), transactions_path %>
+    <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), ingredients_path %>
+    <% if @critical_ingredients > 0 %>
+      <%= link_to @critical_ingredients, ingredients_path, :class => 'notify' %>
+    <% end %>
     <div class="module-content">
-      <h2><%= link_to 'Transacciones', transactions_path %></h2>
-      <p>Gestión de movimientos de inventario</p>
+      <h2><%= link_to 'Materia Prima', ingredients_path %></h2>
+      <% if @critical_ingredients > 0 %>
+        <p class="palert"><%= @critical_ingredients %> materia prima en nivel crítico</p>
+      <% else %>
+        <p>Manejo de los ingredientes</p>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Products -->
+  <% if session[:permissions].include?('products') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), products_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Producto Terminado', products_path %></h2>
+      <p>Gestión de productos terminados</p>
+    </div>
+  </div>
+  <% end %>
+
+  <!-- Ingredient Lots -->
+  <% if session[:permissions].include?('lots') %>
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('ingredients-lot-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lots_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Lotes de Materia Prima', lots_path %></h2>
+      <p>Gestión de lotes de materia prima</p>
     </div>
   </div>
   <% end %>
@@ -85,22 +114,13 @@
   </div>
   <% end %>
 
-  <!-- Ingredient Lots -->
-  <% if session[:permissions].include?('lots') %>
+  <!-- Transactions -->
+  <% if session[:permissions].include?('transactions') %>
   <div class="module yui3-u-1-2">
-    <%= link_to image_tag('ingredients-lot-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), lots_path %>
-    <% if @critical_lots > 0 %>
-      <%= link_to @critical_lots, lots_path, :class => 'notify' %>
-    <% end %>
+    <%= link_to image_tag('transactions-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), transactions_path %>
     <div class="module-content">
-      <h2><%= link_to 'Lotes de Materia Prima', lots_path %></h2>
-      <% if @critical_lots == 1 %>
-        <p class="palert"><%= @critical_lots %> lote en nivel crítico</p>
-      <% elsif @critical_lots > 1 %>
-        <p class="palert"><%= @critical_lots %> lotes en nivel crítico</p>
-      <% else %>
-        <p>Gestión de lotes de materia prima</p>
-      <% end %>
+      <h2><%= link_to 'Transacciones', transactions_path %></h2>
+      <p>Gestión de movimientos de inventario</p>
     </div>
   </div>
   <% end %>
@@ -112,28 +132,6 @@
     <div class="module-content">
       <h2><%= link_to 'Laboratorio', laboratory_path %></h2>
       <p>Características de materia prima y producto terminado</p>
-    </div>
-  </div>
-  <% end %>
-
-  <!-- Ingredients -->
-  <% if session[:permissions].include?('ingredients') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), ingredients_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Materia Prima', ingredients_path %></h2>
-      <p>Manejo de los ingredientes</p>
-    </div>
-  </div>
-  <% end %>
-
-  <!-- Products -->
-  <% if session[:permissions].include?('products') %>
-  <div class="module yui3-u-1-2">
-    <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), products_path %>
-    <div class="module-content">
-      <h2><%= link_to 'Producto Terminado', products_path %></h2>
-      <p>Gestión de productos terminados</p>
     </div>
   </div>
   <% end %>

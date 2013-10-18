@@ -8,11 +8,11 @@ class LotsController < ApplicationController
                              :per_page=>session[:per_page],
                              :include => :ingredient,
                              :conditions => {:active => true},
-                             :order => ['stock_below_minimal desc, id desc']
+                             :order => ['id desc']
         render :html => @lots
       end
       format.json do 
-        @lots = Lot.where(:active => true).order('stock_below_minimal desc, id desc')
+        @lots = Lot.where(:active => true).order('id desc')
         render :json => @lots, :methods => [:get_content]
       end
     end

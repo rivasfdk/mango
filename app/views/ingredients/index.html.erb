@@ -12,6 +12,7 @@
     <tbody>
     <% @ingredients.each do |ing| %>
       <% class_row, i = alternate_row_class(i) %>
+      <% class_row = "red_" + class_row if ing.stock_below_minimum %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h ing.code %></td>
         <td><%=h ing.name %></td>

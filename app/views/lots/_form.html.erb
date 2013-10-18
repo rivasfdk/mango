@@ -7,8 +7,6 @@
 <div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
 <label for="code" class="small">Densidad (Kg/m³):</label>
 <div class="field"><%= f.text_field :density, :size=>'15' %></div>
-<label for="code" class="small">Existencia mínima (Kg):</label>
-<div class="field"><%= f.text_field :minimal_stock, :size=>'15' %></div>
 <label for="client_id" class="small">Propietario:</label>
 <div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %></div>
 <label for="in_use" class="small">En uso:</label>

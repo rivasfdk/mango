@@ -14,7 +14,6 @@
     <tbody>
     <% @lots.each do |item| %>
       <% class_row, i = alternate_row_class(i) %>
-      <% class_row = "red_" + class_row if item.stock_below_minimal %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h item.code %></td>
         <td><%=h item.date %></td>

@@ -2,7 +2,8 @@
 
 class IngredientsController < ApplicationController
   def index
-    @ingredients = Ingredient.paginate :page=>params[:page], :per_page=>session[:per_page]
+    @ingredients = Ingredient.paginate :page=>params[:page], :per_page=>session[:per_page],
+                   :order => ['stock_below_minimum desc']
   end
   
   def edit

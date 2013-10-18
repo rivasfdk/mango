@@ -6,7 +6,7 @@ class Lot < ActiveRecord::Base
   has_many :hopper_lot
   has_one :lot_parameter_list
 
-  before_save :check_stock
+  after_save :check_stock
 
   validates_uniqueness_of :code
   validates_presence_of :date, :ingredient
@@ -14,7 +14,8 @@ class Lot < ActiveRecord::Base
   validates_associated :ingredient
 
   def check_stock
-    self.stock_below_minimal = self.stock < self.minimal_stock
+    ingredient = Ingredient.find self.ingredient_id
+    ingredient.save
     hoppers = Hopper.includes(:hopper_lot).where(['hoppers_lots.active = true and hoppers_lots.lot_id = ?', self.id])
     hoppers.each do |hopper|
       hopper.save
