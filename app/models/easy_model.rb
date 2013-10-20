@@ -307,7 +307,7 @@ class EasyModel
       sack_weight = "-"
       if t.sack
         sacks = t.sacks.to_s
-        sack_weight = t.sack_weight.to_s + "Kg"
+        sack_weight = t.sack_weight.to_s + " Kg"
       end
       data['transactions'] << {
         'code' => t.get_lot.code,

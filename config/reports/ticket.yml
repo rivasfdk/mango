@@ -68,6 +68,7 @@ report:
         totalization:
           label: Total
           align: right
+          precision: 1
           border: T
           style:
             font_weight: B
@@ -96,6 +97,7 @@ report:
             amount:
               label: Cantidad
               unit: Kg
+              precision: 1 
               totalize: true
               align: right
               width: 50
