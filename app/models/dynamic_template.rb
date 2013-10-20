@@ -14,10 +14,10 @@ class DynamicTemplate
     data['tables'].each_with_index do |tabledata, index|
       breakline = breakline_template
 
-      title = eval(title_template.to_s)
+      title = title_template.deep_dup
       title["text"]["field"] = "title#{index + 1}"
 
-      table = eval(table_template.to_s)
+      table = table_template.deep_dup
       table["table"]["field"] = "table#{index + 1}"
 
       template["report"]["body"][title_key + 3*index] = title
