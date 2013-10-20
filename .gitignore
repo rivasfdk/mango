@@ -10,3 +10,4 @@ tmp/
 *.swp
 *.swo
 .sass-cache/
+db/dump.sql

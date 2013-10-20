@@ -6,6 +6,7 @@ class ProductLotsController < ApplicationController
       format.html do 
         @lots = ProductLot.paginate :page=>params[:page],
                                     :per_page=>session[:per_page],
+                                    :include => {:product => {}},
                                     :conditions => {:active => true},
                                     :order => ['id desc']
         render :html => @lots
