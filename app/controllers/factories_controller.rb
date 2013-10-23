@@ -19,9 +19,9 @@ class FactoriesController < ApplicationController
   end
 
   def create
-    @factory = Client.new params[:client]
-    @factory.factory = true
-    if @factory.save
+    @client = Client.new params[:client]
+    @client.factory = true
+    if @client.save
       flash[:notice] = 'Fábrica guardada con éxito'
       redirect_to :factories
     else
@@ -30,9 +30,9 @@ class FactoriesController < ApplicationController
   end
 
   def update
-    @factory = Client.find params[:id]
-    @factory.update_attributes(params[:client])
-    if @factory.save
+    @client = Client.find params[:id]
+    @client.update_attributes(params[:client])
+    if @client.save
       flash[:notice] = 'Fábrica guardada con éxito'
       redirect_to :factories
     else
@@ -41,17 +41,17 @@ class FactoriesController < ApplicationController
   end
   
   def destroy
-    @factory = Client.find params[:id]
-    @factory.eliminate
-    if @factory.errors.size.zero?
+    @client = Client.find params[:id]
+    @client.eliminate
+    if @client.errors.size.zero?
       flash[:notice] = "Fábrica eliminada con éxito"
     else
-      logger.error("Error eliminando fábrica: #{@factory.errors.inspect}")
+      logger.error("Error eliminando fábrica: #{@client.errors.inspect}")
       flash[:type] = 'error'
-      if not @factory.errors[:foreign_key].nil?
+      if not @client.errors[:foreign_key].nil?
         flash[:notice] = 'La fábrica no se puede eliminar porque tiene registros asociados'
-      elsif not @factory.errors[:unknown].nil?
-        flash[:notice] = @factory.errors[:unknown]
+      elsif not @client.errors[:unknown].nil?
+        flash[:notice] = @client.errors[:unknown]
       else
         flash[:notice] = "La fábrica no se ha podido eliminar"
       end
