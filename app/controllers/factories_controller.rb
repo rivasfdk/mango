@@ -15,7 +15,7 @@ class FactoriesController < ApplicationController
   end
 
   def edit
-    @factory = Client.find params[:id]
+    @client = Client.find params[:id]
   end
 
   def create

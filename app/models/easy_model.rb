@@ -751,8 +751,9 @@ class EasyModel
 
     details = {}
     n_batch = @order.batch.count
-    start_date = @order.batch.first.created_at
-    end_date = @order.batch.last.created_at
+    empty = @order.batch.empty?
+    start_date = empty ? "" : @order.batch.first.start_date
+    end_date = empty ? "" : @order.batch.last.end_date
     @order.batch.each do |batch|
       batch.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot.ingredient.code

@@ -12,6 +12,11 @@ class Lot < ActiveRecord::Base
   validates_presence_of :date, :ingredient
   validates_length_of :code, :within => 3..20
   validates_associated :ingredient
+  validate :factory
+
+  def factory
+    errors.add(:client, "no es fábrica") unless self.client.factory
+  end
 
   def check_stock
     ingredient = Ingredient.find self.ingredient_id
@@ -37,5 +42,13 @@ class Lot < ActiveRecord::Base
 
   def to_collection_select
     "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code})"
+  end
+
+  def to_collection_select_with_factories
+    if self.client_id
+      "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code}) - #{self.client.name}"
+    else
+      to_collection_select
+    end
   end
 end

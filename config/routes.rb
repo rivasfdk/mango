@@ -32,6 +32,7 @@ Mango::Application.routes.draw do
   match 'product_lots/:id/adjust' => "product_lots#adjust", :via => :get, :as => 'adjust_product_lot'
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
   match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
+  match 'scales/:scale_id/hoppers/:id/set_as_main_hopper' => "hoppers#set_as_main_hopper", :via => :get, :as => "set_as_main_hopper"
   match 'scales/:scale_id/hoppers/:id/fill' => "hoppers#do_fill", :via => :post, :as => "hopper_fill"
   match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post, :as => "hopper_change"
   match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post, :as => "hopper_adjust"
@@ -80,8 +81,6 @@ Mango::Application.routes.draw do
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, :except=>:edit
   resources :tickets, :except=>:edit
-
-  match 'hoppers/:id/set_as_main_hopper' => "hoppers#set_as_main_hopper", :via => :get, :as => "set_as_main_hopper"
 
   resources :recipes do
     resources :ingredients_recipes

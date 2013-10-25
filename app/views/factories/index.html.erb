@@ -5,10 +5,8 @@
     <thead>
       <tr>
         <th>Código<span class="order_arrow"></th>
-        <th>CI/RIF<span class="order_arrow"></th>
-        <th>Name<span class="order_arrow"></th>
-        <th>Address<span class="order_arrow"></th>
-        <th>Email<span class="order_arrow"></th>
+        <th>RIF<span class="order_arrow"></th>
+        <th>Nombre<span class="order_arrow"></th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
@@ -19,8 +17,6 @@
         <td><%=h f.code %></td>
         <td><%=h f.ci_rif %></td>
         <td><%=h f.name %></td>
-        <td><%=h f.address %></td>
-        <td><%=h f.email %></td>
         <td>
           <%= render_action_edit(edit_factory_path(f)) %>
           <%= render_action_delete(factory_path(f), "Desea borrar la fábrica '#{f.name}'?") %>

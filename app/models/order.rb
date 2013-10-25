@@ -266,7 +266,7 @@ class Order < ActiveRecord::Base
 
   def self.search(params)
     @orders = Order.order('orders.created_at DESC')
-    @orders = @orders.includes(:recipe, :client)
+    @orders = @orders.includes(:recipe)
     @orders = @orders.where(:code => params[:code]) if params[:code].present?
     @orders = @orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
     @orders = @orders.where(:client_id => params[:client_id]) if params[:client_id].present?

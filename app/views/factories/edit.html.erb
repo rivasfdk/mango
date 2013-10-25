@@ -1,5 +1,5 @@
 <% title "Editar fábrica" %>
-<%= form_for :factory, :url=>factory_path(@factory), :html=>{:method=>:put, :id=>'factory_edit_form'} do |f| %>
+<%= form_for :client, :url=>factory_path(@client), :html=>{:method=>:put, :id=>'factory_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>
 <% end %>
