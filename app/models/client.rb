@@ -15,11 +15,13 @@ class Client < ActiveRecord::Base
   after_create :generate_factory_lots, if: :factory
 
   def generate_factory_lots
-    hopper_lots = HopperLot.includes(:hopper_factory_lots).where(['active = true and hoppers_factory_lots_count > 0'])
+    hopper_lots = HopperLot.includes(:hoppers_factory_lots).where(:active => true)
     hopper_lots.each do |hl|
-      hopper_factory_lot = hl.hoppers_factory_lots.new
-      hopper_factory_lot.client_id = self.id
-      hopper_factory_lot.save
+      if hl.hoppers_factory_lots.count > 0
+        hopper_factory_lot = hl.hoppers_factory_lots.new
+        hopper_factory_lot.client_id = self.id
+        hopper_factory_lot.save
+      end
     end
   end
 
