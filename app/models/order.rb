@@ -12,10 +12,9 @@ class Order < ActiveRecord::Base
   has_many :transactions
   has_many :order_stats
 
-  validates_presence_of :recipe, :user, :product_lot, :client
-  validates_numericality_of :prog_batches, :real_batches, :only_integer => 0, :greater_than_or_equal_to => 0
-  validates_associated :recipe, :client, :user
-  validates_numericality_of :real_production, :allow_nil => true
+  validates :recipe, :user, :product_lot, :client, presence: true
+  validates :prog_batches, :real_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :real_production, numericality: {allow_nil: true}
   validate :product_lot_factory
 
   before_validation :validates_real_batchs
@@ -162,7 +161,7 @@ class Order < ActiveRecord::Base
     errors = []
     # Add some shitty error handling
     if errors.empty?
-      order = Order.find_by_code params[:order_code]
+      order = Order.find_by_code params[:order_code], :include => :client
       batch = order.batch.find_or_create_by_number params[:batch_number]
       if batch.new_record?
         now = Time.now
@@ -174,18 +173,32 @@ class Order < ActiveRecord::Base
         logger.debug("Errores de batch")
         logger.debug(batch.errors.messages)
       end
-      hopper_id = Hopper.where({:scale_id => params[:scale_id], 
-                                :number => params[:hopper_number]}).first.id
-      hopper_lot_id = HopperLot.where({:hopper_id => hopper_id,
-                                       :active => true}).first.id
+      hopper = Hopper.where({:scale_id => params[:scale_id], 
+                             :number => params[:hopper_number]}).first
+
+      hopper_lot = hopper.current_hopper_lot
+      original_hopper_lot = hopper_lot # Horrible
+
+      if order.client.factory
+        hfl = HopperFactoryLot.where(:hopper_lot_id => hopper_lot.id, :client => order.client_id).first
+        if hfl.present? and hfl.lot_id.present?
+          hopper_lot = hopper.hopper_lot.new
+          hopper_lot.lot_id = hfl.lot_id
+          hopper_lot.active = false
+          hopper_lot.factory = true
+          hopper_lot.save
+        end
+      end
+
       batch_hopper_lot = batch.batch_hopper_lot.new
-      batch_hopper_lot.hopper_lot_id = hopper_lot_id
+      batch_hopper_lot.hopper_lot_id = hopper_lot.id
       batch_hopper_lot.amount = params[:amount]
       if batch_hopper_lot.save
         if is_mango_feature_available("transactions")
           batch_hopper_lot.generate_transaction(user_id)
         end
         if is_mango_feature_available("hoppers_transactions")
+          batch_hopper_lot.hopper_lot = original_hopper_lot
           batch_hopper_lot.generate_hopper_transaction(user_id)
         end
       else
@@ -265,13 +278,13 @@ class Order < ActiveRecord::Base
   end
 
   def self.search(params)
-    @orders = Order.order('orders.created_at DESC')
-    @orders = @orders.includes(:recipe)
+    @orders = Order.includes(:recipe)
     @orders = @orders.where(:code => params[:code]) if params[:code].present?
     @orders = @orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
     @orders = @orders.where(:client_id => params[:client_id]) if params[:client_id].present?
     @orders = @orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     @orders = @orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
+    @orders = @orders.order('orders.created_at DESC')
     @orders.paginate :page => params[:page], :per_page => params[:per_page]
   end
 end

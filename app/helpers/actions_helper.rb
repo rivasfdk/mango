@@ -1,4 +1,9 @@
 module ActionsHelper
+  def render_action_factory_lots(url)
+    image = image_tag('action-edit.png', :alt=>'Lotes por fábrica')
+    return link_to image + " Lotes por fábrica", url, :class => 'action'
+  end
+
   def render_action_show(url)
     image = image_tag('action-show.png', :alt=>'Mostrar')
     return link_to image + " Mostrar", url, :class => 'action'

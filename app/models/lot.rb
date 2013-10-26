@@ -4,6 +4,7 @@ class Lot < ActiveRecord::Base
   belongs_to :ingredient
   belongs_to :client
   has_many :hopper_lot
+  has_many :hopper_factory_lots
   has_one :lot_parameter_list
 
   after_save :check_stock
@@ -16,7 +17,7 @@ class Lot < ActiveRecord::Base
 
   def factory
     errors.add(:client, "no es fábrica") unless self.client.factory
-  end
+  end  
 
   def check_stock
     ingredient = Ingredient.find self.ingredient_id
@@ -32,6 +33,18 @@ class Lot < ActiveRecord::Base
     includes(:ingredient).where(:active => true).order('code DESC')
   end
 
+  def self.find_by_factory(lot)
+    lots_by_factory = {}
+    Client.where(:factory => true).each do |client|
+      lots_by_factory[client.id] = []
+    end
+    lots = Lot.includes(:ingredient).where(:active => true, :in_use => true).where(['client_id is not null and ingredient_id = ?', lot.ingredient_id])
+    lots.each do |lot|
+      lots_by_factory[lot.client_id] << lot
+    end
+    lots_by_factory
+  end
+
   def content_id
     self.ingredient_id
   end
@@ -42,13 +55,5 @@ class Lot < ActiveRecord::Base
 
   def to_collection_select
     "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code})"
-  end
-
-  def to_collection_select_with_factories
-    if self.client_id
-      "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code}) - #{self.client.name}"
-    else
-      to_collection_select
-    end
   end
 end

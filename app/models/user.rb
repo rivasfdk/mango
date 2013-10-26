@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :order
+  has_many :order, inverse_of: :user
   has_many :batch
   has_many :transaction
   has_many :tickets

@@ -33,9 +33,10 @@ Mango::Application.routes.draw do
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
   match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
   match 'scales/:scale_id/hoppers/:id/set_as_main_hopper' => "hoppers#set_as_main_hopper", :via => :get, :as => "set_as_main_hopper"
-  match 'scales/:scale_id/hoppers/:id/fill' => "hoppers#do_fill", :via => :post, :as => "hopper_fill"
-  match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post, :as => "hopper_change"
-  match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post, :as => "hopper_adjust"
+  match 'scales/:scale_id/hoppers/:id/fill' => "hoppers#do_fill", :via => :post
+  match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post
+  match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post
+  match 'scales/:scale_id/hoppers/:id/change_factory_lots' => "hoppers#do_change_factory_lots", :via => :put
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
   match 'settings' => "settings#update", :via => :put
   # Reports
@@ -112,6 +113,7 @@ Mango::Application.routes.draw do
         get 'change'
         get 'fill'
         get 'adjust'
+        get 'change_factory_lots'
       end
     end
   end

@@ -65,6 +65,8 @@ module MenuHelper
       menu = menu_for_hoppers_fill
     elsif c == 'hoppers' and a == 'adjust'
       menu = menu_for_hoppers_adjust
+    elsif c == 'hoppers' and a == 'change_factory_lots' or a == 'do_change_factory_lots'
+      menu = menu_for_hoppers_change_factory_lots
     elsif c == 'products' and a == 'index'
       menu = menu_for_products_index
     elsif c == 'products' and (a == 'new' or a == 'create')
@@ -487,11 +489,21 @@ module MenuHelper
     )
     return menu
   end
+
   def menu_for_hoppers_adjust
     menu = content_tag(:p, 'Ajustar existencia en tolva')
     menu += content_tag(:ul,
       render_back(scale_path(params[:scale_id])) +
       render_function('Ajustar', 'Ajustar existencia en tolva', "submit_hopper_adjust_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_hoppers_change_factory_lots
+    menu = content_tag(:p, 'Editar lotes de tolva por fábrica')
+    menu += content_tag(:ul,
+      render_back(scale_path(params[:scale_id])) +
+      render_function('Guardar', 'Guardar lotes por fábrica', "submit_hopper_change_factory_lots_form()", 'button-execute.png')
     )
     return menu
   end

@@ -1,11 +1,11 @@
 class Hopper < ActiveRecord::Base
   belongs_to :scale
   has_many :hopper_lot
-  validates_uniqueness_of :number, :scope => :scale_id
-  validates_presence_of :number, :name, :scale, :capacity
-  validates_numericality_of :number, :only_integer => true, :greater_than => 0
-  validates_numericality_of :capacity, :greater_than => 0
-  before_save :check_stock, :unless => :new_record?
+  validates :number, :name, :scale, :capacity, presence: true
+  validates :name, uniqueness: true
+  validates :number, uniqueness: {scope: :scale_id}, numericality: {only_integer: true, greater_than: 0}
+  validates :capacity, numericality: {greater_than: 0}
+  before_save :check_stock, unless: :new_record?
 
   def check_stock
     hopper_lot = current_hopper_lot
@@ -107,22 +107,16 @@ class Hopper < ActiveRecord::Base
   end
 
   def current_lot
-    hopper_lot = HopperLot.find :first,
-                                :include => :lot,
-                                :conditions => ['hopper_id = ? and active = ?', self.id, true]
+    hopper_lot = HopperLot.includes(:lot).where(:hopper_id => self.id, :active => true).first
     return hopper_lot.nil? ? nil : hopper_lot.lot
   end
 
   def current_hopper_lot
-    HopperLot.find :first,
-                   :include => :lot,
-                   :conditions => ['hopper_id = ? and active = ?', self.id, true]
+    HopperLot.includes(:lot, :hoppers_factory_lots).where(:hopper_id => self.id, :active => true).first
   end
 
   def set_as_main_hopper
-    hoppers = Hopper.find :all,
-                          :include => {:hopper_lot => :lot},
-                          :conditions => ['hoppers.id != ? and hoppers_lots.active = true and lots.ingredient_id = ?', self.id, self.current_lot.ingredient_id]
+    hoppers = Hopper.includes({:hopper_lot => :lot}).where(['hoppers.id != ? and hoppers_lots.active = true and lots.ingredient_id = ?', self.id, self.current_lot.ingredient_id])
     unless hoppers.empty?
       Hopper.update_all('main = false', :id => hoppers.map {|hopper| hopper.id})
     end
@@ -131,9 +125,7 @@ class Hopper < ActiveRecord::Base
 
   def eliminate
     begin
-      b = BatchHopperLot.find :all,
-                              :include => [:hopper_lot],
-                              :conditions => {:hoppers_lots => {:hopper_id => self.id}}
+      b = BatchHopperLot.includes(:hopper_lot).where({:hoppers_lots => {:hopper_id => self.id}})
       if b.length > 0
         errors.add(:foreign_key, 'no se puede eliminar porque tiene registros asociados')
         return
@@ -141,13 +133,8 @@ class Hopper < ActiveRecord::Base
 
       #If there is no main hopper for the hopper ingredient after deleting the hopper
       #set hopper.main to true to the first hopper with the ingredient (if any)
-      current_hopper_lot = HopperLot.find :first,
-                                          :include => [:lot],
-                                          :conditions => ['active = true and hopper_id = ?', self.id]
-      hoppers = Hopper.find :all,
-                            :include => {:hopper_lot => [:lot]},
-                            :conditions => ['hoppers.id != ? and hoppers_lots.active = true and lots.ingredient_id = ?', self.id, current_hopper_lot.lot.ingredient_id],
-                            :order => ['hoppers.scale_id, hoppers.number ASC']
+      current_hopper_lot = HopperLot.includes(:lot).where(:active => true, :hopper_id => self.id).first
+      hoppers = Hopper.includes({:hopper_lot => [:lot]}).where(['hoppers.id != ? and hoppers_lots.active = true and lots.ingredient_id = ?', self.id, current_hopper_lot.lot.ingredient_id]).order('hoppers.scale_id, hoppers.number ASC')
       unless hoppers.empty?
         if hoppers.select {|hopper| hopper.main == true}.empty?
           hoppers.first.main = true
@@ -167,13 +154,9 @@ class Hopper < ActiveRecord::Base
     end
   end
 
-
   def self.find_actives(scale_id)
     actives = []
-    hoppers_lots = HopperLot.find :all,
-                                  :include => {:hopper => {}, :lot => {:ingredient => {}}}, 
-                                  :conditions => {:active => true, :hoppers => {:scale_id => scale_id}},
-                                  :order => ['hoppers.number ASC']
+    hoppers_lots = HopperLot.includes({:hopper => {}, :lot => {:ingredient => {}}}).where({:active => true, :hoppers => {:scale_id => scale_id}}).order('hoppers.number ASC')
     hoppers_lots.each do |hl|
       stock_string = "#{hl.stock} Kg"
       unless hl.hopper.capacity.nil? or hl.lot.density.nil?
@@ -189,15 +172,12 @@ class Hopper < ActiveRecord::Base
         :stock_below_minimum => hl.hopper.stock_below_minimum
       }
     end
-    return actives
+    actives
   end
 
   def self.actives_to_select
     actives = []
-    hoppers_lots = HopperLot.find :all,
-                                  :include => {:hopper => {}, :lot => {:ingredient => {}}},
-                                  :conditions => {:active => true},
-                                  :order => ['hoppers.scale_id, hoppers.number ASC']
+    hoppers_lots = HopperLot.includes({:hopper => {}, :lot => {:ingredient => {}}}).where({:active => true}).order('hoppers.scale_id, hoppers.number ASC')
     hoppers_lots.each do |hl|
       actives << ["Tolva #{hl.hopper.name} - #{hl.lot.ingredient.name} (L: #{hl.lot.code})", hl.id]
     end
@@ -207,10 +187,7 @@ class Hopper < ActiveRecord::Base
   def self.set_main_hoppers
     Hopper.update_all('main = false')
     main_hoppers = {}
-    hoppers_lots = HopperLot.find :all,
-                                  :include => {:hopper => {}, :lot => {}},
-                                  :conditions => {:active => true},
-                                  :order => ['hoppers.scale_id, hoppers.number ASC']
+    hoppers_lots = HopperLot.includes({:hopper => {}, :lot => {}}).where({:active => true}).order('hoppers.scale_id, hoppers.number ASC')
     hoppers_lots.each do |hopper_lot|
       unless main_hoppers.has_key? hopper_lot.lot.ingredient_id
         main_hoppers[hopper_lot.lot.ingredient_id] = hopper_lot.hopper_id

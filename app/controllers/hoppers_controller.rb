@@ -65,6 +65,7 @@ class HoppersController < ApplicationController
 
   def change
     @hopper = Hopper.find params[:id]
+    @current_lot = @hopper.current_lot
     @lots = Lot.find :all,
                      :include => :ingredient,
                      :conditions => {:active => true, :in_use => true}
@@ -74,11 +75,18 @@ class HoppersController < ApplicationController
 	@hopper = Hopper.find params[:id]
 	if @hopper.change(params[:change], session[:user_id])
 	  flash[:notice] = "Cambio de lote realizado con éxito"
+	  current_hopper_lot = @hopper.current_hopper_lot
+	  factory_lots = Lot.where(['client_id is not null and active = true and in_use = true and ingredient_id = ?', current_hopper_lot.lot.ingredient_id]).count
+	  if factory_lots > 0
+	    redirect_to change_factory_lots_scale_hopper_path(@hopper.scale_id, @hopper.id)
+	  else
+	    redirect_to scale_path(@hopper.scale_id)
+	  end
 	else
 	  flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar el lote de la tolva"
+      redirect_to scale_path(@hopper.scale_id)
     end
-	redirect_to scale_path(@hopper.scale_id)
   end
 
   def adjust
@@ -117,6 +125,28 @@ class HoppersController < ApplicationController
     end
     redirect_to scale_path(@hopper.scale_id)
   end
+
+  def change_factory_lots
+    @hopper = Hopper.find params[:id]
+    @current_hopper_lot = @hopper.current_hopper_lot
+    @current_hopper_lot.generate_hoppers_factory_lots if @current_hopper_lot.hoppers_factory_lots.count == 0
+    @factory_lots = Lot.find_by_factory(@current_hopper_lot.lot)
+  end
+
+  def do_change_factory_lots
+    @hopper = Hopper.find params[:id]
+    @current_hopper_lot = @hopper.current_hopper_lot
+    @current_hopper_lot.update_attributes(params[:hopper_lot])
+    if @current_hopper_lot.save
+      flash[:notice] = "Lotes por fábrica actualizados con éxito"
+      redirect_to scale_path(@hopper.scale_id)
+    else
+      change_factory_lots
+      render :change_factory_lots
+    end
+    
+  end
+
   private
 
   def fill_new

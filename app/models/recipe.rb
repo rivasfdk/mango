@@ -2,7 +2,7 @@
 
 class Recipe < ActiveRecord::Base
   has_many :ingredient_recipe, :dependent => :destroy
-  has_many :order
+  has_many :order, inverse_of: :recipe
 
   validates_presence_of :name, :code
   #validates_uniqueness_of :code

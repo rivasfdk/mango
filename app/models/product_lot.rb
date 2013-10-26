@@ -3,7 +3,7 @@ class ProductLot < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :client
-  has_many :order
+  has_many :order, inverse_of: :product_lot
 
   has_one :product_lot_parameter_list
 

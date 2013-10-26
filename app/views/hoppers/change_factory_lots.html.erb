@@ -1,0 +1,31 @@
+<% title "Editar lotes de tolva por fábrica" %>
+<%= form_for @current_hopper_lot, :url=>change_factory_lots_scale_hopper_path(@hopper.scale_id, @hopper.id), :html=>{:method=>:put, :id=>'hopper_change_factory_lots_form'} do |f| %>
+<%= render_error_messages(f.error_messages) %>
+<label for="hopper" class="small">Tolva:</label>
+<div class="field"><%=h "#{@hopper.number} - #{@hopper.name}" %></div>
+<label for="hopper_lot" class="small">Contenido:</label>
+<div class="field"><%=h "#{@current_hopper_lot.lot.ingredient.code} - #{@current_hopper_lot.lot.ingredient.name} (L: #{@current_hopper_lot.lot.code})" %></div><br /><br /><br />
+<div class="clearfix"></div>
+<% i = 0 %>
+<h5>Lotes por fábrica</h5>
+<div id="factory_lots_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Fábrica</th>
+        <th>Lote</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :hoppers_factory_lots do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td><%= builder.object.client.name %></td>
+          <td><%= builder.collection_select :lot_id, @factory_lots[builder.object.client_id], :id, :to_collection_select, {:include_blank => "Ninguno"}, :class=>'chzn-select chzn-field-normal' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot></tfoot>
+  </table>
+</div>
+<% end %>

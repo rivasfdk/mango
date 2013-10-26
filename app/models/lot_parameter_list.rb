@@ -2,9 +2,9 @@ class LotParameterList < ActiveRecord::Base
   has_many :lot_parameters, :dependent => :destroy
   belongs_to :lot
 
-  accepts_nested_attributes_for :lot_parameters
+  validates :lot, presence: true
 
-  validates_presence_of :lot
+  accepts_nested_attributes_for :lot_parameters
 
   after_create :generate_lot_parameters
 

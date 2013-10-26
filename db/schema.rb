@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131018004923) do
+ActiveRecord::Schema.define(:version => 20131026145032) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -120,6 +120,18 @@ ActiveRecord::Schema.define(:version => 20131018004923) do
 
   add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
 
+  create_table "hoppers_factory_lots", :force => true do |t|
+    t.integer  "hopper_lot_id"
+    t.integer  "client_id"
+    t.integer  "lot_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "hoppers_factory_lots", ["client_id"], :name => "fk_hoppers_factory_lots_client_id"
+  add_index "hoppers_factory_lots", ["hopper_lot_id"], :name => "fk_hoppers_factory_lots_hopper_lot_id"
+  add_index "hoppers_factory_lots", ["lot_id"], :name => "fk_hoppers_factory_lots_lot_id"
+
   create_table "hoppers_lots", :force => true do |t|
     t.integer  "hopper_id"
     t.integer  "lot_id"
@@ -127,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20131018004923) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "stock",      :default => 0.0
+    t.boolean  "factory",    :default => false, :null => false
   end
 
   add_index "hoppers_lots", ["hopper_id"], :name => "fk_hoppers_lots_hopper_id"

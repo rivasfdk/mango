@@ -28,19 +28,20 @@
         <% end %>
         <td class="center">
           <%= check_box_tag :main, 
-                            set_as_main_hopper_path(obj[:hopper_id]),
+                            set_as_main_hopper_path(@scale, obj[:hopper_id]),
                             obj[:main],
                             :disabled => obj[:main],
                             :onclick => "window.location = this.value;" %>
         </td>
-        <td class="center">
-          <%= render_action_change_hopper_lot(change_scale_hopper_path(@scale.id, obj[:hopper_id])) %> <br />
+        <td class="left">
+          <%= render_action_change_hopper_lot(change_scale_hopper_path(@scale.id, obj[:hopper_id])) %><br />
+          <%= render_action_factory_lots(change_factory_lots_scale_hopper_path(@scale.id, obj[:hopper_id])) %><br />
           <% unless @scale.not_weighed %>
             <%= render_action_fill_hopper(fill_scale_hopper_path(@scale.id, obj[:hopper_id])) %>
             <%= render_action_adjust(adjust_scale_hopper_path(@scale.id, obj[:hopper_id])) %> <br />
           <% end %>
           <%= render_action_edit(edit_scale_hopper_path(@scale.id, obj[:hopper_id])) %>
-          <%= render_action_delete(scale_hopper_path(@scale.id, obj[:hopper_id]), "Desea borrar la tolva '#{obj[:number]}'?") %>
+          <%= render_action_delete(scale_hopper_path(@scale.id, obj[:hopper_id]), "Desea borrar la tolva '#{obj[:number]}'?") %><br />
         </td>
       </tr>
     <% end %>
@@ -54,4 +55,3 @@
 <% else %>
 <p>No hay tolvas asociadas a esta balanza</p>
 <% end %>
-
