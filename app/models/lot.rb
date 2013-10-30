@@ -16,8 +16,8 @@ class Lot < ActiveRecord::Base
   validate :factory
 
   def factory
-    errors.add(:client, "no es fábrica") unless self.client.factory
-  end  
+    errors.add(:client, "no es fábrica") if self.client.present? and not self.client.factory
+  end
 
   def check_stock
     ingredient = Ingredient.find self.ingredient_id
