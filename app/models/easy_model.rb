@@ -630,7 +630,7 @@ class EasyModel
   end
 
   def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_code)
-    @orders = Order.find :all, :include=>['batch'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+    @orders = Order.find :all, :include=> {:batch => {:batch_hopper_lot => {:hopper_lot => {:lot => {}}}}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
     return nil if @orders.length.zero?
     
     @ingredient = Ingredient.find_by_code ingredient_code
