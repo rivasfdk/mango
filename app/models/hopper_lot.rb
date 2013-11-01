@@ -46,10 +46,12 @@ class HopperLot < ActiveRecord::Base
 
   def update_factory_lots
     previous = previous_hopper_lot
-    previous.hoppers_factory_lots.each do |hfl|
-      hfl.hopper_lot = self
-      hfl.lot = Lot.where(:ingredient_id => self.lot.ingredient_id, :client_id => hfl.client_id, :active => true, :in_use => true).last unless previous.lot.ingredient_id == self.lot.ingredient_id
-      hfl.save
+    unless previous.nil?
+      previous.hoppers_factory_lots.each do |hfl|
+        hfl.hopper_lot = self
+        hfl.lot = Lot.where(:ingredient_id => self.lot.ingredient_id, :client_id => hfl.client_id, :active => true, :in_use => true).last unless previous.lot.ingredient_id == self.lot.ingredient_id
+        hfl.save
+      end
     end
   end
 
