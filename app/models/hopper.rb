@@ -59,7 +59,7 @@ class Hopper < ActiveRecord::Base
       if current_lot.id == new_lot_id
         logger.debug("lot can't be the same") 
         false
-      elsif amount <= 0
+      elsif amount < 0
         logger.debug("amount can't be less than or equal to 0")
         false
       elsif amount > capacity_in_kg_by_lot(new_lot_id)

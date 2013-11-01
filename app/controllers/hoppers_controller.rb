@@ -123,7 +123,14 @@ class HoppersController < ApplicationController
       flash[:type] = 'error'
       flash[:notice] = "No se pudo realizar el llenado de la tolva"
     end
-    redirect_to scale_path(@hopper.scale_id)
+    respond_to do |format|
+      format.html do
+        redirect_to scale_path(@hopper.scale_id)  
+      end
+      format.xml do
+        render xml: {fill: true}
+      end
+    end
   end
 
   def change_factory_lots
