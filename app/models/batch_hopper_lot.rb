@@ -32,6 +32,6 @@ class BatchHopperLot < ActiveRecord::Base
   private
 
   def update_batch_end_date
-    self.batch.update_column(end_date, self.created_at)
+    self.batch.update_column(:end_date, self.created_at)
   end
 end
