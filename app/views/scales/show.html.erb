@@ -35,7 +35,9 @@
         </td>
         <td class="left">
           <%= render_action_change_hopper_lot(change_scale_hopper_path(@scale.id, obj[:hopper_id])) %><br />
+          <% if @show_hopper_factory_lots %>
           <%= render_action_factory_lots(change_factory_lots_scale_hopper_path(@scale.id, obj[:hopper_id])) %><br />
+          <% end %>
           <% unless @scale.not_weighed %>
             <%= render_action_fill_hopper(fill_scale_hopper_path(@scale.id, obj[:hopper_id])) %>
             <%= render_action_adjust(adjust_scale_hopper_path(@scale.id, obj[:hopper_id])) %> <br />
