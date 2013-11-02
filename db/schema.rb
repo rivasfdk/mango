@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131026145032) do
+ActiveRecord::Schema.define(:version => 20131102153645) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20131026145032) do
     t.integer  "alarm_type_id", :default => 1
   end
 
+  add_index "alarms", ["alarm_type_id"], :name => "index_alarms_on_alarm_type_id"
   add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
 
   create_table "bases_units", :force => true do |t|

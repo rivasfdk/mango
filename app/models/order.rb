@@ -13,8 +13,8 @@ class Order < ActiveRecord::Base
   has_many :order_stats
 
   validates :recipe, :user, :product_lot, :client, presence: true
-  validates :prog_batches, :real_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
-  validates :real_production, numericality: {allow_nil: true}
+  validates :prog_batches, :real_batches, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :real_production, numericality: { allow_nil: true }
   validate :product_lot_factory
 
   before_validation :validates_real_batchs
