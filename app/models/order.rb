@@ -168,6 +168,7 @@ class Order < ActiveRecord::Base
       batch_hopper_lot = batch.batch_hopper_lot.new
       batch_hopper_lot.hopper_lot_id = hopper_lot.id
       batch_hopper_lot.amount = params[:amount]
+      batch_hopper_lot.standard_amount = order.get_standard_amount(hopper_lot.lot.ingredient_id)
       if batch_hopper_lot.save
         if is_mango_feature_available("transactions")
           batch_hopper_lot.generate_transaction(user_id)
