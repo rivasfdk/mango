@@ -180,7 +180,7 @@ class Order < ActiveRecord::Base
       original_hopper_lot = hopper_lot # Horrible
 
       if order.client.factory
-        hfl = HopperFactoryLot.where(:hopper_lot_id => hopper_lot.id, :client => order.client_id).first
+        hfl = HopperFactoryLot.where(:hopper_lot_id => hopper_lot.id, :client_id => order.client_id).first
         if hfl.present? and hfl.lot_id.present?
           hopper_lot = hopper.hopper_lot.new
           hopper_lot.lot_id = hfl.lot_id
