@@ -2,11 +2,11 @@ class BatchHopperLot < ActiveRecord::Base
   belongs_to :hopper_lot
   belongs_to :batch
 
-  validates_presence_of :batch, :hopper_lot, :amount
-  validates_uniqueness_of :hopper_lot_id, :scope => [:batch_id]
-  validates_numericality_of :amount, :greater_than_or_equal_to => 0
+  validates :batch, :hopper_lot, :amount, presence: true
+  validates :hopper_lot_id, uniqueness: { scope: :batch_id }
+  validates :amount, numericality: { greater_than_or_equal_to: 0 }
 
-  after_save :update_batch_end_date
+  before_save :update_batch_end_date, if: :new_record?
 
   def generate_transaction(user_id)
     t = Transaction.new
