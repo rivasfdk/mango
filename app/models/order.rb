@@ -207,7 +207,7 @@ class Order < ActiveRecord::Base
       standard_amount
     else 
       if self.medicament_recipe_id.present?
-        standard_amount = IngredientRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
+        standard_amount = IngredientMedicamentRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
         standard_amount.nil? ? 0 : standard_amount
       else
         0
