@@ -630,101 +630,31 @@ class EasyModel
   end
 
   def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_code)
-    @orders = Order.find :all, :include=> {:batch => {:batch_hopper_lot => {:hopper_lot => {:lot => {}}}}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
-    return nil if @orders.length.zero?
-    
-    @ingredient = Ingredient.find_by_code ingredient_code
-    return nil if @ingredient.nil?
+    ingredient = Ingredient.find_by_code ingredient_code
+    return nil if ingredient.nil?
 
-    data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['results'] = []
-    data['ingredient'] = "#{@ingredient.code} - #{@ingredient.name}"
-
-    @orders.each do |o|
-      order_ingredients = {}
-      o.recipe.ingredient_recipe.each do |ir|
-        order_ingredients[ir.ingredient.code] = ir.amount
-      end
-      unless o.medicament_recipe.nil?
-        o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-          order_ingredients[imr.ingredient.code] = imr.amount
-        end
-      end
-
-      unless order_ingredients.has_key? ingredient_code
-        next
-      end
-
-      total_std = order_ingredients[ingredient_code] * o.get_real_batches()
-      total_real = 0
-      
-      o.batch.each do |b|
-        b.batch_hopper_lot.each do |bhl|
-          if bhl.hopper_lot.lot.ingredient_id == @ingredient.id
-            total_real += bhl.amount
-            next
-          end
-        end
-      end
-
-      var_kg = total_real - total_std
-      var_perc = var_kg * 100 / total_std
-      rbatches = o.get_real_batches()
-      
-      data['results'] << {
-        'order' => o.code,
-        'date' => o.calculate_short_start_date,
-        'recipe_code' => o.recipe.code,
-        'recipe_name' => o.recipe.name,
-        'recipe_version' => o.recipe.version,
-        'real_batches' => rbatches.to_s,
-        'total_standard' => total_std.to_s,
-        'total_real' => total_real.to_s,
-        'var_kg' => var_kg.to_s,
-        'var_perc' => var_perc.to_s
-      }
+    consumptions = {}
+    batch_hopper_lots = BatchHopperLot
+                         .joins({batch: {}, hopper_lot: {lot: {}}})
+                         .group('batches.order_id')
+                         .select('batches.order_id as order_id, SUM(amount) as total_real, SUM(standard_amount) as total_std')
+                         .where(['batches.created_at >= ? and batches.created_at <= ? and lots.ingredient_id = ?', start_date, end_date, ingredient.id])
+    batch_hopper_lots.each do |bhl|
+      consumptions[bhl.order_id] = {total_std: bhl.total_std, total_real: bhl.total_real}
     end
 
-    return data
-  end
-
-  def self.consumption_per_ingredient_per_orders_fast(start_date, end_date, ingredient_code)
-    #@batch_hopper_lots = BatchHopperLot.joins(batch: {order: {}}).where
-    
-    orders = Order.find :all, :include=> {:batch => {:batch_hopper_lot => {:hopper_lot => {:lot => {}}}}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
-    return nil if @orders.length.zero?
-    
-    @ingredient = Ingredient.find_by_code ingredient_code
-    return nil if @ingredient.nil?
+    orders = Order.includes(:recipe, :batch).where(id: consumptions.keys)
 
     data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
-    data['ingredient'] = "#{@ingredient.code} - #{@ingredient.name}"
+    data['ingredient'] = "#{ingredient.code} - #{ingredient.name}"
 
-    @orders.each do |o|
-      total_std = 0
-      total_real = 0
-      
-      o.batch.each do |b|
-        b.batch_hopper_lot.each do |bhl|
-          if bhl.hopper_lot.lot.ingredient_id == @ingredient.id
-            total_std += bhl.standard_amount
-            total_real += bhl.amount
-            next
-          end
-        end
-      end
-
-      if total_std == 0
-        next
-      end
-
-      var_kg = total_real - total_std
-      var_perc = var_kg * 100 / total_std
+    orders.each do |o|
+    
+      var_kg = consumptions[o.id][:total_real] - consumptions[o.id][:total_std]
+      var_perc = var_kg * 100 / consumptions[o.id][:total_std]
       rbatches = o.get_real_batches()
 
       data['results'] << {
@@ -734,8 +664,8 @@ class EasyModel
         'recipe_name' => o.recipe.name,
         'recipe_version' => o.recipe.version,
         'real_batches' => rbatches.to_s,
-        'total_standard' => total_std.to_s,
-        'total_real' => total_real.to_s,
+        'total_standard' => consumptions[o.id][:total_std].to_s,
+        'total_real' => consumptions[o.id][:total_real].to_s,
         'var_kg' => var_kg.to_s,
         'var_perc' => var_perc.to_s
       }
