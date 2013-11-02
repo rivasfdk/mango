@@ -6,7 +6,7 @@ class BatchHopperLot < ActiveRecord::Base
   validates :hopper_lot_id, uniqueness: { scope: :batch_id }
   validates :amount, :standard_amount, numericality: { greater_than_or_equal_to: 0 }
 
-  before_save :update_batch_end_date, if: :new_record?
+  after_create :update_batch_end_date
 
   def generate_transaction(user_id)
     t = Transaction.new
