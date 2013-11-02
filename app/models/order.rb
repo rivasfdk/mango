@@ -30,16 +30,11 @@ class Order < ActiveRecord::Base
 
   def validates_real_batchs
     self.real_batches = 0 if self.real_batches.nil?
-    return true
+    true
   end
 
   def calculate_short_start_date
-    start_date = Batch.where(:order_id=>self.id).minimum('created_at')
-    unless start_date.nil?
-      return start_date.strftime("%d/%m/%Y")
-    else
-      return "??/??/????"
-    end
+    self.batch.first.nil? ? "??/??/???? ??:??:??" : self.batch.first.start_date.strftime("%d/%m/%Y")
   end
 
   def calculate_start_date
@@ -51,22 +46,16 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_duration
-    start_date = Batch.where(:order_id=>self.id).minimum('created_at')
-    last_batch = Batch.find(:first, :conditions => ["number = ? and order_id = ?", Batch.where(:order_id=>self.id).maximum('number'), self.id])
-    end_date = BatchHopperLot.where(:batch_id=>last_batch.id).maximum('created_at')
+    start_date = self.batch.first.nil? ? nil : self.batch.first.start_date
+    end_date = self.batch.last.nil? ? nil : self.batch.last.end_date
 
-    start_date_string = start_date.strftime("%H:%M:%S") rescue "??:??:??"
-    end_date_string = end_date.strftime("%H:%M:%S") rescue "??:??:??"
+    start_date_string = start_date.nil? ? "??:??:??" : start_date.strftime("%H:%M:%S") 
+    end_date_string = end_date.nil? ? "??:??:??" : end_date.strftime("%H:%M:%S")
     duration_value = 0
-    if not start_date.nil? and not end_date.nil?
-      duration_value = (end_date.to_i - start_date.to_i) / 60.0
-    end
 
-    return {
-      'start_date' => start_date_string,
-      'end_date' => end_date_string,
-      'duration' => duration_value
-    }
+    duration_value = (end_date.to_i - start_date.to_i) / 60.0 unless start_date.nil? or end_date.nil?
+
+    {start_date: start_date_string, end_date: end_date_string, duration: duration_value}
   end
 
   def get_real_batches
@@ -147,7 +136,7 @@ class Order < ActiveRecord::Base
     errors = []
     # Add some shitty error handling
     if errors.empty?
-      order = Order.find_by_code params[:order_code], :include => :client
+      order = Order.find_by_code params[:order_code], include: {client: {}, recipe: {ingredient_recipe: {}}, medicament_recipe: {ingredient_medicament_recipe: {}}}
       batch = order.batch.find_or_create_by_number params[:batch_number]
       if batch.new_record?
         now = Time.now
@@ -159,14 +148,14 @@ class Order < ActiveRecord::Base
         logger.debug("Errores de batch")
         logger.debug(batch.errors.messages)
       end
-      hopper = Hopper.where({:scale_id => params[:scale_id], 
-                             :number => params[:hopper_number]}).first
+      hopper = Hopper.where({scale_id: params[:scale_id], 
+                             number: params[:hopper_number]}).first
 
       hopper_lot = hopper.current_hopper_lot
       original_hopper_lot = hopper_lot # Horrible
 
       if order.client.factory
-        hfl = HopperFactoryLot.where(:hopper_lot_id => hopper_lot.id, :client_id => order.client_id).first
+        hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot.id, client_id: order.client_id).first
         if hfl.present? and hfl.lot_id.present?
           hopper_lot = hopper.hopper_lot.new
           hopper_lot.lot_id = hfl.lot_id
@@ -192,7 +181,7 @@ class Order < ActiveRecord::Base
         logger.debug(batch_hopper_lot.errors.messages)
       end
     end
-    return errors
+    errors
   end
 
   def self.consumption_exists(params)
@@ -202,8 +191,8 @@ class Order < ActiveRecord::Base
                   params[:batch_number],
                   params[:scale_id],
                   params[:hopper_number]]
-    BatchHopperLot.includes({:batch => {:order => {}}, 
-                             :hopper_lot => {:hopper => {}}}).where(conditions).any?
+    BatchHopperLot.includes({batch: {order: {}},
+                             hopper_lot: {hopper: {}}}).where(conditions).any?
   end
 
   def close(user_id)
@@ -215,7 +204,7 @@ class Order < ActiveRecord::Base
   def generate_transactions(user_id)
     consumptions = {}
     order_transactions = self.transactions
-    batches = Batch.includes({:batch_hopper_lot => {:hopper_lot => {}}}).where(:order_id => self.id)
+    batches = Batch.includes({batch_hopper_lot: {hopper_lot: {}}}).where(order_id: self.id)
     batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot_id
@@ -265,12 +254,12 @@ class Order < ActiveRecord::Base
 
   def self.search(params)
     @orders = Order.includes(:recipe)
-    @orders = @orders.where(:code => params[:code]) if params[:code].present?
+    @orders = @orders.where(code: params[:code]) if params[:code].present?
     @orders = @orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
-    @orders = @orders.where(:client_id => params[:client_id]) if params[:client_id].present?
+    @orders = @orders.where(client_id: params[:client_id]) if params[:client_id].present?
     @orders = @orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     @orders = @orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
     @orders = @orders.order('orders.created_at DESC')
-    @orders.paginate :page => params[:page], :per_page => params[:per_page]
+    @orders.paginate page: params[:page], per_page: params[:per_page]
   end
 end

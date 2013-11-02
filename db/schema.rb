@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131102153645) do
+ActiveRecord::Schema.define(:version => 20131102170212) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -40,9 +40,10 @@ ActiveRecord::Schema.define(:version => 20131102153645) do
   create_table "batch_hoppers_lots", :force => true do |t|
     t.integer  "batch_id"
     t.integer  "hopper_lot_id"
-    t.float    "amount",        :null => false
+    t.float    "amount",                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "standard_amount", :default => 0.0, :null => false
   end
 
   add_index "batch_hoppers_lots", ["batch_id"], :name => "fk_batch_hoppers_lots_batch_id"

@@ -6,6 +6,7 @@
       <tr>
         <th>Tolva<span class="order_arrow"></span></th>
         <th>Cantidad<span class="order_arrow"></span></th>
+        <th>Estándar<span class="order_arrow"></span></th>
         <th class="actions_medium">Acciones</th>
       </tr>
     </thead>
@@ -15,6 +16,7 @@
           <%= f.select :hopper_lot_id, @hoppers, {:include_blank => true}, :class=>'chzn-select chzn-done chzn-field-normal' %>
         </td>
         <td><%= f.text_field :amount, :size=>10 %></td>
+        <td><%= f.text_field :standard_amount, :size=>10 %></td>
         <td><%= submit_tag 'Agregar' %></td>
       </tr>
       <% @batch.batch_hopper_lot.each do |bh| %>
@@ -23,6 +25,7 @@
           <% name = bh.hopper_lot.hopper.name == " " ? bh.hopper_lot.hopper.number : bh.hopper_lot.hopper.name %>
           <td><%=h "Tolva #{name} - #{bh.hopper_lot.lot.ingredient.name} - (L: #{bh.hopper_lot.lot.code})" %></td>
           <td><%=h bh.amount %></td>
+          <td><%=h bh.standard_amount %></td>
           <td><%= render_action_delete(batch_hopper_lot_path(@batch, bh), "Desea eliminar el detalle?") %></td>
         </tr>
       <% end %>
