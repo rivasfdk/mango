@@ -1,11 +1,11 @@
 class Scale < ActiveRecord::Base
   has_many :hoppers
-  validates_presence_of :name
-  validates_uniqueness_of :name
-  validates_uniqueness_of :not_weighed, :if => :not_weighed
-  validates_presence_of :maximum_weight, :minimum_weight, :unless => :not_weighed
-  validates_numericality_of :minimum_weight, :greater_than_or_equal_to => 0, :less_than => :maximum_weight, :allow_nil => true
-  validates_numericality_of :maximum_weight, :greater_than => 0, :allow_nil => true
+  validates :name, presence: true
+  validates :name, uniqueness: true
+  validates :not_weighed, uniqueness: { if: :not_weighed }
+  validates :maximum_weight, :minimum_weight, presence: { unless: :not_weighed }
+  validates :minimum_weight, numericality: { greater_than_or_equal_to: 0, less_than: :maximum_weight, allow_nil: true }
+  validates :maximum_weight, numericality: { greater_than: 0, allow_nil: true }
 
   def self.get_all
     scales = Scale.includes(:hoppers).order('not_weighed')
