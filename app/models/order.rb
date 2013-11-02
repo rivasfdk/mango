@@ -43,25 +43,11 @@ class Order < ActiveRecord::Base
   end
 
   def calculate_start_date
-    start_date = Batch.where(:order_id=>self.id).minimum('created_at')
-    unless start_date.nil?
-      return start_date.strftime("%d/%m/%Y %H:%M:%S")
-    else
-      return "??/??/???? ??:??:??"
-    end
+    self.batch.first.nil? ? "??/??/???? ??:??:??" : self.batch.first.start_date.strftime("%d/%m/%Y %H:%M:%S")
   end
 
   def calculate_end_date
-    last_batch = self.batch.last
-    if last_batch.nil?
-      return "??/??/???? ??:??:??"
-    end
-    end_date = last_batch.batch_hopper_lot.last.created_at # last_batch.created_at for new orders
-    unless end_date.nil?
-      return end_date.strftime("%d/%m/%Y %H:%M:%S")
-    else
-      return "??/??/???? ??:??:??"
-    end
+    self.batch.last.nil? ? "??/??/???? ??:??:??" : self.batch.last.end_date.strftime("%d/%m/%Y %H:%M:%S")
   end
 
   def calculate_duration
