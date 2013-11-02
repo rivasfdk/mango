@@ -201,6 +201,20 @@ class Order < ActiveRecord::Base
     self.save
   end
 
+  def get_standard_amount(ingredient_id)
+    standard_amount = IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
+    unless standard_amount.nil?
+      standard_amount
+    else 
+      if self.medicament_recipe_id.present?
+        standard_amount = IngredientRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
+        standard_amount.nil? ? 0 : standard_amount
+      else
+        0
+      end
+    end
+  end
+
   def generate_transactions(user_id)
     consumptions = {}
     order_transactions = self.transactions
