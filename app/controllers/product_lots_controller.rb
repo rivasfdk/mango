@@ -21,21 +21,21 @@ class ProductLotsController < ApplicationController
   def new
     @products = Product.find :all, :order => 'code ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
-    session[:return_to] = request.referer.nil? ? :product_lots : request.referer
+    session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end
 
   def edit
     @lot = ProductLot.find params[:id]
     @products = Product.find :all, :order => 'code ASC'
     @factories = Client.find :all, :conditions => {:factory => true}
-    session[:return_to] = request.referer.nil? ? :product_lots : request.referer
+    session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end
 
   def create
     @lot = ProductLot.new params[:lot]
     if @lot.save
-      flash[:notice] = 'ProductLot. guardado con éxito'
-      redirect_to redirect_to session[:return_to]
+      flash[:notice] = 'Lote de producto guardado con éxito'
+      redirect_to session[:return_to]
     else
       new
       render :new
