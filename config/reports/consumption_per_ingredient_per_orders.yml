@@ -118,12 +118,12 @@ report:
             date:
               label: Fecha
               align: left
-              width: 18
+              width: 23
           3:
             recipe_code:
               label: Receta
               align: left
-              width: 35
+              width: 30
           4:
             recipe_name:
               label: Desc. Receta

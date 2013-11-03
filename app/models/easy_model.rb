@@ -651,7 +651,7 @@ class EasyModel
 
       data['results'] << {
         'order' => bhl[:order_code],
-        'date' => bhl[:start_date],
+        'date' => bhl[:start_date].strftime("%Y-%m-%d"),
         'recipe_code' => bhl[:recipe_code],
         'recipe_name' => bhl[:recipe_name],
         'recipe_version' => bhl[:recipe_version],
