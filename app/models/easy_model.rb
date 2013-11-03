@@ -633,17 +633,11 @@ class EasyModel
     ingredient = Ingredient.find_by_code ingredient_code
     return nil if ingredient.nil?
 
-    consumptions = {}
     batch_hopper_lots = BatchHopperLot
-                         .joins({batch: {}, hopper_lot: {lot: {}}})
-                         .group('batches.order_id')
-                         .select('batches.order_id as order_id, SUM(amount) as total_real, SUM(standard_amount) as total_std')
-                         .where(['batches.created_at >= ? and batches.created_at <= ? and lots.ingredient_id = ?', start_date, end_date, ingredient.id])
-    batch_hopper_lots.each do |bhl|
-      consumptions[bhl.order_id] = {total_std: bhl.total_std, total_real: bhl.total_real}
-    end
-
-    orders = Order.includes(:recipe, :batch).where(id: consumptions.keys)
+                        .joins({batch: {order: {recipe: {}}}, hopper_lot: {lot: {}}})
+                        .select('orders.code AS order_code, MIN(batches.start_date) AS start_date, recipes.code AS recipe_code, recipes.name AS recipe_name, recipes.version AS recipe_version, COUNT(batches.id) AS real_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .where(['batches.created_at >= ? AND batches.created_at <= ? AND lots.ingredient_id = ?', start_date, end_date + 1.day, ingredient.id])
+                        .group('batches.order_id')
 
     data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
     data['since'] = self.print_range_date(start_date)
@@ -651,21 +645,19 @@ class EasyModel
     data['results'] = []
     data['ingredient'] = "#{ingredient.code} - #{ingredient.name}"
 
-    orders.each do |o|
-    
-      var_kg = consumptions[o.id][:total_real] - consumptions[o.id][:total_std]
-      var_perc = var_kg * 100 / consumptions[o.id][:total_std]
-      rbatches = o.get_real_batches()
+    batch_hopper_lots.each do |bhl|
+      var_kg = bhl[:total_real] - bhl[:total_std]
+      var_perc = var_kg * 100 / bhl[:total_std]
 
       data['results'] << {
-        'order' => o.code,
-        'date' => o.calculate_short_start_date,
-        'recipe_code' => o.recipe.code,
-        'recipe_name' => o.recipe.name,
-        'recipe_version' => o.recipe.version,
-        'real_batches' => rbatches.to_s,
-        'total_standard' => consumptions[o.id][:total_std].to_s,
-        'total_real' => consumptions[o.id][:total_real].to_s,
+        'order' => bhl[:order_code],
+        'date' => bhl[:start_date],
+        'recipe_code' => bhl[:recipe_code],
+        'recipe_name' => bhl[:recipe_name],
+        'recipe_version' => bhl[:recipe_version],
+        'real_batches' => bhl[:real_batches].to_s,
+        'total_standard' => bhl[:total_std].to_s,
+        'total_real' => bhl[:total_real].to_s,
         'var_kg' => var_kg.to_s,
         'var_perc' => var_perc.to_s
       }
