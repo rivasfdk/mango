@@ -868,7 +868,7 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot
                         .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {recipe: {}}}})
-                        .select('lots.code AS lot_code, ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .select('ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
                         .order('ingredients.code')
                         .group('ingredients.id')
@@ -935,7 +935,7 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot
                         .joins({hopper_lot: {lot: {ingredient: {}}}})
-                        .select('lots.code AS lot_code, ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .select('ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where(batch_hoppers_lots: {created_at: start_date..end_date + 1.day})
                         .order('ingredients.code')
                         .group('ingredients.id')
@@ -970,7 +970,7 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot
                         .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {}}})
-                        .select('lots.code AS lot_code, ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .select('ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, orders: {client_id: client_id}})
                         .order('ingredients.code')
                         .group('ingredients.id')
@@ -1391,7 +1391,7 @@ class EasyModel
     data['company_name'] = company['name']
     data['company_address'] = company['address']
     data['company_rif'] = company['rif']
-    data['company_logo'] = company['logo']
+    data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/#{company['logo']}"
     data['footer'] = company['footer']
 
     return data

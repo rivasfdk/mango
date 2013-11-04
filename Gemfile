@@ -20,3 +20,5 @@ end
 gem 'prototype-rails'
 
 gem 'passenger'
+gem 'thinreports'
+gem 'thinreports-rails'
