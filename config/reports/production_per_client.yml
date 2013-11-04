@@ -130,7 +130,7 @@ report:
               align: right
               width: 20
               totalize: true
-              precision: 2
+              precision: 0
           5:
             std_kg:
               label: Cant. Est.

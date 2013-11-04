@@ -1339,36 +1339,23 @@ class EasyModel
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{:ingredient=>{}}}}}, :recipe=>{:ingredient_recipe=>{:ingredient=>{}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND orders.client_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), client.id], :order=>['batches.start_date DESC']
+    batch_hopper_lots = BatchHopperLot
+                        .joins({batch: {order: {recipe: {}}}})
+                        .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, orders: {client_id: client_id}})
+                        .order('orders.code')
+                        .group('batches.order_id')
 
-    orders.each do |o|
-      std = 0
-      real = 0
-      nominal = 0
+    return nil if batch_hopper_lots.empty?
 
-      o.recipe.ingredient_recipe.each do |ir|
-        nominal += ir.amount
-      end
-      unless o.medicament_recipe.nil?
-        o.medicament_recipe.ingredient_medicament_recipe.each do |imr|
-          nominal += imr.amount
-        end
-      end
-
-      o.batch.each do |b|
-        std += nominal
-        b.batch_hopper_lot.each do |bhl|
-          real += bhl.amount
-        end
-      end
-
+    batch_hopper_lots.each do |bhl|
       data['results'] << {
-        'order' => o.code,
-        'recipe_code' => o.recipe.code,
-        'recipe_name' => o.recipe.name,
-        'real_batches' => o.get_real_batches(),
-        'std_kg' => std.to_s,
-        'real_kg' => real.to_s,
+        'order' => bhl[:order_code],
+        'recipe_code' => bhl[:recipe_code],
+        'recipe_name' => bhl[:recipe_name],
+        'real_batches' => bhl[:num_batches],
+        'std_kg' => bhl[:total_std],
+        'real_kg' => bhl[:total_real],
       }
     end
 
