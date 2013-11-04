@@ -559,36 +559,33 @@ class EasyModel
   end
 
   def self.daily_production(start_date, end_date)
-    @orders = Order.find :all, :include=>['batch', 'recipe', 'medicament_recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
-    return nil if @orders.length.zero?
-
     data = self.initialize_data('Produccion Diaria por Fabrica')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    @orders.each do |o|
-      rtotal = Batch.get_real_total(o.id)
-      rbatches = o.get_real_batches
-      stotal = 0
-      unless o.medicament_recipe.nil?
-        stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
-      else
-        stotal = o.recipe.get_total() * rbatches
-      end
-      var_kg = rtotal - stotal
-      var_perc = (var_kg * 100.0) / stotal
+    batch_hopper_lots = BatchHopperLot
+                        .joins({batch: {order: {recipe: {}, client: {}}}})
+                        .select('orders.code AS order_code, MIN(batches.start_date) AS order_start_date, recipes.code AS recipe_code, recipes.name AS recipe_name, recipes.version AS recipe_version, clients.code AS client_code, clients.name AS client_name, MAX(batches.number) AS num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .where(batches: {created_at: start_date .. end_date + 1.day})
+                        .group('batches.order_id')
+
+    return nil if batch_hopper_lots.empty?
+
+    batch_hopper_lots.each do |bhl|
+      var_kg = bhl[:total_real] - bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       data['results'] << {
-        'order' => o.code,
-        'date' => o.calculate_short_start_date,
-        'recipe_code' => o.recipe.code,
-        'recipe_name' => o.recipe.name,
-        'recipe_version' => o.recipe.version,
-        'client_code' => o.client.code,
-        'client_name' => o.client.name,
-        'real_batches' => rbatches.to_s,
-        'total_standard' => stotal.to_s,
-        'total_real' => rtotal.to_s,
+        'order' => bhl[:order_code],
+        'date' => bhl[:order_start_date].strftime("%Y-%m-%d"),
+        'recipe_code' => bhl[:recipe_code],
+        'recipe_name' => bhl[:recipe_name],
+        'recipe_version' => bhl[:recipe_version],
+        'client_code' => bhl[:client_code],
+        'client_name' => bhl[:client_name],
+        'real_batches' => bhl[:num_batches],
+        'total_standard' => bhl[:total_std].to_s,
+        'total_real' => bhl[:total_real].to_s,
         'var_kg' => var_kg.to_s,
         'var_perc' => var_perc.to_s
       }
@@ -667,44 +664,35 @@ class EasyModel
   end
 
   def self.order_duration(start_date, end_date)
-    @orders = Order.find :all, :include=>['batch', 'recipe', 'client'], :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
-    return nil if @orders.length.zero?
-
     data = self.initialize_data('Duracion de Orden de Produccion')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    std_total = 0
-    real_total = 0
-    @orders.each do |o|
-      rtotal = Batch.get_real_total(o.id)
-      rbatches = o.get_real_batches
-      stotal = 0
-      unless o.medicament_recipe.nil?
-        stotal = (o.recipe.get_total() + o.medicament_recipe.get_total()) * rbatches
-      else
-        stotal = o.recipe.get_total() * rbatches
-      end
-      d = o.calculate_duration
-      order_duration = d[:duration]
-      start_time = d[:start_date]
-      end_time = d[:end_date]
-      average_batch_duration = order_duration / rbatches rescue 0
-      average_tons_per_hour = rtotal / (order_duration / 60) / 1000 rescue 0
+    batch_hopper_lots = BatchHopperLot
+                        .joins({batch: {order: {recipe: {}, client: {}}}})
+                        .select('orders.code AS order_code, MIN(batches.start_date) AS start_date, MAX(batches.end_date) AS end_date, recipes.name AS recipe_name, MAX(batches.number) AS num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .where(batches: {created_at: start_date .. end_date + 1.day})
+                        .group('batches.order_id')
+
+    return nil if batch_hopper_lots.empty?
+
+    batch_hopper_lots.each do |bhl|
+      order_duration = (bhl[:end_date] - bhl[:start_date]) / 60
+      average_batch_duration = order_duration / bhl[:num_batches]
+      average_tons_per_hour = bhl[:total_real] / (order_duration / 60) / 1000
       data['results'] << {
-        'order' => o.code,
-        'date' => o.calculate_short_start_date,
-        'recipe_code' => o.recipe.code,
-        'recipe_name' => o.recipe.name,
+        'order' => bhl[:order_code],
+        'date' => bhl[:start_date].strftime("%Y-%m-%d"),
+        'recipe_name' => bhl[:recipe_name],
         'average_tons_per_hour' => average_tons_per_hour.to_s,
         'average_batch_duration' => average_batch_duration.to_s,
         'order_duration' => order_duration.to_s,
-        'real_batches' => rbatches.to_s,
-        'start_time' => start_time,
-        'end_time' => end_time,
-        'total_real' => rtotal.to_s,
-        'total_standard' => stotal.to_s
+        'real_batches' => bhl[:num_batches],
+        'start_time' => bhl[:start_date].strftime('%H:%M:%S'),
+        'end_time' => bhl[:end_date].strftime('%H:%M:%S'),
+        'total_standard' => bhl[:total_std].to_s,
+        'total_real' => bhl[:total_real].to_s
       }
     end
 
@@ -1298,7 +1286,6 @@ class EasyModel
                         .joins({batch: {order: {recipe: {}, client: {}}}})
                         .select('orders.code AS order_code, clients.code AS client_code, clients.name AS client_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
-                        .order('batches.order_id')
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
@@ -1331,7 +1318,6 @@ class EasyModel
                         .joins({batch: {order: {recipe: {}}}})
                         .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, orders: {client_id: client_id}})
-                        .order('batches.order_id')
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?

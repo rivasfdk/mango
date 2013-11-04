@@ -105,65 +105,55 @@ report:
             date:
               label: Fecha
               align: left
-              width: 18
+              width: 20
           3:
-            recipe_code:
+            recipe_name:
               label: Receta
               align: left
-              width: 25
+              width: 50
           4:
-            recipe_name:
-              label: Desc. Receta
-              align: left
-              width: 43
-          5:
             recipe_version:
               label: Version
               align: center
-              width: 12
-          6:
-            client_code:
+              width: 22
+          5:
+            client_name:
               label: Cliente
               align: left
-              width: 12
-          7:
-            client_name:
-              label: Desc. Cliente
-              align: left
-              width: 40
-          8:
+              width: 45
+          6:
             real_batches:
               label: Baches
               align: right
               width: 10
               totalize: true
-          9:
+          7:
             total_standard:
               label: Total Est.(Kg)
               align: right
               width: 25
               totalize: true
               precision: 2
-          10:
+          8:
             total_real:
               label: Total Real (Kg)
               align: right
               width: 28
               totalize: true
               precision: 2
-          11:
+          9:
             var_kg:
               label: Var (Kg)
               align: right
               width: 20
               totalize: true
               precision: 2
-          12:
+          10:
             var_perc:
               label: Var (%)
               align: right
               unit: '%'
-              width: 15
+              width: 20
               perc_totalize: true
               perc_num: 'var_kg'
               perc_dem: 'total_standard'

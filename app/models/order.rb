@@ -51,9 +51,8 @@ class Order < ActiveRecord::Base
 
     start_date_string = start_date.nil? ? "??:??:??" : start_date.strftime("%H:%M:%S") 
     end_date_string = end_date.nil? ? "??:??:??" : end_date.strftime("%H:%M:%S")
-    duration_value = 0
 
-    duration_value = (end_date.to_i - start_date.to_i) / 60.0 unless start_date.nil? or end_date.nil?
+    duration_value = (start_date.nil? or end_date.nil?) ? 0 : (end_date - start_date) / 60.0
 
     {start_date: start_date_string, end_date: end_date_string, duration: duration_value}
   end

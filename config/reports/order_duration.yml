@@ -105,58 +105,53 @@ report:
             date:
               label: Fecha
               align: left
-              width: 18
+              width: 20
           3:
-            recipe_code:
+            recipe_name:
               label: Receta
               align: left
-              width: 25
+              width: 48
           4:
-            recipe_name:
-              label: Desc. Receta
-              align: left
-              width: 40
-          5:
             average_tons_per_hour:
               label: Ton/Hrs
               align: right
               width: 20
               precision: 2
-          6:
+          5:
             average_batch_duration:
               label: Min/batch
               align: right
               width: 20
               precision: 2
-          7:
+          6:
             order_duration:
               label: Min
               align: right
               width: 15
               precision: 0
-          8:
+          7:
             real_batches:
               label: Batch
               align: right
               width: 10
-          9:
+          8:
             start_time:
               label: Inicio
-              align: right
-              width: 20
-          10:
+              align: center
+              width: 25
+          9:
             end_time:
               label: Fin
-              align: right
-              width: 20
-          11:
+              align: center
+              width: 25
+          10:
             total_standard:
               label: Total Est. (Kg)
               align: right
               width: 28
               totalize: true
               precision: 2
-          12:
+          11:
             total_real:
               label: Total Real (Kg)
               align: right
