@@ -268,7 +268,7 @@ class ReportsController < ApplicationController
   def production_per_recipe
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe], params[:report][:version])
+    data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe_code_2])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

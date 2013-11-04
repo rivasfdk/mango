@@ -1283,8 +1283,8 @@ class EasyModel
     return data
   end
 
-  def self.production_per_recipe(start_date, end_date, recipe_code, recipe_version)
-    recipe = Recipe.find :first, :include=>{:ingredient_recipe=>{:ingredient=>{}}}, :conditions => ['code = ? and version = ?', recipe_code, recipe_version], :order => ['id desc']
+  def self.production_per_recipe(start_date, end_date, recipe_code)
+    recipe = Recipe.find_by_code recipe_code
     return nil if recipe.nil?
 
     data = self.initialize_data('Produccion por Receta')
@@ -1294,35 +1294,23 @@ class EasyModel
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    ingredients = []
-    nominal = 0
-    recipe.ingredient_recipe.each do |ir|
-      ingredients << ir.ingredient.id
-      nominal += ir.amount
-    end
+    batch_hopper_lots = BatchHopperLot
+                        .joins({batch: {order: {recipe: {}, client: {}}}})
+                        .select('orders.code AS order_code, clients.code AS client_code, clients.name AS client_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
+                        .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
+                        .order('batches.order_id')
+                        .group('batches.order_id')
 
-    orders = Order.find :all, :include=>{:batch=>{:batch_hopper_lot=>{:hopper_lot=>{:lot=>{}}}}, :client=>{}}, :conditions => ["batches.start_date >= ? AND batches.end_date <= ? AND recipe_id = ?", self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), recipe.id], :order=>['batches.start_date DESC']
-    return nil if orders.empty?
+    return nil if batch_hopper_lots.empty?
 
-    orders.each do |o|
-      std = 0
-      real = 0
-      o.batch.each do |b|
-        std += nominal
-        b.batch_hopper_lot.each do |bhl|
-          if ingredients.include? bhl.hopper_lot.lot.ingredient_id
-            real += bhl.amount
-          end
-        end
-      end
-
+    batch_hopper_lots.each do |bhl|
       data['results'] << {
-        'order' => o.code,
-        'client_code' => o.client.ci_rif,
-        'client_name' => o.client.name,
-        'real_batches' => o.get_real_batches(),
-        'std_kg' => std.to_s,
-        'real_kg' => real.to_s,
+        'order' => bhl[:order_code],
+        'client_code' => bhl[:client_code],
+        'client_name' => bhl[:client_name],
+        'real_batches' => bhl[:num_batches],
+        'std_kg' => bhl[:total_std].to_s,
+        'real_kg' => bhl[:total_real].to_s,
       }
     end
 
@@ -1343,7 +1331,7 @@ class EasyModel
                         .joins({batch: {order: {recipe: {}}}})
                         .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
                         .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, orders: {client_id: client_id}})
-                        .order('orders.code')
+                        .order('batches.order_id')
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
