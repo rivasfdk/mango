@@ -85,28 +85,15 @@ report:
         align: left
         width: 50
     7:
-      text:
-        label: "Version: "
-        align: right
-        width: 120
-        breakline: 0
-        style:
-          font_weight: B
-    8:
-      text:
-        field: version
-        align: left
-        width: 50
-    9:
       breakline:
-    10:
+    8:
       text:
         field: title
         align: center
         style:
           font_size: 12
           font_weight: B
-    11:
+    9:
       table:
         field: results
         heading:
@@ -123,32 +110,50 @@ report:
             font_weight: B
         columns:
           1:
-           code:
+            ingredient_code:
               label: Codigo
               align: left
-              width: 20
+              width: 25
           2:
-            ingredient:
+            ingredient_name:
               label: Ingrediente
               align: left
-              width: 80
+              width: 60
           3:
             std_kg:
               label: Cant. Est.
               align: right
-              width: 40
               unit: Kg
+              width: 27
               totalize: true
               precision: 2
           4:
             real_kg:
-              label: Cant. Real
+              label: Cant. Real.
               align: right
               unit: Kg
-              width: 40
+              width: 27
               totalize: true
               precision: 2
-    12:
+          5:
+            var_kg:
+              label: Var Kg
+              align: right
+              unit: Kg
+              width: 27
+              totalize: true
+              precision: 2
+          6:
+            var_perc:
+              label: Var %
+              align: right
+              unit: '%'
+              width: 20
+              perc_totalize: true
+              perc_num: var_kg
+              perc_dem: std_kg
+              precision: 2
+    10:
       breakline:
   footer:
     1:

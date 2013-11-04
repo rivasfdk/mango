@@ -141,8 +141,9 @@
       <%= form_for :report, :url=>consumption_per_recipe_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :recipe, "Código receta: ", :class=>'small' %> <%= f.text_field :recipe, :size=>15 %><br/>
-        <%= f.label :version, "Version: ", :class=>'small' %> <%= f.text_field :version, :size=>15 %><br/><br/><br/>
+        <label for="recipe_code" class="small">Receta:</label>
+        <%= f.collection_select :recipe_code, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal chzn-small' %>
+        <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -230,8 +231,8 @@
         <%= f.radio_button :content_type, 1, :checked => true %> Materia prima
         <%= f.radio_button :content_type, 2%> Producto terminado<br/><br/>
         <%= f.check_box :group, :checked=>true %> &nbsp; <label for="group">Agrupar lotes</label><br/><br/>
-		<%= f.check_box :by_factory, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
-        <%= f.collection_select :factory_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+		<%= f.check_box :by_factory_1, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
+        <%= f.collection_select :factory_id_1, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -270,8 +271,8 @@
     <div id="simple_stock_projection" class="report-details">
       <%= form_for :report, :url=>simple_stock_projection_report_path do |f| %>
         <%= f.label :days, "Días: ", :class=>'small' %> <%= f.text_field :days, :size=>15 %><br/><br/>
-        <%= f.check_box :by_factory, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
-        <%= f.collection_select :factory_id, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.check_box :by_factory_2, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
+        <%= f.collection_select :factory_id_2, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

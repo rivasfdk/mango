@@ -3,12 +3,13 @@
 class ReportsController < ApplicationController
 
   def index
-    @drivers = Driver.find :all, :conditions => ['frequent = true']
-    @carriers = Carrier.find :all, :conditions => ['frequent = true']
-    @clients = Client.find :all
-    @factories = Client.where :factory => true
-    @alarm_types = AlarmType.find :all
-    @hoppers = Hopper.includes(:scale).where('scales.not_weighed = ?', false)
+    @drivers = Driver.where({frequent: true})
+    @carriers = Carrier.where({frequent: true})
+    @clients = Client.all
+    @factories = Client.where({factory: true})
+    @alarm_types = AlarmType.all
+    @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
+    @recipes = Recipe.all(group: :code)
   end
 
   def daily_production
@@ -107,7 +108,7 @@ class ReportsController < ApplicationController
   def consumption_per_recipe
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.consumption_per_recipe(start_date, end_date, params[:report][:recipe], params[:report][:version])
+    data = EasyModel.consumption_per_recipe(start_date, end_date, params[:report][:recipe_code])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
@@ -208,9 +209,9 @@ class ReportsController < ApplicationController
   def simple_stock
     content_type = params[:report][:content_type].to_i
     date = EasyModel.param_to_date(params[:report], 'date')
-	by_factory = params[:report][:by_factory].to_i
+	by_factory = params[:report][:by_factory_1].to_i
     if by_factory != 0
-      factory_id = params[:report][:factory_id].to_i
+      factory_id = params[:report][:factory_id_1].to_i
     else
       factory_id = 0
     end
@@ -231,10 +232,10 @@ class ReportsController < ApplicationController
   end
 
   def simple_stock_projection
-	by_factory = params[:report][:by_factory].to_i
+	by_factory = params[:report][:by_factory_2].to_i
 	days = params[:report][:days]
     if by_factory != 0
-      factory_id = params[:report][:factory_id].to_i
+      factory_id = params[:report][:factory_id_2].to_i
     else
       factory_id = 0
     end

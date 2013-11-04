@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   def index
     @orders = Order.search(params)
     @clients = Client.all
-    @recipes = Recipe.all(:group => "code")
+    @recipes = Recipe.all(group: :code)
   end
 
   def new

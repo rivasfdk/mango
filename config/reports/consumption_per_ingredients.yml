@@ -97,21 +97,16 @@ report:
             font_weight: B
         columns:
           1:
-            lot:
-              label: Lote
-              align: left
-              width: 20
-          2:
             ingredient_code:
               label: Codigo
               align: left
               width: 25
-          3:
+          2:
             ingredient_name:
               label: Ingrediente
               align: left
-              width: 40
-          4:
+              width: 60
+          3:
             std_kg:
               label: Cant. Est.
               align: right
@@ -119,7 +114,7 @@ report:
               width: 27
               totalize: true
               precision: 2
-          5:
+          4:
             real_kg:
               label: Cant. Real.
               align: right
@@ -127,7 +122,7 @@ report:
               width: 27
               totalize: true
               precision: 2
-          6:
+          5:
             var_kg:
               label: Var Kg
               align: right
@@ -135,7 +130,7 @@ report:
               width: 27
               totalize: true
               precision: 2
-          7:
+          6:
             var_perc:
               label: Var %
               align: right
