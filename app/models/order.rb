@@ -196,7 +196,9 @@ class Order < ActiveRecord::Base
   end
 
   def close(user_id)
-    self.generate_transactions(user_id)
+    if is_mango_feature_available("transactions")
+      self.generate_transactions(user_id)
+    end
     self.completed = true
     self.save
   end
