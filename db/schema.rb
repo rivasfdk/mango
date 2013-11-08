@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "alarms", :force => true do |t|
@@ -203,8 +203,8 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
     t.datetime "updated_at",            :null => false
   end
 
-  add_index "ingredients_parameters_types_ranges", ["ingredient_id"], :name => "fk_ingredients_parameters_types_ranges_ingredient_id"
-  add_index "ingredients_parameters_types_ranges", ["lot_parameter_type_id"], :name => "fk_ingredients_parameters_types_ranges_lot_parameter_type_id"
+  add_index "ingredients_parameters_types_ranges", ["ingredient_id"], :name => "fk_ingredient_id"
+  add_index "ingredients_parameters_types_ranges", ["lot_parameter_type_id"], :name => "fk_lot_parameter_type_id"
 
   create_table "ingredients_recipes", :force => true do |t|
     t.integer  "ingredient_id"
@@ -244,8 +244,8 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
   add_index "lots", ["ingredient_id"], :name => "fk_lots_ingredient_id"
 
   create_table "lots_parameters", :force => true do |t|
-    t.integer  "lot_parameter_list_id"
-    t.integer  "lot_parameter_type_id"
+    t.integer  "lot_parameter_list_id", :null => false
+    t.integer  "lot_parameter_type_id", :null => false
     t.float    "value"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
@@ -298,7 +298,7 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
-  add_index "orders", ["code"], :name => "orders_code"
+  add_index "orders", ["code"], :name => "index_orders_on_code"
   add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
   add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"
@@ -391,8 +391,8 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "products_lots_parameters", :force => true do |t|
-    t.integer  "product_lot_parameter_list_id"
-    t.integer  "product_lot_parameter_type_id"
+    t.integer  "product_lot_parameter_list_id", :null => false
+    t.integer  "product_lot_parameter_type_id", :null => false
     t.float    "value"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false

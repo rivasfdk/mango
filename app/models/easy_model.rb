@@ -1,14 +1,12 @@
 class EasyModel
   def self.order_lots_parameters(order_code)
-    joins = {:lot => {:hopper_lot => {:batch_hopper_lot => {:batch => {:order => {}}}}}}
-    includes = {:lot_parameters => {:lot_parameter_type => {}},
-                :lot => {:ingredient => {}}}
-    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where(['orders.code = ?', order_code]).order('ingredients.code asc')
+    joins = {lot: {hopper_lot: {batch_hopper_lot: {batch: {order: {}}}}}}
+    includes = {lot_parameters: {lot_parameter_type: {}}, lot: {ingredient: {}}}
+    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where({orders: {code: order_code}}).order('ingredients.code asc')
 
-    joins = {:product_lot => {:order => {}}}
-    includes = {:product_lot_parameters => {:product_lot_parameter_type => {}},
-                :product_lot => {:product => {}}}
-    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where(['orders.code = ?', order_code]).first
+    joins = {product_lot: {order: {}}}
+    includes = {product_lot_parameters: {product_lot_parameter_type: {}}, product_lot: {product: {}}}
+    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where({orders: {code: order_code}}).first
 
     return nil if lot_parameter_lists.empty? and product_lot_parameter_list.nil?
 
@@ -37,19 +35,17 @@ class EasyModel
       }
     end
 
-    return data
+    data
   end
 
   def self.hopper_transactions(hopper_id, start_datetime, end_datetime)
     hopper = Hopper.find_by_id hopper_id, :include => :scale
     return nil if hopper.nil?
 
-    includes = {:hopper_lot => {:lot => {:ingredient => {}}}, 
-                :hopper_lot_transaction_type => {},
-                :user => {}}
+    includes = {hopper_lot: {lot: {ingredient: {}}}, hopper_lot_transaction_type: {}, user: {}}
     hlts = HopperLotTransaction.includes(includes)
-    hlts = hlts.where(:created_at => (start_datetime..end_datetime))
-    hlts = hlts.where(['hoppers_lots.hopper_id = ?', hopper_id])   
+    hlts = hlts.where(created_at: start_datetime .. end_datetime)
+    hlts = hlts.where({hoppers_lots: {hopper_id: hopper_id}})   
     return nil if hlts.empty?
     
     data = self.initialize_data("Movimientos de tolva #{hopper.name} (#{hopper.scale.name})")
@@ -69,11 +65,11 @@ class EasyModel
         'stock' => hlt.stock_after
       }
     end
-    return data
+    data
   end
 
   def self.hoppers_stock(datetime)
-  
+    
   end
 
   #This method is nasty as fuck because it only works for PROPORCA
@@ -191,9 +187,9 @@ class EasyModel
 
   def self.alarms(start_date, end_date, alarm_type_id)
     if alarm_type_id == 0
-      conditions = {:date=>(start_date)..((end_date) + 1.day)}
+      conditions = {date: start_date .. end_date + 1.day}
     else
-      conditions = {:alarm_type_id=>alarm_type_id, :date=>(start_date)..((end_date) + 1.day)}
+      conditions = {alarm_type_id: alarm_type_id, date: start_date .. end_date + 1.day}
     end
 
     @alarms = Alarm.find :all, :conditions => conditions
@@ -212,7 +208,7 @@ class EasyModel
           'description' => alarm.description,
         }
     end
-    return data
+    data
   end
 
   def self.alarms_per_order(order_code, alarm_type_id)
@@ -220,9 +216,9 @@ class EasyModel
     return nil if order.nil?
     alarms = []
     if alarm_type_id == 0
-      alarms = Alarm.where(:order_id => order.id)
+      alarms = Alarm.where(order_id: order.id)
     else
-      alarms = Alarm.where(:alarm_type_id => alarm_type_id, :order_id => order.id)
+      alarms = Alarm.where(alarm_type_id: alarm_type_id, order_id: order.id)
     end
     return nil if alarms.empty?
 
@@ -236,7 +232,7 @@ class EasyModel
           'description' => alarm.description,
         }
     end
-    return data
+    data
   end
 
   def self.ticket(ticket_id)
@@ -944,7 +940,7 @@ class EasyModel
 
     batch_hopper_lots.each do |bhl|
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      var_perc = var_kg * 100 / bhl[:total_std]
       data['results'] << {
         'ingredient_code' => bhl[:ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
