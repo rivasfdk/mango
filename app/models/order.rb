@@ -204,7 +204,7 @@ class Order < ActiveRecord::Base
     self.save
   end
 
-  def create_order_stat(params)
+  def self.create_order_stat(params)
     errors = []
     order_stat_type_id = params[:order_stat_type_id]
     order_id = OrderArea.joins(area: {orders_stats_types: {}})
