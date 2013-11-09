@@ -215,6 +215,7 @@ class Order < ActiveRecord::Base
     order_stat.order_stat_type_id = order_stat_type_id
     order_stat.value = params[:value]
     order_stat.save
+    logger.debug(order_stat.errors.messages)
     errors
   end
 
