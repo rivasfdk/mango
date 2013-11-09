@@ -2,7 +2,7 @@ report:
   settings:
     page:
       size: Letter
-      orientation: P
+      orientation: L
       margins: 20
     style:
       font_family: 'Helvetica'
@@ -171,12 +171,27 @@ report:
            stat_name:
               label: Nombre
               align: left
-              width: 120
+              width: 80
           2:
-           stat_value:
-              label: Valor
-              align: center
-              width: 50
+           stat_avg:
+              label: Media
+              align: right
+              width: 40
+          3:
+           stat_min:
+              label: Minimo
+              align: right
+              width: 40
+          4:
+           stat_max:
+              label: Maximo
+              align: right
+              width: 40
+          5:
+           stat_std:
+              label: Desviacion
+              align: right
+              width: 40
     20:
       breakline:
     21:

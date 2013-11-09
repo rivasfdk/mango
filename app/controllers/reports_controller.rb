@@ -485,14 +485,11 @@ class ReportsController < ApplicationController
   end
 
   def order_stats
-    data = EasyModel.order_stats(params[:report][:order])
-    if data.nil?
+    @data = EasyModel.order_stats(params[:report][:order])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
-    else
-      report = EasyReport::Report.new data, 'order_stats.yml'
-      send_data report.render, :filename => 'estadisticas_de_orden.pdf', :type => 'application/pdf'
     end
   end
 end

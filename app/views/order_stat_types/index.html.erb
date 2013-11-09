@@ -4,28 +4,34 @@
 <table id="tabledata">
     <thead>
       <tr>
+        <th>Código<span class="order_arrow"></span></th>
         <th>Descripción<span class="order_arrow"></span></th>
+        <th>Unidad<span class="order_arrow"></span></th>
+        <th>Mínimo<span class="order_arrow"></span></th>
+        <th>Máximo<span class="order_arrow"></span></th>
+        <th>Area<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th></th>
       </tr>
     </thead>
     <tbody>
-    <% @order_stat_types.each do |ott| %>
+    <% @order_stat_types.each do |ost| %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
-        <td><%=h ott.description %></td>
+        <td><%=h ost.code %></td>
+        <td><%=h ost.description %></td>
+        <td><%=h @units[ost.unit] %></td>
+        <td class="center"><%=h ost.min.nil? ? "" : Unit(ost.min, ost.unit) %></td>
+        <td class="center"><%=h ost.max.nil? ? "" : Unit(ost.max, ost.unit) %></td>
+        <td><%=h ost.area.nil? ? "" : ost.area.description %></td>
         <td>
-          <%= render_action_edit(edit_order_stat_type_path(ott)) %>
-          <%= render_action_delete(order_stat_type_path(ott), "Desea borrar el tipo de estadística '#{ott.description}'?") %>
+          <%= render_action_edit(edit_order_stat_type_path(ost)) %>
+          <%= render_action_delete(order_stat_type_path(ost), "Desea borrar el tipo de estadística '#{ost.description}'?") %>
         </td>
       </tr>
     <% end %>
     </tbody>
+    <tfoot></tfoot>
 </table>
-<div id="tablefooter">
-  <div id="pagination">
-    <%=raw show_pagination @order_stat_types %>
-  </div>
-</div>
 <% else %>
 <p>No hay tipos de estadísticas registradas</p>
 <% end %>

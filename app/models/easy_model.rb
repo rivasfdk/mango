@@ -2,16 +2,18 @@ class EasyModel
   def self.order_lots_parameters(order_code)
     joins = {lot: {hopper_lot: {batch_hopper_lot: {batch: {order: {}}}}}}
     includes = {lot_parameters: {lot_parameter_type: {}}, lot: {ingredient: {}}}
-    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where({orders: {code: order_code}}).order('ingredients.code asc')
+    where = {orders: {code: order_code}}
+    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where(where).order('ingredients.code asc')
 
     joins = {product_lot: {order: {}}}
     includes = {product_lot_parameters: {product_lot_parameter_type: {}}, product_lot: {product: {}}}
-    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where({orders: {code: order_code}}).first
+    where = {orders: {code: order_code}}
+    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where(where).first
 
     return nil if lot_parameter_lists.empty? and product_lot_parameter_list.nil?
 
-    order = Order.find_by_code order_code
-    data = self.initialize_data("Caracteristicas de la orden #{order_code}")
+    order = Order.find_by_code order_code, include: batch
+    data = self.initialize_data("Caracteristicas de la orden #{order.code}")
     data['order'] = order.code
     data['client'] = "#{order.client.code} - #{order.client.name}"
     data['recipe'] = "#{order.recipe.code} - #{order.recipe.name}"
@@ -132,37 +134,41 @@ class EasyModel
     end
     return data
   end
-  #This one is also nasty as fuck for the same reason
+
   def self.order_stats(order_code)
     @order = Order.find_by_code order_code
-    if @order.nil?
-      return nil
-    end
+    return nil if @order.nil?
 
     data = self.initialize_data('Estadisticas de orden')
-    data['order'] = @order.code
-    data['client'] = "#{@order.client.code} - #{@order.client.name}"
-    data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
-    data['version'] = @order.recipe.version
-    data['comment'] = @order.comment
-    data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
-    data['start_date'] = @order.calculate_start_date()
-    data['end_date'] = @order.calculate_end_date()
-    data['real_batches'] = @order.get_real_batches().to_s
-    data['results'] = []
+    data[:order] = @order.code
+    data[:client] = "#{@order.client.code} - #{@order.client.name}"
+    data[:recipe] = "#{@order.recipe.code} - #{@order.recipe.name}"
+    data[:version] = @order.recipe.version
+    data[:comment] = @order.comment
+    data[:product] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
+    data[:start_date] = @order.calculate_start_date()
+    data[:end_date] = @order.calculate_end_date()
+    data[:real_batches] = @order.get_real_batches().to_s
+    data[:results] = []
 
-    OrderStatType.all.each do |ost|
-      stats = OrderStat.find :all, :conditions => ['order_id = ? and order_stat_type_id = ?', @order.id, ost.id]
-      stat_value = stats.any? ? stats.inject(0.0) {|sum, stat| sum + stat.value } / stats.count : 0
-      unless ost.id == 6 #Ewwww
-        stat_value = self.int_seconds_to_time_string(stat_value)
-      end
-      data['results'] << {
-        'stat_name' => ost.description,
-        'stat_value' => stat_value
+    stats = OrderStat.joins(:order_stat_type)
+                     .where(order_id: @order.id)
+                     .select('orders_stats_types.description AS stat_name, orders_stats_types.min AS min, orders_stats_types.max AS max, orders_stats_types.unit AS unit, AVG(orders_stats.value) AS stat_avg, MAX(orders_stats.value) AS stat_max, MIN(orders_stats.value) AS stat_min, STD(orders_stats.value) AS stat_std')
+                     .group('order_stat_type_id')
+    return nil if stats.empty?
+
+    stats.each do |stat|
+      data[:results] << {
+        stat_name: stat[:stat_name],
+        min: stat[:min].nil? ? nil : Unit(stat[:min], stat[:unit]),
+        max: stat[:max].nil? ? nil : Unit(stat[:max], stat[:unit]),
+        stat_avg: Unit(stat[:stat_avg], stat[:unit]),
+        stat_min: Unit(stat[:stat_min], stat[:unit]),
+        stat_max: Unit(stat[:stat_max], stat[:unit]),
+        stat_std: Unit(stat[:stat_std], stat[:unit])
       }
     end
-    return data
+    data
   end
 
   def self.order_details_real(order_code)
@@ -1370,10 +1376,12 @@ class EasyModel
   end
 
   def self.int_seconds_to_time_string(seconds)
-    if seconds < 3600
-      return Time.at(seconds).gmtime.strftime('%Mm%Ss')
+    if seconds < 60
+      Time.at(seconds).gmtime.strftime('%Ss')
+    elsif seconds < 3600
+      Time.at(seconds).gmtime.strftime('%Mm:%Ss')
     else
-      return Time.at(seconds).gmtime.strftime('%Hh%Mm:%Ss')
+      Time.at(seconds).gmtime.strftime('%Hh%Mm:%Ss')
     end
   end
 
@@ -1389,7 +1397,6 @@ class EasyModel
     data['company_rif'] = company['rif']
     data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/#{company['logo']}"
     data['footer'] = company['footer']
-
-    return data
+    data
   end
 end

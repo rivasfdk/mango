@@ -45,7 +45,7 @@
   <div class="report-content">
     <h2 onclick="toggle_report_details('order_stats')">Estadísticas de orden</h2>
     <div id="order_stats" class="report-details">
-      <%= form_for :report, :url=>order_stats_report_path do |f| %>
+      <%= form_for :report, :url=>order_stats_report_path(format: 'pdf') do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

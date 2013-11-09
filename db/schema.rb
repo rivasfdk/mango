@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131102170212) do
+ActiveRecord::Schema.define(:version => 20131109160927) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -30,6 +30,12 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
 
   add_index "alarms", ["alarm_type_id"], :name => "index_alarms_on_alarm_type_id"
   add_index "alarms", ["order_id"], :name => "fk_alarms_order_id"
+
+  create_table "areas", :force => true do |t|
+    t.string   "description", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "bases_units", :force => true do |t|
     t.string   "code",       :null => false
@@ -305,6 +311,17 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
   add_index "orders", ["recipe_id"], :name => "fk_orders_recipe_id"
   add_index "orders", ["user_id"], :name => "fk_orders_user_id"
 
+  create_table "orders_areas", :force => true do |t|
+    t.integer  "order_id",                      :null => false
+    t.integer  "area_id",                       :null => false
+    t.boolean  "active",     :default => false, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "orders_areas", ["area_id"], :name => "fk_orders_areas_area_id"
+  add_index "orders_areas", ["order_id"], :name => "fk_orders_areas_order_id"
+
   create_table "orders_numbers", :force => true do |t|
     t.string   "code",       :default => "0000000001"
     t.datetime "created_at"
@@ -323,10 +340,17 @@ ActiveRecord::Schema.define(:version => 20131102170212) do
   add_index "orders_stats", ["order_stat_type_id"], :name => "fk_orders_stats_order_stat_type_id"
 
   create_table "orders_stats_types", :force => true do |t|
-    t.string   "description", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.string   "description",               :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.float    "min"
+    t.float    "max"
+    t.string   "unit",        :limit => 20
+    t.integer  "area_id"
+    t.string   "code",                      :null => false
   end
+
+  add_index "orders_stats_types", ["area_id"], :name => "fk_orders_stats_types_area_id"
 
   create_table "parameters", :force => true do |t|
     t.integer  "parameter_list_id"

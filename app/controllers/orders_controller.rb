@@ -121,6 +121,11 @@ class OrdersController < ApplicationController
     @order = Order.find_by_code params[:order_code]
     render xml: {:closed => @order.close(session[:user_id])}
   end
+
+  def create_order_stat
+    errors = @order = Order.create_order_stat(params[:order_stat])
+    render xml: errors
+  end
   
   def print
     @order = Order.find params[:id]

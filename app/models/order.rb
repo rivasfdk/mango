@@ -11,10 +11,11 @@ class Order < ActiveRecord::Base
   has_many :alarms
   has_many :transactions
   has_many :order_stats
+  has_many :areas
 
   validates :recipe, :user, :product_lot, :client, presence: true
-  validates :prog_batches, :real_batches, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :real_production, numericality: { allow_nil: true }
+  validates :prog_batches, :real_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :real_production, numericality: {allow_nil: true}
   validate :product_lot_factory
 
   before_validation :validates_real_batchs
@@ -203,6 +204,20 @@ class Order < ActiveRecord::Base
     self.save
   end
 
+  def create_order_stat(params)
+    errors = []
+    order_stat_type_id = params[:order_stat_type_id]
+    order_id = OrderArea.joins(area: {orders_stats_types: {}})
+                        .where(active: true, orders_stats_types: {id: order_stat_type_id})
+                        .pluck(:order_id).first
+    order_stat = OrderStat.new
+    order_stat.order_id = order_id
+    order_stat.order_stat_type_id = order_stat_type_id
+    order_stat.value = params[:value]
+    order_stat.save
+    errors
+  end
+
   def get_standard_amount(ingredient_id)
     standard_amount = IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
     unless standard_amount.nil?
@@ -269,13 +284,13 @@ class Order < ActiveRecord::Base
   end
 
   def self.search(params)
-    @orders = Order.includes(:recipe)
-    @orders = @orders.where(code: params[:code]) if params[:code].present?
-    @orders = @orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
-    @orders = @orders.where(client_id: params[:client_id]) if params[:client_id].present?
-    @orders = @orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
-    @orders = @orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
-    @orders = @orders.order('orders.created_at DESC')
-    @orders.paginate page: params[:page], per_page: params[:per_page]
+    orders = Order.includes(:recipe)
+    orders = orders.where(code: params[:code]) if params[:code].present?
+    orders = orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
+    orders = orders.where(client_id: params[:client_id]) if params[:client_id].present?
+    orders = orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
+    orders = orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
+    orders = orders.order('orders.created_at DESC')
+    orders.paginate page: params[:page], per_page: params[:per_page]
   end
 end

@@ -1,5 +1,15 @@
 <%= render_error_messages(f.error_messages) %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%= f.text_field :code, :size=>'20' %> <span>*</span></div>
 <label for="description" class="small">Descripción:</label>
 <div class="field"><%= f.text_field :description, :size=>'60' %> <span>*</span></div>
+<label for="min" class="small">Mínimo:</label>
+<div class="field"><%= f.text_field :min, :size=>'20' %></div>
+<label for="max" class="small">Máximo:</label>
+<div class="field"><%= f.text_field :max, :size=>'20' %></div>
+<label for="unit" class="small">Unidad:</label>
+<div class="field"><%= f.collection_select :unit, @units, :first, :second, {include_blank: "Sin unidad"}, :class=>'chzn-select chzn-field-normal' %></div>
+<label for="description" class="small">Área:</label>
+<div class="field"><%= f.collection_select :area_id, @areas, :id, :description, {include_blank: "Ninguna"}, :class=>'chzn-select chzn-field-normal' %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

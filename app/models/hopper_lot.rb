@@ -14,7 +14,7 @@ class HopperLot < ActiveRecord::Base
   after_save :check_hopper_stock, unless: :factory
 
   def update_active
-    HopperLot.update_all('active = false', ['hopper_id = ?', self.hopper_id])
+    HopperLot.where(hopper_id: self.hopper_id).update_all(active: false)
     self.active = true
   end
   

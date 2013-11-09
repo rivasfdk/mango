@@ -2,10 +2,17 @@
 
 class OrderStatTypesController < ApplicationController
   def index
-    @order_stat_types = OrderStatType.paginate :page=>params[:page], :per_page=>session[:per_page]
+    @order_stat_types = OrderStatType.includes(:area)
+    @units = OrderStatType::UNITS
+  end
+
+  def new
+    @areas = Area.all
+    @units = OrderStatType::UNITS
   end
 
   def edit
+    new
     @order_stat_type = OrderStatType.find params[:id]
   end
 
