@@ -14,12 +14,12 @@ class Order < ActiveRecord::Base
   has_many :areas
 
   validates :recipe, :user, :product_lot, :client, presence: true
-  validates :prog_batches, :real_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :real_batches, numericality: {allow_nil: true}
   validates :real_production, numericality: {allow_nil: true}
   validate :product_lot_factory
 
-  before_validation :validates_real_batchs
-  before_save :create_code
+  before_save :create_code, if: :new_record?
 
   def product_lot_factory
     if self.client and self.product_lot
@@ -27,11 +27,6 @@ class Order < ActiveRecord::Base
         errors.add(:product_lot, "no pertenece a la fabrica")
       end
     end
-  end
-
-  def validates_real_batchs
-    self.real_batches = 0 if self.real_batches.nil?
-    true
   end
 
   def calculate_short_start_date
@@ -63,91 +58,96 @@ class Order < ActiveRecord::Base
   end
 
   def create_code
-    if self.new_record?
-      order = OrderNumber.first
-      self.code = order.code.succ
-      order.code = self.code
-      order.save
-    end
+    order_number = OrderNumber.first
+    self.code = order_number.code.succ
+    order_number.code = self.code
+    order_number.save
   end
 
-  def repair(user_id, n_batch)    
-    if self.batch.count == 0
-      self.prog_batches.times do |n|
-        batch = self.batch.new
-        batch.user_id = user_id
-        batch.number = n + 1
-        batch.schedule = Schedule.first
-        batch.start_date = Date.today
-        batch.end_date = Date.today
-        batch.save
-      end
+  def repair(user_id, n_batch)  
+    hopper_ingredients = HopperLot.joins(:lot).where(active: true).pluck_all("hoppers_lots.id", "lots.ingredient_id").inject({}) do |hash, hl|
+      hash[hl["ingredient_id"]] = hl["id"]
+      hash
     end
 
-    hopper_ingredients = {}
-    hopper_lots = HopperLot.where :active => true
-    hopper_lots.each do |hl|
-      hopper_ingredients[hl.lot.ingredient.id] = hl.id
+    recipe_ingredients = IngredientRecipe.where(recipe_id: self.recipe_id).pluck_all(:ingredient_id, :amount).inject({}) do |hash, ir|
+      hash[ir["ingredient_id"]] = ir["amount"]
+      hash
     end
 
-    recipe_ingredients = {}
-    self.recipe.ingredient_recipe.each do |ir|
-      recipe_ingredients[ir.ingredient.id] = ir.amount
+    unless self.medicament_recipe.nil?
+      recipe_ingredients = IngredientMedicamentRecipe.where(recipe_id: self.medicament_recipe_id).pluck_all(:ingredient_id, :amount).inject(recipe_ingredients) do |hash, ir|
+        hash[ir["ingredient_id"]] = ir["amount"] unless hash.has_key? ir["ingredient_id"]
+        hash
+      end                                                         
     end
 
-    self.batch.each do |batch|
-      if batch.number > n_batch
-        break
-      end
-      batch_ingredients = []
-      batch.batch_hopper_lot.each do |bhl|
-        batch_ingredients << bhl.hopper_lot.lot.ingredient.id
-      end
-      recipe_ingredients.each do |key, value|
-        unless batch_ingredients.include? key
-          bhl = batch.batch_hopper_lot.new
-          bhl.hopper_lot_id = hopper_ingredients[key]
-          bhl.amount = value
-          bhl.save
+    return false unless (recipe_ingredients.keys - hopper_ingredients.keys).empty?
+
+    transaction do
+      BatchHopperLot.skip_callback(:create, :after, :update_batch_end_date)
+      now = Time.now
+      real_batch = self.batch.count
+      if real_batch < n_batch
+        schedule_id = Schedule.get_current_schedule_id(now)
+        (n_batch - real_batch).times do |n|
+          batch = self.batch.new user_id: user_id,
+                                 number: real_batch + n + 1,
+                                 schedule_id: schedule_id,
+                                 start_date: now,
+                                 end_date: now
+          batch.save(validate: false)
+          recipe_ingredients.each do |key, value|
+            batch.batch_hopper_lot.new(hopper_lot_id: hopper_ingredients[key],
+                                       standard_amount: value,
+                                       amount: value).save(validate: false)
+          end
         end
       end
-    end
 
-    extra_batches = Batch.find :all, :conditions => ['order_id = ? and number > ?', self.id, n_batch]
-    extra_batches.each do |b|
-      b.batch_hopper_lot.each do |bhl|
-        bhl.delete
+      # Bro do you even ruby?
+      batches_ingredients = self.batch.joins(batch_hopper_lot: {hopper_lot: {lot: {}}}).pluck_all("batches.id", "lots.ingredient_id").inject(Hash.new {|hash, key| hash[key] = []}) do |hash, bi|
+        hash[bi["id"]] << bi["ingredient_id"]
+        hash
       end
-      b.delete
-    end
 
-    self.prog_batches = n_batch
-    self.real_batches = n_batch
-    self.completed = true
-    self.repaired = true
-    self.save
+      batches_ingredients.each do |batch_id, ingredients_ids|
+        missing_ingredients = recipe_ingredients.keys - ingredients_ids
+        missing_ingredients.each do |ingredient_id|
+          BatchHopperLot.new(batch_id: batch_id,
+                             hopper_lot_id: hopper_ingredients[ingredient_id],
+                             standard_amount: recipe_ingredients[ingredient_id],
+                             amount: recipe_ingredients[ingredient_id]).save(validate: false)
+        end
+      end
+      BatchHopperLot.set_callback(:create, :after, :update_batch_end_date)
 
-    if is_mango_feature_available("transactions")
-      self.generate_transactions(user_id)
+      extra_batches_ids = self.batch.where(['number > ?', n_batch]).pluck(:id)
+      unless extra_batches_ids.empty?
+        BatchHopperLot.where(batch_id: extra_batches_ids).delete_all
+        Batch.where(id: extra_batches_ids).delete_all
+      end
+
+      Order.where(id: self.id).update_all({prog_batches: n_batch,
+                                           real_batches: n_batch,
+                                           completed: true,
+                                           repaired: true,
+                                           updated_at: now})
     end
+    self.generate_transactions(user_id) if is_mango_feature_available("transactions")
   end
 
   def self.generate_consumption(params, user_id)
     errors = []
     # Add some shitty error handling
     if errors.empty?
-      order = Order.find_by_code params[:order_code], include: {client: {}, recipe: {ingredient_recipe: {}}, medicament_recipe: {ingredient_medicament_recipe: {}}}
-      batch = order.batch.find_or_create_by_number params[:batch_number]
-      if batch.new_record?
-        now = Time.now
-        batch.schedule = Schedule.get_current_schedule(now)
-        batch.user_id = user_id
-        batch.start_date = now
-        batch.end_date = now
-        batch.save
-        logger.debug("Errores de batch")
-        logger.debug(batch.errors.messages)
-      end
+      now = Time.now
+      order = Order.find_by_code params[:order_code]
+      batch = order.batch.find_or_create_by_number number: params[:batch_number],
+                                                   schedule_id: Schedule.get_current_schedule_id(now),
+                                                   user_id: user_id,
+                                                   start_date: now,
+                                                   end_date: now
       hopper = Hopper.where({scale_id: params[:scale_id], 
                              number: params[:hopper_number]}).first
 
@@ -186,50 +186,35 @@ class Order < ActiveRecord::Base
   end
 
   def self.consumption_exists(params)
-    logger.debug("revisando orden")
-    conditions = ['orders.code = ? and batches.number = ? and hoppers.scale_id = ? and hoppers.number = ?',
-                  params[:order_code], 
-                  params[:batch_number],
-                  params[:scale_id],
-                  params[:hopper_number]]
-    BatchHopperLot.includes({batch: {order: {}},
-                             hopper_lot: {hopper: {}}}).where(conditions).any?
+    BatchHopperLot.includes({batch: {order: {}}, hopper_lot: {hopper: {}}})
+                  .where({orders: {code: params[:order_code]},
+                          batches: {number: params[:batch_number]},
+                          hoppers: {scale_id: params[:scale_id], number: params[:hopper_number]}}).any?
   end
 
   def close(user_id)
-    if is_mango_feature_available("transactions")
-      self.generate_transactions(user_id)
-    end
-    self.completed = true
-    self.save
+    self.generate_transactions(user_id) if is_mango_feature_available("transactions")
+    self.update_column(:completed, true)
   end
 
   def self.create_order_stat(params)
-    errors = []
-    order_stat_type_id = params[:order_stat_type_id]
+    order_stat_type_id = params[:order_stat_type_id].to_i
     order_id = OrderArea.joins(area: {orders_stats_types: {}})
                         .where(active: true, orders_stats_types: {id: order_stat_type_id})
                         .pluck(:order_id).first
-    order_stat = OrderStat.new
-    order_stat.order_id = order_id
-    order_stat.order_stat_type_id = order_stat_type_id
-    order_stat.value = params[:value]
-    order_stat.save
-    logger.debug(order_stat.errors.messages)
-    errors
+    OrderStat.create(order_id: order_id,
+                     order_stat_type_id: order_stat_type_id,
+                     value: params[:value]).errors.messages
   end
 
   def get_standard_amount(ingredient_id)
-    standard_amount = IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
-    unless standard_amount.nil?
-      standard_amount
+    if self.medicament_recipe_id.nil?
+      IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
+      0
     else
-      if self.medicament_recipe_id.present?
-        standard_amount = IngredientMedicamentRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first
-        standard_amount.nil? ? 0 : standard_amount
-      else
-        0
-      end
+      IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
+      IngredientMedicamentRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
+      0
     end
   end
 
@@ -285,9 +270,9 @@ class Order < ActiveRecord::Base
   end
 
   def self.search(params)
-    orders = Order.includes(:recipe)
+    orders = Order.includes(:recipe, :batch, :client)
     orders = orders.where(code: params[:code]) if params[:code].present?
-    orders = orders.where(['recipes.code = ?', params[:recipe_code]]) if params[:recipe_code].present?
+    orders = orders.where(recipes: {code: params[:recipe_code]}) if params[:recipe_code].present?
     orders = orders.where(client_id: params[:client_id]) if params[:client_id].present?
     orders = orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     orders = orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?

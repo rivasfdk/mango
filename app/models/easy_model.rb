@@ -3,12 +3,16 @@ class EasyModel
     joins = {lot: {hopper_lot: {batch_hopper_lot: {batch: {order: {}}}}}}
     includes = {lot_parameters: {lot_parameter_type: {}}, lot: {ingredient: {}}}
     where = {orders: {code: order_code}}
-    lot_parameter_lists = LotParameterList.joins(joins).includes(includes).where(where).order('ingredients.code asc')
-
+    lot_parameter_lists = LotParameterList.joins(joins)
+                                          .includes(includes)
+                                          .where(where)
+                                          .order('ingredients.code asc')
     joins = {product_lot: {order: {}}}
     includes = {product_lot_parameters: {product_lot_parameter_type: {}}, product_lot: {product: {}}}
     where = {orders: {code: order_code}}
-    product_lot_parameter_list = ProductLotParameterList.joins(joins).includes(includes).where(where).first
+    product_lot_parameter_list = ProductLotParameterList.joins(joins)
+                                                        .includes(includes)
+                                                        .where(where).first
 
     return nil if lot_parameter_lists.empty? and product_lot_parameter_list.nil?
 
@@ -136,24 +140,31 @@ class EasyModel
   end
 
   def self.order_stats(order_code)
-    @order = Order.find_by_code order_code
-    return nil if @order.nil?
+    order = Order.find_by_code order_code
+    return nil if order.nil?
 
     data = self.initialize_data('Estadisticas de orden')
-    data[:order] = @order.code
-    data[:client] = "#{@order.client.code} - #{@order.client.name}"
-    data[:recipe] = "#{@order.recipe.code} - #{@order.recipe.name}"
-    data[:version] = @order.recipe.version
-    data[:comment] = @order.comment
-    data[:product] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
-    data[:start_date] = @order.calculate_start_date()
-    data[:end_date] = @order.calculate_end_date()
-    data[:real_batches] = @order.get_real_batches().to_s
+    data[:order] = order.code
+    data[:client] = "#{order.client.code} - #{order.client.name}"
+    data[:recipe] = "#{order.recipe.code} - #{order.recipe.name}"
+    data[:version] = order.recipe.version
+    data[:comment] = order.comment
+    data[:product] = order.product_lot.nil? ? "" : "#{order.product_lot.product.code} - #{order.product_lot.product.name}"
+    data[:start_date] = order.calculate_start_date()
+    data[:end_date] = order.calculate_end_date()
+    data[:real_batches] = order.get_real_batches().to_s
     data[:results] = []
 
     stats = OrderStat.joins(:order_stat_type)
-                     .where(order_id: @order.id)
-                     .select('orders_stats_types.description AS stat_name, orders_stats_types.min AS min, orders_stats_types.max AS max, orders_stats_types.unit AS unit, AVG(orders_stats.value) AS stat_avg, MAX(orders_stats.value) AS stat_max, MIN(orders_stats.value) AS stat_min, STD(orders_stats.value) AS stat_std')
+                     .where(order_id: order.id)
+                     .select('orders_stats_types.description AS stat_name,
+                              orders_stats_types.min AS min,
+                              orders_stats_types.max AS max,
+                              orders_stats_types.unit AS unit,
+                              AVG(orders_stats.value) AS stat_avg,
+                              MAX(orders_stats.value) AS stat_max,
+                              MIN(orders_stats.value) AS stat_min,
+                              STD(orders_stats.value) AS stat_std')
                      .group('order_stat_type_id')
     return nil if stats.empty?
 

@@ -2,6 +2,6 @@ class OrderStat < ActiveRecord::Base
   belongs_to :order
   belongs_to :order_stat_type
 
-  validates_presence_of :order, :order_stat_type
-  validates_numericality_of :value
+  validates :order_id, :order_stat_type_id, presence: true
+  validates :value, numericality: true
 end

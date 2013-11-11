@@ -1,5 +1,4 @@
 report.set_layout tlf: 'reports/thinreports_layouts/order_stats'
-
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
   page.values company_address: @data['company_address']

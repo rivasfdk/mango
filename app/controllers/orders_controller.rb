@@ -8,8 +8,8 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @recipes = Recipe.where({:active => true, :in_use => true}).order('name ASC')
-    @medicament_recipes = MedicamentRecipe.where(:active => true).order('name ASC')
+    @recipes = Recipe.where({active: true, in_use: true}).order('name ASC')
+    @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
     @clients = Client.order('name ASC')
     @users = User.order('name ASC')
     @product_lots = ProductLot.order('code ASC')
@@ -81,7 +81,7 @@ class OrdersController < ApplicationController
     @order = Order.find params[:id]
 
     if @order.recipe.validate
-      if n_batch.between?(1,@order.prog_batches)
+      if n_batch.between?(1, @order.prog_batches)
         if @order.repair(session[:user_id], n_batch)
           flash[:notice] = "Orden reparada exitosamente"
           redirect_to :orders
@@ -114,17 +114,16 @@ class OrdersController < ApplicationController
   end
 
   def consumption_exists
-    render xml: {:exists => Order.consumption_exists(params)}
+    render xml: {exists: Order.consumption_exists(params)}
   end
 
   def close
     @order = Order.find_by_code params[:order_code]
-    render xml: {:closed => @order.close(session[:user_id])}
+    render xml: {closed: @order.close(session[:user_id])}
   end
 
   def create_order_stat
-    errors = @order = Order.create_order_stat(params[:order_stat])
-    render xml: errors
+    render xml: Order.create_order_stat(params[:order_stat])
   end
   
   def print
@@ -133,16 +132,16 @@ class OrdersController < ApplicationController
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
-      redirect_to :action => 'index'
+      redirect_to action: 'index'
     else
       report = EasyReport::Report.new data, 'order_details.yml'
-      send_data report.render, :filename => "detalle_orden_produccion.pdf", :type => "application/pdf"
+      send_data report.render, filename: "detalle_orden_produccion.pdf", type: "application/pdf"
     end
   end
   
   def show
     order = Order.find params[:id]
     @data = EasyModel.order_details(order.code)
-    @parameter_list = ParameterList.find :first, :conditions => {:id => order.parameter_list_id}
+    @parameter_list = ParameterList.includes(:parameters).where(id: order.parameter_list_id).first
   end
 end

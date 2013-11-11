@@ -61,10 +61,8 @@ class HopperLot < ActiveRecord::Base
 
   def generate_hoppers_factory_lots
     self.hoppers_factory_lots.delete_all
-    Client.where(:factory => true).each do |client|
-      hoppers_factory_lot = self.hoppers_factory_lots.new
-      hoppers_factory_lot.client = client
-      hoppers_factory_lot.save
+    Client.where(factory: true).each do |client|
+      self.hoppers_factory_lots.create client_id: client.id
     end
   end
 end
