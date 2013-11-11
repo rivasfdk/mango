@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131109160927) do
+ActiveRecord::Schema.define(:version => 20131111135815) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -332,10 +332,11 @@ ActiveRecord::Schema.define(:version => 20131109160927) do
     t.integer  "order_id",           :null => false
     t.integer  "order_stat_type_id", :null => false
     t.float    "value",              :null => false
-    t.datetime "created_at",         :null => false
+    t.integer  "created_at",         :null => false
     t.datetime "updated_at",         :null => false
   end
 
+  add_index "orders_stats", ["created_at"], :name => "index_orders_stats_on_created_at"
   add_index "orders_stats", ["order_id"], :name => "fk_orders_stats_order_id"
   add_index "orders_stats", ["order_stat_type_id"], :name => "fk_orders_stats_order_stat_type_id"
 
