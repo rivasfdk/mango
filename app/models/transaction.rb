@@ -4,16 +4,16 @@ class Transaction < ActiveRecord::Base
   belongs_to :client
   belongs_to :ticket
 
-  validates_presence_of :transaction_type_id, :amount, :user_id, :content_type, :content_id
-  validates_numericality_of :amount
-  validates_numericality_of :sacks, :sack_weight, :allow_nil => true
+  validates :transaction_type_id, :amount, :user_id, :content_type, :content_id, presence: true
+  validates :amount, numericality: true
+  validates :sacks, :sack_weight, numericality: {allow_nil: true}
   
-  before_save :create_code, :set_date
+  before_save :create_code, :set_date, if: :new_record?
   before_save :do_stock_update
   after_destroy :undo_stock_update
 
   def self.get_no_processed
-    Transaction.where :processed_in_stock => 0
+    Transaction.where processed_in_stock: 0
   end
 
   def self.generate_export_file(start_date, end_date)
@@ -31,11 +31,8 @@ class Transaction < ActiveRecord::Base
   end
 
   def get_lot
-    if self.content_type == 1
-      return Lot.find self.content_id
-    elsif self.content_type == 2
-      return ProductLot.find self.content_id
-    end
+    return Lot.find self.content_id if self.content_type == 1
+    return ProductLot.find self.content_id if self.content_type == 2
   end
 
   def get_content
@@ -49,41 +46,32 @@ class Transaction < ActiveRecord::Base
   private
 
   def get_sign
-    transaction_type = TransactionType.find(self.transaction_type_id)
-    return transaction_type.sign
+    TransactionType.find(self.transaction_type_id).sign
   end
 
   def do_stock_update
-    if get_sign == '+'
-      increase_stock
-    else
-      decrease_stock
-    end
+    Lot.skip_callback(:save, :after, :check_hopper_stock)
+    get_sign == '+' ? increase_stock : decrease_stock
+    Lot.set_callback(:save, :after, :check_hopper_stock)
   end
 
   def undo_stock_update
-    if get_sign == '-'
-      increase_stock
-    else
-      decrease_stock
-    end
+    Lot.skip_callback(:save, :after, :check_hopper_stock)
+    get_sign == '-' ? increase_stock : decrease_stock
+    Lot.set_callback(:save, :after, :check_hopper_stock)
   end
 
   def create_code
-    unless self.id
-      last = Transaction.last
-      if last.nil?
-        self.code = '00000001'
-      else
-        self.code = last.code.succ
-      end
+    last = Transaction.last
+    if last.nil?
+      self.code = '00000001'
+    else
+      self.code = last.code.succ
     end
   end
 
   def set_date
-    unless self.id
-      self.date = Date.today
-    end
+    self.date = Date.today
   end
 
   def increase_stock

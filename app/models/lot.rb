@@ -7,7 +7,7 @@ class Lot < ActiveRecord::Base
   has_many :hopper_factory_lots
   has_one :lot_parameter_list
 
-  after_save :check_stock
+  after_save :check_stock, :check_hopper_stock
 
   validates_uniqueness_of :code
   validates_presence_of :date, :ingredient
@@ -22,11 +22,14 @@ class Lot < ActiveRecord::Base
   def check_stock
     ingredient = Ingredient.find self.ingredient_id
     ingredient.save
+    true
+  end
+
+  def check_hopper_stock
     hoppers = Hopper.includes(:hopper_lot).where(['hoppers_lots.active = true and hoppers_lots.lot_id = ?', self.id])
     hoppers.each do |hopper|
       hopper.save
     end
-    true
   end
 
   def self.find_all

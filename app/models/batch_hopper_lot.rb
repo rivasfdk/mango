@@ -16,7 +16,7 @@ class BatchHopperLot < ActiveRecord::Base
     t.content_id = self.hopper_lot.lot_id
     t.amount = self.amount
     t.user_id = user_id
-    t.save
+    t.save(validate: false)
   end
 
   def generate_hopper_transaction(user_id)
@@ -25,7 +25,7 @@ class BatchHopperLot < ActiveRecord::Base
       hlt.hopper_lot_transaction_type_id = 2 # SA-CSM
       hlt.amount = self.amount
       hlt.user_id = user_id
-      hlt.save
+      hlt.save(validate: false)
     end
   end
 
