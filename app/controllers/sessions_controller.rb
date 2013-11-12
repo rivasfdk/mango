@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
           render :json => @user, :methods => [:allow_manual],  :except => [:password_hash, :password_salt]
         end
         format.xml do
-          render xml: {success: true, user_name: user.name}
+          render xml: {success: true, user_name: user.name, user_role_id: user.role_id}
         end
       end
     else
