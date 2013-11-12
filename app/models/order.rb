@@ -203,6 +203,16 @@ class Order < ActiveRecord::Base
                      value: params[:value]).errors.messages
   end
 
+  def self.update_order_area(params)
+    errors = {}
+    order_id = Order.where(code: params[:order_code]).pluck(:id).first
+    area_id = Area.where(id: params[:area_id]).pluck(:id).first
+    errors[:order_code] = "no existe" if order_id.nil?
+    errors[:area_id] = "no existe" if area_id.nil?
+    OrderArea.new(order_id: order_id, area_id: area_id).save(validate: false) if errors.empty?
+    errors
+  end
+
   def get_standard_amount(ingredient_id)
     if self.medicament_recipe_id.nil?
       IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||

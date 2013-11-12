@@ -125,7 +125,11 @@ class OrdersController < ApplicationController
   def create_order_stat
     render xml: Order.create_order_stat(params[:order_stat])
   end
-  
+
+  def update_order_area
+    render xml: Order.update_order_area(params[:order_area])  
+  end
+
   def print
     @order = Order.find params[:id]
     data = EasyModel.order_details(@order.code)

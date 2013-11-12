@@ -2,7 +2,7 @@ class OrderArea < ActiveRecord::Base
   belongs_to :area
   belongs_to :order
 
-  validates :order_id, :area_id, presence: true
+  validates :order, :area, presence: true
 
   before_save :update_actives, if: :new_record?
 
