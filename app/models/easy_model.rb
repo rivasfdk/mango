@@ -251,7 +251,7 @@ class EasyModel
         array << [os[:stat_avg_unixtime], os[:stat_avg]]
         array
       end
-      g.labels = {stats.last.first.to_i => "hola"}
+      #g.labels = {stats.last.first.to_i => "ORDER_CODE"}
       g.dataxy(ost.description, stats)
     end
     g.write(data[:plot_path])

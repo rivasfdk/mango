@@ -223,7 +223,7 @@
 
   <% if session[:reports_permissions].include?('hopper_transactions') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('hopper_transactions')">Niveles de tolva</h2>
+    <h2 onclick="toggle_report_details('hopper_transactions')">Movimientos de tolva</h2>
     <div id="hopper_transactions" class="report-details">
       <%= form_for :report, :url=>hopper_transactions_report_path do |f| %>
         <%= f.label :start, "Inicio: ", :class=>'small' %> <%= f.datetime_select :start %><br/>
