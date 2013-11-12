@@ -178,7 +178,7 @@ class Order < ActiveRecord::Base
           batch_hopper_lot.hopper_lot = original_hopper_lot
           batch_hopper_lot.generate_hopper_transaction(user_id)
         end
-      end
+      
     end
     errors
   end
