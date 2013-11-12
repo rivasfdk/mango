@@ -1,0 +1,33 @@
+report.set_layout tlf: 'reports/thinreports_layouts/stats_with_plot'
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values since: @data[:since]
+  page.values until: @data[:until]
+ 
+  page.values plot: @data[:plot_path]
+end
+
+report.set_layout tlf: 'reports/thinreports_layouts/stats_with_plot_table'
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values since: @data[:since]
+  page.values until: @data[:until] 
+
+  @data[:results].each do |result|
+    report.list(:results) do |list|
+      list.add_row stat_name: result[:stat_name],
+                   stat_avg: result[:stat_avg].round(2).to_s,
+                   stat_min: result[:stat_min].round(2).to_s,
+                   stat_max: result[:stat_max].round(2).to_s,
+                   stat_std: result[:stat_std].round(2).to_s
+    end
+  end
+end

@@ -11,6 +11,6 @@ class OrderStatType < ActiveRecord::Base
   UNITS = {"s" => "Tiempo (segundos)", "degC" => "Temperatura (°C)"}
 
   def unit_is_defined
-    errors.add(:unit, " es inválida") if self.unit.present? and not !!(self.unit =~ Unit.unit_match_regex)
+    errors.add(:unit, " es inválida") if self.unit.present? and not UNITS.keys.include? self.unit
   end
 end

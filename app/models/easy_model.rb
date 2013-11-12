@@ -182,6 +182,106 @@ class EasyModel
     data
   end
 
+  def self.stats_with_plot(start_datetime, end_datetime, unit)
+    data = self.initialize_data("Estadisticas de produccion")
+    data[:since] = self.print_range_date(start_datetime)
+    data[:until] = self.print_range_date(end_datetime)
+    data[:plot_path] = "#{Rails.root}/tmp/stats_plot.jpg"
+    data[:results] = []
+
+    unix_start_datetime = start_datetime.to_i    
+    unix_end_datetime = end_datetime.to_i
+
+    stats = OrderStat.joins(:order_stat_type)
+                     .where(orders_stats_types: {unit: unit})
+                     .where(created_at: unix_start_datetime .. unix_end_datetime)
+                     .select('orders_stats_types.description AS stat_name,
+                              orders_stats_types.min AS min,
+                              orders_stats_types.max AS max,
+                              orders_stats_types.unit AS unit,
+                              AVG(orders_stats.value) AS stat_avg,
+                              MAX(orders_stats.value) AS stat_max,
+                              MIN(orders_stats.value) AS stat_min,
+                              STD(orders_stats.value) AS stat_std')
+                     .group('order_stat_type_id')
+    return nil if stats.empty?
+
+    stats.each do |stat|
+      data[:results] << {
+        stat_name: stat[:stat_name],
+        min: stat[:min].nil? ? nil : Unit(stat[:min], stat[:unit]),
+        max: stat[:max].nil? ? nil : Unit(stat[:max], stat[:unit]),
+        stat_avg: Unit(stat[:stat_avg], stat[:unit]),
+        stat_min: Unit(stat[:stat_min], stat[:unit]),
+        stat_max: Unit(stat[:stat_max], stat[:unit]),
+        stat_std: Unit(stat[:stat_std], stat[:unit])
+      }
+    end
+
+    # TODO Gruff code should be in thinreport template
+    g = Gruff::Line.new("1560x912")
+    g.labels = {}
+    g.hide_dots = true
+    g.line_width = 2
+    g.legend_box_size = 12
+    g.legend_font_size = 12
+    g.left_margin = 0
+    g.top_margin = 0
+    g.right_margin = 0
+    g.left_margin = 0
+    g.marker_font_size = 8
+    g.y_axis_increment = 2
+    g.additional_line_values = [10, 20, 30, 40]
+    g.theme = {
+      colors: %w(#ee2e2f #008c48 #185aa9 #f47d23 #662c91 #a21d21 #b43894, #010202),
+      marker_color: 'grey',
+      font_color: 'black',
+      background_colors: 'white'
+    }
+    range = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
+                     .select('MAX(value) AS max_value, MIN(value) AS min_value, COUNT(*) AS count_all')
+                     .first
+    g.y_axis_increment = ((range[:max_value] - range[:min_value]) / 20).to_i
+    OrderStatType.where(unit: unit).each do |ost|
+      n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
+      stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
+                       .where(order_stat_type_id: ost.id)
+                       .select('AVG(orders_stats.value) AS stat_avg, AVG(orders_stats.created_at) AS stat_avg_unixtime')
+                       .group("FLOOR(id/#{n})").inject([]) do |array, os|
+        array << [os[:stat_avg_unixtime], os[:stat_avg]]
+        array
+      end
+      g.labels = {stats.last.first.to_i => "hola"}
+      g.dataxy(ost.description, stats)
+    end
+    g.write(data[:plot_path])
+    #Gnuplot.open do |gp|
+    #  Gnuplot::Plot.new( gp ) do |plot|
+    #    plot.rmargin 5
+    #    plot.lmargin 5
+    #
+    #    OrderStatType.where(unit: unit).each do |ost|
+    #      n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
+    #      stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
+    #                       .where(order_stat_type_id: ost.id)
+    #                       .select('AVG(orders_stats.value) AS stat_avg, AVG(orders_stats.created_at) AS stat_avg_unixtime')
+    #                       .group("FLOOR(id/#{n})").inject([[], []]) do |array, os|
+    #        array.first << os[:stat_avg_unixtime]
+    #        array.second << os[:stat_avg]
+    #        array
+    #      end
+    #      plot.data << Gnuplot::DataSet.new(stats) { |ds|
+    #        ds.with = "linespoints"
+    #        ds.title = ost.description
+    #      }
+    #    end
+    #    plot.terminal "jpeg size 1560, 912"
+    #    plot.output data[:plot_path]
+    #  end
+    #end
+    data
+  end
+
   def self.order_details_real(order_code)
     _order_details = order_details(order_code)
     return nil if _order_details.nil?

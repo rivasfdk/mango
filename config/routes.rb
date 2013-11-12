@@ -72,6 +72,7 @@ Mango::Application.routes.draw do
   match 'reports/alarms' => "reports#alarms", :via => :post, :as => "alarms_report"
   match 'reports/alarms_per_order' => "reports#alarms_per_order", :via => :post, :as => "alarms_per_order_report"
   match 'reports/stats' => "reports#stats", :via => :post, :as => "stats_report"
+  match 'reports/stats_with_plot' => "reports#stats_with_plot", :via => :post, :as => "stats_with_plot_report"
   match 'reports/order_stats' => "reports#order_stats", :via => :post, :as => "order_stats_report"
   match 'reports/hopper_transactions' => "reports#hopper_transactions", :via => :post, :as => "hopper_transactions_report"
   match 'reports/order_lots_parameters' => "reports#order_lots_parameters", :via => :post, :as => "order_lots_parameters_report"

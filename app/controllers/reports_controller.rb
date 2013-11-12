@@ -10,6 +10,7 @@ class ReportsController < ApplicationController
     @alarm_types = AlarmType.all
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
     @recipes = Recipe.all(group: :code)
+    @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
   end
 
   def daily_production
@@ -473,7 +474,6 @@ class ReportsController < ApplicationController
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
     data = EasyModel.stats(start_date, end_date)
-
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
@@ -481,6 +481,17 @@ class ReportsController < ApplicationController
     else
       report = EasyReport::Report.new data, 'stats.yml'
       send_data report.render, :filename => 'estadisticas.pdf', :type => 'application/pdf'
+    end
+  end
+
+  def stats_with_plot
+    start_date = EasyModel.param_to_datetime(params[:report], 'start')
+    end_date = EasyModel.param_to_datetime(params[:report], 'end')
+    @data = EasyModel.stats_with_plot(start_date, end_date, 'degC')
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to :action => 'index'
     end
   end
 
