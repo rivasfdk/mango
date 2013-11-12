@@ -161,7 +161,7 @@ class Order < ActiveRecord::Base
           hopper_lot.lot_id = hfl.lot_id
           hopper_lot.active = false
           hopper_lot.factory = true
-          hopper_lot.save
+          hopper_lot.save(validate: false)
         end
       end
 
@@ -169,17 +169,15 @@ class Order < ActiveRecord::Base
       batch_hopper_lot.hopper_lot_id = hopper_lot.id
       batch_hopper_lot.amount = params[:amount]
       batch_hopper_lot.standard_amount = order.get_standard_amount(hopper_lot.lot.ingredient_id)
-      if batch_hopper_lot.save
-        if is_mango_feature_available("transactions")
+      batch_hopper_lot.save(validate: false)
+        mango_features = get_mango_features()
+        if mango_features.include? "transactions"
           batch_hopper_lot.generate_transaction(user_id)
         end
-        if is_mango_feature_available("hoppers_transactions")
+        if mango_features.include? "hoppers_transactions"
           batch_hopper_lot.hopper_lot = original_hopper_lot
           batch_hopper_lot.generate_hopper_transaction(user_id)
         end
-      else
-        logger.debug("Errores de batch_hopper_lot")
-        logger.debug(batch_hopper_lot.errors.messages)
       end
     end
     errors

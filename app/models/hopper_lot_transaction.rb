@@ -8,7 +8,8 @@ class HopperLotTransaction < ActiveRecord::Base
 
   before_save :create_code, :set_date
   before_save :do_stock_update
-  
+  after_save :check_for_negative_stock
+
   private
 
   def create_code
@@ -53,5 +54,22 @@ class HopperLotTransaction < ActiveRecord::Base
     hopper_lot.stock -= self.amount
     hopper_lot.save
     self.stock_after = hopper_lot.stock
+  end
+
+  def check_for_negative_stock
+    if self.stock_after < 0
+      self.hopper_lot.stock = 0
+      self.hopper_lot.save
+      HopperLotTransaction.skip_callback(:save, :before, :do_stock_update)
+      hlt = HopperLotTransaction.new
+      hlt.hopper_lot_transaction_type_id = 3
+      hlt.hopper_lot_id = self.hopper_lot_id
+      hlt.user_id = self.user_id
+      hlt.amount = -1 * self.stock_after
+      hlt.stock_after = 0
+      hlt.comment = "Ajuste a 0 por existencia negativa"
+      hlt.save
+      HopperLotTransaction.set_callback(:save, :before, :do_stock_update)
+    end
   end
 end
