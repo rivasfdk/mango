@@ -1300,6 +1300,8 @@ class EasyModel
     lots = lots.where(client_id: factory_id) if factory_id != 0
     stocks = lots.group(:ingredient_id).sum(:stock)
 
+    return nil if stocks.empty?
+
     today = Date.today
     batch_hopper_lots = BatchHopperLot.joins({hopper_lot: {lot: {ingredient: {}}}})
     batch_hopper_lots = batch_hopper_lots.joins(batch: {order: {}})
