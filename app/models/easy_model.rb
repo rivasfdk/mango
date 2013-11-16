@@ -1295,55 +1295,33 @@ class EasyModel
     data = self.initialize_data("Proyeccion de Materia Prima")
     data['date'] = self.print_range_date(Date.today)
     data['days'] = days.to_s
-    data['results'] = []
+
+    lots = Lot.where(active: true)
+    lots = lots.where(client_id: factory_id) if factory_id != 0
+    stocks = lots.group(:ingredient_id).sum(:stock)
 
     today = Date.today
-    lots = Lot.includes(:ingredient).order('ingredients.code ASC').where(:active => true)
-    lots = lots.where(:client_id => factory_id) if factory_id != 0
+    batch_hopper_lots = BatchHopperLot.joins({hopper_lot: {lot: {ingredient: {}}}})
+    batch_hopper_lots = batch_hopper_lots.joins(batch: {order: {}})
+                                         .where(orders: {client_id: factory_id}) if factory_id != 0
+    batch_hopper_lots = batch_hopper_lots.where(batch_hoppers_lots: {created_at: (today - days) .. today})
+    batch_hopper_lots = batch_hopper_lots.select('ingredients.id AS ingredient_id, ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real')
+                                         .order('ingredients.code').group('ingredients.id')
 
-    orders = Order.includes({:batch => {:batch_hopper_lot => {:hopper_lot => {:lot => {}}}}})
-    orders = orders.where(:created_at => ((today - days)..(today)))
-    orders = orders.where(:client_id => factory_id) if factory_id != 0
+    return nil if batch_hopper_lots.empty?
 
-    return nil, nil if orders.empty?
-
-    consumptions = {}
-    orders.each do |order|
-      order.batch.each do |batch|
-        batch.batch_hopper_lot.each do |bhl|
-          key = bhl.hopper_lot.lot.ingredient_id
-          if consumptions.has_key? key
-            consumptions[key] += bhl.amount
-          elsif bhl.amount > 0
-            consumptions[key] = bhl.amount
-          end
-        end
-      end
-    end
-
-    stocks = {}
-    lots.each do |lot|
-      key = lot.ingredient_id
-      if stocks.has_key? key
-        stocks[key]['stock'] += lot.stock
-      else
-        stocks[key] = {
-          'code' => lot.ingredient.code, 
-          'name' => lot.ingredient.name,
-          'stock' => lot.stock,
-          'projection' => "N/A"
+    data['results'] = batch_hopper_lots.inject([]) do |results, bhl|
+      stock = stocks[bhl[:ingredient_id]]
+      unless stock.nil?
+        projection = (stock / (bhl[:total_real] / days)).to_i
+        results << {
+          'code' => bhl[:ingredient_code],
+          'name' => bhl[:ingredient_name],
+          'stock' => stock,
+          'projection' => projection < 0 ? 0 : projection
         }
       end
-    end
-
-    consumptions.each do |key, amount|
-      if stocks.has_key? key
-        stocks[key]['projection'] = (stocks[key]['stock'] / (amount / days)).to_i
-      end
-    end
-
-    stocks.each do |key, item|
-      data['results'] << item
+      results
     end
     return data
   end
