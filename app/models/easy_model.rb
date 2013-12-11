@@ -34,8 +34,8 @@ class EasyModel
       }
     end
 
-	unless product_lot_parameter_list.nil?
-	  data['tables'] << {
+	  unless product_lot_parameter_list.nil?
+	    data['tables'] << {
         "title" => "#{product_lot_parameter_list.product_lot.product.name} (Lote #{product_lot_parameter_list.product_lot.code})",
         "table" => product_lot_parameter_list.parameters_with_range
       }
@@ -166,6 +166,7 @@ class EasyModel
                               MIN(orders_stats.value) AS stat_min,
                               STD(orders_stats.value) AS stat_std')
                      .group('order_stat_type_id')
+
     return nil if stats.empty?
 
     stats.each do |stat|
@@ -1048,8 +1049,11 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot
                         .joins({hopper_lot: {lot: {ingredient: {}}}})
-                        .select('ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where(batch_hoppers_lots: {created_at: start_date..end_date + 1.day})
+                        .select('ingredients.code AS ingredient_code,
+                                 ingredients.name AS ingredient_name,
+                                 SUM(amount) AS total_real,
+                                 SUM(standard_amount) AS total_std')
+                        .where(batch_hoppers_lots: {created_at: start_date .. end_date + 1.day})
                         .order('ingredients.code')
                         .group('ingredients.id')
 
@@ -1307,8 +1311,12 @@ class EasyModel
     batch_hopper_lots = batch_hopper_lots.joins(batch: {order: {}})
                                          .where(orders: {client_id: factory_id}) if factory_id != 0
     batch_hopper_lots = batch_hopper_lots.where(batch_hoppers_lots: {created_at: (today - days) .. today})
-    batch_hopper_lots = batch_hopper_lots.select('ingredients.id AS ingredient_id, ingredients.code AS ingredient_code, ingredients.name AS ingredient_name, SUM(amount) AS total_real')
-                                         .order('ingredients.code').group('ingredients.id')
+                                         .select('ingredients.id AS ingredient_id,
+                                                  ingredients.code AS ingredient_code,
+                                                  ingredients.name AS ingredient_name,
+                                                  SUM(amount) AS total_real')
+                                         .order('ingredients.code')
+                                         .group('ingredients.id')
 
     return nil if batch_hopper_lots.empty?
 
