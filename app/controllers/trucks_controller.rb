@@ -4,23 +4,26 @@ class TrucksController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @trucks = Truck.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}
+        @trucks = Truck.paginate page: params[:page],
+                                 per_page: session[:per_page],
+                                 conditions: {frequent: true},
+                                 include: :carrier
         render :html => @trucks
       end
       format.json do
-        @trucks = Truck.find :all, :conditions => {:frequent => true}
-        render :json => @trucks, :include => :carrier
+        @trucks = Truck.includes(:carrier).where(frequent: true)
+        render json: @trucks, include: :carrier
       end
     end
   end
 
   def new
-    @carriers = Carrier.find :all
+    @carriers = Carrier.all
   end
 
   def edit
     @truck = Truck.find params[:id]
-    @carriers = Carrier.find :all
+    @carriers = Carrier.all
   end
 
   def create
@@ -37,9 +40,9 @@ class TrucksController < ApplicationController
       end
       format.json do
         if @truck.save
-          render :json => @truck, :include => :carrier
+          render json: @truck, include: :carrier
         else
-          render :json => @truck.errors, :status => :unprocessable_entity
+          render json: @truck.errors, status: :unprocessable_entity
         end
       end
     end
