@@ -876,8 +876,6 @@ module MenuHelper
     menu = content_tag(:p, 'Transacciones')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Reprocesar', 'Recalcular consumos', reprocess_transactions_path, 'button-recalculate.png') +
-      render_action('Exportar', 'Exportar consumos', export_transactions_path, 'button-import.png') +
       render_action('Crear', 'Crear nueva transacción', new_transaction_path, 'button-add.png')
     )
     return menu

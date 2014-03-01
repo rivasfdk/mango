@@ -8,84 +8,41 @@ class Transaction < ActiveRecord::Base
   validates :transaction_type_id, :amount, :user_id, :content_type, :content_id, presence: true
   validates :amount, numericality: true
   validates :sacks, :sack_weight, numericality: {allow_nil: true}
-  
-  before_save :create_code, :set_date, if: :new_record?
-  before_save :do_stock_update
-  after_destroy :undo_stock_update
 
-  def self.get_no_processed
-    Transaction.where processed_in_stock: 0
-  end
-
-  def self.generate_export_file(start_date, end_date)
-    return "data"
-  end
-
-  def process
-    transaction do
-      self.processed_in_stock = 1
-      unless self.save
-        logger.error(self.errors.inspect)
-        raise StandardError, 'Problem reprocessing transaction'
-      end
-    end
-  end
+  before_save :update_stock
 
   def get_lot
     return Lot.find self.content_id if self.content_type == 1
-    return ProductLot.find self.content_id if self.content_type == 2
+    return ProductLot.find self.content_id
   end
 
   def get_content
-    if self.content_type == 1
-      return self.get_lot.ingredient
-    else
-      return self.get_lot.product
-    end
+    return self.get_lot.ingredient if self.content_type == 1
+    return self.get_lot.product
+  end
+
+  def get_sign
+    TransactionType.where(id: self.transaction_type_id).pluck(:sign).first
   end
 
   private
 
-  def get_sign
-    TransactionType.find(self.transaction_type_id).sign
-  end
-
-  def do_stock_update
-    Lot.skip_callback(:save, :after, :check_hopper_stock)
-    get_sign == '+' ? increase_stock : decrease_stock
-    Lot.set_callback(:save, :after, :check_hopper_stock)
-  end
-
-  def undo_stock_update
-    Lot.skip_callback(:save, :after, :check_hopper_stock)
-    get_sign == '-' ? increase_stock : decrease_stock
-    Lot.set_callback(:save, :after, :check_hopper_stock)
-  end
-
-  def create_code
-    last = Transaction.last
-    if last.nil?
-      self.code = '00000001'
+  def update_stock
+    actual_amount = self.get_sign == '+' ? self.amount : -1 * self.amount
+    if self.content_type == 1
+      self.stock_after = Lot.where(id: self.content_id)
+                            .pluck(:stock)
+                            .first + actual_amount
+                            .round(2)
+      Lot.where(id: self.content_id)
+         .update_all(stock: self.stock_after, updated_at: Time.now)
     else
-      self.code = last.code.succ
+      self.stock_after = ProductLot.where(id: self.content_id)
+                                   .pluck(:stock)
+                                   .first + actual_amount
+                                   .round(2)
+      ProductLot.where(id: self.content_id)
+                .update_all(stock: stock_after, updated_at: Time.now)
     end
-  end
-
-  def set_date
-    self.date = Date.today
-  end
-
-  def increase_stock
-    lot = self.get_lot
-    lot.stock += self.amount	
-    lot.save
-    self.stock_after = lot.stock
-  end
-
-  def decrease_stock
-    lot = self.get_lot
-    lot.stock -= self.amount
-    lot.save
-    self.stock_after = lot.stock
   end
 end

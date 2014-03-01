@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131111135815) do
+ActiveRecord::Schema.define(:version => 20140301030520) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -545,8 +545,6 @@ ActiveRecord::Schema.define(:version => 20131111135815) do
   create_table "transactions", :force => true do |t|
     t.integer  "transaction_type_id",                    :null => false
     t.integer  "user_id",                                :null => false
-    t.string   "code",                                   :null => false
-    t.date     "date",                                   :null => false
     t.float    "amount",                                 :null => false
     t.string   "comment"
     t.datetime "created_at"

@@ -3,9 +3,11 @@ module LotModule
     stock = 0
     content_type = self.is_a?(Lot) ? 1 : 2
     transactions = Transaction.includes(:transaction_type)
-                              .where(content_id: self.id, content_type: content_type)
+                              .where(content_id: self.id,
+                                     content_type: content_type)
     transactions.each do |t|
       stock += t.transaction_type.sign == "+" ? t.amount : -1 * t.amount
+      stock = stock.round(2)
       t.update_column(:stock_after, stock)
     end
 

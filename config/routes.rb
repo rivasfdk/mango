@@ -14,9 +14,6 @@ Mango::Application.routes.draw do
   match 'product_parameter_type_ranges/:id/create' => "product_parameter_type_ranges#create", :via => :post, :as => 'create_product_parameter_type_range'
   match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
-  match 'transactions/reprocess' => "transactions#reprocess", :via => :get, :as => 'reprocess_transactions'
-  match 'transactions/export' => "transactions#export", :via => :get, :as => 'export_transactions'
-  match 'transactions/download' => "transactions#download", :via => :get, :as => 'download_transactions'
   match 'roles/:id/clone' => "roles#clone", :via => :get, :as => 'clone_role'
   match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
   match 'orders/:id/repair' => "orders#repair", :via => :get, :as => 'repair_order'
@@ -84,8 +81,8 @@ Mango::Application.routes.draw do
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
-  resources :transactions, :except=>:edit
-  resources :tickets, :except=>:edit
+  resources :transactions, only: [:index, :new, :create]
+  resources :tickets, except: :edit
 
   resources :recipes do
     resources :ingredients_recipes

@@ -1198,7 +1198,7 @@ class EasyModel
         'amount' => amount.to_s,
         'user_name' => a.user.login,
         'comment' => a.comment,
-        'date' => self.print_formatted_date(a.date),
+        'date' => self.print_range_date(a.created_at),
         'adjustment_code' => ttype_code
       }
     end
@@ -1241,7 +1241,7 @@ class EasyModel
           'content_name' => content_name,
           'amount' => amount.to_s,
           'user_name' => i.user.login,
-          'date' => self.print_formatted_date(i.date)
+          'date' => self.print_range_date(i.created_at)
         }
       end
     end
@@ -1405,7 +1405,7 @@ class EasyModel
           'amount' => d.amount.to_s,
           'user_name' => d.user.login,
           'comment' => d.comment,
-          'date' => self.print_formatted_date(d.date),
+          'date' => self.print_range_date(d.created_at),
           'adjusment_code' => d.transaction_type.code,
         }
       end
