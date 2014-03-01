@@ -1,4 +1,46 @@
 class EasyModel
+  def self.lot_transactions(start_date, end_date, lot_type, lot_code)
+    lot = lot_type == 1 ? Lot.find_by_code(lot_code) : ProuctLot.find_by_code(lot_code)
+    return nil if lot.nil?
+
+    content = lot_type == 1 ? lot.ingredient : lot.product
+
+    transactions = Transaction.includes(:user, :transaction_type, :order)
+                              .where(created_at: start_date .. end_date + 1)
+                              .where(content_type: lot_type)
+                              .where(content_id: lot.id)
+                              .order('id ASC')
+    return nil if transactions.empty?
+
+    data = self.initialize_data("Movimientos del Lote #{lot.code} #{content.name}")
+    data[:since] = self.print_range_date(start_date)
+    data[:until] = self.print_range_date(end_date)
+    data[:results] = []
+    
+    diff = 0
+    transactions.each_with_index do |t, i|
+      amount = t.transaction_type.sign == "+" ? t.amount : -1 * t.amount
+      stock_after = t.stock_after
+      fixed_stock = i == 0 ? t.stock_after : transactions[i - 1].stock_after + amount
+      diff += stock_after - fixed_stock if (stock_after - fixed_stock).abs > 0.2
+      data[:results] << {
+        date: self.print_range_date(t.created_at, true),
+        user: t.user.login,
+        order: t.order.present? ? t.order.code : "---",
+        ticket: t.ticket.present? ? t.ticket.number : "---",
+        document_number: t.document_number.present? ? t.document_number : "---",
+        type: t.transaction_type.code,
+        amount: amount,
+        stock: t.stock_after,
+        fixed_stock: i == 0 ? t.stock_after : transactions[i - 1].stock_after + amount,
+        diff: diff,
+        comment: t.comment,
+      }
+    end
+    data[:diff] = diff
+    data
+  end
+
   def self.order_lots_parameters(order_code)
     joins = {lot: {hopper_lot: {batch_hopper_lot: {batch: {order: {}}}}}}
     includes = {lot_parameters: {lot_parameter_type: {}}, lot: {ingredient: {}}}

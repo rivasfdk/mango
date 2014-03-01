@@ -3,6 +3,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :user
   belongs_to :client
   belongs_to :ticket
+  belongs_to :order
 
   validates :transaction_type_id, :amount, :user_id, :content_type, :content_id, presence: true
   validates :amount, numericality: true

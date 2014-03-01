@@ -1,6 +1,8 @@
 class ProductLot < ActiveRecord::Base
   include LotModule
 
+  attr_protected
+
   belongs_to :product
   belongs_to :client
   has_many :order, inverse_of: :product_lot

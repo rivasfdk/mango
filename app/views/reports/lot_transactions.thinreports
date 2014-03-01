@@ -1,0 +1,33 @@
+report.set_layout tlf: 'reports/thinreports_layouts/lot_transactions'
+
+report.events.on :generate do |e|
+  e.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
+  end
+end
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values since: @data[:since]
+  page.values until: @data[:until]
+
+  @data[:results].each do |result|
+    diff = result[:stock] - result[:fixed_stock] 
+    comment = "Diferencia: #{diff.round(2)} | Acumulado: #{result[:diff].round(2)}"
+    report.list(:results)
+          .add_row date: result[:date],
+                   user: result[:user],
+                   order: result[:order],
+                   ticket: result[:ticket],
+                   document_number: result[:document_number],
+                   type: result[:type],
+                   amount: result[:amount],
+                   stock: result[:stock],
+                   comment: diff.abs > 0.2 ? comment : result[:comment]
+  end
+end

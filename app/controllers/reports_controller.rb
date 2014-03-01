@@ -11,6 +11,7 @@ class ReportsController < ApplicationController
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
     @recipes = Recipe.all(group: :code)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
+    @lots = Lot.includes(:ingredient).where(active: true)
   end
 
   def daily_production
@@ -501,6 +502,20 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
+    end
+  end
+
+  def lot_transactions
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    lot_type = params[:report][:lot_type].to_i
+    lot_code = params[:report][:lot_code]
+
+    @data = EasyModel.lot_transactions(start_date, end_date, lot_type, lot_code)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
     end
   end
 end

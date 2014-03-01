@@ -9,12 +9,11 @@ report.start_new_page do |page|
   page.values recipe: @data[:recipe]  
 
   @data[:results].each do |result|
-    report.list(:results) do |list|
-      list.add_row stat_name: result[:stat_name],
+    report.list(:results)
+          .add_row stat_name: result[:stat_name],
                    stat_avg: result[:stat_avg].round(2).to_s,
                    stat_min: result[:stat_min].round(2).to_s,
                    stat_max: result[:stat_max].round(2).to_s,
                    stat_std: result[:stat_std].round(2).to_s
-    end
   end
 end

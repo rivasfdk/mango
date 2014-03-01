@@ -1,6 +1,8 @@
 class Lot < ActiveRecord::Base
   include LotModule
 
+  attr_protected :stock
+
   belongs_to :ingredient
   belongs_to :client
   has_many :hopper_lot
@@ -26,22 +28,24 @@ class Lot < ActiveRecord::Base
   end
 
   def check_hopper_stock
-    hoppers = Hopper.includes(:hopper_lot).where(['hoppers_lots.active = true and hoppers_lots.lot_id = ?', self.id])
-    hoppers.each do |hopper|
-      hopper.save
-    end
+    Hopper.includes(:hopper_lot)
+          .where({hoppers_lots: {active: true, lot_id: self.id}})
+          .each { |hopper| hopper.save }
   end
 
   def self.find_all
-    includes(:ingredient).where(:active => true).order('code DESC')
+    includes(:ingredient).where(active: true)
+                         .order('code DESC')
   end
 
   def self.find_by_factory(lot)
     lots_by_factory = {}
-    Client.where(:factory => true).each do |client|
+    Client.where(factory: true).each do |client|
       lots_by_factory[client.id] = []
     end
-    lots = Lot.includes(:ingredient).where(:active => true, :in_use => true).where(['client_id is not null and ingredient_id = ?', lot.ingredient_id])
+    lots = Lot.includes(:ingredient)
+              .where(active: true, in_use: true)
+              .where(['client_id is not null and ingredient_id = ?', lot.ingredient_id])
     lots.each do |lot|
       lots_by_factory[lot.client_id] << lot
     end

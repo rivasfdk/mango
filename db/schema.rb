@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20131111135815) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "alarms", :force => true do |t|
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(:version => 20131111135815) do
     t.boolean  "stock_below_minimum", :default => false
   end
 
-  add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
+  add_index "hoppers", ["scale_id"], :name => "fk_scale_id"
 
   create_table "hoppers_factory_lots", :force => true do |t|
     t.integer  "hopper_lot_id"
@@ -305,8 +305,8 @@ ActiveRecord::Schema.define(:version => 20131111135815) do
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
   add_index "orders", ["code"], :name => "index_orders_on_code"
-  add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
-  add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
+  add_index "orders", ["medicament_recipe_id"], :name => "fk_medicament_recipe_id"
+  add_index "orders", ["parameter_list_id"], :name => "fk_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"
   add_index "orders", ["recipe_id"], :name => "fk_orders_recipe_id"
   add_index "orders", ["user_id"], :name => "fk_orders_user_id"

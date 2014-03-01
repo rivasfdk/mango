@@ -100,13 +100,17 @@ class Order < ActiveRecord::Base
           recipe_ingredients.each do |key, value|
             batch.batch_hopper_lot.new(hopper_lot_id: hopper_ingredients[key],
                                        standard_amount: value,
-                                       amount: value).save(validate: false)
+                                       amount: value)
+                                  .save(validate: false)
           end
         end
       end
 
       # Bro do you even ruby?
-      batches_ingredients = self.batch.joins(batch_hopper_lot: {hopper_lot: {lot: {}}}).pluck_all("batches.id", "lots.ingredient_id").inject(Hash.new {|hash, key| hash[key] = []}) do |hash, bi|
+      batches_ingredients = self.batch
+                                .joins(batch_hopper_lot: {hopper_lot: {lot: {}}})
+                                .pluck_all("batches.id", "lots.ingredient_id")
+                                .inject(Hash.new {|hash, key| hash[key] = []}) do |hash, bi|
         hash[bi["id"]] << bi["ingredient_id"]
         hash
       end

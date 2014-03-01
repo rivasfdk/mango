@@ -253,6 +253,23 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('lot_transactions') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('lot_transactions')">Movimientos por lote</h2>
+    <div id="lot_transactions" class="report-details">
+      <%= form_for :report, :url=>lot_transactions_report_path do |f| %>
+        <br/>
+        <%= f.radio_button :lot_type, 1, :checked => true %> Materia prima
+        <%= f.radio_button :lot_type, 2%> Producto terminado<br/><br/>
+        <%= f.collection_select :lot_code, @lots, :code, :to_collection_select, {}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('stock_adjustments') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('stock_adjustments')">Ajustes de Inventario</h2>
