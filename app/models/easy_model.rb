@@ -9,7 +9,6 @@ class EasyModel
                               .where(created_at: start_date .. end_date + 1)
                               .where(content_type: lot_type)
                               .where(content_id: lot.id)
-                              .order('id ASC')
     return nil if transactions.empty?
 
     data = self.initialize_data("Movimientos del Lote #{lot.code} #{content.name}")

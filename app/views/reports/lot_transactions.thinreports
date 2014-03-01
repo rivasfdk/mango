@@ -28,6 +28,6 @@ report.start_new_page do |page|
                    type: result[:type],
                    amount: result[:amount],
                    stock: result[:stock],
-                   comment: diff.abs > 0.2 ? comment : result[:comment]
+                   comment: diff.abs > 1 ? comment : result[:comment]
   end
 end
