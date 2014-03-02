@@ -6,7 +6,7 @@ function clientTypeSelected() {
   select = $('#order_client_id');
   select.empty();
   select.append(new Option(message, ""));
-  clients.forEach(function(client) {
+  $.each(clients, function(_, client) {
     if (client.factory == factory)
       select.append(new Option(client.name, client.id));
   });
