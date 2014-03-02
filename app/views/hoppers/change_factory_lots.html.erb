@@ -21,7 +21,7 @@
         <% class_row, i = alternate_row_class(i) %>
         <tr class="<%= class_row %>">
           <td><%= builder.object.client.name %></td>
-          <td><%= builder.collection_select :lot_id, @factory_lots[builder.object.client_id], :id, :to_collection_select, {:include_blank => "Ninguno"}, :class=>'chzn-select chzn-field-normal' %></td>
+          <td><%= builder.collection_select :lot_id, @factory_lots[builder.object.client_id], :id, :to_collection_select, {:include_blank => "Ninguno"}, :class=>'chosen-select chzn-field-normal' %></td>
         </tr>
       <% end %>
     </tbody>

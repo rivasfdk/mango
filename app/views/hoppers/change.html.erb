@@ -1,7 +1,7 @@
 <% title "Cambiar tolva" %>
 <%= form_for :change, :url=>change_scale_hopper_path(@hopper.scale_id, @hopper.id), :html=>{:id=>'hopper_change_form'} do |f| %>
   <label for="ingredient" class="small">Ingrediente (Lote):</label>
-  <div class="field"><%= f.collection_select :lot_id, @lots, :id, :to_collection_select, {:selected => @current_lot.id}, :class=>'chzn-select chzn-field-normal' %> <span>*</span></div>
+  <div class="field"><%= f.collection_select :lot_id, @lots, :id, :to_collection_select, {:selected => @current_lot.id}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
   <label for="stock" class="small">Existencia inicial:</label>
   <div class="field"><%= f.text_field :amount, :size=>'10' %><span>*</span></div>
   <div class="clearfix"></div>

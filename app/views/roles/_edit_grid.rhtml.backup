@@ -14,7 +14,7 @@
     <tbody>
       <tr>
         <td colspan="4">
-          <%= f.collection_select :id, @permissions, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-done chzn-field-normal' %>
+          <%= f.collection_select :id, @permissions, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-done chzn-field-normal' %>
         </td>
         <td><%= submit_tag 'Agregar' %></td>
       </tr>

@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class OrdersController < ApplicationController
   def index
     @orders = Order.search(params)
@@ -17,6 +19,8 @@ class OrdersController < ApplicationController
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]
     @can_edit_real_production = @user.has_global_permission?('orders', 'edit_real_production')
+    @factories_enabled = is_mango_feature_available("factories")
+    @medicament_recipes_enabled = is_mango_feature_available("medicament_recipes")
     unless @user.admin?
       @order.user_id = @user.id
     end

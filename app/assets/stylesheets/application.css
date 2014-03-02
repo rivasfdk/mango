@@ -1,5 +1,8 @@
 /*
 *= require_self
+*= require jquery.ui.datepicker
+*= require jquery.ui.autocomplete
+*= require chosen
 */
 
 h5 {

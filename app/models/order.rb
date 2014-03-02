@@ -280,7 +280,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.search(params)
-    orders = Order.includes(:recipe, :batch, :client)
+    orders = Order.includes(:recipe, :batch, :client, product_lot: {product: {}})
     orders = orders.where(code: params[:code]) if params[:code].present?
     orders = orders.where(recipes: {code: params[:recipe_code]}) if params[:recipe_code].present?
     orders = orders.where(client_id: params[:client_id]) if params[:client_id].present?

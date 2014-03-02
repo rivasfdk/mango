@@ -1,10 +1,10 @@
 <%= render_error_messages(f.error_messages) %>
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
-<div class="field"><%= f.collection_select :ticket_type_id, @ticket_types, :id, :description, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><span>*</span></div>
+<div class="field"><%= f.collection_select :ticket_type_id, @ticket_types, :id, :description, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><span>*</span></div>
 <label for="driver_id" class="small">Chofer:</label>
-<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><span>*</span></div>
+<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><span>*</span></div>
 <label for="truck_id" class="small">Camión:</label>
-<div class="field"><%= f.collection_select :truck_id, @trucks, :id, :license_plate, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><span>*</span></div>
+<div class="field"><%= f.collection_select :truck_id, @trucks, :id, :license_plate, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><span>*</span></div>
 <label for="incoming_date" class="small">Fecha de entrada:</label>
 <div class="field"><%= f.datetime_select :incoming_date, :include_seconds => true, :default => DateTime.now, :size=>'10' %> <span>*</span></div>
 <label for="incoming_weight" class="small">Peso de entrada:</label>

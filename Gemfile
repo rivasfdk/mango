@@ -7,7 +7,12 @@ gem "mysql2", "~> 0.3.11"
 gem 'dynamic_form'
 gem 'railroady'
 gem "therubyracer", "~> 0.11.4"
-gem 'calendar_date_select', :git => 'http://github.com/paneq/calendar_date_select.git', :branch => 'rails3test'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'thinreports'
+gem 'thinreports-rails'
+gem 'ruby-units'
+gem 'gnuplot'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -17,10 +22,4 @@ group :assets do
   gem 'uglifier'
 end
 
-gem 'prototype-rails'
-
 gem 'passenger'
-gem 'thinreports'
-gem 'thinreports-rails'
-gem 'ruby-units'
-gem 'gnuplot'

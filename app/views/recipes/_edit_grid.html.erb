@@ -15,7 +15,7 @@
     <tbody>
       <tr>
         <td colspan="2">
-          <%= f.collection_select :code, @ingredients, :code, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-done chzn-field-normal' %>
+          <%= f.collection_select :code, @ingredients, :code, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-done chzn-field-normal' %>
         </td>
         <td><%= f.text_field :amount, :size=>4 %></td>
         <td><%= f.text_field :priority, :size=>4 %></td>

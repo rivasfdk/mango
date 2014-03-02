@@ -1,271 +1,274 @@
-//= require prototype
-//= require prototype_ujs
-//= require effects
-//= require dragdrop
-//= require controls
+//= require jquery
+//= require jquery_ujs
+//= require jquery.ui.datepicker
+//= require jquery.ui.datepicker-es
+//= require chosen.jquery
 
-document.observe("dom:loaded", function() {
+$(function(){
+    $('.datepicker').datepicker()
+                    .attr('readonly', 'readonly');
+    $(".chosen-select").chosen();
     hide_all_report_details();
 });
 
 function submit_product_lot_parameter_list_edit_form() {
-    $('product_lot_parameter_list_edit_form').submit();
+    $('#product_lot_parameter_list_edit_form').submit();
 }
 function submit_lot_parameter_list_edit_form() {
-    $('lot_parameter_list_edit_form').submit();
+    $('#lot_parameter_list_edit_form').submit();
 }
 function submit_settings_edit_form() {
-    $('settings_edit_form').submit();
+    $('#settings_edit_form').submit();
 }
 
 function submit_recipe_new_form() {
-    $('recipe_new_form').submit();
+    $('#recipe_new_form').submit();
 }
 
 function submit_recipe_edit_form() {
-    $('recipe_edit_form').submit();
+    $('#recipe_edit_form').submit();
 }
 
 function submit_recipe_upload_form() {
-    $('recipe_upload_form').hide();
-    $('data_progress').show();
-    $('recipe_upload_form').submit();
+    $('#recipe_upload_form').hide();
+    $('#data_progress').show();
+    $('#recipe_upload_form').submit();
 }
 
 function submit_medicament_recipe_new_form() {
-    $('medicament_recipe_new_form').submit();
+    $('#medicament_recipe_new_form').submit();
 }
 
 function submit_medicament_recipe_edit_form() {
-    $('medicament_recipe_edit_form').submit();
+    $('#medicament_recipe_edit_form').submit();
 }
 
 function submit_ingredient_new_form() {
-    $('ingredient_new_form').submit();
+    $('#ingredient_new_form').submit();
 }
 
 function submit_ingredient_edit_form() {
-    $('ingredient_edit_form').submit();
+    $('#ingredient_edit_form').submit();
 }
 
 function submit_user_new_form() {
-    $('user_new_form').submit();
+    $('#user_new_form').submit();
 }
 
 function submit_user_edit_form() {
-    $('user_edit_form').submit();
+    $('#user_edit_form').submit();
 }
 
 function submit_hopper_new_form() {
-    $('hopper_new_form').submit();
+    $('#hopper_new_form').submit();
 }
 
 function submit_hopper_edit_form() {
-    $('hopper_edit_form').submit();
+    $('#hopper_edit_form').submit();
 }
 
 function submit_hopper_change_form() {
-    $('hopper_change_form').submit();
+    $('#hopper_change_form').submit();
 }
 
 function submit_hopper_fill_form() {
-    $('hopper_fill_form').submit();
+    $('#hopper_fill_form').submit();
 }
 
 function submit_hopper_adjust_form() {
-    $('hopper_adjust_form').submit();
+    $('#hopper_adjust_form').submit();
 }
 
 function submit_hopper_change_factory_lots_form() {
-    $('hopper_change_factory_lots_form').submit();
+    $('#hopper_change_factory_lots_form').submit();
 }
 
 function submit_product_new_form() {
-    $('product_new_form').submit();
+    $('#product_new_form').submit();
 }
 
 function submit_product_edit_form() {
-    $('product_edit_form').submit();
+    $('#product_edit_form').submit();
 }
 
 function submit_order_new_form() {
-    $('order_new_form').submit();
+    $('#order_new_form').submit();
 }
 
 function submit_order_edit_form() {
-    $('order_edit_form').submit();
+    $('#order_edit_form').submit();
 }
 
 function submit_order_repair_form() {
-    $('order_repair_form').submit();
+    $('#order_repair_form').submit();
 }
 
 function submit_client_new_form() {
-    $('client_new_form').submit();
+    $('#client_new_form').submit();
 }
 
 function submit_client_edit_form() {
-    $('client_edit_form').submit();
+    $('#client_edit_form').submit();
 }
 
 function submit_order_stat_type_new_form() {
-    $('order_stat_type_new_form').submit();
+    $('#order_stat_type_new_form').submit();
 }
 
 function submit_order_stat_type_edit_form() {
-    $('order_stat_type_edit_form').submit();
+    $('#order_stat_type_edit_form').submit();
 }
 
 function submit_factory_new_form() {
-    $('factory_new_form').submit();
+    $('#factory_new_form').submit();
 }
 
 function submit_factory_edit_form() {
-    $('factory_edit_form').submit();
+    $('#factory_edit_form').submit();
 }
 
 function submit_batch_new_form() {
-    $('batch_new_form').submit();
+    $('#batch_new_form').submit();
 }
 
 function submit_batch_edit_form() {
-    $('batch_edit_form').submit();
+    $('#batch_edit_form').submit();
 }
 
 function submit_lot_new_form() {
-    $('lot_new_form').submit();
+    $('#lot_new_form').submit();
 }
 
 function submit_lot_edit_form() {
-    $('lot_edit_form').submit();
+    $('#lot_edit_form').submit();
 }
 
 function submit_lot_adjust_form() {
-    $('lot_adjust_form').submit();
+    $('#lot_adjust_form').submit();
 }
 
 function submit_schedule_new_form() {
-    $('schedule_new_form').submit();
+    $('#schedule_new_form').submit();
 }
 
 function submit_schedule_edit_form() {
-    $('schedule_edit_form').submit();
+    $('#schedule_edit_form').submit();
 }
 
 function submit_transaction_type_new_form() {
-    $('transaction_type_new_form').submit();
+    $('#transaction_type_new_form').submit();
 }
 
 function submit_transaction_type_edit_form() {
-    $('transaction_type_edit_form').submit();
+    $('#transaction_type_edit_form').submit();
 }
 
 function submit_product_lot_new_form() {
-    $('product_lot_new_form').submit();
+    $('#product_lot_new_form').submit();
 }
 
 function submit_product_lot_edit_form() {
-    $('product_lot_edit_form').submit();
+    $('#product_lot_edit_form').submit();
 }
 
 function submit_product_lot_adjust_form() {
-    $('product_lot_adjust_form').submit();
+    $('#product_lot_adjust_form').submit();
 }
 
 function submit_transaction_new_form() {
-    $('transaction_new_form').submit();
+    $('#transaction_new_form').submit();
 }
 
 function submit_transaction_edit_form() {
-    $('transaction_edit_form').submit();
+    $('#transaction_edit_form').submit();
 }
 
 function submit_permission_new_form() {
-    $('permission_new_form').submit();
+    $('#permission_new_form').submit();
 }
 
 function submit_permission_edit_form() {
-    $('permission_edit_form').submit();
+    $('#permission_edit_form').submit();
 }
 
 function submit_role_new_form() {
-    $('role_new_form').submit();
+    $('#role_new_form').submit();
 }
 
 function submit_role_edit_form() {
-    $('role_edit_form').submit();
+    $('#role_edit_form').submit();
 }
 
 function submit_driver_new_form() {
-    $('driver_new_form').submit();
+    $('#driver_new_form').submit();
 }
 
 function submit_driver_edit_form() {
-    $('driver_edit_form').submit();
+    $('#driver_edit_form').submit();
 }
 
 function submit_carrier_new_form() {
-    $('carrier_new_form').submit();
+    $('#carrier_new_form').submit();
 }
 
 function submit_carrier_edit_form() {
-    $('carrier_edit_form').submit();
+    $('#carrier_edit_form').submit();
 }
 
 function submit_truck_new_form() {
-    $('truck_new_form').submit();
+    $('#truck_new_form').submit();
 }
 
 function submit_truck_edit_form() {
-    $('truck_edit_form').submit();
+    $('#truck_edit_form').submit();
 }
 
 function submit_ticket_new_form() {
-    $('ticket_new_form').submit();
+    $('#ticket_new_form').submit();
 }
 
 function submit_ticket_edit_form() {
-    $('ticket_edit_form').submit();
+    $('#ticket_edit_form').submit();
 }
 
 function submit_alarm_type_new_form() {
-    $('alarm_type_new_form').submit();
+    $('#alarm_type_new_form').submit();
 }
 
 function submit_alarm_type_edit_form() {
-    $('alarm_type_edit_form').submit();
+    $('#alarm_type_edit_form').submit();
 }
 
 function submit_parameter_type_new_form() {
-    $('parameter_type_new_form').submit();
+    $('#parameter_type_new_form').submit();
 }
 
 function submit_parameter_type_edit_form() {
-    $('parameter_type_edit_form').submit();
+    $('#parameter_type_edit_form').submit();
 }
 
 function submit_lot_parameter_type_new_form() {
-    $('lot_parameter_type_new_form').submit();
+    $('#lot_parameter_type_new_form').submit();
 }
 
 function submit_lot_parameter_type_edit_form() {
-    $('lot_parameter_type_edit_form').submit();
+    $('#lot_parameter_type_edit_form').submit();
 }
 
 function submit_product_lot_parameter_type_new_form() {
-    $('product_lot_parameter_type_new_form').submit();
+    $('#product_lot_parameter_type_new_form').submit();
 }
 
 function submit_product_lot_parameter_type_edit_form() {
-    $('product_lot_parameter_type_edit_form').submit();
+    $('#product_lot_parameter_type_edit_form').submit();
 }
 
 function submit_scale_new_form() {
-    $('scale_new_form').submit();
+    $('#scale_new_form').submit();
 }
 
 function submit_scale_edit_form() {
-    $('scale_edit_form').submit();
+    $('#scale_edit_form').submit();
 }
 
 function toggle_report_details(id) {
@@ -274,9 +277,9 @@ function toggle_report_details(id) {
 }
 
 function hide_all_report_details() {
-    $$('.report-details').invoke('hide')
+    $('.report-details').hide();
 }
 
 function close_error_dialog() {
-    $('modal').remove();
+    $('#modal').remove();
 }

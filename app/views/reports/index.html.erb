@@ -4,7 +4,7 @@
 <div class="yui3-u-1">
   <% if session[:reports_permissions].include?('daily_production') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('daily_production')">Producción Diaria por Fábrica</h2>
+    <h2 onclick="toggle_report_details('#daily_production')">Producción Diaria por Fábrica</h2>
     <div id="daily_production" class="report-details">
       <%= form_for :report, :url=>daily_production_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -17,7 +17,7 @@
 
   <% if session[:reports_permissions].include?('real_production') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('real_production')">Producción Físico</h2>
+    <h2 onclick="toggle_report_details('#real_production')">Producción Físico</h2>
     <div id="real_production" class="report-details">
       <%= form_for :report, :url=>real_production_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -30,7 +30,7 @@
 
   <% if session[:reports_permissions].include?('stats') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('stats')">Estadísticas de producción</h2>
+    <h2 onclick="toggle_report_details('#stats')">Estadísticas de producción</h2>
     <div id="stats" class="report-details">
       <%= form_for :report, :url=>stats_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -43,12 +43,12 @@
 
   <% if session[:reports_permissions].include?('stats_with_plot') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('stats_with_plot')">Estadísticas de producción con gráfico</h2>
+    <h2 onclick="toggle_report_details('#stats_with_plot')">Estadísticas de producción con gráfico</h2>
     <div id="stats_with_plot" class="report-details">
       <%= form_for :report, :url=>stats_with_plot_report_path(format: 'pdf') do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :unit, "Unidades: ", :class=>'small' %> <%= f.collection_select :unit, @units, :first, :second, {}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.label :unit, "Unidades: ", :class=>'small' %> <%= f.collection_select :unit, @units, :first, :second, {}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -57,7 +57,7 @@
 
   <% if session[:reports_permissions].include?('order_stats') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('order_stats')">Estadísticas de orden</h2>
+    <h2 onclick="toggle_report_details('#order_stats')">Estadísticas de orden</h2>
     <div id="order_stats" class="report-details">
       <%= form_for :report, :url=>order_stats_report_path(format: 'pdf') do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/>
@@ -69,7 +69,7 @@
 
   <% if session[:reports_permissions].include?('order_duration') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('order_duration')">Duración de Orden</h2>
+    <h2 onclick="toggle_report_details('#order_duration')">Duración de Orden</h2>
     <div id="order_duration" class="report-details">
       <%= form_for :report, :url=>order_duration_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -82,7 +82,7 @@
 
   <% if session[:reports_permissions].include?('order_details') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('order_details')">Detalles de Orden de Producción</h2>
+    <h2 onclick="toggle_report_details('#order_details')">Detalles de Orden de Producción</h2>
     <div id="order_details" class="report-details">
       <%= form_for :report, :url=>order_details_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
@@ -94,7 +94,7 @@
 
   <% if session[:reports_permissions].include?('order_details_real') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('order_details_real')">Detalles de Orden de Producción (Físico)</h2>
+    <h2 onclick="toggle_report_details('#order_details_real')">Detalles de Orden de Producción (Físico)</h2>
     <div id="order_details_real" class="report-details">
       <%= form_for :report, :url=>order_details_real_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
@@ -106,7 +106,7 @@
 
   <% if session[:reports_permissions].include?('batch_details') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('batch_details')">Detalles de Bache</h2>
+    <h2 onclick="toggle_report_details('#batch_details')">Detalles de Bache</h2>
     <div id="batch_details" class="report-details">
       <%= form_for :report, :url=>batch_details_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/>
@@ -119,13 +119,13 @@
 
   <% if session[:reports_permissions].include?('alarms') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('alarms')">Alarmas</h2>
+    <h2 onclick="toggle_report_details('#alarms')">Alarmas</h2>
     <div id="alarms" class="report-details">
       <%= form_for :report, :url=>alarms_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <%= f.check_box :by_alarm_type_1, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
-        <%= f.collection_select :alarm_type_id_1, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :alarm_type_id_1, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %><br/><br/>
       <% end %>
@@ -135,12 +135,12 @@
 
   <% if session[:reports_permissions].include?('alarms_per_order') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('alarms_per_order')">Alarmas por Orden de Producción</h2>
+    <h2 onclick="toggle_report_details('#alarms_per_order')">Alarmas por Orden de Producción</h2>
     <div id="alarms_per_order" class="report-details">
       <%= form_for :report, :url=>alarms_per_order_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/>
         <%= f.check_box :by_alarm_type_2, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
-        <%= f.collection_select :alarm_type_id_2, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :alarm_type_id_2, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -150,13 +150,13 @@
 
   <% if session[:reports_permissions].include?('consumption_per_recipe') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('consumption_per_recipe')">Consumo por Receta</h2>
+    <h2 onclick="toggle_report_details('#consumption_per_recipe')">Consumo por Receta</h2>
     <div id="consumption_per_recipe" class="report-details">
       <%= form_for :report, :url=>consumption_per_recipe_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <label for="recipe_code" class="small">Receta:</label>
-        <%= f.collection_select :recipe_code, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal chzn-small' %>
+        <%= f.collection_select :recipe_code, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -166,7 +166,7 @@
 
   <% if session[:reports_permissions].include?('consumption_per_selected_ingredients') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('consumption_per_selected_ingredients')">Consumo por Ingredientes</h2>
+    <h2 onclick="toggle_report_details('#consumption_per_selected_ingredients')">Consumo por Ingredientes</h2>
     <div id="consumption_per_selected_ingredients" class="report-details">
       <%= form_for :report, :url=>consumption_per_selected_ingredients_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -180,7 +180,7 @@
 
   <% if session[:reports_permissions].include?('consumption_per_ingredient_per_orders') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
+    <h2 onclick="toggle_report_details('#consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
     <div id="consumption_per_ingredient_per_orders" class="report-details">
       <%= form_for :report, :url=>consumption_per_ingredient_per_orders_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -194,7 +194,7 @@
 
   <% if session[:reports_permissions].include?('consumption_per_ingredients') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
+    <h2 onclick="toggle_report_details('#consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
     <div id="consumption_per_ingredients" class="report-details">
       <%= form_for :report, :url=>consumption_per_ingredients_report_path(format: 'pdf') do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -207,13 +207,13 @@
 
   <% if session[:reports_permissions].include?('consumption_per_client') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('consumption_per_client')">Consumo por Cliente</h2>
+    <h2 onclick="toggle_report_details('#consumption_per_client')">Consumo por Cliente</h2>
     <div id="consumption_per_client" class="report-details">
       <%= form_for :report, :url=>consumption_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <label for="client_id" class="small">Cliente/Fábrica:</label>
-        <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -223,13 +223,13 @@
 
   <% if session[:reports_permissions].include?('hopper_transactions') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('hopper_transactions')">Movimientos de tolva</h2>
+    <h2 onclick="toggle_report_details('#hopper_transactions')">Movimientos de tolva</h2>
     <div id="hopper_transactions" class="report-details">
       <%= form_for :report, :url=>hopper_transactions_report_path do |f| %>
         <%= f.label :start, "Inicio: ", :class=>'small' %> <%= f.datetime_select :start %><br/>
         <%= f.label :end, "Fin: ", :class=>'small' %> <%= f.datetime_select :end %><br/><br />
         <label for="client_id2" class="small">Tolva:</label>
-        <%= f.collection_select :hopper_id, @hoppers, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br /><br />
+        <%= f.collection_select :hopper_id, @hoppers, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br /><br />
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -238,7 +238,7 @@
 
   <% if session[:reports_permissions].include?('simple_stock') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('simple_stock')">Inventario por fecha</h2>
+    <h2 onclick="toggle_report_details('#simple_stock')">Inventario por fecha</h2>
     <div id="simple_stock" class="report-details">
       <%= form_for :report, :url=>simple_stock_report_path do |f| %>
         <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.date_select :date %><br /><br />
@@ -246,7 +246,7 @@
         <%= f.radio_button :content_type, 2%> Producto terminado<br/><br/>
         <%= f.check_box :group, :checked=>true %> &nbsp; <label for="group">Agrupar lotes</label><br/><br/>
 		<%= f.check_box :by_factory_1, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
-        <%= f.collection_select :factory_id_1, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.collection_select :factory_id_1, @factories, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -255,13 +255,13 @@
 
   <% if session[:reports_permissions].include?('lot_transactions') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('lot_transactions')">Movimientos por lote</h2>
+    <h2 onclick="toggle_report_details('#lot_transactions')">Movimientos por lote</h2>
     <div id="lot_transactions" class="report-details">
       <%= form_for :report, :url=>lot_transactions_report_path do |f| %>
         <br/>
         <%= f.radio_button :lot_type, 1, :checked => true %> Materia prima
         <%= f.radio_button :lot_type, 2%> Producto terminado<br/><br/>
-        <%= f.collection_select :lot_code, @lots, :code, :to_collection_select, {}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.collection_select :lot_code, @lots, :code, :to_collection_select, {}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
@@ -272,7 +272,7 @@
 
   <% if session[:reports_permissions].include?('stock_adjustments') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('stock_adjustments')">Ajustes de Inventario</h2>
+    <h2 onclick="toggle_report_details('#stock_adjustments')">Ajustes de Inventario</h2>
     <div id="stock_adjustments" class="report-details">
       <%= form_for :report, :url=>stock_adjustments_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -285,7 +285,7 @@
 
   <% if session[:reports_permissions].include?('lots_incomes') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('lots_incomes')">Entradas de Materia Prima</h2>
+    <h2 onclick="toggle_report_details('#lots_incomes')">Entradas de Materia Prima</h2>
     <div id="lots_incomes" class="report-details">
       <%= form_for :report, :url=>lots_incomes_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -298,12 +298,12 @@
 
   <% if session[:reports_permissions].include?('simple_stock_projection') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('simple_stock_projection')">Proyección de inventario</h2>
+    <h2 onclick="toggle_report_details('#simple_stock_projection')">Proyección de inventario</h2>
     <div id="simple_stock_projection" class="report-details">
       <%= form_for :report, :url=>simple_stock_projection_report_path do |f| %>
         <%= f.label :days, "Días: ", :class=>'small' %> <%= f.text_field :days, :size=>15 %><br/><br/>
         <%= f.check_box :by_factory_2, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
-        <%= f.collection_select :factory_id_2, @factories, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %><br/><br/>
+        <%= f.collection_select :factory_id_2, @factories, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -312,7 +312,7 @@
 
   <% if session[:reports_permissions].include?('product_lots_dispatches') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('product_lots_dispatches')">Despachos de Producto Terminado</h2>
+    <h2 onclick="toggle_report_details('#product_lots_dispatches')">Despachos de Producto Terminado</h2>
     <div id="product_lots_dispatches" class="report-details">
       <%= form_for :report, :url=>product_lots_dispatches_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -326,13 +326,13 @@
 
   <% if session[:reports_permissions].include?('production_per_recipe') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('production_per_recipe')">Producción por Receta</h2>
+    <h2 onclick="toggle_report_details('#production_per_recipe')">Producción por Receta</h2>
     <div id="production_per_recipe" class="report-details">
       <%= form_for :report, :url=>production_per_recipe_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <label for="recipe_code" class="small">Receta:</label>
-        <%= f.collection_select :recipe_code_2, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chzn-select chzn-field-normal chzn-small' %>
+        <%= f.collection_select :recipe_code_2, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -342,13 +342,13 @@
 
   <% if session[:reports_permissions].include?('production_per_client') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('production_per_client')">Producción por Cliente</h2>
+    <h2 onclick="toggle_report_details('#production_per_client')">Producción por Cliente</h2>
     <div id="production_per_client" class="report-details">
       <%= form_for :report, :url=>production_per_client_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <label for="client_id2" class="small">Cliente/Fábrica:</label>
-        <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br /><br /><br />
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -358,7 +358,7 @@
 
   <% if session[:reports_permissions].include?('order_lots_parameters') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('order_lots_parameters')">Características de orden de producción (Laboratorio)</h2>
+    <h2 onclick="toggle_report_details('#order_lots_parameters')">Características de orden de producción (Laboratorio)</h2>
     <div id="order_lots_parameters" class="report-details">
       <%= form_for :report, :url=>order_lots_parameters_report_path do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
@@ -370,7 +370,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions')">Movimientos de Romana</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions')">Movimientos de Romana</h2>
     <div id="tickets_transactions" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -389,7 +389,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions_per_clients') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions_per_clients')">Movimientos de Romana por Cliente(s) / Proveedor(es)</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions_per_clients')">Movimientos de Romana por Cliente(s) / Proveedor(es)</h2>
     <div id="tickets_transactions_per_clients" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_per_clients_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -410,7 +410,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions_per_contents') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions_per_contents')">Movimientos de Romana por Mat. Prima / Prod. Term.</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions_per_contents')">Movimientos de Romana por Mat. Prima / Prod. Term.</h2>
     <div id="tickets_transactions_per_contents" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_per_contents_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -430,7 +430,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions_per_contents_per_clients') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions_per_contents_per_clients')">Movimientos de Romana por Mat. Prima / Prod. Term. y por Cliente(s) / Proveedor(es)</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions_per_contents_per_clients')">Movimientos de Romana por Mat. Prima / Prod. Term. y por Cliente(s) / Proveedor(es)</h2>
     <div id="tickets_transactions_per_contents_per_clients" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_per_contents_per_clients_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -453,7 +453,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions_per_carrier') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions_per_carrier')">Movimientos de Romana por Mat. Prima / Prod. Term. por Transportista</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions_per_carrier')">Movimientos de Romana por Mat. Prima / Prod. Term. por Transportista</h2>
     <div id="tickets_transactions_per_carrier" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_per_carrier_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -465,7 +465,7 @@
         <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
         <br/><br/>
         <label for="carrier_id" class="small">Empresa de transporte:</label>
-        <%= f.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -475,7 +475,7 @@
 
   <% if session[:reports_permissions].include?('tickets_transactions_per_driver') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('tickets_transactions_per_driver')">Movimientos de Romana por Mat. Prima / Prod. Term. por Chofer</h2>
+    <h2 onclick="toggle_report_details('#tickets_transactions_per_driver')">Movimientos de Romana por Mat. Prima / Prod. Term. por Chofer</h2>
     <div id="tickets_transactions_per_driver" class="report-details">
       <%= form_for :report, :url=>tickets_transactions_per_driver_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
@@ -487,7 +487,7 @@
         <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
         <br/><br/>
         <label for="driver_id" class="small">Chofer:</label>
-        <%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chzn-select chzn-field-normal' %>
+        <%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

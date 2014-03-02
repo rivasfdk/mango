@@ -4,18 +4,20 @@ var clients = new Array();
 <% end %>
 
 function clientTypeSelected() {
-  factory = false
-  if ($('client_type_factory').checked)
-    factory = true
-  options = $('order_client_id').options;
-  options.length = 1;
-  clients.each(function(client) {
+  factory = $('#client_type_factory').is(':checked');
+  message = factory ? "Seleccione una fábrica" : "Seleccione un cliente"; 
+  select = $('#order_client_id');
+  select.empty();
+  select.append(new Option(message, ""));
+  clients.forEach(function(client) {
     if (client[0] == factory)
-      options[options.length] = new Option(client[1], client[2]);
+      select.append(new Option(client[1], client[2]));
   });
+  select.trigger("chosen:updated");
 }
 
-document.observe('dom:loaded', function() {
-  $('client_type_client').observe('change', clientTypeSelected);
-  $('client_type_factory').observe('change', clientTypeSelected);
+$(function() {
+  $('#client_type_client').bind('change', clientTypeSelected);
+  $('#client_type_factory').bind('change', clientTypeSelected);
+  clientTypeSelected();
 });
