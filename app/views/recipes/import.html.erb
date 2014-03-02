@@ -1,4 +1,5 @@
 <% title "Importar recetas" %>
+<%= javascript_tag "$(function(){$('#data_progress').hide();});" %>
 <%= form_for :recipe, :url=>recipe_upload_path, :html=>{:multipart=>true, :id=>'recipe_upload_form'} do |f| %>
   <% if not @recipe.nil? and @recipe.errors.length > 0 %>
     <%= f.error_messages %><br/>
@@ -12,6 +13,3 @@
   <p>Se está importando la receta, por favor espere...</p><br/>
   <%= image_tag('ajax-loader.gif') %>
 </div>
-
-<%= javascript_tag "$('#data_progress').hide();" %>
-

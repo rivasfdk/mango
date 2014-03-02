@@ -5,10 +5,14 @@
 //= require chosen.jquery
 
 $(function(){
-    $('.datepicker').datepicker()
-                    .attr('readonly', 'readonly');
-    $(".chosen-select").chosen();
-    hide_all_report_details();
+    $('.datepicker').datepicker({
+        readonly: true,
+    });
+    $(".chosen-select").chosen({
+        placeholder_text_multiple: "Seleccione algunas opciones",
+        placeholder_text_single: "Seleccione una opción",
+        no_results_text: "No hay resultados",
+    });
 });
 
 function submit_product_lot_parameter_list_edit_form() {

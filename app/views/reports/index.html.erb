@@ -1,6 +1,8 @@
 <% title "Reportes" %>
+<%= javascript_tag "$(function(){hide_all_report_details();});" %>
 <%= javascript_include_tag "alarm_reports" %>
 <%= javascript_include_tag "simple_stock_reports" %>
+
 <div class="yui3-u-1">
   <% if session[:reports_permissions].include?('daily_production') %>
   <div class="report-content">
