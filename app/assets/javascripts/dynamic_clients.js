@@ -1,7 +1,4 @@
-var clients = new Array();
-<% for client in Client.all %>
-  clients.push(new Array(<%= client.factory %>, '<%= client.name %>', <%= client.id %>));
-<% end %>
+var clients = [];
 
 function clientTypeSelected() {
   factory = $('#client_type_factory').is(':checked');
@@ -10,8 +7,8 @@ function clientTypeSelected() {
   select.empty();
   select.append(new Option(message, ""));
   clients.forEach(function(client) {
-    if (client[0] == factory)
-      select.append(new Option(client[1], client[2]));
+    if (client.factory == factory)
+      select.append(new Option(client.name, client.id));
   });
   select.trigger("chosen:updated");
 }
@@ -19,5 +16,8 @@ function clientTypeSelected() {
 $(function() {
   $('#client_type_client').bind('change', clientTypeSelected);
   $('#client_type_factory').bind('change', clientTypeSelected);
-  clientTypeSelected();
+  $.getJSON( "/clients/all", function(data) {
+    clients = data;
+    clientTypeSelected();
+  });
 });

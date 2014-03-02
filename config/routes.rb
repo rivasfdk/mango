@@ -38,6 +38,7 @@ Mango::Application.routes.draw do
   match 'scales/:scale_id/hoppers/:id/change_factory_lots' => "hoppers#do_change_factory_lots", :via => :put
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
   match 'settings' => "settings#update", :via => :put
+  match 'clients/all' => "clients#all", :via => :get
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :post, :as => "recipes_report"

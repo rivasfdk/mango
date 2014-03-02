@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
     @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
     @clients = Client.order('name ASC')
     @users = User.order('name ASC')
-    @product_lots = ProductLot.order('code ASC')
+    @product_lots = ProductLot.includes(:product).order('code ASC')
     @order = Order.new if @order.nil?
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]

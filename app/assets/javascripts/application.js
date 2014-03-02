@@ -4,6 +4,7 @@
 //= require jquery.ui.datepicker-es
 //= require chosen.jquery
 //= require_tree .
+//= stub dynamic_clients
 
 $(function(){
     $('.datepicker').datepicker({readonly: true});

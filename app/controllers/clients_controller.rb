@@ -14,6 +14,10 @@ class ClientsController < ApplicationController
     end
   end
 
+  def all
+    render json: Client.all, root: false
+  end
+
   def edit
     @client = Client.find params[:id]
   end
