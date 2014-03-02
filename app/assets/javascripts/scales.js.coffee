@@ -3,10 +3,11 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 not_weighed_changed = ->
-  if $("scale_not_weighed").checked
-    $("scale_weights").hide()
+  if $("#scale_not_weighed").is(':checked')
+    $("#scale_weights").hide()
   else
-    $("scale_weights").show()
-document.observe "dom:loaded", ->
+    $("#scale_weights").show()
+
+$ ->
   not_weighed_changed()
-  $("scale_not_weighed").observe "change", not_weighed_changed
+  $("#scale_not_weighed").bind "change", not_weighed_changed

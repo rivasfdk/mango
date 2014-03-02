@@ -1,8 +1,4 @@
 <% title "Reportes" %>
-<%= javascript_tag "$(function(){hide_all_report_details();});" %>
-<%= javascript_include_tag "alarm_reports" %>
-<%= javascript_include_tag "simple_stock_reports" %>
-
 <div class="yui3-u-1">
   <% if session[:reports_permissions].include?('daily_production') %>
   <div class="report-content">
@@ -11,6 +7,7 @@
       <%= form_for :report, :url=>daily_production_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :asdf, "ASDF: ", :class=>'small' %> <%= f.text_field :asdf, class: "datepicker" %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

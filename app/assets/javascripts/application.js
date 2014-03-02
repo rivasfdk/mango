@@ -3,16 +3,21 @@
 //= require jquery.ui.datepicker
 //= require jquery.ui.datepicker-es
 //= require chosen.jquery
+//= require_tree .
 
 $(function(){
-    $('.datepicker').datepicker({
-        readonly: true,
-    });
-    $(".chosen-select").chosen({
+    $('.datepicker').datepicker({readonly: true});
+    $('.chosen-select').chosen({
         placeholder_text_multiple: "Seleccione algunas opciones",
         placeholder_text_single: "Seleccione una opción",
         no_results_text: "No hay resultados",
     });
+    $('#report_alarm_type_id_1_chosen').hide();
+    $('#report_alarm_type_id_2_chosen').hide();
+    $('#report_factory_id_1_chosen').hide();
+    $('#report_factory_id_2_chosen').hide();
+    $('#product_lot').hide();
+    $('.report-details').hide();
 });
 
 function submit_product_lot_parameter_list_edit_form() {
@@ -276,12 +281,8 @@ function submit_scale_edit_form() {
 }
 
 function toggle_report_details(id) {
-    hide_all_report_details();
-    $(id).toggle();
-}
-
-function hide_all_report_details() {
     $('.report-details').hide();
+    $(id).toggle();
 }
 
 function close_error_dialog() {
