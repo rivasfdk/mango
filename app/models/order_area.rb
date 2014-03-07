@@ -7,7 +7,7 @@ class OrderArea < ActiveRecord::Base
   before_save :update_actives, if: :new_record?
 
   def update_actives
-    OrderArea.where(order_id: self.order_id).update_all(active: false)
+    OrderArea.where(area_id: self.area_id).update_all(active: false)
     self.active = true
   end
 end
