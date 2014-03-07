@@ -18,7 +18,7 @@ class ProductLot < ActiveRecord::Base
   end
 
   def get_content
-    Product.find self.product_id
+    self.product
   end
 
   def to_collection_select

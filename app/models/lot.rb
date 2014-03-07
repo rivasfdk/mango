@@ -57,7 +57,7 @@ class Lot < ActiveRecord::Base
   end
 
   def get_content
-    Ingredient.find self.ingredient_id
+    self.ingredient
   end
 
   def to_collection_select

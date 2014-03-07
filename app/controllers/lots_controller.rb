@@ -4,30 +4,32 @@ class LotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = Lot.paginate :page=>params[:page],
-                             :per_page=>session[:per_page],
-                             :include => :ingredient,
-                             :conditions => {:active => true},
-                             :order => ['id desc']
-        render :html => @lots
+        @lots = Lot.includes(:ingredient)
+                   .where(active: true)
+                   .order('id desc')
+                   .paginate page: params[:page],
+                             per_page: session[:per_page]
+        render html: @lots
       end
       format.json do 
-        @lots = Lot.where(:active => true).order('id desc')
-        render :json => @lots, :methods => [:get_content]
+        @lots = Lot.includes(:ingredient)
+                   .where(active: true)
+                   .order('id desc')
+        render json: @lots, methods: [:get_content]
       end
     end
   end
 
   def new
     @ingredients = Ingredient.order('name ASC')
-    @factories = Client.where(:factory => true)
+    @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def edit
     @lot = Lot.find params[:id]
     @ingredients = Ingredient.order('name ASC')
-    @factories = Client.where(:factory => true)
+    @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
@@ -54,7 +56,7 @@ class LotsController < ApplicationController
   end
 
   def destroy
-    lot_transactions = Transaction.where :content_type => 1, :content_id => params[:id]
+    lot_transactions = Transaction.where content_type: 1, content_id: params[:id]
     if lot_transactions.none?
       @lot = Lot.find params[:id]
       @lot.eliminate

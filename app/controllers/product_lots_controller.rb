@@ -4,30 +4,32 @@ class ProductLotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = ProductLot.paginate :page=>params[:page],
-                                    :per_page=>session[:per_page],
-                                    :include => {:product => {}},
-                                    :conditions => {:active => true},
-                                    :order => ['id desc']
-        render :html => @lots
+        @lots = ProductLot.includes(:product)
+                          .paginate page: params[:page],
+                                    per_page: session[:per_page],
+                                    conditions: {active: true},
+                                    order: ['id desc']
+        render html: @lots
       end
       format.json do 
-        @lots = ProductLot.where(:active => true).order('id desc')
-        render :json => @lots, :methods => [:get_content]
+        @lots = ProductLot.includes(:product)
+                          .where(active: true)
+                          .order('id desc')
+        render json: @lots, methods: [:get_content]
       end
     end
   end
 
   def new
-    @products = Product.find :all, :order => 'code ASC'
-    @factories = Client.find :all, :conditions => {:factory => true}
+    @products = Product.order('code ASC')
+    @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end
 
   def edit
     @lot = ProductLot.find params[:id]
-    @products = Product.find :all, :order => 'code ASC'
-    @factories = Client.find :all, :conditions => {:factory => true}
+    @products = Product.order('code ASC')
+    @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end
 
@@ -54,7 +56,7 @@ class ProductLotsController < ApplicationController
   end
 
   def destroy
-    product_lot_transactions = Transaction.where :content_type => 2, :content_id => params[:id]
+    product_lot_transactions = Transaction.where content_type: 2, content_id: params[:id]
     if product_lot_transactions.none?
       @lot = ProductLot.find params[:id]
       @lot.eliminate
