@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
   def new
     @recipes = Recipe.where({active: true, in_use: true}).order('name ASC')
     @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
-    @clients = Client.order('name ASC')
+    @clients = Client.where(factory: false).order('name ASC')
     @users = User.order('name ASC')
     @product_lots = ProductLot.includes(:product).order('code ASC')
     @order = Order.new if @order.nil?
