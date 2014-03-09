@@ -65,18 +65,25 @@ class Order < ActiveRecord::Base
   end
 
   def repair(user_id, n_batch)  
-    hopper_ingredients = HopperLot.joins(:lot).where(active: true).pluck_all("hoppers_lots.id", "lots.ingredient_id").inject({}) do |hash, hl|
+    hopper_ingredients = HopperLot.joins(:lot)
+                                  .where(active: true)
+                                  .pluck_all("hoppers_lots.id", "lots.ingredient_id")
+                                  .inject({}) do |hash, hl|
       hash[hl["ingredient_id"]] = hl["id"]
       hash
     end
 
-    recipe_ingredients = IngredientRecipe.where(recipe_id: self.recipe_id).pluck_all(:ingredient_id, :amount).inject({}) do |hash, ir|
+    recipe_ingredients = IngredientRecipe.where(recipe_id: self.recipe_id)
+                                         .pluck_all(:ingredient_id, :amount)
+                                         .inject({}) do |hash, ir|
       hash[ir["ingredient_id"]] = ir["amount"]
       hash
     end
 
     unless self.medicament_recipe.nil?
-      recipe_ingredients = IngredientMedicamentRecipe.where(recipe_id: self.medicament_recipe_id).pluck_all(:ingredient_id, :amount).inject(recipe_ingredients) do |hash, ir|
+      recipe_ingredients = IngredientMedicamentRecipe.where(recipe_id: self.medicament_recipe_id)
+                                                     .pluck_all(:ingredient_id, :amount)
+                                                     .inject(recipe_ingredients) do |hash, ir|
         hash[ir["ingredient_id"]] = ir["amount"] unless hash.has_key? ir["ingredient_id"]
         hash
       end                                                         
@@ -121,7 +128,8 @@ class Order < ActiveRecord::Base
           BatchHopperLot.new(batch_id: batch_id,
                              hopper_lot_id: hopper_ingredients[ingredient_id],
                              standard_amount: recipe_ingredients[ingredient_id],
-                             amount: recipe_ingredients[ingredient_id]).save(validate: false)
+                             amount: recipe_ingredients[ingredient_id])
+                        .save(validate: false)
         end
       end
       BatchHopperLot.set_callback(:create, :after, :update_batch_end_date)
@@ -132,11 +140,12 @@ class Order < ActiveRecord::Base
         Batch.where(id: extra_batches_ids).delete_all
       end
 
-      Order.where(id: self.id).update_all({prog_batches: n_batch,
-                                           real_batches: n_batch,
-                                           completed: true,
-                                           repaired: true,
-                                           updated_at: now})
+      Order.where(id: self.id)
+           .update_all({prog_batches: n_batch,
+                        real_batches: n_batch,
+                        completed: true,
+                        repaired: true,
+                        updated_at: now})
     end
     self.generate_transactions(user_id) if is_mango_feature_available("transactions")
   end
@@ -247,9 +256,7 @@ class Order < ActiveRecord::Base
     consumptions.each do |key, amount|
       production += amount
       previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum}
-      unless previous_amount == 0
-        amount = amount - previous_amount
-      end
+      amount = amount - previous_amount unless previous_amount == 0
       unless amount == 0
         t = self.transactions.new
         t.amount = amount
@@ -261,13 +268,9 @@ class Order < ActiveRecord::Base
         t.save
       end
     end
-    unless product_lot_id.present?
-      return false
-    end
+
     previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 2) ? sum + t.amount : sum}
-    unless previous_amount == 0
-      production = production - previous_amount
-    end
+    production = production - previous_amount unless previous_amount == 0
     unless production == 0
       t = self.transactions.new
       t.amount = production

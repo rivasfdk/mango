@@ -7,7 +7,6 @@
       <%= form_for :report, :url=>daily_production_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :asdf, "ASDF: ", :class=>'small' %> <%= f.text_field :asdf, class: "datepicker" %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

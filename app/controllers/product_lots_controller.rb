@@ -5,10 +5,10 @@ class ProductLotsController < ApplicationController
     respond_to do |format|
       format.html do 
         @lots = ProductLot.includes(:product)
+                          .where(active: true)
+                          .order('id desc')
                           .paginate page: params[:page],
-                                    per_page: session[:per_page],
-                                    conditions: {active: true},
-                                    order: ['id desc']
+                                    per_page: session[:per_page]
         render html: @lots
       end
       format.json do 

@@ -260,67 +260,31 @@ class EasyModel
       }
     end
 
-    # TODO Gruff code should be in thinreport template
-    g = Gruff::Line.new("1560x912")
-    g.labels = {}
-    g.hide_dots = true
-    g.line_width = 2
-    g.legend_box_size = 12
-    g.legend_font_size = 12
-    g.left_margin = 0
-    g.top_margin = 0
-    g.right_margin = 0
-    g.left_margin = 0
-    g.marker_font_size = 8
-    g.y_axis_increment = 2
-    g.additional_line_values = [10, 20, 30, 40]
-    g.theme = {
-      colors: %w(#ee2e2f #008c48 #185aa9 #f47d23 #662c91 #a21d21 #b43894, #010202),
-      marker_color: 'grey',
-      font_color: 'black',
-      background_colors: 'white'
-    }
-    range = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
-                     .select('MAX(value) AS max_value, MIN(value) AS min_value, COUNT(*) AS count_all')
-                     .first
-    g.y_axis_increment = ((range[:max_value] - range[:min_value]) / 20).to_i
-    OrderStatType.where(unit: unit).each do |ost|
-      n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
-      stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
-                       .where(order_stat_type_id: ost.id)
-                       .select('AVG(orders_stats.value) AS stat_avg, AVG(orders_stats.created_at) AS stat_avg_unixtime')
-                       .group("FLOOR(id/#{n})").inject([]) do |array, os|
-        array << [os[:stat_avg_unixtime], os[:stat_avg]]
-        array
+    Gnuplot.open do |gp|
+      Gnuplot::Plot.new( gp ) do |plot|
+        plot.rmargin 5
+        plot.lmargin 5
+
+        OrderStatType.where(unit: unit).each do |ost|
+          n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
+          stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
+                           .where(order_stat_type_id: ost.id)
+                           .select('AVG(orders_stats.value) AS stat_avg,
+                                    AVG(orders_stats.created_at) AS stat_avg_unixtime')
+                           .group("FLOOR(id/#{n})").inject([[], []]) do |array, os|
+            array.first << os[:stat_avg_unixtime]
+            array.second << os[:stat_avg]
+            array
+          end
+          plot.data << Gnuplot::DataSet.new(stats) { |ds|
+            ds.with = "linespoints"
+            ds.title = ost.description
+          }
+        end
+        plot.terminal "jpeg size 1560, 912"
+        plot.output data[:plot_path]
       end
-      #g.labels = {stats.last.first.to_i => "ORDER_CODE"}
-      g.dataxy(ost.description, stats)
     end
-    g.write(data[:plot_path])
-    #Gnuplot.open do |gp|
-    #  Gnuplot::Plot.new( gp ) do |plot|
-    #    plot.rmargin 5
-    #    plot.lmargin 5
-    #
-    #    OrderStatType.where(unit: unit).each do |ost|
-    #      n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
-    #      stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
-    #                       .where(order_stat_type_id: ost.id)
-    #                       .select('AVG(orders_stats.value) AS stat_avg, AVG(orders_stats.created_at) AS stat_avg_unixtime')
-    #                       .group("FLOOR(id/#{n})").inject([[], []]) do |array, os|
-    #        array.first << os[:stat_avg_unixtime]
-    #        array.second << os[:stat_avg]
-    #        array
-    #      end
-    #      plot.data << Gnuplot::DataSet.new(stats) { |ds|
-    #        ds.with = "linespoints"
-    #        ds.title = ost.description
-    #      }
-    #    end
-    #    plot.terminal "jpeg size 1560, 912"
-    #    plot.output data[:plot_path]
-    #  end
-    #end
     data
   end
 
