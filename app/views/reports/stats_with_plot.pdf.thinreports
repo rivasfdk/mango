@@ -1,4 +1,5 @@
 report.set_layout tlf: 'reports/thinreports_layouts/stats_with_plot'
+
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
   page.values company_address: @data['company_address']
@@ -28,6 +29,5 @@ report.start_new_page do |page|
                    stat_min: result[:stat_min].round(2).to_s,
                    stat_max: result[:stat_max].round(2).to_s,
                    stat_std: result[:stat_std].round(2).to_s
-    end
   end
 end
