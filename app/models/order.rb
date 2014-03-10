@@ -156,11 +156,12 @@ class Order < ActiveRecord::Base
     if errors.empty?
       now = Time.now
       order = Order.find_by_code params[:order_code]
-      batch = order.batch.find_or_create_by_number number: params[:batch_number],
-                                                   schedule_id: Schedule.get_current_schedule_id(now),
-                                                   user_id: user_id,
-                                                   start_date: now,
-                                                   end_date: now
+      batch = order.batch
+                   .find_or_create_by_number number: params[:batch_number],
+                                             schedule_id: Schedule.get_current_schedule_id(now),
+                                             user_id: user_id,
+                                             start_date: now,
+                                             end_date: now
       hopper = Hopper.where({scale_id: params[:scale_id], 
                              number: params[:hopper_number]}).first
 
@@ -196,10 +197,13 @@ class Order < ActiveRecord::Base
   end
 
   def self.consumption_exists(params)
-    BatchHopperLot.includes({batch: {order: {}}, hopper_lot: {hopper: {}}})
+    BatchHopperLot.includes({batch: {order: {}},
+                             hopper_lot: {hopper: {}}})
                   .where({orders: {code: params[:order_code]},
                           batches: {number: params[:batch_number]},
-                          hoppers: {scale_id: params[:scale_id], number: params[:hopper_number]}}).any?
+                          hoppers: {scale_id: params[:scale_id],
+                                    number: params[:hopper_number]}})
+                  .any?
   end
 
   def close(user_id)
@@ -210,11 +214,15 @@ class Order < ActiveRecord::Base
   def self.create_order_stat(params)
     order_stat_type_id = params[:order_stat_type_id].to_i
     order_id = OrderArea.joins(area: {orders_stats_types: {}})
-                        .where(active: true, orders_stats_types: {id: order_stat_type_id})
-                        .pluck(:order_id).first
+                        .where(active: true,
+                               orders_stats_types: {id: order_stat_type_id})
+                        .pluck(:order_id)
+                        .first
     OrderStat.create(order_id: order_id,
                      order_stat_type_id: order_stat_type_id,
-                     value: params[:value]).errors.messages
+                     value: params[:value])
+             .errors
+             .messages
   end
 
   def self.update_order_area(params)
@@ -223,17 +231,27 @@ class Order < ActiveRecord::Base
     area_id = Area.where(id: params[:area_id]).pluck(:id).first
     errors[:order_code] = "no existe" if order_id.nil?
     errors[:area_id] = "no existe" if area_id.nil?
-    OrderArea.new(order_id: order_id, area_id: area_id).save(validate: false) if errors.empty?
+    OrderArea.new(order_id: order_id, area_id: area_id)
+             .save(validate: false) if errors.empty?
     errors
   end
 
   def get_standard_amount(ingredient_id)
     if self.medicament_recipe_id.nil?
-      IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
+      IngredientRecipe.where({recipe_id: self.recipe_id,
+                              ingredient_id: ingredient_id})
+                      .pluck(:amount)
+                      .first ||
       0
     else
-      IngredientRecipe.where({recipe_id: self.recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
-      IngredientMedicamentRecipe.where({medicament_recipe_id: self.medicament_recipe_id, ingredient_id: ingredient_id}).pluck(:amount).first ||
+      IngredientRecipe.where({recipe_id: self.recipe_id,
+                              ingredient_id: ingredient_id})
+                      .pluck(:amount)
+                      .first ||
+      IngredientMedicamentRecipe.where({medicament_recipe_id: self.medicament_recipe_id,
+                                        ingredient_id: ingredient_id})
+                                .pluck(:amount)
+                                .first ||
       0
     end
   end
@@ -241,7 +259,8 @@ class Order < ActiveRecord::Base
   def generate_transactions(user_id)
     consumptions = {}
     order_transactions = self.transactions
-    batches = Batch.includes({batch_hopper_lot: {hopper_lot: {}}}).where(order_id: self.id)
+    batches = Batch.includes({batch_hopper_lot: {hopper_lot: {}}})
+                   .where(order_id: self.id)
     batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot_id
@@ -255,7 +274,9 @@ class Order < ActiveRecord::Base
     production = 0
     consumptions.each do |key, amount|
       production += amount
-      previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum}
+      previous_amount = order_transactions.inject(0) do |sum, t|
+        (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum
+      end
       amount = amount - previous_amount unless previous_amount == 0
       unless amount == 0
         t = self.transactions.new
@@ -269,7 +290,9 @@ class Order < ActiveRecord::Base
       end
     end
 
-    previous_amount = order_transactions.inject(0) {|sum, t| (t.content_type == 2) ? sum + t.amount : sum}
+    previous_amount = order_transactions.inject(0) do |sum, t|
+      (t.content_type == 2) ? sum + t.amount : sum
+    end
     production = production - previous_amount unless previous_amount == 0
     unless production == 0
       t = self.transactions.new

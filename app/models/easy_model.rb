@@ -386,7 +386,7 @@ class EasyModel
     data['provider_weight'] = @ticket.provider_weight.nil? ? "" : @ticket.provider_weight.to_s + " Kg"
     data['gross_weight'] = @ticket.get_gross_weight.to_s + " Kg"
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
-    data['net_weight'] = @ticket.get_net_weight.to_s + " Kg"
+    data['net_weight'] = @ticket.get_net_weight.round(2).to_s + " Kg"
 
     data['comment1'] = " "
     data['comment2'] = " "

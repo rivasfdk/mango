@@ -5,26 +5,32 @@ class TicketsController < ApplicationController
     respond_to do |format|
       format.html do
         @tickets = Ticket.search(params[:number], params[:page], session[:per_page])
-        render :html => @tickets
+        render html: @tickets
       end
       format.json do
-        @tickets = Ticket.find :all, :conditions => {:open => true}
-        render :json => @tickets, :include => {:ticket_type => {}, :driver => {}, :truck => {:include => {:carrier => {}}}}
+        @tickets = Ticket.includes(ticket_type: {},
+                                   driver: {},
+                                   truck: {carrier: {}})
+                         .where(open: true)
+        render json: @tickets,
+               include: {ticket_type: {},
+                         driver: {},
+                         truck: {include: {carrier: {}}}}
       end
     end
   end
 
   def new
-    @ticket_types = TicketType.find :all
-    @trucks = Truck.find :all
-    @drivers = Driver.find :all
+    @ticket_types = TicketType.all
+    @trucks = Truck.all
+    @drivers = Driver.all
   end
 
   def edit
     @ticket = Ticket.find params[:id]
-    @ticket_types = TicketType.find :all
-    @trucks = Truck.find :all
-    @drivers = Driver.find :all
+    @ticket_types = TicketType.all
+    @trucks = Truck.all
+    @drivers = Driver.all
   end
 
   def create
@@ -42,7 +48,7 @@ class TicketsController < ApplicationController
       end
       format.json do
         @ticket.save
-        render :json => @ticket.errors
+        render json: @ticket.errors
       end
     end
   end
@@ -54,6 +60,7 @@ class TicketsController < ApplicationController
     @ticket.transactions.each do |t|
       t.user = @ticket.user
       t.client = @ticket.client
+      t.comment = @ticket.comment
     end
     @ticket.outgoing_date = Time.now
     @ticket.open = false
@@ -69,7 +76,7 @@ class TicketsController < ApplicationController
       end
       format.json do
         @ticket.save
-        render :json => @ticket.errors
+        render json: @ticket.errors
       end
     end
   end
@@ -79,10 +86,10 @@ class TicketsController < ApplicationController
     if data.nil?
       flash[:notice] = 'El ticket se encuentra abierto'
       flash[:type] = 'warn'
-      redirect_to :action => 'index'
+      redirect_to action: 'index'
     else
       report = EasyReport::Report.new data, 'ticket.yml'
-      send_data report.render, :filename => "ticket_#{data['number']}.pdf", :type => "application/pdf"
+      send_data report.render, filename: "ticket_#{data['number']}.pdf", type: "application/pdf"
     end
   end
 

@@ -27,7 +27,7 @@ class Ingredient < ActiveRecord::Base
   end
 
   def check_stock
-    lots = Lot.where(:ingredient_id => self.id, :active => true)
+    lots = Lot.where(ingredient_id: self.id, active: true)
     stock = 0
     lots.each do |lot|
       stock += lot.stock
