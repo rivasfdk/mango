@@ -232,7 +232,7 @@ class EasyModel
     data[:results] = []
 
     unix_start_datetime = start_datetime.to_i    
-    unix_end_datetime = end_datetime.to_i
+    unix_end_datetime = (end_datetime + 1.day).to_i
 
     stats = OrderStat.joins(:order_stat_type)
                      .where(orders_stats_types: {unit: unit})
