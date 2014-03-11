@@ -105,13 +105,13 @@ class OrdersController < ApplicationController
       redirect_to :orders
     end
   end
-  
+
   def generate_transactions
     @order = Order.find params[:id]
     @order.generate_transactions(session[:user_id])
     redirect_to :orders
   end
-  
+
   def generate_consumption
     errors = Order.generate_consumption(params[:consumption], session[:user_id])
     render xml: errors
@@ -119,7 +119,7 @@ class OrdersController < ApplicationController
 
   def generate_not_weighed_consumptions
     errors = Order.generate_not_weighed_consumptions(params[:order_batch], session[:user_id])
-    render xml: errors
+    render xml: {success: errors.empty?}
   end
 
   def consumption_exists

@@ -229,11 +229,13 @@ class Order < ActiveRecord::Base
                                            end_date: now)
     transaction do
       hopper_amounts.each do |hopper_lot_id, amount|
-         bhl = batch.batch_hopper_lot
-                    .create(hopper_lot_id: hopper_lot_id,
-                            amount: amount,
-                            standard_amount: amount)
-        if is_mango_feature_available("transactions")
+        bhl = batch.batch_hopper_lot
+                   .new(hopper_lot_id: hopper_lot_id,
+                        amount: amount,
+                        standard_amount: amount)
+        saved = bhl.save
+        errors.append(hopper_lot_id) unless saved
+        if saved and is_mango_feature_available("transactions")
           bhl.generate_transaction(user_id)
         end
       end
