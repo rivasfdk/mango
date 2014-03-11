@@ -117,6 +117,11 @@ class OrdersController < ApplicationController
     render xml: errors
   end
 
+  def generate_not_weighed_consumptions
+    errors = Order.generate_not_weighed_consumptions(params[:order_batch], session[:user_id])
+    render xml: errors
+  end
+
   def consumption_exists
     render xml: {exists: Order.consumption_exists(params)}
   end

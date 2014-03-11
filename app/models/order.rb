@@ -196,6 +196,51 @@ class Order < ActiveRecord::Base
     errors
   end
 
+  def self.generate_not_weighed_consumptions(params, user_id)
+    errors = []
+    now = Time.now
+    order = Order.find_by_code(params[:order_code])
+
+    amounts = IngredientRecipe.where(recipe_id: order.recipe_id)
+                              .pluck_all(:ingredient_id, :amount)
+                              .inject({}) do |hash, item|
+      hash[item["ingredient_id"]] = item["amount"]
+      hash
+    end
+
+    hopper_amounts = HopperLot.joins({hopper: {scale: {}},
+                                      lot: {ingredient: {}}})
+                              .where({active: true,
+                                      hoppers: {main: true},
+                                      scales: {not_weighed: true},
+                                      ingredients: {id: amounts.keys}})
+                              .pluck_all("hoppers_lots.id",
+                                         "ingredient_id")
+                              .inject({}) do |hash, item|
+      hash[item["id"]] = amounts[item["ingredient_id"]]
+      hash
+    end
+
+    batch = order.batch
+                 .find_or_create_by_number(number: params[:batch_number],
+                                           schedule_id: Schedule.get_current_schedule_id(now),
+                                           user_id: user_id,
+                                           start_date: now,
+                                           end_date: now)
+    transaction do
+      hopper_amounts.each do |hopper_lot_id, amount|
+         bhl = batch.batch_hopper_lot
+                    .create(hopper_lot_id: hopper_lot_id,
+                            amount: amount,
+                            standard_amount: amount)
+        if is_mango_feature_available("transactions")
+          bhl.generate_transaction(user_id)
+        end
+      end
+    end
+    errors
+  end
+
   def self.consumption_exists(params)
     BatchHopperLot.includes({batch: {order: {}},
                              hopper_lot: {hopper: {}}})
@@ -307,7 +352,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.search(params)
-    orders = Order.includes(:recipe, :batch, :client, product_lot: {product: {}})
+    orders = Order.includes(:recipe, :client, product_lot: {product: {}})
     orders = orders.where(code: params[:code]) if params[:code].present?
     orders = orders.where(recipes: {code: params[:recipe_code]}) if params[:recipe_code].present?
     orders = orders.where(client_id: params[:client_id]) if params[:client_id].present?

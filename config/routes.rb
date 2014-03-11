@@ -21,6 +21,7 @@ Mango::Application.routes.draw do
   match 'orders/:id/print' => "orders#print", :via => :get, :as => 'print_order'
   match 'orders/:id/generate_transactions' => "orders#generate_transactions", :via => :put, :as => 'generate_transactions_order'
   match 'orders/generate_consumption' => "orders#generate_consumption", :via => :post, :as => 'generate_consumption_order'
+  match 'orders/generate_not_weighed_consumptions' => "orders#generate_not_weighed_consumptions", :via => :post, :as => 'generate_not_weighed_consumptions_order'
   match 'orders/consumption_exists' => "orders#consumption_exists", :via => :get, :as => 'order_consumption_exists'
   match 'orders/close' => "orders#close", :via => :post, :as => 'order_close'
   match 'orders/create_order_stat' => "orders#create_order_stat", :via => :post, :as => 'create_order_stat'

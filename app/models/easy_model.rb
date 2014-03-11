@@ -15,7 +15,7 @@ class EasyModel
     data[:since] = self.print_range_date(start_date)
     data[:until] = self.print_range_date(end_date)
     data[:results] = []
-    
+
     diff = 0
     transactions.each_with_index do |t, i|
       amount = t.transaction_type.sign == "+" ? t.amount : -1 * t.amount
