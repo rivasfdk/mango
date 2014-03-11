@@ -214,6 +214,7 @@ class Order < ActiveRecord::Base
                                       hoppers: {main: true},
                                       scales: {not_weighed: true},
                                       ingredients: {id: amounts.keys}})
+                              .order('hoppers.number ASC')
                               .pluck_all("hoppers_lots.id",
                                          "ingredient_id")
                               .inject({}) do |hash, item|
@@ -227,6 +228,8 @@ class Order < ActiveRecord::Base
                                            user_id: user_id,
                                            start_date: now,
                                            end_date: now)
+
+    BatchHopperLot.skip_callback(:create, :after, :update_batch_end_date)
     transaction do
       hopper_amounts.each do |hopper_lot_id, amount|
         bhl = batch.batch_hopper_lot
@@ -239,7 +242,9 @@ class Order < ActiveRecord::Base
           bhl.generate_transaction(user_id)
         end
       end
+      batch.update_column(:end_date, now)
     end
+    BatchHopperLot.set_callback(:create, :after, :update_batch_end_date)
     errors
   end
 
