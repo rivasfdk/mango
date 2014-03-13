@@ -27,10 +27,10 @@
 <%= f.hidden_field :user_id, size: '10' %>
 <% end %>
 <br />
-<label for="product_lot_id" class="small">Lote Prod. Terminado:</label>
+<label for="product_lot_id" class="small">Lote Producto:</label>
 <div class="field">
 <% if @create_product_lot_enabled %>
-  <%= f.check_box :create_product_lot, checked: true %> Autogenerado <br />
+  <%= f.check_box :create_product_lot, checked: true %> Crear un lote de producto nuevo <br />
 <% end %>
 <%= f.collection_select :product_lot_id, @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
 </div>

@@ -85,3 +85,7 @@ form .field .chzn-single span {
   color: #000;
   margin-left: 0px;
 }
+
+form .field input[type='checkbox'] {
+  margin-bottom: 10px;
+}
