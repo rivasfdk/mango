@@ -5,6 +5,7 @@
 //= require chosen.jquery
 //= require_tree .
 //= stub dynamic_clients
+//= stub dynamic_product_lots
 
 $(function(){
     $('.datepicker').datepicker({readonly: true});

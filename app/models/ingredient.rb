@@ -1,7 +1,7 @@
 class Ingredient < ActiveRecord::Base
   has_many :ingredient_recipe
   has_many :ingredient_medicament_recipe
-  has_many :lot
+  has_many :lots
   belongs_to :base_unit
   has_many :ingredient_parameter_type_ranges
 
@@ -27,12 +27,8 @@ class Ingredient < ActiveRecord::Base
   end
 
   def check_stock
-    lots = Lot.where(ingredient_id: self.id, active: true)
-    stock = 0
-    lots.each do |lot|
-      stock += lot.stock
-    end
-    self.stock_below_minimum = stock < self.minimum_stock
+    total_stock = self.lots.where(active: true).sum(:stock)
+    self.stock_below_minimum = total_stock < self.minimum_stock
     true
   end
 end

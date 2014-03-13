@@ -10,4 +10,4 @@ not_weighed_changed = ->
 
 $ ->
   not_weighed_changed()
-  $("#scale_not_weighed").bind "change", not_weighed_changed
+  $("#scale_not_weighed").change(not_weighed_changed)

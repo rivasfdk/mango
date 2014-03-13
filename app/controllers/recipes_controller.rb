@@ -8,17 +8,24 @@ class RecipesController < ApplicationController
   end
 
   def show
-    @recipe = Recipe.find params[:id], :include=> {:ingredient_recipe => {:ingredient => {}}}, :order=>'id desc'
+    @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'id desc'
+    @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
   end
 
+  def new
+    @products = Product.all
+  end
+
   def edit
-    @recipe = Recipe.find params[:id], :include=>{:ingredient_recipe => {:ingredient => {}}}, :order=>'id desc'
+    @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'id desc'
+    @total = @recipe.get_total()
+    @products = Product.all
     @ingredients = Ingredient.all
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
-    @parameters_types = ParameterType.find :all
+    @parameters_types = ParameterType.all
   end
 
   def create
@@ -119,7 +126,7 @@ class RecipesController < ApplicationController
       tmpfile.close()
 
       @recipe = Recipe.new
-      if @recipe.import_new(filepath, overwrite)
+      if @recipe.import(filepath, overwrite)
         flash[:notice] = "Receta importada con éxito"
         @last_imported_recipe = LastImportedRecipe.last
         @last_imported_recipe.name = name

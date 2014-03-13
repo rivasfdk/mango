@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140301030520) do
+ActiveRecord::Schema.define(:version => 20140313140608) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -301,6 +301,7 @@ ActiveRecord::Schema.define(:version => 20140301030520) do
     t.float    "real_production"
     t.boolean  "repaired",             :default => false
     t.integer  "parameter_list_id"
+    t.boolean  "create_product_lot",   :default => false
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
@@ -463,7 +464,10 @@ ActiveRecord::Schema.define(:version => 20140301030520) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_use",     :default => true
+    t.integer  "product_id",                   :null => false
   end
+
+  add_index "recipes", ["product_id"], :name => "index_recipes_on_product_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name",        :null => false

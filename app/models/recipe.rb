@@ -1,17 +1,12 @@
 # encoding: UTF-8
 
 class Recipe < ActiveRecord::Base
-  has_many :ingredient_recipe, :dependent => :destroy
-  has_many :order, inverse_of: :recipe
+  has_many :ingredient_recipe, dependent: :destroy
+  has_many :order
+  belongs_to :product
 
-  validates_presence_of :name, :code
-  #validates_uniqueness_of :code
-  validates_length_of :name, :within => 3..40
-  #validates_associated :ingredient_recipe
-
-  def is_associated?()
-    Order.where(:recipe_id => self.id).any?
-  end
+  validates :name, :code, :product, presence: true
+  validates :name, length: {within: 3..40}
 
   def add_ingredient(args)
     logger.debug("Agregando ingrediente: #{args.inspect}")
@@ -21,10 +16,9 @@ class Recipe < ActiveRecord::Base
     ingredient = Ingredient.find_by_code(icode)
     if ingredient.nil?
       logger.debug("  - El ingrediente no existe. Se crea")
-      ingredient = Ingredient.new :code => icode, :name => iname
-      ingredient.save
+      ingredient = Ingredient.create code: icode, name: iname
     end
-    item = IngredientRecipe.find :first, :conditions=>{:ingredient_id=>ingredient.id, :recipe_id=>self.id}
+    item = IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: self.id).first
     if item.nil?
       item = IngredientRecipe.new
       item.ingredient_id = ingredient.id
@@ -43,7 +37,7 @@ class Recipe < ActiveRecord::Base
 
   def validate
     hopper_ingredients = []
-    hopper_lots = HopperLot.find :all, :conditions => ['active = true']
+    hopper_lots = HopperLot.where(active: true)
     hopper_lots.each do |hl|
       hopper_ingredients << hl.lot.ingredient.id
     end
@@ -60,55 +54,6 @@ class Recipe < ActiveRecord::Base
   def import(filepath, overwrite)
     begin
       transaction do
-        fd = File.open(filepath, 'r')
-        continue = fd.gets().strip()
-        return false unless validate_field(continue, 'Formula')
-
-        while (continue)
-          return false unless validate_field(fd.gets(), 'Code')
-          fd.gets()
-          return false unless validate_field(fd.gets(), 'Description')
-          fd.gets()
-          return false unless validate_field(fd.gets(), 'Date')
-          return false unless validate_field(fd.gets(), 'Stored')
-          fd.gets()
-          return false unless validate_field(fd.gets(), 'Ver')
-          header = fd.gets().split(/\t/)
-          @recipe = Recipe.find_by_code(header[0])
-          if @recipe.nil?
-            @recipe = Recipe.new :code=>header[0], :name=>header[1], :version=>header[3].strip()
-            logger.debug("Creando encabezado de receta #{@recipe.inspect}")
-          end
-          fd.gets()
-          while (true)
-            item = fd.gets().split(/\t/)
-            break if item[0].strip() == '-----------'
-            logger.debug("  * Ingrediente: #{item.inspect}")
-            amount = convert_to_float(item[0])
-            percentage = convert_to_float(item[3])
-            @recipe.add_ingredient(
-              :amount=>amount,
-              :priority=>0,
-              :percentage=>percentage,
-              :ingredient=>item[2].strip(),
-              :overwrite=>overwrite)
-          end
-          @recipe.total = convert_to_float(fd.gets().strip())
-          @recipe.save
-          continue = fd.gets().strip()
-          break if continue.nil? or continue == '='
-        end
-      end
-    rescue Exception => ex
-      errors.add(:unknown, ex.message)
-      return false
-    end
-    return true
-  end
-
-  def import_new(filepath, overwrite)
-    begin
-      transaction do
         file_total = 0
         file_imported = 0
         fd = File.open(filepath, 'r')
@@ -122,12 +67,12 @@ class Recipe < ActiveRecord::Base
           name = header[3].strip()
           total = header[5]
 
-          @previously_stored_recipe = Recipe.find :first, :conditions => {:code => code, :version => version}
+          @previously_stored_recipe = Recipe.where(code: code, version: version).first
           unless @previously_stored_recipe.nil?
             logger.debug("Receta: #{@previously_stored_recipe.code} version #{@previously_stored_recipe.version} ya existe")
             unless @previously_stored_recipe.active
               file_imported += 1
-              @current_active_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
+              @current_active_recipe = Recipe.where(code: header[2], active: true).first
               unless @current_active_recipe.nil?
                 @current_active_recipe.active = false
                 @current_active_recipe.save
@@ -142,15 +87,14 @@ class Recipe < ActiveRecord::Base
               break if item.length == 1
             end
           else
-            @previous_version_recipe = Recipe.find :first, :conditions => {:code => header[2], :active => true}
-            unless @previous_version_recipe.nil? 
+            @previous_version_recipe = Recipe.where(code: header[2], active: true).first
+            unless @previous_version_recipe.nil?
               @previous_version_recipe.active = false
               @previous_version_recipe.save
             end
             file_imported += 1
-            @recipe = Recipe.new :code=>header[2], :name=>header[3].strip(), :version=>header[1]
+            @recipe = Recipe.new code: header[2], name: header[3].strip(), version: header[1]
             logger.debug("Creando encabezado de receta #{@recipe.inspect}")
-
             while (true)
               item = fd.gets()
               break if item.nil?
@@ -159,13 +103,15 @@ class Recipe < ActiveRecord::Base
               break if item.length == 1
               return false unless validate_field(item[0], 'D')
               @recipe.add_ingredient(
-                :amount=>item[3].to_f,
-                :priority=>item[1].to_i,
-                :percentage=>0,
-                :ingredient=>item[2],
-                :overwrite=>overwrite)
+                amount: item[3].to_f,
+                priority: item[1].to_i,
+                percentage: 0,
+                ingredient: item[2],
+                overwrite: overwrite
+              )
             end
             @recipe.total = total.to_f
+            @recipe.product_id = Product.first.id
             @recipe.save
           end
           continue = fd.gets()
@@ -176,7 +122,7 @@ class Recipe < ActiveRecord::Base
         @last_imported_recipe.imported_recipes = file_imported
         @last_imported_recipe.total_recipes = file_total
         @last_imported_recipe.save
-        
+
       end
     rescue Exception => ex
       errors.add(:unknown, ex.message)
@@ -186,14 +132,9 @@ class Recipe < ActiveRecord::Base
   end
 
   def get_total
-    total = 0
-    ingredients = IngredientRecipe.where(:recipe_id => self.id)
-    ingredients.each do |i|
-      total+= i.amount
-    end
-    return total.round(2)
+    self.ingredient_recipe.sum(:amount).round(2)
   end
-  
+
   def to_collection_select
     return "#{self.code} - #{self.name} - V#{self.version}"
   end
@@ -201,7 +142,7 @@ class Recipe < ActiveRecord::Base
   def to_collection_select_code
     return "#{self.code} - #{self.name}"
   end
-  
+
   def deactivate
     self.active = false
     self.save
@@ -230,13 +171,13 @@ class Recipe < ActiveRecord::Base
   def convert_to_float(string)
     value = string.strip().gsub('.', '')
     value = value.gsub(',', '.')
-    return value.to_f
+    value.to_f
   end
 
   def self.search(params)
     @recipes = Recipe.order("created_at asc")
-    @recipes = @recipes.where('active = true')
-    @recipes = @recipes.where('code = ?', params[:code]) if params[:code].present?
-    @recipes.paginate :page => params[:page], :per_page => params[:per_page]
+    @recipes = @recipes.where(active: true)
+    @recipes = @recipes.where(code: params[:code]) if params[:code].present?
+    @recipes.paginate page: params[:page], per_page: params[:per_page]
   end
 end

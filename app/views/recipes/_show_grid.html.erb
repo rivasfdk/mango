@@ -19,14 +19,14 @@
           <td><%=h ir.ingredient.name %></td>
           <td class="center"><%=h ir.amount %></td>
           <td class="center"><%=h ir.priority %></td>
-          <td class="center"><%=h '%.2f' % ir.get_percentage %></td>
+          <td class="center"><%=h '%.2f' % (ir.amount / @total * 100) %></td>
         </tr>
       <% end %>
     </tbody>
     <tfoot>
       <td></td>
       <td class="total">TOTAL</td>
-      <td class="total"><%= @recipe.get_total %></td>
+      <td class="total"><%= @total %></td>
       <td></td>
       <td></td>
     </tfoot>

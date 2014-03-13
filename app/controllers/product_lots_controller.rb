@@ -20,6 +20,18 @@ class ProductLotsController < ApplicationController
     end
   end
 
+  def by_recipe
+    product_id = Recipe.find(params[:recipe_id]).product_id if params[:recipe_id].present?
+    product_lots = ProductLot.includes(:product)
+                             .where(active: true,
+                                    product_id: product_id,
+                                    client_id: params[:factory_id])
+                             .order('id desc')
+    render json: product_lots,
+           methods: [:to_collection_select],
+           root: false
+  end
+
   def new
     @products = Product.order('code ASC')
     @factories = Client.where(factory: true)

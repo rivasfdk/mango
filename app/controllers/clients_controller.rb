@@ -4,12 +4,15 @@ class ClientsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @clients = Client.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => false}, :order => ['code ASC']
-        render :html => @clients
+        @clients = Client.where(factory: false)
+                         .order('code ASC')
+                         .paginate(page: params[:page],
+                                   per_page: session[:per_page])
+        render html: @clients
       end
       format.json do
-        @clients = Client.find :all, :conditions => {:factory => false}
-        render :json => @clients
+        @clients = Client.where factory: false
+        render json: @clients
       end
     end
   end

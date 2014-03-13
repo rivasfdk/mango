@@ -13,11 +13,12 @@ class Order < ActiveRecord::Base
   has_many :order_stats
   has_many :areas
 
-  validates :recipe, :user, :product_lot, :client, presence: true
+  validates :recipe, :user, :client, presence: true
+  validates :product_lot, presence: {unless: :create_product_lot}
   validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
   validates :real_production, numericality: {allow_nil: true}
-  validate :product_lot_factory
+  validate :product_lot_factory, :recipe_product_lot, unless: :create_product_lot
 
   before_save :create_code, if: :new_record?
 
@@ -25,6 +26,14 @@ class Order < ActiveRecord::Base
     if self.client and self.product_lot
       if self.client.factory and not self.product_lot.client_id == self.client_id
         errors.add(:product_lot, "no pertenece a la fabrica")
+      end
+    end
+  end
+
+  def recipe_product_lot
+    if self.product_lot and self.recipe
+      if self.product_lot.product_id != self.recipe.product_id
+        errors.add(:product_lot, "no corresponde a la receta")
       end
     end
   end

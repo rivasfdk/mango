@@ -35,7 +35,7 @@
           <%= render_action_show(recipe_path(r)) %>
           <%= render_action_clone(clone_recipe_path(r), "Desea clonar la receta '#{r.name}'?") %>
           <%= render_action_edit(edit_recipe_path(r)) %><br />
-          <% unless r.is_associated? %>
+          <% unless r.order.any? %>
           <%= render_action_delete(recipe_path(r), "Desea borrar la receta '#{r.name}'?") %>
           <% end %>
         </td>

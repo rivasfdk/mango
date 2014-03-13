@@ -13,14 +13,15 @@ class OrdersController < ApplicationController
     @recipes = Recipe.where({active: true, in_use: true}).order('name ASC')
     @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
     @clients = Client.where(factory: false).order('name ASC')
+    @product_lots = []
     @users = User.order('name ASC')
-    @product_lots = ProductLot.includes(:product).order('code ASC')
     @order = Order.new if @order.nil?
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]
     @can_edit_real_production = @user.has_global_permission?('orders', 'edit_real_production')
     @factories_enabled = is_mango_feature_available("factories")
     @medicament_recipes_enabled = is_mango_feature_available("medicament_recipes")
+    @create_product_lot_enabled = is_mango_feature_available("create_order_product_lot")
     unless @user.admin?
       @order.user_id = @user.id
     end
@@ -29,6 +30,9 @@ class OrdersController < ApplicationController
   def edit
     @order = Order.find(params[:id])
     new
+    @product_lots = ProductLot.includes(:product)
+                              .where(active: true)
+                              .where(product_id: @order.recipe.product_id)
     @order_code = @order.code
     @user = User.find session[:user_id]
   end

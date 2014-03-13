@@ -52,11 +52,13 @@ class IngredientsController < ApplicationController
 
   def lots
     @ingredient = Ingredient.find params[:id]
-    @lots = Lot.includes(:ingredient).where(:ingredient_id => @ingredient.id, :active => true).paginate :page=>params[:page], :per_page=>session[:per_page]
-    @stock = 0
-    @lots.each do |lot|
-      @stock += lot.stock
-    end
+    @lots = @ingredient.lots
+                       .where(active: true)
+                       .paginate(page: params[:page], per_page: session[:per_page])
+    @stock = @ingredient.lots
+                        .where(active: true)
+                        .sum(:stock)
+                        .round(2)
     session[:return_to] = request.referer
   end
 
@@ -64,7 +66,7 @@ class IngredientsController < ApplicationController
     pattern = params['ingredient']['pattern'] + '%'
     opt = params['ingredient']['option'].to_i
     condition = (opt.zero?) ? "code LIKE ?" : "name LIKE ?"
-    @ingredients = Ingredient.find :all, :conditions => [condition, pattern]
+    @ingredients = Ingredient.where([condition, pattern])
     respond_to do |format|
       format.js { render :layout=>false, :locals => {:ingredients=>@ingredients} } #{render :search, :layout => false} - render :content_type => 'text/javascript'
     end

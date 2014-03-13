@@ -1,11 +1,11 @@
 
 $(function() {
-    $('#report_by_alarm_type_1').bind('change', type_changed_1);
-    $('#report_by_alarm_type_2').bind('change', type_changed_2);
-    $('#report_by_factory_1').bind('change', value_changed_1);
-    $('#report_by_factory_2').bind('change', value_changed_2);
-    $('#content_type_ingredient').bind('change', type_changed);
-    $('#content_type_product').bind('change', type_changed);
+    $('#report_by_alarm_type_1').change(type_changed_1);
+    $('#report_by_alarm_type_2').change(type_changed_2);
+    $('#report_by_factory_1').change(value_changed_1);
+    $('#report_by_factory_2').change(value_changed_2);
+    $('#content_type_ingredient').change(type_changed);
+    $('#content_type_product').change(type_changed);
 });
 
 function type_changed_1() {
