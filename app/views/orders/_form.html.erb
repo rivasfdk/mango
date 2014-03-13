@@ -1,7 +1,6 @@
 <% if @factories_enabled %>
   <%= javascript_include_tag "dynamic_clients" %>
 <% end %>
-<%= javascript_include_tag "dynamic_product_lots" %>
 <%= render_error_messages(f.error_messages) %>
 <label for="code" class="small">Código:</label>
 <div class="field"><%= @order_code %> </div>

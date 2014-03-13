@@ -31,13 +31,3 @@ function update_product_lots() {
     }
   );
 }
-
-$(function() {
-  $("#order_recipe_id").chosen()
-                       .change(update_product_lots);
-  $("#order_client_id").chosen()
-                       .change(update_product_lots);
-  $("input[name=client_type]").change(update_product_lots);
-  $("#order_create_product_lot").change(hideProductLots);
-  hideProductLots();
-});

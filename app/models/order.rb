@@ -14,11 +14,11 @@ class Order < ActiveRecord::Base
   has_many :areas
 
   validates :recipe, :user, :client, presence: true
-  validates :product_lot, presence: {unless: :create_product_lot}
+  validates :product_lot, presence: true
   validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
   validates :real_production, numericality: {allow_nil: true}
-  validate :product_lot_factory, :recipe_product_lot, unless: :create_product_lot
+  validate :product_lot_factory, :recipe_product_lot
 
   before_save :create_code, if: :new_record?
 

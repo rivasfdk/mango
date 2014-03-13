@@ -5,22 +5,43 @@
 //= require chosen.jquery
 //= require_tree .
 //= stub dynamic_clients
-//= stub dynamic_product_lots
+
+var clients = [];
+var chosen_params = {
+  placeholder_text_multiple: "Seleccione algunas opciones",
+  placeholder_text_single: "Seleccione una opción",
+  no_results_text: "No hay resultados",
+}
 
 $(function(){
     $('.datepicker').datepicker({readonly: true});
-    $('.chosen-select').chosen({
-        placeholder_text_multiple: "Seleccione algunas opciones",
-        placeholder_text_single: "Seleccione una opción",
-        no_results_text: "No hay resultados",
-    });
+    $('.chosen-select').chosen(chosen_params);
     $('#report_alarm_type_id_1_chosen').hide();
     $('#report_alarm_type_id_2_chosen').hide();
     $('#report_factory_id_1_chosen').hide();
     $('#report_factory_id_2_chosen').hide();
     $('#product_lot').hide();
     $('.report-details').hide();
+    $("#order_recipe_id").chosen(chosen_params)
+                         .change(update_product_lots);
+    $("#order_client_id").chosen(chosen_params)
+                         .change(update_product_lots);
+    $("input[name=client_type]").change(update_product_lots);
+    $("#order_create_product_lot").change(hideProductLots);
+    hideProductLots();
 });
+
+function clientTypeSelected() {
+  factory = $('#client_type_factory').is(':checked');
+  select = $('#order_client_id');
+  select.empty();
+  select.append(new Option("", ""));
+  $.each(clients, function(_, client) {
+    if (client.factory == factory)
+      select.append(new Option(client.name, client.id));
+  });
+  select.trigger("chosen:updated");
+}
 
 function submit_product_lot_parameter_list_edit_form() {
     $('#product_lot_parameter_list_edit_form').submit();

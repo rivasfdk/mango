@@ -20,11 +20,10 @@ class OrdersController < ApplicationController
     @user = User.find session[:user_id]
     @can_edit_real_production = @user.has_global_permission?('orders', 'edit_real_production')
     @factories_enabled = is_mango_feature_available("factories")
-    @medicament_recipes_enabled = is_mango_feature_available("medicament_recipes")
-    @create_product_lot_enabled = is_mango_feature_available("create_order_product_lot")
-    unless @user.admin?
-      @order.user_id = @user.id
-    end
+    mango_features = get_mango_features()
+    @medicament_recipes_enabled = mango_features.include?("medicament_recipes")
+    @create_product_lot_enabled = mango_features.include?("create_order_product_lot")
+    @order.user_id = @user.id unless @user.admin?
   end
 
   def edit
