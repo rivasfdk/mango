@@ -16,7 +16,7 @@ class Hopper < ActiveRecord::Base
 
   def capacity_in_kg
     density = current_lot.density
-    (capacity.present? and density.present?) ? capacity * density : 0	
+    (capacity.present? and density.present?) ? capacity * density : 0
   end
 
   def capacity_in_kg_by_lot(lot_id)

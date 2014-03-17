@@ -3,8 +3,10 @@
 <div class="field"><%= f.text_field :number, :size=>'10' %> <span>*</span></div>
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'10' %><span>*</span></div>
+<% if @hoppers_transactions_enabled %>
 <label for="capacity" class="small">Capacidad (m³):</label>
 <div class="field"><%= f.text_field :capacity, :size=>'10' %></div>
+<% end %>
 <% unless @lots.nil? %>
 <label for="ingredient" class="small">Ingrediente (Lote):</label>
 <div class="field"><%= collection_select :hopper_lot, :lot_id, @lots, :id, :to_collection_select, {}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>

@@ -1,7 +1,10 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class IngredientsController < ApplicationController
   def index
+    @transactions_enabled = is_mango_feature_available("transactions")
     @ingredients = Ingredient.paginate :page=>params[:page], :per_page=>session[:per_page],
                    :order => ['stock_below_minimum desc']
   end
@@ -51,8 +54,10 @@ class IngredientsController < ApplicationController
   end
 
   def lots
+    @transactions_enabled = is_mango_feature_available("transactions")
     @ingredient = Ingredient.find params[:id]
     @lots = @ingredient.lots
+                       .includes(:ingredient)
                        .where(active: true)
                        .paginate(page: params[:page], per_page: session[:per_page])
     @stock = @ingredient.lots

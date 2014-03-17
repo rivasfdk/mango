@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class SessionsController < ApplicationController
   skip_before_filter :check_authentication
   layout 'login'
@@ -12,6 +14,9 @@ class SessionsController < ApplicationController
     if session[:user_id]
       @critical_ingredients = Ingredient.where(:stock_below_minimum => true).count
       @critical_hoppers = Hopper.where(:stock_below_minimum => true).count
+      mango_features = get_mango_features()
+      @transactions_enabled = mango_features.include?("transactions")
+      @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
       render :show, :layout => 'dashboard'
     else
       redirect_to :action=>'index'

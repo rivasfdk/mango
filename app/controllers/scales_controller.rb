@@ -5,12 +5,15 @@ include MangoModule
 class ScalesController < ApplicationController
   def index
     @scales, @hoppers_below_minimum = Scale.get_all
+    @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
   end
 
   def show
     @scale = Scale.find params[:id]
     @hoppers = Hopper.find_actives params[:id]
-    @show_hopper_factory_lots = is_mango_feature_available("factories")
+    mango_features = get_mango_features()
+    @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
+    @show_hopper_factory_lots = mango_features.include?("factories")
   end
 
   def create

@@ -7,8 +7,8 @@
         <th>Número<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
-        <% unless @scale.not_weighed %>
-        <th>Existencia<span class="order_arrow"></span></th>
+        <% if @hoppers_transactions_enabled and not @scale.not_weighed %>
+          <th>Existencia<span class="order_arrow"></span></th>
         <% end %>
         <th>Principal</th>
         <th class="actions_small">Acciones</th>
@@ -18,12 +18,12 @@
     <% @hoppers.each do |obj| %>
       <% class_row, i = alternate_row_class(i) %>
       <% ingredient = "#{obj[:lot].lot.ingredient.code} - #{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
-      <% class_row = "red_" + class_row if obj[:stock_below_minimum] %>
+      <% class_row = "red_" + class_row if obj[:stock_below_minimum] if @hoppers_transactions_enabled %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h obj[:number] %></td>
         <td class="center"><%=h obj[:name] %></td>
         <td><%=h ingredient %></td>
-        <% unless @scale.not_weighed %>
+        <% if @hoppers_transactions_enabled and not @scale.not_weighed %>
           <td class="right"><%=h obj[:stock_string] %></td>
         <% end %>
         <td class="center">

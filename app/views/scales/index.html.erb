@@ -4,17 +4,21 @@
   <% @scales.each do |s| %>
   <div class="module yui3-u-1-2">
     <%= link_to image_tag('scale-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), scale_path(s) %>
-    <% if @hoppers_below_minimum[s.id] > 0 %>
-      <%= link_to @hoppers_below_minimum[s.id], scales_path, :class => 'notify' %>
+    <% if @hoppers_transactions_enabled and @hoppers_below_minimum[s.id] > 0 %>
+      <%= link_to @hoppers_below_minimum[s.id], scale_path(s.id), :class => 'notify' %>
     <% end %>
     <div class="module-content">
       <h2><%= link_to s.name, scale_path(s) %></h2>
-      <% if @hoppers_below_minimum[s.id] == 1 %>
-      <p class="palert"><%= render_action_show_hoppers(scale_path(s)) + "(#{@hoppers_below_minimum[s.id]} en nivel crítico)" %></p>
-      <% elsif @hoppers_below_minimum[s.id] > 1 %>
-      <p class="palert"><%= render_action_show_hoppers(scale_path(s)) + "(#{@hoppers_below_minimum[s.id]} en nivel crítico)" %></p>
+      <% if @hoppers_transactions_enabled %>
+        <% if @hoppers_below_minimum[s.id] == 1 %>
+          <p class="palert"><%= render_action_show_hoppers(scale_path(s)) + "(#{@hoppers_below_minimum[s.id]} en nivel crítico)" %></p>
+        <% elsif @hoppers_below_minimum[s.id] > 1 %>
+          <p class="palert"><%= render_action_show_hoppers(scale_path(s)) + "(#{@hoppers_below_minimum[s.id]} en nivel crítico)" %></p>
+        <% else %>
+          <p><%= render_action_show_hoppers(scale_path(s)) %></p>
+        <% end %>
       <% else %>
-      <p><%= render_action_show_hoppers(scale_path(s)) %></p>
+        <p><%= render_action_show_hoppers(scale_path(s)) %></p>
       <% end %>
       <p><%= render_action_edit(edit_scale_path(s)) %></p>
       <p><%= render_action_delete(scale_path(s), "Desea borrar la balanza '#{s.name}'?") %></p>

@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class HoppersController < ApplicationController
   def index
     redirect_to scale_path(params[:scale_id])
@@ -64,6 +66,7 @@ class HoppersController < ApplicationController
   end
 
   def change
+    @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
     @hopper = Hopper.find params[:id]
     @current_lot = @hopper.current_lot
     @lots = Lot.find :all,
@@ -73,6 +76,7 @@ class HoppersController < ApplicationController
 
   def do_change
 	@hopper = Hopper.find params[:id]
+	params[:change][:amount] = 0 unless is_mango_feature_available("hoppers_transactions")
 	if @hopper.change(params[:change], session[:user_id])
 	  flash[:notice] = "Cambio de lote realizado con éxito"
 	  current_hopper_lot = @hopper.current_hopper_lot
@@ -151,12 +155,12 @@ class HoppersController < ApplicationController
       change_factory_lots
       render :change_factory_lots
     end
-    
   end
 
   private
 
   def fill_new
+    @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
     @lots = Lot.find :all,
                      :include => :ingredient,
                      :conditions => {:active => true, :in_use => true}
@@ -164,6 +168,7 @@ class HoppersController < ApplicationController
   end
 
   def fill_edit
+    @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
     @scales = Scale.all
     @hopper = Hopper.find params[:id]
   end

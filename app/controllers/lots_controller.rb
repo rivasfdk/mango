@@ -11,7 +11,7 @@ class LotsController < ApplicationController
                    .order('id desc')
                    .paginate page: params[:page],
                              per_page: session[:per_page]
-        @view_stocks = is_mango_feature_available('transactions')
+        @transactions_enabled = is_mango_feature_available('transactions')
       end
       format.json do 
         @lots = Lot.includes(:ingredient)

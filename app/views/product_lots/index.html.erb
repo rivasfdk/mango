@@ -6,7 +6,7 @@
       <tr>
         <th>Código<span class="order_arrow"></span></th>
         <th>Producto<span class="order_arrow"></span></th>
-        <% if @view_stocks %>
+        <% if @transactions_enabled %>
         <th>Existencia<span class="order_arrow"></span></th>
         <% end %>
         <th class="actions_small">Acciones</th>
@@ -18,12 +18,14 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h item.code %></td>
         <td><%=h item.product.name %></td>
-        <% if @view_stocks %>
+        <% if @transactions_enabled %>
         <td class="right"><%=h item.stock %></td>
         <% end %>
         <td class="center">
           <%= render_action_edit(edit_product_lot_path(item)) %>
-          <%= render_action_adjust(adjust_product_lot_path(item)) %> <br />
+          <% if @transactions_enabled %>
+            <%= render_action_adjust(adjust_product_lot_path(item)) %> <br />
+          <% end %>
           <%= render_action_delete(product_lot_path(item), "Desea borrar el lote '#{item.code}'?") %>
         </td>
       </tr>

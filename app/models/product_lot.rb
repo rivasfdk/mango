@@ -5,7 +5,7 @@ class ProductLot < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :client
-  has_many :order
+  has_many :orders
 
   has_one :product_lot_parameter_list
 
