@@ -9,12 +9,17 @@ class IngredientsController < ApplicationController
                    :order => ['stock_below_minimum desc']
   end
   
+  def new
+    @transactions_enabled = is_mango_feature_available("transactions")
+  end
+
   def edit
     @ingredient = Ingredient.find params[:id]
   end
-  
+
   def create
     @ingredient = Ingredient.new params[:ingredient]
+    @ingredient.minimum_stock = 0 unless is_mango_feature_available("transactions")
     if @ingredient.save
       flash[:notice] = 'Materia prima guardada con éxito'
       redirect_to :ingredients
