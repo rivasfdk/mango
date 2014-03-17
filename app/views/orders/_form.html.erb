@@ -13,7 +13,11 @@
 <% if @factories_enabled %>
 <label for="client_id" class="small">
   <%= radio_button_tag 'client_type', 'client', checked: true %> Cliente: <br />
-  <%= radio_button_tag 'client_type', 'factory' %> Fábrica:
+  <% if @factory_checked %>
+    <%= radio_button_tag 'client_type', 'factory', checked: true %>
+  <% else %>
+    <%= radio_button_tag 'client_type', 'factory' %>
+  <% end %> Fábrica:
 </label>
 <% else %>
 <label for="client_id" class="small">Cliente</label>
@@ -28,13 +32,19 @@
 <br />
 <label for="product_lot_id" class="small">Lote Producto:</label>
 <div class="field">
-<% if @create_product_lot_enabled %>
-  <%= f.check_box :create_product_lot, checked: true %> Crear un lote de producto nuevo <br />
+<% if @auto_product_lot_enabled %>
+  <% if action == "new" %>
+    <%= f.check_box :auto_product_lot, checked: true %>
+  <% else %>
+    <%= f.check_box :auto_product_lot %>
+  <% end %>
+  Crear un lote de producto nuevo <br />
 <% end %>
 <%= f.collection_select :product_lot_id, @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
 </div>
 <label for="prog_batchs" class="small">Batch Prog.:</label>
 <div class="field"><%= f.text_field :prog_batches, size: '10' %> <span>*</span></div>
+<% if @real_production_enabled %>
 <% if action != 'new' %>
   <label for="real_production" class="small">Producción Real:</label>
   <% if @order.real_production.blank? or @can_edit_real_production %>
@@ -42,6 +52,7 @@
   <% else %>
     <div class="field"><%= @order.real_production %></div>
   <% end %>
+<% end %>
 <% end %>
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_field :comment, size: '50' %></div>

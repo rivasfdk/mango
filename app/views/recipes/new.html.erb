@@ -1,5 +1,5 @@
 <% title "Nueva receta" %>
-<%= form_for :recipe, :url=>recipes_path, :html => {:id => 'recipe_new_form'} do |f| %>
-  <%= render :partial=>'form', :locals =>{:f => f} %>
+<%= form_for :recipe, url: recipes_path, html: {id: 'recipe_new_form'} do |f| %>
+  <%= render partial: 'form', locals: {f: f, action: 'new'} %>
   <br/>
 <% end %>

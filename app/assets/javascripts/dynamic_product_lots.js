@@ -10,7 +10,7 @@ function recipeSelected() {
 }
 
 function hideProductLots() {
-  if ($("#order_create_product_lot").is(":checked"))
+  if ($("#order_auto_product_lot").is(":checked"))
     $("#order_product_lot_id_chosen").hide();
   else
     $("#order_product_lot_id_chosen").show();

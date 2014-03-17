@@ -20,8 +20,10 @@
 <div class="field"><%=h @data['real_batches'] %></div>
 <label for="client" class="small">Cant. Prod. Term.:</label>
 <div class="field"><%=h @data['product_total'] %></div>
+<% if @real_production_enabled %>
 <label for="client" class="small">Producción Físico:</label>
 <div class="field"><%=h @data['real_production'] %></div>
+<% end %>
 <label for="client" class="small">Reparada:</label>
 <div class="field"><%=h @data['repaired'] %></div>
 <div class="clearfix"></div>

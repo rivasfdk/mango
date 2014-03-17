@@ -1,5 +1,5 @@
 <% title "Nuevo lote de materia prima" %>
-<%= form_for :lot, :url=>lots_path, :html => {:id => 'lot_new_form'} do |f| %>
-  <%= render :partial=>'form', :locals =>{:f => f} %>
+<%= form_for :lot, url: lots_path, html: {id: 'lot_new_form'} do |f| %>
+  <%= render partial: 'form', locals: {f: f, action: 'new'} %>
   <br/>
 <% end %>

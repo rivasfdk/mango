@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class ReportsController < ApplicationController
 
   def index
@@ -11,7 +13,10 @@ class ReportsController < ApplicationController
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
     @recipes = Recipe.all(group: :code)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
+    @ingredients = Ingredient.all
     @lots = Lot.includes(:ingredient).where(active: true)
+    mango_features = get_mango_features()
+    @real_production_enabled = mango_features.include?("real_production")
   end
 
   def daily_production
@@ -110,13 +115,17 @@ class ReportsController < ApplicationController
   def consumption_per_recipe
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.consumption_per_recipe(start_date, end_date, params[:report][:recipe_code])
+    data = EasyModel
+      .consumption_per_recipe(start_date, end_date,
+                              params[:report][:recipe_code])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'consumption_per_recipe.yml'
+      template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_recipe_real.yml' : 'consumption_per_recipe.yml'
+      report = EasyReport::Report.new data, template_name
       send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
     end
   end
@@ -131,7 +140,9 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'consumption_per_ingredients.yml'
+      template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_ingredients_real.yml' : 'consumption_per_ingredients.yml'
+      report = EasyReport::Report.new data, template_name
       send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
     end
   end
@@ -146,7 +157,9 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'consumption_per_ingredient_per_orders.yml'
+      template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
+      report = EasyReport::Report.new data, template_name
       send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
     end
   end
@@ -160,6 +173,10 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     end
+    view = params[:report][:include_real] == "1" ?
+      :consumption_per_ingredients_real :
+      :consumption_per_ingredients
+    render view
   end
 
   def consumption_per_client
@@ -171,7 +188,9 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'consumption_per_client.yml'
+      template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_client_real.yml' : 'consumption_per_client.yml'
+      report = EasyReport::Report.new data, template_name
       send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
     end
   end

@@ -11,44 +11,46 @@ class Lot < ActiveRecord::Base
 
   after_save :check_stock, :check_hopper_stock
 
-  validates_uniqueness_of :code
-  validates_presence_of :date, :ingredient
-  validates_length_of :code, :within => 3..20
-  validates_associated :ingredient
+  validates :code, presence: true,
+                   uniqueness: true,
+                   length: {within: 3..20}
+  validates :ingredient, presence: true
+  validates :density, numericality: {greater_than: 0}
   validate :factory
 
   def factory
-    errors.add(:client, "no es fábrica") if self.client.present? and not self.client.factory
+    if self.client.present? and not self.client.factory
+      errors.add(:client, "no es fábrica")
+    end
   end
 
   def check_stock
-    ingredient = Ingredient.find self.ingredient_id
-    ingredient.save
+    Ingredient.find(self.ingredient_id)
+              .save
     true
   end
 
   def check_hopper_stock
     Hopper.includes(:hopper_lot)
-          .where({hoppers_lots: {active: true, lot_id: self.id}})
+          .where({hoppers_lots: {active: true,
+                                 lot_id: self.id}})
           .each { |hopper| hopper.save }
   end
 
   def self.find_all
-    includes(:ingredient).where(active: true)
-                         .order('code DESC')
+    Lot.includes(:ingredient)
+       .where(active: true)
+       .order('code DESC')
   end
 
   def self.find_by_factory(lot)
     lots_by_factory = {}
-    Client.where(factory: true).each do |client|
-      lots_by_factory[client.id] = []
-    end
+    Client.where(factory: true)
+          .each {|client| lots_by_factory[client.id] = []}
     lots = Lot.includes(:ingredient)
               .where(active: true, in_use: true)
               .where(['client_id is not null and ingredient_id = ?', lot.ingredient_id])
-    lots.each do |lot|
-      lots_by_factory[lot.client_id] << lot
-    end
+    lots.each {|lot| lots_by_factory[lot.client_id] << lot}
     lots_by_factory
   end
 

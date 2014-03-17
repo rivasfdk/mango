@@ -120,38 +120,38 @@ report:
               align: left
               width: 60
           3:
-            std_kg:
-              label: Total Est.
+            real_kg:
+              label: Total Teorico
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           4:
-            real_kg:
-              label: Total Real.
+            real_real_kg:
+              label: Total Fisico
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           5:
-            var_kg:
-              label: Var Kg
+            loss:
+              label: Merma (Kg)
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           6:
-            var_perc:
-              label: Var %
+            loss_perc:
+              label: Merma (%)
               align: right
               unit: '%'
               width: 20
               perc_totalize: true
-              perc_num: var_kg
-              perc_dem: std_kg
+              perc_num: loss
+              perc_dem: real_kg
               precision: 2
     10:
       breakline:

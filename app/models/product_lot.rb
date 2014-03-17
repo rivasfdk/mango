@@ -5,13 +5,14 @@ class ProductLot < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :client
-  has_many :order, inverse_of: :product_lot
+  has_many :order
 
   has_one :product_lot_parameter_list
 
-  validates_uniqueness_of :code
-  validates_presence_of :date, :product
-  validates_length_of :code, :within => 3..20
+  validates :code, presence: true,
+                   uniqueness: true,
+                   length: {within: 3..20}
+  validates :product, presence: true
 
   def content_id
     self.product_id

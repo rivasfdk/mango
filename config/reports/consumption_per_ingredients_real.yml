@@ -49,7 +49,7 @@ report:
       text:
         label: "Desde: "
         align: right
-        width: 120
+        width: 170
         breakline: 0
         style:
           font_weight: B
@@ -62,7 +62,7 @@ report:
       text:
         label: "Hasta: "
         align: right
-        width: 120
+        width: 170
         breakline: 0
         style:
           font_weight: B
@@ -72,28 +72,15 @@ report:
         align: left
         width: 50
     5:
-      text:
-        label: "Cliente: "
-        align: right
-        width: 120
-        breakline: 0
-        style:
-          font_weight: B
-    6:
-      text:
-        field: client
-        align: left
-        width: 50
-    7:
       breakline:
-    8:
+    6:
       text:
         field: title
         align: center
         style:
           font_size: 12
           font_weight: B
-    9:
+    7:
       table:
         field: results
         heading:
@@ -120,40 +107,40 @@ report:
               align: left
               width: 60
           3:
-            std_kg:
-              label: Total Est.
+            real_kg:
+              label: Total Teorico
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           4:
-            real_kg:
-              label: Total Real.
+            real_real_kg:
+              label: Total Fisico
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           5:
-            var_kg:
-              label: Var Kg
+            loss:
+              label: Merma (Kg)
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           6:
-            var_perc:
-              label: Var %
+            loss_perc:
+              label: Merma (%)
               align: right
               unit: '%'
               width: 20
               perc_totalize: true
-              perc_num: var_kg
-              perc_dem: std_kg
+              perc_num: loss
+              perc_dem: real_kg
               precision: 2
-    10:
+    8:
       breakline:
   footer:
     1:

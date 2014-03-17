@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class LotsController < ApplicationController
   def index
     respond_to do |format|
@@ -9,7 +11,7 @@ class LotsController < ApplicationController
                    .order('id desc')
                    .paginate page: params[:page],
                              per_page: session[:per_page]
-        render html: @lots
+        @view_stocks = is_mango_feature_available('transactions')
       end
       format.json do 
         @lots = Lot.includes(:ingredient)

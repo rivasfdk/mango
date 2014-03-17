@@ -22,12 +22,10 @@ $(function(){
     $('#report_factory_id_2_chosen').hide();
     $('#product_lot').hide();
     $('.report-details').hide();
-    $("#order_recipe_id").chosen(chosen_params)
-                         .change(update_product_lots);
-    $("#order_client_id").chosen(chosen_params)
-                         .change(update_product_lots);
+    $("#order_recipe_id").change(update_product_lots);
+    $("#order_client_id").change(update_product_lots);
     $("input[name=client_type]").change(update_product_lots);
-    $("#order_create_product_lot").change(hideProductLots);
+    $("#order_auto_product_lot").change(hideProductLots);
     hideProductLots();
 });
 

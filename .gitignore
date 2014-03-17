@@ -11,3 +11,4 @@ tmp/
 *.swo
 .sass-cache/
 db/dump.sql
+public/assets

@@ -10,7 +10,7 @@ class ScalesController < ApplicationController
   def show
     @scale = Scale.find params[:id]
     @hoppers = Hopper.find_actives params[:id]
-    @show_hopper_factory_lots = is_mango_feature_available("hopper_factory_lots")
+    @show_hopper_factory_lots = is_mango_feature_available("factories")
   end
 
   def create

@@ -9,6 +9,14 @@ class OrdersController < ApplicationController
     @recipes = Recipe.all(group: :code)
   end
 
+  def show
+    order = Order.find params[:id]
+    @data = EasyModel.order_details(order.code)
+    @parameter_list = ParameterList.includes(:parameters).where(id: order.parameter_list_id).first
+    mango_features = get_mango_features()
+    @real_production_enabled = mango_features.include?("real_production")
+  end
+
   def new
     @recipes = Recipe.where({active: true, in_use: true}).order('name ASC')
     @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
@@ -19,16 +27,22 @@ class OrdersController < ApplicationController
     @order_code = 'Autogenerado'
     @user = User.find session[:user_id]
     @can_edit_real_production = @user.has_global_permission?('orders', 'edit_real_production')
-    @factories_enabled = is_mango_feature_available("factories")
-    mango_features = get_mango_features()
-    @medicament_recipes_enabled = mango_features.include?("medicament_recipes")
-    @create_product_lot_enabled = mango_features.include?("create_order_product_lot")
     @order.user_id = @user.id unless @user.admin?
+    @factory_checked = false
+    mango_features = get_mango_features()
+    @real_production_enabled = mango_features.include?("real_production")
+    @factories_enabled = mango_features.include?("factories")
+    @medicament_recipes_enabled = mango_features.include?("medicament_recipes")
+    @auto_product_lot_enabled = mango_features.include?("auto_order_product_lot")
   end
 
   def edit
     @order = Order.find(params[:id])
     new
+    if @order.client.factory
+      @clients = Client.where(factory: true)
+      @factory_checked = true
+    end
     @product_lots = ProductLot.includes(:product)
                               .where(active: true)
                               .where(product_id: @order.recipe.product_id)
@@ -153,11 +167,5 @@ class OrdersController < ApplicationController
       report = EasyReport::Report.new data, 'order_details.yml'
       send_data report.render, filename: "detalle_orden_produccion.pdf", type: "application/pdf"
     end
-  end
-  
-  def show
-    order = Order.find params[:id]
-    @data = EasyModel.order_details(order.code)
-    @parameter_list = ParameterList.includes(:parameters).where(id: order.parameter_list_id).first
   end
 end

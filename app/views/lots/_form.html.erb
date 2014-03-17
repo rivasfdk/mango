@@ -1,17 +1,17 @@
 <%= render_error_messages(f.error_messages) %>
 <label for="code" class="small">Código:</label>
 <div class="field"><%= f.text_field :code, :size=>'15' %> <span>*</span></div>
-<label for="date" class="small">Fecha:</label>
-<div class="field"><%= f.date_select :date, :size=>'10' %> <span>*</span></div>
 <label for="ingredient_id" class="small">Materia Prima:</label>
-<div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="code" class="small">Densidad (Kg/m³):</label>
 <div class="field"><%= f.text_field :density, :size=>'15' %></div>
 <label for="client_id" class="small">Propietario:</label>
-<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %></div>
+<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></div>
+<% if action == "edit" %>
 <label for="in_use" class="small">En uso:</label>
 <div class="field"><%= f.check_box :in_use %></div>
 <label for="active" class="small">Activo:</label>
 <div class="field"><%= f.check_box :active %></div>
+<% end %>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

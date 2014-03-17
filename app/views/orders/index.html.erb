@@ -29,7 +29,7 @@
         <td><%= link_to o.recipe.name, recipe_path(o.recipe.id) %></td>
         <td><%=h client %></td>
         <td class="center"><%=h o.prog_batches %></td>
-        <td class="center"><%=h o.get_real_batches %></td>
+        <td class="center"><%=h o.batch.count %></td>
         <td class="center"><%=h o.completed %></td>
         <td class="center">
           <%= render_action_show(order_path(o)) %>

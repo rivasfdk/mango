@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140313140608) do
+ActiveRecord::Schema.define(:version => 20140316171739) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20140313140608) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "standard_amount", :default => 0.0, :null => false
+    t.float    "real_amount"
   end
 
   add_index "batch_hoppers_lots", ["batch_id"], :name => "fk_batch_hoppers_lots_batch_id"
@@ -235,7 +236,6 @@ ActiveRecord::Schema.define(:version => 20140313140608) do
 
   create_table "lots", :force => true do |t|
     t.string   "code"
-    t.date     "date"
     t.string   "location"
     t.integer  "ingredient_id"
     t.datetime "created_at"
@@ -301,7 +301,7 @@ ActiveRecord::Schema.define(:version => 20140313140608) do
     t.float    "real_production"
     t.boolean  "repaired",             :default => false
     t.integer  "parameter_list_id"
-    t.boolean  "create_product_lot",   :default => false
+    t.boolean  "auto_product_lot",     :default => false
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
@@ -406,7 +406,6 @@ ActiveRecord::Schema.define(:version => 20140313140608) do
   create_table "products_lots", :force => true do |t|
     t.integer  "product_id"
     t.string   "code",                         :null => false
-    t.date     "date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"

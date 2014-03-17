@@ -2,7 +2,7 @@ report:
   settings:
     page:
       size: Letter
-      orientation: P
+      orientation: p
       margins: 15
     style:
       font_family: 'Helvetica'
@@ -73,7 +73,7 @@ report:
         width: 50
     5:
       text:
-        label: "Cliente: "
+        label: "Receta: "
         align: right
         width: 120
         breakline: 0
@@ -81,7 +81,7 @@ report:
           font_weight: B
     6:
       text:
-        field: client
+        field: recipe
         align: left
         width: 50
     7:
@@ -120,38 +120,38 @@ report:
               align: left
               width: 60
           3:
-            std_kg:
-              label: Total Est.
+            real_kg:
+              label: Cant. Teorico.
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           4:
-            real_kg:
-              label: Total Real.
+            real_real_kg:
+              label: Cant. Fisico.
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           5:
-            var_kg:
-              label: Var Kg
+            loss:
+              label: Merma (Kg)
               align: right
               unit: Kg
               width: 27
               totalize: true
               precision: 2
           6:
-            var_perc:
-              label: Var %
+            loss_perc:
+              label: Merma (%)
               align: right
               unit: '%'
               width: 20
               perc_totalize: true
-              perc_num: var_kg
-              perc_dem: std_kg
+              perc_num: loss
+              perc_dem: real_kg
               precision: 2
     10:
       breakline:
