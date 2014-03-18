@@ -248,17 +248,17 @@ class EasyModel
     unix_end_datetime = (end_datetime + 1.day).to_i
 
     stats = OrderStat.joins(:order_stat_type)
-                     .where(orders_stats_types: {unit: unit})
-                     .where(created_at: unix_start_datetime .. unix_end_datetime)
-                     .select('orders_stats_types.description AS stat_name,
-                              orders_stats_types.min AS min,
-                              orders_stats_types.max AS max,
-                              orders_stats_types.unit AS unit,
-                              AVG(orders_stats.value) AS stat_avg,
-                              MAX(orders_stats.value) AS stat_max,
-                              MIN(orders_stats.value) AS stat_min,
-                              STD(orders_stats.value) AS stat_std')
-                     .group('order_stat_type_id')
+      .where(orders_stats_types: {unit: unit})
+      .where(created_at: unix_start_datetime .. unix_end_datetime)
+      .select('orders_stats_types.description AS stat_name,
+               orders_stats_types.min AS min,
+               orders_stats_types.max AS max,
+               orders_stats_types.unit AS unit,
+               AVG(orders_stats.value) AS stat_avg,
+               MAX(orders_stats.value) AS stat_max,
+               MIN(orders_stats.value) AS stat_min,
+               STD(orders_stats.value) AS stat_std')
+      .group('order_stat_type_id')
     return nil if stats.empty?
 
     stats.each do |stat|
@@ -281,14 +281,14 @@ class EasyModel
         OrderStatType.where(unit: unit).each do |ost|
           n = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime).count.to_f / 100
           stats = OrderStat.where(created_at: unix_start_datetime .. unix_end_datetime)
-                           .where(order_stat_type_id: ost.id)
-                           .select('AVG(orders_stats.value) AS stat_avg,
-                                    AVG(orders_stats.created_at) AS stat_avg_unixtime')
-                           .group("FLOOR(id/#{n})").inject([[], []]) do |array, os|
-            array.first << os[:stat_avg_unixtime]
-            array.second << os[:stat_avg]
-            array
-          end
+            .where(order_stat_type_id: ost.id)
+            .select('AVG(orders_stats.value) AS stat_avg,
+                     AVG(orders_stats.created_at) AS stat_avg_unixtime')
+            .group("FLOOR(id/#{n})").inject([[], []]) do |array, os|
+              array.first << os[:stat_avg_unixtime]
+              array.second << os[:stat_avg]
+              array
+            end
           plot.data << Gnuplot::DataSet.new(stats) { |ds|
             ds.with = "linespoints"
             ds.title = ost.description
@@ -322,14 +322,9 @@ class EasyModel
   end
 
   def self.alarms(start_date, end_date, alarm_type_id)
-    if alarm_type_id == 0
-      conditions = {date: start_date .. end_date + 1.day}
-    else
-      conditions = {alarm_type_id: alarm_type_id, date: start_date .. end_date + 1.day}
-    end
-
-    @alarms = Alarm.find :all, :conditions => conditions
-    return nil if @alarms.length.zero?
+    @alarms = Alarm.where(date: start_date .. end_date + 1.day)
+    @alarms = @alarms.where(alarm_type_id: alarm_type_id) if alarm_type_id != 0
+    return nil if @alarms.empty?
 
     data = self.initialize_data("Reporte de alarmas")
     data['since'] = self.print_range_date(start_date)
