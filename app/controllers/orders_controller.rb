@@ -108,7 +108,7 @@ class OrdersController < ApplicationController
           redirect_to :orders
         else
           flash[:type] = 'error'
-          flash[:notice] = "Faltan lotes necesarios para generar las transacciones"
+          flash[:notice] = "Error al reparar la orden"
           redirect_to :orders
         end
       else

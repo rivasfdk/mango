@@ -13,6 +13,8 @@ class Order < ActiveRecord::Base
   has_many :order_stats
   has_many :areas
 
+  attr_protected :completed
+
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
   validates :prog_batches,
@@ -62,6 +64,8 @@ class Order < ActiveRecord::Base
   end
 
   def repair(user_id, n_batch)
+    return false if self.completed
+
     hopper_ingredients = HopperLot
       .joins(:lot)
       .where(active: true)
@@ -146,6 +150,8 @@ class Order < ActiveRecord::Base
         Batch.where(id: extra_batches_ids).delete_all
       end
 
+      self.create_product_lot if self.auto_product_lot
+
       Order.where(id: self.id)
         .update_all({prog_batches: n_batch,
                      real_batches: n_batch,
@@ -205,27 +211,28 @@ class Order < ActiveRecord::Base
 
   def close(user_id)
     unless self.completed
-      if self.auto_product_lot
-        product = self.recipe.product
-        date_string = Date.today.strftime('%d%m%y')
-        last_product_lot_code = ProductLot
-          .where('code LIKE ? AND product_id = ?',
-                 "%#{product.code}-#{date_string}%",
-                 product.id)
-          .pluck(:code).last
-        product_lot_code = "#{product.code}-#{date_string}-"
-        product_lot_code += last_product_lot_code.nil? ? "1" :
-                            last_product_lot_code.split("-").last.succ
-        self.update_column(:product_lot_id,
-                           ProductLot.create(code: product_lot_code,
-                                             product_id: product.id)
-                                     .id)
-      end
+      self.create_product_lot if self.auto_product_lot
       self.generate_transactions(user_id) if is_mango_feature_available("transactions")
       self.update_column(:completed, true)
     else
       false
     end
+  end
+
+  def create_product_lot
+    product = self.recipe.product
+    date_string = Date.today.strftime('%d%m%y')
+    last_product_lot_code = ProductLot
+      .where("code LIKE ? AND product_id = ?",
+             "%#{product.code}-#{date_string}%",
+             product.id)
+      .pluck(:code).last
+    product_lot_code = "#{product.code}-#{date_string}-"
+    product_lot_code += last_product_lot_code.nil? ? "1" :
+                        last_product_lot_code.split("-").last.succ
+    self.update_column(:product_lot_id,
+                       ProductLot.create(code: product_lot_code,
+                                         product_id: product.id).id)
   end
 
   def get_standard_amount(ingredient_id)
