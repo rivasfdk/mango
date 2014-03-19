@@ -60,7 +60,7 @@ report:
         width: 50
     3:
       text:
-        label: "Cliente: "
+        label: "Producto: "
         align: right
         width: 170
         breakline: 0
@@ -68,12 +68,12 @@ report:
           font_weight: B
     4:
       text:
-        field: client
+        field: product
         align: left
         width: 50
     5:
       text:
-        label: "Formula: "
+        label: "Cliente: "
         align: right
         width: 170
         breakline: 0
@@ -81,12 +81,12 @@ report:
           font_weight: B
     6:
       text:
-        field: recipe
+        field: client
         align: left
         width: 50
     7:
       text:
-        label: "Version: "
+        label: "Formula: "
         align: right
         width: 170
         breakline: 0
@@ -94,12 +94,12 @@ report:
           font_weight: B
     8:
       text:
-        field: version
+        field: recipe
         align: left
         width: 50
     9:
       text:
-        label: "Prod. Term.: "
+        label: "Version: "
         align: right
         width: 170
         breakline: 0
@@ -107,7 +107,7 @@ report:
           font_weight: B
     10:
       text:
-        field: product
+        field: version
         align: left
         width: 50
     11:
@@ -268,7 +268,7 @@ report:
               precision: 2
           7:
             var_kg:
-              label: Var Kg
+              label: Merma (Kg)
               align: right
               unit: Kg
               width: 30
@@ -276,7 +276,7 @@ report:
               precision: 2
           8:
             var_perc:
-              label: Var %
+              label: Merma (%)
               align: right
               unit: '%'
               width: 20
