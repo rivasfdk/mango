@@ -19,26 +19,20 @@ class ProductLotParameterList < ActiveRecord::Base
 
   def parameters_with_range
     parameters = []
-    self.product_lot_parameters.each do |plp|
-      range = ProductParameterTypeRange.where(:product_lot_parameter_type_id => plp.product_lot_parameter_type_id,
-                                              :product_id => self.product_lot.product_id).first 
-      unless range.nil?
+    self.product_lot_parameters
+      .includes(:product_lot_parameter_type)
+      .each do |plp|
+        range = ProductParameterTypeRange
+          .where(product_lot_parameter_type_id: plp.product_lot_parameter_type_id,
+                 product_id: self.product_lot.product_id).first 
         parameters << {
           "name" => plp.product_lot_parameter_type.name,
-          "value" => plp.value,
+          "value" => plp.product_lot_parameter_type.is_string ? plp.string_value : plp.value,
           "unit" => plp.product_lot_parameter_type.unit,
-          "max" => range.max,
-          "min" => range.min
-        }
-      else
-        parameters << {
-          :type => plp.product_lot_parameter_type.name,
-          :value => plp.value,
-          :max => nil,
-          :min => nil        
+          "max" => range.nil? ? nil : range.max,
+          "min" => range.nil? ? nil : range.min
         }
       end
-    end
     parameters
   end
 end

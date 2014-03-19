@@ -15,11 +15,11 @@ class Order < ActiveRecord::Base
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
-  validates :prog_batches, numericality: {only_integer: true,
-                                          greater_than_or_equal_to: 0}
+  validates :prog_batches,
+            numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
-  validates :real_production, numericality: {greater_than: 0,
-                                             allow_nil: true}
+  validates :real_production,
+            numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
 
@@ -47,6 +47,7 @@ class Order < ActiveRecord::Base
     self.code = order_number.code.succ
     order_number.code = self.code
     order_number.save
+    self.product_lot_id = nil if self.auto_product_lot
   end
 
   def update_real_consumptions

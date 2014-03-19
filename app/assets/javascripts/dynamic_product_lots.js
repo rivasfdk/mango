@@ -1,5 +1,3 @@
-var product_lots = [];
-
 function recipeSelected() {
     select = $('#order_product_lot_id');
     select.empty();
@@ -27,7 +25,7 @@ function update_product_lots() {
     params,
     function(data) {
       product_lots = data;
-     recipeSelected();
+      recipeSelected();
     }
   );
 }

@@ -3,9 +3,13 @@
 <div class="field"><%= f.text_field :code, :size=>'30' %><span>*</span></div>
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'30' %><span>*</span></div>
+<label for="is_string" class="small">Tipo texto</label>
+<div class="field"><%= f.check_box :is_string %></div>
+<div id="not_string">
 <label for="name" class="small">Unidad:</label>
 <div class="field"><%= f.text_field :unit, :size=>'30' %></div>
 <label for="name" class="small">Valor predeterminado:</label>
 <div class="field"><%= f.text_field :default_value, :size=>'30' %></div>
+</div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

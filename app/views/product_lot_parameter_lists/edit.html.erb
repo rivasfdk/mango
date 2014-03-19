@@ -19,10 +19,11 @@
     </thead>
     <tbody>
       <%= f.fields_for :product_lot_parameters do |builder| %>
+        <% value_symbol = builder.object.product_lot_parameter_type.is_string ? :string_value : :value %>
         <% class_row, i = alternate_row_class(i) %>
         <tr class="<%= class_row %>">
           <td><%= builder.object.product_lot_parameter_type.name %></td>
-          <td class="center"><%= builder.text_field :value, :size => 10, :style => "text-align:right;" %></td>
+          <td class="center"><%= builder.text_field value_symbol, :size => 10, :style => "text-align:right;" %></td>
         </tr>
       <% end %>
     </tbody>

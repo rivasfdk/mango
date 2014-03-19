@@ -49,7 +49,7 @@ class EasyModel
                                           .includes(includes)
                                           .where(where)
                                           .order('ingredients.code asc')
-    joins = {product_lot: {order: {}}}
+    joins = {product_lot: {orders: {}}}
     includes = {product_lot_parameters: {product_lot_parameter_type: {}}, product_lot: {product: {}}}
     where = {orders: {code: order_code}}
     product_lot_parameter_list = ProductLotParameterList.joins(joins)
@@ -58,13 +58,13 @@ class EasyModel
 
     return nil if lot_parameter_lists.empty? and product_lot_parameter_list.nil?
 
-    order = Order.find_by_code order_code, include: batch
+    order = Order.includes(:batch).where(code: order_code).first
     data = self.initialize_data("Caracteristicas de la orden #{order.code}")
     data['order'] = order.code
     data['client'] = "#{order.client.code} - #{order.client.name}"
     data['recipe'] = "#{order.recipe.code} - #{order.recipe.name}"
     data['version'] = order.recipe.version
-    data['product'] = order.product_lot.nil? ? "" : "#{order.product_lot.product.code} - #{order.product_lot.product.name}"
+    data['product'] = order.product_lot.nil? ? "" : "#{order.product_lot.code} - #{order.product_lot.product.name}"
     data['start_date'] = order.batch.empty? ? "" : order.batch
                                                       .first
                                                       .created_at
@@ -937,7 +937,7 @@ class EasyModel
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
     data['comment'] = @order.comment
-    data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.product.code} - #{@order.product_lot.product.name}"
+    data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.code} - #{@order.product_lot.product.name}"
     data['start_date'] = @order.batch.empty? ? "" : @order.batch
                                                           .first
                                                           .created_at
@@ -1581,7 +1581,7 @@ class EasyModel
     data['company_name'] = company['name']
     data['company_address'] = company['address']
     data['company_rif'] = company['rif']
-    data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/#{company['logo']}"
+    data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/default-report-logo.png"
     data['footer'] = company['footer']
     data
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140316171739) do
+ActiveRecord::Schema.define(:version => 20140319141437) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -255,6 +255,7 @@ ActiveRecord::Schema.define(:version => 20140316171739) do
     t.float    "value"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.string   "string_value"
   end
 
   add_index "lots_parameters", ["lot_parameter_list_id"], :name => "fk_lots_parameters_lot_parameter_list_id"
@@ -267,12 +268,13 @@ ActiveRecord::Schema.define(:version => 20140316171739) do
   end
 
   create_table "lots_parameters_types", :force => true do |t|
-    t.string   "name",          :null => false
+    t.string   "name",                             :null => false
     t.float    "default_value"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "unit"
-    t.string   "code",          :null => false
+    t.string   "code",                             :null => false
+    t.boolean  "is_string",     :default => false
   end
 
   create_table "medicaments_recipes", :force => true do |t|
@@ -421,6 +423,7 @@ ActiveRecord::Schema.define(:version => 20140316171739) do
     t.float    "value"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
+    t.string   "string_value"
   end
 
   add_index "products_lots_parameters", ["product_lot_parameter_list_id"], :name => "fk_products_lots_parameters_product_lot_parameter_list_id"
@@ -433,12 +436,13 @@ ActiveRecord::Schema.define(:version => 20140316171739) do
   end
 
   create_table "products_lots_parameters_types", :force => true do |t|
-    t.string   "name",          :null => false
+    t.string   "name",                             :null => false
     t.float    "default_value"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "unit"
-    t.string   "code",          :null => false
+    t.string   "code",                             :null => false
+    t.boolean  "is_string",     :default => false
   end
 
   create_table "products_parameters_types_ranges", :force => true do |t|
