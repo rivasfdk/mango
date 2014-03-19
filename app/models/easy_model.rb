@@ -1,6 +1,6 @@
 class EasyModel
   def self.lot_transactions(start_date, end_date, lot_type, lot_code)
-    lot = lot_type == 1 ? Lot.find_by_code(lot_code) : ProuctLot.find_by_code(lot_code)
+    lot = lot_type == 1 ? Lot.find_by_code(lot_code) : ProductLot.find_by_code(lot_code)
     return nil if lot.nil?
 
     content = lot_type == 1 ? lot.ingredient : lot.product

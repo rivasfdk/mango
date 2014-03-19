@@ -22,6 +22,13 @@ class ProductLotsController < ApplicationController
     end
   end
 
+  def get_all
+    @lots = ProductLot.includes(:product)
+      .where(active: true)
+      .order('id desc')
+    render json: @lots, methods: [:to_collection_select], root: false
+  end
+
   def by_recipe
     product_id = Recipe.find(params[:recipe_id]).product_id if params[:recipe_id].present?
     product_lots = ProductLot.includes(:product)

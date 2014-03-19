@@ -29,8 +29,10 @@ Mango::Application.routes.draw do
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
+  match 'lots/get_all' => "lots#get_all", :via => :get
   match 'product_lots/:id/adjust' => "product_lots#adjust", :via => :get, :as => 'adjust_product_lot'
   match 'product_lots/:id/adjust' => "product_lots#do_adjust", :via => :put, :as => 'adjust_product_lot'
+  match 'product_lots/get_all' => "product_lots#get_all", :via => :get
   match 'product_lots/by_recipe' => "product_lots#by_recipe", :via => :get
   match 'parameter_lists/:id/clone' => "parameter_lists#clone", :via => :get, :as => "parameter_list_clone"
   match 'scales/:scale_id/hoppers/:id/set_as_main_hopper' => "hoppers#set_as_main_hopper", :via => :get, :as => "set_as_main_hopper"

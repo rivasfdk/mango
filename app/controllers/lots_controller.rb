@@ -22,6 +22,13 @@ class LotsController < ApplicationController
     end
   end
 
+  def get_all
+    @lots = Lot.includes(:ingredient)
+      .where(active: true)
+      .order('id desc')
+    render json: @lots, methods: [:to_collection_select], root: false
+  end
+
   def new
     @ingredients = Ingredient.order('name ASC')
     @factories = Client.where(factory: true)

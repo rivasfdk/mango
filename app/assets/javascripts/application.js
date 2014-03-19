@@ -7,6 +7,7 @@
 //= stub dynamic_clients
 
 var clients = [];
+var lots = [];
 var product_lots = [];
 var chosen_params = {
   placeholder_text_multiple: "Seleccione algunas opciones",
