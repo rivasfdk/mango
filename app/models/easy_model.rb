@@ -714,7 +714,7 @@ class EasyModel
         'order' => bhl[:order_code],
         'date' => bhl[:order_start_date].strftime("%Y-%m-%d"),
         'recipe_code' => bhl[:recipe_code],
-        'recipe_name' => bhl[:recipe_name],
+        'recipe_name' => bhl[:recipe_name][0..20],
         'recipe_version' => bhl[:recipe_version],
         'client_code' => bhl[:client_code],
         'client_name' => bhl[:client_name],
@@ -755,8 +755,8 @@ class EasyModel
       loss_perc = (loss * 100.0) / bhl[:theoric_total]
       data['results'] << {
         'order' => bhl[:order_code],
-        'date' => bhl[:date],
-        'recipe_name' => bhl[:recipe_name],
+        'date' => bhl[:date].strftime("%Y-%m-%d"),
+        'recipe_name' => bhl[:recipe_name][0..25],
         'recipe_version' => bhl[:recipe_version],
         'client_name' => bhl[:client_name],
         'real_batches' => bhl[:real_batches],

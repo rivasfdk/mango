@@ -231,8 +231,11 @@ class Order < ActiveRecord::Base
     product_lot_code += last_product_lot_code.nil? ? "1" :
                         last_product_lot_code.split("-").last.succ
     self.update_column(:product_lot_id,
-                       ProductLot.create(code: product_lot_code,
-                                         product_id: product.id).id)
+      ProductLot.create(
+        code: product_lot_code,
+        product_id: product.id,
+        client_id: self.client.factory ? self.client_id : nil
+      )).id
   end
 
   def get_standard_amount(ingredient_id)

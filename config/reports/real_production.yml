@@ -105,7 +105,7 @@ report:
             date:
               label: Fecha
               align: left
-              width: 18
+              width: 22
           3:
             recipe_name:
               label: Receta
