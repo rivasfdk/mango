@@ -1,4 +1,32 @@
 class EasyModel
+  def self.weekly_recipe_versions(start_date = '2014-01-06', end_date = '2014-01-11')
+    recipes_names = Recipe
+      .group(:code)
+      .select('code, name')
+      .reduce({}) do |hash, recipe|
+        hash[recipe[:code].to_sym] = recipe[:name]
+        hash
+      end
+
+    orders = Order
+      .joins(:recipe)
+      .where(created_at: (start_date .. end_date))
+      .select('recipes.code AS recipe_code,
+               recipes.name AS recipe_name,
+               recipes.version AS recipe_version')
+      .order('recipes.code ASC')
+
+    recipes_versions = orders.reduce({}) do |hash, order|
+      recipe_code = order[:recipe_code].to_sym
+      if hash.has_key? recipe_code
+        hash[recipe_code] << order[:recipe_version]
+      else
+        hash[recipe_code] = Set.new([order[:recipe_version]])
+      end
+      hash
+    end
+  end
+
   def self.lot_transactions(start_date, end_date, lot_type, lot_code)
     lot = lot_type == 1 ? Lot.find_by_code(lot_code) : ProductLot.find_by_code(lot_code)
     return nil if lot.nil?

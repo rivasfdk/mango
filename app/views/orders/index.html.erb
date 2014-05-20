@@ -12,6 +12,7 @@
         <th>Código<span class="order_arrow"></span></th>
         <th>Fecha<span class="order_arrow"></span></th>
         <th>Receta<span class="order_arrow"></span></th>
+        <th>Version<span class="order_arrow"></span></th>
         <th>Cliente<span class="order_arrow"></span></th>
         <th>B. Prog.</th>
         <th>B. Real.</th>
@@ -27,6 +28,7 @@
         <td class="center"><%=h o.code %></td>
         <td class="center"><%=h o.created_at.strftime "%d/%m/%Y %H:%M:%S" %></td>
         <td><%= link_to o.recipe.name, recipe_path(o.recipe.id) %></td>
+        <td class="center"><%=h o.recipe.version %></td>
         <td><%=h client %></td>
         <td class="center"><%=h o.prog_batches %></td>
         <td class="center"><%=h o.batch.count %></td>

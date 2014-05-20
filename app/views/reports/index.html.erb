@@ -55,7 +55,7 @@
 
   <% if session[:reports_permissions].include?('order_stats') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('#order_stats')">Estadísticas de orden</h2>
+    <h2 onclick="toggle_report_details('#order_stats')">Estadísticas de Orden</h2>
     <div id="order_stats" class="report-details">
       <%= form_for :report, :url=>order_stats_report_path(format: 'pdf') do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/>
@@ -140,6 +140,19 @@
         <%= f.check_box :by_alarm_type_2, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
         <%= f.collection_select :alarm_type_id_2, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <% if session[:reports_permissions].include?('recipes_versions') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#recipes_versions')">Versiones de Receta por semana</h2>
+    <div id="recipes_versions" class="report-details">
+      <%= form_for :report, :url=>real_production_report_path do |f| %>
+        <%= f.label :start_week, "Semana Inicio: ", :class=>'small' %> <%= f.text_field :start_week, class: 'weekpicker' %><br/><br/>
+        <%= f.label :end_week, "Semana Fin: ", :class=>'small' %> <%= f.text_field :end_week, class: 'weekpicker' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
