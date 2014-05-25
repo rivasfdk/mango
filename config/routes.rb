@@ -87,7 +87,7 @@ Mango::Application.routes.draw do
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, only: [:index, :new, :create]
-  resources :tickets, except: :edit
+  resources :tickets, except: :new
 
   resources :recipes do
     resources :ingredients_recipes

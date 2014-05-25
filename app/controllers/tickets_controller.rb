@@ -20,32 +20,14 @@ class TicketsController < ApplicationController
     end
   end
 
-  def new
-    @ticket_types = TicketType.all
-    @trucks = Truck.all
-    @drivers = Driver.all
-  end
-
   def edit
     @ticket = Ticket.find params[:id]
-    @ticket_types = TicketType.all
-    @trucks = Truck.all
-    @drivers = Driver.all
   end
 
   def create
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
     respond_to do |format|
-      format.html do
-        if @ticket.save
-          flash[:notice] = 'Ticket guardado con éxito'
-          redirect_to :tickets
-        else
-          new
-          render :new
-        end
-      end
       format.json do
         @ticket.save
         render json: @ticket.errors

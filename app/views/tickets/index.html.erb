@@ -35,6 +35,7 @@
         <td class="right"><%=h item.outgoing_weight.nil? ? "-" : item.outgoing_weight %></td>
         <td class="center"><%=h item.truck.license_plate %></td>
         <td>
+          <%= render_action_edit(edit_ticket_path(item)) %>
           <% if item.open %>
           <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
           <% else %>

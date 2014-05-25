@@ -1,7 +1,7 @@
 class ProductLot < ActiveRecord::Base
   include LotModule
 
-  attr_protected
+  attr_protected :stock
 
   belongs_to :product
   belongs_to :client
