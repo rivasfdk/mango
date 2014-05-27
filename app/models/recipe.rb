@@ -8,6 +8,14 @@ class Recipe < ActiveRecord::Base
   validates :name, :code, :product, presence: true
   validates :name, length: {within: 3..40}
 
+  before_save :update_all_versions, if: :internal_consumption_changed?
+
+  def update_all_versions
+    Recipe
+      .where(code: self.code)
+      .update_all(internal_consumption: self.internal_consumption)
+  end
+
   def add_ingredient(args)
     logger.debug("Agregando ingrediente: #{args.inspect}")
     overwrite = args[:overwrite]
@@ -88,12 +96,19 @@ class Recipe < ActiveRecord::Base
             end
           else
             @previous_version_recipe = Recipe.where(code: header[2], active: true).first
+            internal_consupmtion = false
             unless @previous_version_recipe.nil?
+              internal_consupmtion = @previous_version_recipe.internal_consupmtion
               @previous_version_recipe.active = false
               @previous_version_recipe.save
             end
             file_imported += 1
-            @recipe = Recipe.new code: header[2], name: header[3].strip(), version: header[1]
+            @recipe = Recipe.new(
+              code: header[2],
+              name: header[3].strip(),
+              version: header[1],
+              internal_consupmtion: internal_consupmtion
+            )
             logger.debug("Creando encabezado de receta #{@recipe.inspect}")
             while (true)
               item = fd.gets()

@@ -1,30 +1,55 @@
 class EasyModel
-  def self.weekly_recipe_versions(start_date = '2014-01-06', end_date = '2014-01-11')
-    recipes_names = Recipe
-      .group(:code)
-      .select('code, name')
-      .reduce({}) do |hash, recipe|
-        hash[recipe[:code].to_sym] = recipe[:name]
-        hash
-      end
+  def self.weekly_recipes_versions(start_week, end_week)
+    return nil if start_week.nil?
+
+    start_week = start_week.beginning_of_week
+    end_week = end_week.nil? ? Date.today.beginning_of_week : end_week.beginning_of_week
+
+    weeks = ((end_week - start_week).to_i / 7).floor + 1
 
     orders = Order
-      .joins(:recipe)
-      .where(created_at: (start_date .. end_date))
-      .select('recipes.code AS recipe_code,
-               recipes.name AS recipe_name,
-               recipes.version AS recipe_version')
-      .order('recipes.code ASC')
+      .where(created_at: (start_week .. end_week + 1.week))
 
-    recipes_versions = orders.reduce({}) do |hash, order|
-      recipe_code = order[:recipe_code].to_sym
-      if hash.has_key? recipe_code
-        hash[recipe_code] << order[:recipe_version]
-      else
-        hash[recipe_code] = Set.new([order[:recipe_version]])
+    return nil if orders.empty?
+
+    data = self.initialize_data("Versiones de receta por semana")
+    data[:start_week] = start_week
+    data[:weeks] = weeks
+
+    recipes = Recipe
+      .group(:code)
+      .select('code, name, internal_consumption')
+      .where(active: true)
+      .order('internal_consumption desc, code asc')
+      .reduce({}) do |recipes, recipe|
+        recipes[recipe[:code].to_sym] = {
+          name: recipe[:name], 
+          internal_consumption: recipe[:internal_consumption]
+        }
+        recipes
       end
-      hash
+
+    Rails.logger.level = 1
+    data[:results] = recipes.map do |recipe_code, recipe|
+      row = {}
+      row[:recipe_name] = recipe[:name]
+      row[:internal_consumption] = recipe[:internal_consumption]
+      row[:versions] = []
+
+      weeks.times do |week|
+        week_range = start_week + week.weeks .. start_week + week.weeks + 1.week
+        week_recipe_orders = Order
+          .joins(:recipe)
+          .where(created_at: week_range,
+                 recipes: {code: recipe_code})
+          .pluck('DISTINCT recipes.version')
+          .sort
+        row[:versions] << week_recipe_orders
+      end
+      row
     end
+    Rails.logger.level = 0
+    data
   end
 
   def self.lot_transactions(start_date, end_date, lot_type, lot_code)
@@ -1570,6 +1595,10 @@ class EasyModel
     hour = param["#{name}(4i)"].to_i
     min = param["#{name}(5i)"].to_i
     return Time.new(year, month, day, hour, min)
+  end
+
+  def self.parse_date(date)
+    date.present? ? Date.parse(date) : nil
   end
 
   def self.print_formatted_date(date)

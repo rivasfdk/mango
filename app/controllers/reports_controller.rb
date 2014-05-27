@@ -537,4 +537,16 @@ class ReportsController < ApplicationController
       redirect_to action: 'index'
     end
   end
+
+  def weekly_recipes_versions
+    start_week = EasyModel.parse_date(params[:report][:start_week])
+    end_week = EasyModel.parse_date(params[:report][:end_week])
+
+    @data = EasyModel.weekly_recipes_versions(start_week, end_week)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
+    end
+  end
 end

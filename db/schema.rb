@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140319141437) do
+ActiveRecord::Schema.define(:version => 20140526054122) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(:version => 20140319141437) do
     t.boolean  "stock_below_minimum", :default => false
   end
 
-  add_index "hoppers", ["scale_id"], :name => "fk_scale_id"
+  add_index "hoppers", ["scale_id"], :name => "fk_hoppers_scale_id"
 
   create_table "hoppers_factory_lots", :force => true do |t|
     t.integer  "hopper_lot_id"
@@ -308,8 +308,9 @@ ActiveRecord::Schema.define(:version => 20140319141437) do
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"
   add_index "orders", ["code"], :name => "index_orders_on_code"
-  add_index "orders", ["medicament_recipe_id"], :name => "fk_medicament_recipe_id"
-  add_index "orders", ["parameter_list_id"], :name => "fk_parameter_list_id"
+  add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
+  add_index "orders", ["medicament_recipe_id"], :name => "fk_orders_medicament_recipe_id"
+  add_index "orders", ["parameter_list_id"], :name => "fk_orders_parameter_list_id"
   add_index "orders", ["product_lot_id"], :name => "fk_orders_product_lot_id"
   add_index "orders", ["recipe_id"], :name => "fk_orders_recipe_id"
   add_index "orders", ["user_id"], :name => "fk_orders_user_id"
@@ -415,8 +416,6 @@ ActiveRecord::Schema.define(:version => 20140319141437) do
     t.float    "stock",      :default => 0.0
   end
 
-  add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
-
   create_table "products_lots_parameters", :force => true do |t|
     t.integer  "product_lot_parameter_list_id", :null => false
     t.integer  "product_lot_parameter_type_id", :null => false
@@ -459,15 +458,16 @@ ActiveRecord::Schema.define(:version => 20140319141437) do
 
   create_table "recipes", :force => true do |t|
     t.string   "code"
-    t.string   "name",                         :null => false
+    t.string   "name",                                    :null => false
     t.string   "version"
-    t.float    "total",      :default => 0.0
-    t.boolean  "active",     :default => true
+    t.float    "total",                :default => 0.0
+    t.boolean  "active",               :default => true
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "in_use",     :default => true
-    t.integer  "product_id",                   :null => false
+    t.boolean  "in_use",               :default => true
+    t.integer  "product_id",                              :null => false
+    t.boolean  "internal_consumption", :default => false
   end
 
   add_index "recipes", ["product_id"], :name => "index_recipes_on_product_id"
@@ -550,9 +550,9 @@ ActiveRecord::Schema.define(:version => 20140319141437) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id",                    :null => false
-    t.integer  "user_id",                                :null => false
-    t.float    "amount",                                 :null => false
+    t.integer  "transaction_type_id"
+    t.integer  "user_id"
+    t.float    "amount"
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
