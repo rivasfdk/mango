@@ -146,11 +146,26 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('production_and_ingredient_distribution') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#production_and_ingredient_distribution')">Producción y distribución por materia prima</h2>
+    <div id="production_and_ingredient_distribution" class="report-details">
+      <%= form_for :report, :url=>production_and_ingredient_distribution_report_path(format: 'pdf') do |f| %>
+        <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.text_field :date, class: 'datepicker' %><br /><br />
+        <label for="ingredients_codes" class="small">Ingredientes:</label>
+        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {include_blank: true}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
+        <br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('weekly_recipes_versions') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#weekly_recipes_versions')">Versiones de receta por semana</h2>
     <div id="weekly_recipes_versions" class="report-details">
-      <%= form_for :report, :url=>weekly_recipes_versions_report_path do |f| %>
+      <%= form_for :report, :url=>weekly_recipes_versions_report_path(format: 'pdf') do |f| %>
         <%= f.label :start_week, "Semana Inicio: ", :class=>'small' %> <%= f.text_field :start_week, class: 'weekpicker' %><br/><br/>
         <%= f.label :end_week, "Semana Fin: ", :class=>'small' %> <%= f.text_field :end_week, class: 'weekpicker' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
@@ -282,7 +297,7 @@
   <div class="report-content">
     <h2 onclick="toggle_report_details('#lot_transactions')">Movimientos por lote</h2>
     <div id="lot_transactions" class="report-details">
-      <%= form_for :report, :url=>lot_transactions_report_path do |f| %>
+      <%= form_for :report, :url=>lot_transactions_report_path(format: 'pdf') do |f| %>
         <br/>
         <%= f.radio_button :lot_type, 1, :checked => true %> Materia prima
         <%= f.radio_button :lot_type, 2%> Producto terminado<br/><br/>

@@ -1,4 +1,101 @@
 class EasyModel
+  def self.production_and_ingredient_distribution(date, ingredients_ids)
+    return nil if date.nil?
+
+    return nil if Order.where(created_at: (date .. date + 1.day)).empty?
+
+    ingredients = Ingredient
+      .select('id, name')
+      .where(id: ingredients_ids)
+      .order(:code)
+      .limit(12)
+    return nil if ingredients.empty?
+
+    ingredients_ids = ingredients.pluck(:id)
+
+    ingredient_id_per_column = ingredients_ids
+      .each_with_index
+      .reduce({}) do |ipc, (ingredient_id, i)|
+        ipc[i] = ingredient_id
+        ipc
+      end
+
+    recipes = Recipe
+      .group(:code)
+      .select('code, name, internal_consumption')
+      .where(active: true)
+      .order('internal_consumption desc, code asc')
+      .reduce({}) do |recipes, recipe|
+        recipes[recipe[:code].to_sym] = {
+          name: recipe[:name],
+          internal_consumption: recipe[:internal_consumption]
+        }
+        recipes
+      end
+
+    data = self.initialize_data("Producción y distribución porcentual de materia prima")
+    data[:date] = date
+    data[:ingredients] = ingredients
+    data[:ingredient_id_per_column] = ingredient_id_per_column
+
+    data[:results] = recipes.map do |recipe_code, recipe|
+      row = {}
+      row[:recipe_name] = recipe[:name]
+      row[:internal_consumption] = recipe[:internal_consumption]
+
+      orders_versions = Order
+        .joins(:recipe)
+        .where(recipes: {code: recipe_code})
+        .where('orders.created_at < ?', [date + 1.day])
+        .select('recipes.version, orders.created_at')
+        .group('recipes.version')
+        .order('orders.created_at desc')
+        .limit(3)
+      recipes_versions = {}
+      versions_keys = [:last, :second_from_last, :third_from_last]
+      orders_versions.each_with_index do |order_version, i|
+        end_date = i == 0 ? date + 1.day : orders_versions[i - 1][:created_at].to_date - 1.day
+        days = (end_date - order_version[:created_at].to_date).to_i
+        recipes_versions[versions_keys[i]] = {
+          version: order_version[:version],
+          days: days < 1 ? 1 : days
+        }
+      end
+
+      row[:recipe_versions] = recipes_versions
+
+      total = BatchHopperLot
+        .joins({hopper_lot: {lot: {}},
+                batch: {order: {recipe: {}}}})
+        .where(orders: {created_at: (date .. date + 1.day)},
+               recipes: {code: recipe_code})
+        .sum(:amount)
+
+      unless total == 0.0
+        percentages = BatchHopperLot
+          .joins({hopper_lot: {lot: {}},
+                  batch: {order: {recipe: {}}}})
+          .select("lots.ingredient_id,
+                   SUM(batch_hoppers_lots.amount) / #{total} * 100 AS percentage")
+          .where(orders: {created_at: (date .. date + 1.day)},
+                 recipes: {code: recipe_code},
+                 lots: {ingredient_id: ingredients_ids})
+          .group('lots.ingredient_id')
+          .reduce([{}, 0.0]) do |percentages, percentage|
+            p = percentage[:percentage]
+            percentages[0][percentage[:ingredient_id]] = p
+            percentages[1] += p
+            percentages
+          end
+        row[:total] = total / 1000
+        row[:percentages] = percentages[0]
+        row[:percentage_total] = percentages[1]
+      end
+      row
+    end
+    data
+  end
+
   def self.weekly_recipes_versions(start_week, end_week)
     return nil if start_week.nil?
 
@@ -7,10 +104,7 @@ class EasyModel
 
     weeks = ((end_week - start_week).to_i / 7).floor + 1
 
-    orders = Order
-      .where(created_at: (start_week .. end_week + 1.week))
-
-    return nil if orders.empty?
+    return nil if Order.where(created_at: (start_week .. end_week + 1.week)).empty?
 
     data = self.initialize_data("Versiones de receta por semana")
     data[:start_week] = start_week
@@ -23,13 +117,12 @@ class EasyModel
       .order('internal_consumption desc, code asc')
       .reduce({}) do |recipes, recipe|
         recipes[recipe[:code].to_sym] = {
-          name: recipe[:name], 
+          name: recipe[:name],
           internal_consumption: recipe[:internal_consumption]
         }
         recipes
       end
 
-    Rails.logger.level = 1
     data[:results] = recipes.map do |recipe_code, recipe|
       row = {}
       row[:recipe_name] = recipe[:name]
@@ -48,7 +141,6 @@ class EasyModel
       end
       row
     end
-    Rails.logger.level = 0
     data
   end
 

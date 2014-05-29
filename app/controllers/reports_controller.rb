@@ -549,4 +549,16 @@ class ReportsController < ApplicationController
       redirect_to action: 'index'
     end
   end
+
+  def production_and_ingredient_distribution
+    date = EasyModel.parse_date(params[:report][:date])
+    ingredients_ids = params[:report][:ingredients_ids]
+
+    @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
+    end
+  end
 end

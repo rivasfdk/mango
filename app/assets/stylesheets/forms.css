@@ -58,6 +58,11 @@ form .chzn-field-normal {
   text-align: left;
 }
 
+form .chzn-field-max {
+  width: 100%;
+  text-align: left;
+}
+
 form .active-result {
   display: block;
   float: left;

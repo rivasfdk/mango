@@ -61,4 +61,5 @@ $ ->
   $('#content_type_product').change type_changed
   $('#report_lot_type_1').change lot_type_changed
   $('#report_lot_type_2').change lot_type_changed
+  $('.ingredients-select').chosen($.extend(chosen_params, {max_selected_options: 12}))
   return
