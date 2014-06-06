@@ -96,9 +96,9 @@ class Recipe < ActiveRecord::Base
             end
           else
             @previous_version_recipe = Recipe.where(code: header[2], active: true).first
-            internal_consupmtion = false
+            internal_consumption = false
             unless @previous_version_recipe.nil?
-              internal_consupmtion = @previous_version_recipe.internal_consupmtion
+              internal_consumption = @previous_version_recipe.internal_consumption
               @previous_version_recipe.active = false
               @previous_version_recipe.save
             end
@@ -107,7 +107,7 @@ class Recipe < ActiveRecord::Base
               code: header[2],
               name: header[3].strip(),
               version: header[1],
-              internal_consupmtion: internal_consupmtion
+              internal_consumption: internal_consumption
             )
             logger.debug("Creando encabezado de receta #{@recipe.inspect}")
             while (true)

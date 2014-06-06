@@ -50,9 +50,9 @@ class EasyModel
         .select('recipes.version, orders.created_at')
         .group('recipes.version')
         .order('orders.created_at desc')
-        .limit(3)
+        .limit(2)
       recipes_versions = {}
-      versions_keys = [:last, :second_from_last, :third_from_last]
+      versions_keys = [:last, :second_from_last]
       orders_versions.each_with_index do |order_version, i|
         end_date = i == 0 ? date + 1.day : orders_versions[i - 1][:created_at].to_date - 1.day
         days = (end_date - order_version[:created_at].to_date).to_i
