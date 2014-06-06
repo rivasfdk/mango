@@ -25,7 +25,6 @@ $ ->
     readonly: true
     showOtherMonths: true
     selectOtherMonths: true
-    showWeek: true
     beforeShow: displayWeeks
     onChangeMonthYear: displayWeeks
     onSelect: getFirstDayOfTheWeek

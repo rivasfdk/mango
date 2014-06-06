@@ -7,6 +7,15 @@ report.events.on :generate do |e|
   end
 end
 
+def to_week_number(week, first_week)
+  week_number = week.strftime('%W').to_i
+  if week_number > first_week
+    week_number - first_week
+  else
+    52 - (first_week - week_number)
+  end
+end
+
 def render_page(report, page_index, start_week, weeks)
   report.start_new_page do |page|
     page.values company_name: @data['company_name']
@@ -19,13 +28,14 @@ def render_page(report, page_index, start_week, weeks)
 
     table = report.list(:results)
 
+    first_week = @data[:first_week]
     weeks.times do |i|
       table.header do |header|
         week_start = start_week + i.weeks
         week_end = week_start + 1.week - 1.day
         header
           .item("week_number_#{i + 1}".to_sym)
-          .value("Semana #{week_start.strftime("%U").to_i}")
+          .value("Semana #{to_week_number(week_start, first_week)}")
         header
           .item("week_range_#{i + 1}".to_sym)
           .value("#{EasyModel.print_formatted_date(week_start)}\n#{EasyModel.print_formatted_date(week_end)}")

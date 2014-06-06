@@ -1,3 +1,5 @@
+include MangoModule
+
 class EasyModel
   def self.production_and_ingredient_distribution(date, ingredients_ids)
     return nil if date.nil?
@@ -109,6 +111,11 @@ class EasyModel
     data = self.initialize_data("Versiones de receta por semana")
     data[:start_week] = start_week
     data[:weeks] = weeks
+    data[:first_week] = Date
+      .new(Date.today.year,
+           get_mango_field('first_week_month'))
+      .beginning_of_month
+      .strftime('%U').to_i
 
     recipes = Recipe
       .group(:code)

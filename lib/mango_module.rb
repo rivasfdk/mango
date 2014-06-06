@@ -7,4 +7,8 @@ module MangoModule
   def get_mango_features()
     YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['special_features'] || []
   end
+
+  def get_mango_field(field)
+    YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))[field] || nil
+  end
 end
