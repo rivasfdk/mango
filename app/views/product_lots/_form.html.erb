@@ -4,7 +4,7 @@
 <label for="product_id" class="small">Producto:</label>
 <div class="field"><%= f.collection_select :product_id, @products, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="product_id" class="small">Propietario:</label>
-<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></div>
+<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: "Ninguno"}, class: 'chosen-select chzn-field-normal' %></div>
 <% if action == "edit" %>
 <label for="active" class="small">Activo:</label>
 <div class="field"><%= f.check_box :active %></div>

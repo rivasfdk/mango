@@ -270,7 +270,6 @@ class Order < ActiveRecord::Base
                                   user_id: user_id,
                                   start_date: now,
                                   end_date: now
-
       hopper = Hopper.where({scale_id: params[:scale_id],
                              number: params[:hopper_number]}).first
       hopper_lot = hopper.current_hopper_lot
@@ -341,20 +340,40 @@ class Order < ActiveRecord::Base
         hash
       end
 
-    batch = order.batch
-      .find_or_create_by_number(number: params[:batch_number],
-                                schedule_id: Schedule.get_current_schedule_id(now),
-                                user_id: user_id,
-                                start_date: now,
-                                end_date: now)
+    if order.client.factory
+      client_id = order.client_id
+      transaction do
+        hopper_amounts.dup.each do |hopper_lot_id, _|
+          hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot_id, client_id: client_id).first
+          if hfl.present? and hfl.lot_id.present?
+            factory_hopper_lot = HopperLot.new
+            factory_hopper_lot.hopper_id = hfl.hopper_lot.hopper_id
+            factory_hopper_lot.lot_id = hfl.lot_id
+            factory_hopper_lot.active = false
+            factory_hopper_lot.factory = true
+            factory_hopper_lot.save(validate: false)
+            hopper_amounts[factory_hopper_lot.id] = hopper_amounts.delete(hopper_lot_id)
+          end
+        end
+      end
+    end
+
+    batch = order.batch.find_or_create_by_number(
+      number: params[:batch_number],
+      schedule_id: Schedule.get_current_schedule_id(now),
+      user_id: user_id,
+      start_date: now,
+      end_date: now
+    )
 
     BatchHopperLot.skip_callback(:create, :after, :update_batch_end_date)
     transaction do
       hopper_amounts.each do |hopper_lot_id, amount|
-        bhl = batch.batch_hopper_lot
-          .new(hopper_lot_id: hopper_lot_id,
-               amount: amount,
-               standard_amount: amount)
+        bhl = batch.batch_hopper_lot.new(
+          hopper_lot_id: hopper_lot_id,
+          amount: amount,
+          standard_amount: amount
+        )
         saved = bhl.save
         errors.append(hopper_lot_id) unless saved
         if saved and is_mango_feature_available("transactions")

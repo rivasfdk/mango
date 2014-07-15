@@ -6,7 +6,7 @@
 <label for="code" class="small">Densidad (Kg/m³):</label>
 <div class="field"><%= f.text_field :density, :size=>'15' %></div>
 <label for="client_id" class="small">Propietario:</label>
-<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></div>
+<div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: "Ninguno"}, class: 'chosen-select chzn-field-normal' %></div>
 <% if action == "edit" %>
 <label for="in_use" class="small">En uso:</label>
 <div class="field"><%= f.check_box :in_use %></div>
