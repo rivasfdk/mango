@@ -342,7 +342,7 @@ module MenuHelper
   def menu_for_recipes_edit
     menu = content_tag(:p, 'Editar receta')
     menu += content_tag(:ul,
-      render_back(recipe_path(params[:id])) +
+      render_back(render_back(recipes_path)) +
       render_function('Actualizar', 'Actualizar receta', "submit_recipe_edit_form()", 'button-execute.png')
     )
     return menu

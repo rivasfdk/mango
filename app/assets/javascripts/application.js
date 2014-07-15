@@ -1,7 +1,7 @@
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.datepicker
-//= require jquery.ui.datepicker-es
+//= require jquery-ui/datepicker
+//= require jquery-ui/datepicker-es
 //= require chosen.jquery
 //= require_tree .
 //= stub dynamic_clients

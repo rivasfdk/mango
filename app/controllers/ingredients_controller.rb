@@ -14,6 +14,7 @@ class IngredientsController < ApplicationController
   end
 
   def edit
+    @transactions_enabled = is_mango_feature_available("transactions")
     @ingredient = Ingredient.find params[:id]
   end
 

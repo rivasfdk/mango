@@ -13,7 +13,7 @@ class Scale < ActiveRecord::Base
       .select("scale_id,
                SUM(stock_below_minimum) AS below_minimum_count")
       .group("scale_id")
-      .inject({}) do |hash, hopper|
+      .reduce(Hash.new { |h,k| h[k] = 0 }) do |hash, hopper|
         hash[hopper[:scale_id]] = hopper[:below_minimum_count]
         hash
       end

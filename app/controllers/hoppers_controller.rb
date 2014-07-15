@@ -69,9 +69,10 @@ class HoppersController < ApplicationController
     @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
     @hopper = Hopper.find params[:id]
     @current_lot = @hopper.current_lot
-    @lots = Lot.find :all,
-                     :include => :ingredient,
-                     :conditions => {:active => true, :in_use => true}
+    @lots = Lot
+      .includes(:ingredient)
+      .where(active: true, in_use: true)
+      .where('client_id is null')
   end
 
   def do_change
