@@ -1360,7 +1360,7 @@ class EasyModel
     end
     return nil if adjustment_type_ids.length.zero?
 
-    adjustments = Transaction.find :all, :conditions => {:transaction_type_id => adjustment_type_ids, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
+    adjustments = Transaction.find :all, :conditions => {:transaction_type_id => adjustment_type_ids, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC']
     return nil if adjustments.length.zero?
 
     data = self.initialize_data('Ajustes de Existencias')
@@ -1408,7 +1408,7 @@ class EasyModel
     "Income code found: " + income_type.code
     return nil if income_type.nil?
 
-    incomes = Transaction.find :all, :conditions => {:transaction_type_id => income_type, :date => (start_date)..((end_date) + 1.day)}, :order=>['date DESC']
+    incomes = Transaction.find :all, :conditions => {:transaction_type_id => income_type, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC']
     return nil if incomes.length.zero?
 
     data = self.initialize_data('Entradas de Materia Prima')
@@ -1577,12 +1577,12 @@ class EasyModel
 
   def self.product_lots_dispatches(start_date, end_date, doc_number)
     if doc_number.blank?
-      conditions = {:transaction_type_id=>5, :date=>(start_date)..((end_date) + 1.day)}
+      conditions = {:transaction_type_id=>5, :created_at => (start_date)..((end_date) + 1.day)}
     else
-      conditions = {:transaction_type_id=>5, :transactions=>{:document_number=>doc_number}, :date=>(start_date)..((end_date) + 1.day)}
+      conditions = {:transaction_type_id=>5, :transactions=>{:document_number=>doc_number}, :created_at => (start_date)..((end_date) + 1.day)}
     end
 
-    dispatches = Transaction.find :all, :conditions => conditions, :order=>['date DESC']
+    dispatches = Transaction.find :all, :conditions => conditions, :order=>['created_at DESC']
     return nil if dispatches.length.zero?
 
     data = self.initialize_data('Despacho de producto terminado')
