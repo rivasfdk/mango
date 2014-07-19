@@ -28,3 +28,22 @@
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
 <h5>Transacciones</h5>
+<div id="lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Característica<span class="order_arrow"></span></th>
+        <th>Valor<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :transactions do |builder| %>
+        <tr>
+          <td><%= builder.label :created_at, "Fecha" %></td>
+          <td><%= builder.text_field :created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot></tfoot>
+  </table>
+</div>
