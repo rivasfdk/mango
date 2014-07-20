@@ -49,13 +49,9 @@ class Ticket < ActiveRecord::Base
   end
 
   def self.search(number, page, per_page)
-    if number and number != ""
-      paginate :page => page,
-               :per_page => per_page,
-               :conditions => ['number = ?', number],
-               :order => 'number DESC'
-    else
-      paginate :page => page, :per_page => per_page, :order => 'number DESC'
-    end
+    tickets = Ticket.includes({ticket_type: {}, driver: {}, truck: {carrier: {}}})
+    tickets = tickets.where(number: number) if number.present?
+    tickets = tickets.order('number DESC')
+    tickets.paginate page: page, per_page: per_page
   end
 end
