@@ -21,7 +21,9 @@ class TicketsController < ApplicationController
   end
 
   def edit
-    @ticket = Ticket.find params[:id]
+    @ticket = Ticket.find params[:id], :include => :transactions
+    @lots = ProductLot.includes(:product).where(active: true)
+    @product_lots = Lot.includes(:ingredient).where(active: true)
   end
 
   def create

@@ -12,13 +12,19 @@ class Transaction < ActiveRecord::Base
   before_save :update_stock
 
   def get_lot
-    return Lot.find self.content_id if self.content_type == 1
-    return ProductLot.find self.content_id
+    if self.content_type == 1
+      Lot.find self.content_id
+    else
+      ProductLot.find self.content_id
+    end
   end
 
   def get_content
-    return self.get_lot.ingredient if self.content_type == 1
-    return self.get_lot.product
+    if self.content_type == 1
+      self.get_lot.ingredient
+    else
+      self.get_lot.product
+    end
   end
 
   def get_sign
