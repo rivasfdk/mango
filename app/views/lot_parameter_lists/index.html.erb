@@ -1,5 +1,10 @@
 <% title "Características de materias primas" %>
 <% i = 0 %>
+<div id="searchform">
+<%= form_tag lot_parameter_lists_path, :method => 'get' do %>
+  <%= render :partial=>'search_form' %>
+<% end %>
+</div>
 <% if @lots.length > 0 %>
 <table id="tabledata">
     <thead>

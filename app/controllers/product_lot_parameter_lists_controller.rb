@@ -1,10 +1,8 @@
 class ProductLotParameterListsController < ApplicationController
   def index
-    @product_lots = ProductLot.paginate :page=>params[:page],
-                                        :per_page=>session[:per_page],
-                                        :include => :product, 
-                                        :conditions => {:active => true},
-                                        :order => ['id desc']
+    @product_lots = ProductLot.search(params)
+    @products = Product.all
+    @factories = Client.where(factory: true)
   end
 
   def show

@@ -1,10 +1,8 @@
 class LotParameterListsController < ApplicationController
   def index
-    @lots = Lot.paginate :page=>params[:page],
-                         :per_page=>session[:per_page],
-                         :include => :ingredient, 
-                         :conditions => {:active => true},
-                         :order => ['id desc']
+    @lots = Lot.search(params)
+    @ingredients = Ingredient.all
+    @factories = Client.where(factory: true)
   end
 
   def show
