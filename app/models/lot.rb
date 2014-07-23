@@ -25,8 +25,7 @@ class Lot < ActiveRecord::Base
   end
 
   def check_stock
-    Ingredient.find(self.ingredient_id)
-              .save
+    Ingredient.find(self.ingredient_id).save
     true
   end
 
