@@ -45,6 +45,8 @@ Mango::Application.routes.draw do
   match 'clients/all' => "clients#all", :via => :get
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
+  match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
+  match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :post, :as => "recipes_report"

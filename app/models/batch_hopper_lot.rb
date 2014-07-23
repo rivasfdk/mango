@@ -5,9 +5,17 @@ class BatchHopperLot < ActiveRecord::Base
   validates :batch, :hopper_lot, :amount, presence: true
   validates :hopper_lot_id, uniqueness: { scope: :batch_id }
   validates :amount, :standard_amount, numericality: { greater_than_or_equal_to: 0 }
+  validate :hopper_batch_uniqueness
 
   before_save :set_real_amount
   after_create :update_batch_end_date
+
+  def hopper_batch_uniqueness
+    bhls = BatchHopperLot.joins(:hopper_lot)
+    bhls = bhls.where(['batch_hoppers_lots.id != ?', self.id]) unless self.new_record?
+    bhls = bhls.where(['batch_hoppers_lots.batch_id = ? and hoppers_lots.hopper_id = ?', self.batch_id, self.hopper_lot.hopper_id])
+    errors.add(:hopper_lot, 'Solo puede existir un único consumo por tolva por batche') if bhls.count != 0
+  end
 
   def generate_transaction(user_id)
     t = Transaction.new

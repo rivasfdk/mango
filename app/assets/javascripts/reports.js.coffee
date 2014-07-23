@@ -35,7 +35,7 @@ type_changed = ->
     $('#product_lot').show()
   return
 
-load_lots = ->
+load_lots = (lots) ->
   select = $('#report_lot_code')
   select.empty()
   $.each lots, (_, lot) ->
@@ -48,7 +48,7 @@ lot_type_changed = ->
   url = (if $('#report_lot_type_1').is(':checked') then '/lots/get_all' else '/product_lots/get_all')
   $.getJSON url, (data) ->
     lots = data
-    load_lots()
+    load_lots(lots)
     return
   return
 

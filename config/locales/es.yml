@@ -254,6 +254,7 @@ es:
     max: "El valor máximo"
     min: "El valor mínimo"
     unit: "La unidad"
+    amount: "La cantidad"
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

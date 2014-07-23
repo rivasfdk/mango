@@ -20,10 +20,33 @@ class TicketsController < ApplicationController
     end
   end
 
-  def edit
+  def repair
     @ticket = Ticket.find params[:id], :include => :transactions
-    @lots = ProductLot.includes(:product).where(active: true)
-    @product_lots = Lot.includes(:ingredient).where(active: true)
+    @lots = Lot.includes(:ingredient).where(active: true)
+  end
+
+  def do_repair
+    @ticket = Ticket.find params[:id]
+    @ticket.update_attributes(params[:ticket])
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+        t.user_id = @ticket.user_id
+        t.client_id = @ticket.client_id
+        t.comment = @ticket.comment
+        logger.debug t.new_record?
+        t.update_transactions unless t.new_record?
+      end
+    end
+    @ticket.repaired = true
+    if @ticket.save
+      flash[:notice] = 'Ticket reparado con éxito'
+      redirect_to :tickets
+    else
+      logger.debug @ticket.errors.messages
+      @lots = Lot.includes(:ingredient).where(active: true)
+      render :repair
+    end
   end
 
   def create
@@ -42,8 +65,8 @@ class TicketsController < ApplicationController
     @ticket.update_attributes(params[:ticket])
     @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|
-      t.user = @ticket.user
-      t.client = @ticket.client
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
       t.comment = @ticket.comment
     end
     @ticket.outgoing_date = Time.now

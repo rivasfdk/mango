@@ -9,7 +9,43 @@ class Transaction < ActiveRecord::Base
   validates :amount, numericality: true
   validates :sacks, :sack_weight, numericality: {allow_nil: true}
 
-  before_save :update_stock
+  before_create :update_stock
+  after_destroy :update_transactions
+
+  def update_transactions
+    old_stock_after = self.stock_after
+    new_stock_after = 0
+
+    previous_transaction = Transaction.where(['id < ? and content_type = ? and content_id = ?',
+      self.id, self.content_type, self.content_id]).order('id desc').first
+
+    if self.destroyed?
+      unless previous_transaction.nil?
+        new_stock_after = previous_transaction.stock_after
+      end
+    else
+      actual_amount = self.get_sign == '+' ? self.amount : -1 * self.amount
+      if previous_transaction.nil?
+        new_stock_after = actual_amount
+      else
+        new_stock_after = previous_transaction.stock_after + actual_amount
+      end
+      self.update_column(:stock_after, new_stock_after)
+    end
+
+    diff = new_stock_after - old_stock_after
+
+    pending_transactions = Transaction.where(['id > ? and content_type = ? and content_id = ?',
+      self.id, self.content_type, self.content_id])
+      .order('id asc')
+    unless pending_transactions.empty?
+      new_stock_after = pending_transactions.last.stock_after + diff
+      pending_transactions.update_all(['stock_after = stock_after + ?', diff])
+    end
+
+    lot = self.content_type == 1 ? Lot.find(self.content_id) : ProductLot.find(self.content_id)
+    lot.update_column(:stock, new_stock_after)
+  end
 
   def get_lot
     if self.content_type == 1

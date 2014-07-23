@@ -1,5 +1,5 @@
-<% title "Editar ticket" %>
-<%= form_for @ticket, :url=>ticket_path(@ticket), :html=>{:method=>:put, :id=>'ticket_edit_form'} do |f| %>
+<% title "Reparar ticket" %>
+<%= form_for @ticket, :url=>do_repair_ticket_path(@ticket), :html=>{:method=>:post, :id=>'ticket_repair_form'} do |f| %>
 <%= render_error_messages(f.error_messages) %>
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
 <div class="field"><%=h @ticket.ticket_type.description %></div>
@@ -47,17 +47,29 @@
       <%= f.fields_for :transactions do |builder| %>
         <% class_row, i = alternate_row_class(i) %>
         <% t = builder.object %>
-        <tr>
-          <td><%= builder.collection_select :content_id, t.content_id == 1 ? @lots : @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %></td>
+        <tr class="<%= class_row %>">
+          <td><%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %></td>
           <td class="center"><%= builder.check_box :sack %></td>
           <td class="center"><%= builder.text_field :sacks, size: 5 %></td>
           <td class="center"><%= builder.text_field :sack_weight, size: 5 %></td>
           <td class="center"><%= builder.text_field :amount, size: 10 %></td>
-          <td>Eliminar</td>
+          <td class="center">
+            <%= builder.hidden_field :_destroy %>
+            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
+          </td>
         </tr>
       <% end %>
     </tbody>
-    <tfoot></tfoot>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="center">
+        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :transactions %>
+      </td>
+    </tfoot>
   </table>
 </div>
 <br/>

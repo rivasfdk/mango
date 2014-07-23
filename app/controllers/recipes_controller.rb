@@ -54,6 +54,7 @@ class RecipesController < ApplicationController
     original_recipe.save
     
     @ingredients = Ingredient.all
+    @products = Product.all
     render :edit
   end
 

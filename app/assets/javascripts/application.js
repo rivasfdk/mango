@@ -259,8 +259,8 @@ function submit_ticket_new_form() {
     $('#ticket_new_form').submit();
 }
 
-function submit_ticket_edit_form() {
-    $('#ticket_edit_form').submit();
+function submit_ticket_repair_form() {
+    $('#ticket_repair_form').submit();
 }
 
 function submit_alarm_type_new_form() {

@@ -6,22 +6,20 @@ class Ticket < ActiveRecord::Base
   belongs_to :client
 
   has_many :transactions
-  accepts_nested_attributes_for :transactions
+  accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }
 
   validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight
   validates_numericality_of :incoming_weight, :greater_than => 0
   validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
   validates_numericality_of :provider_weight, :allow_nil => true
-  before_save :generate_number
+  before_save :generate_number, if: :new_record?
 
   def generate_number
-    unless self.id
-      ticket = TicketNumber.first
-      self.number = ticket.number.succ
-      self.open = true
-      ticket.number = self.number
-      ticket.save
-    end
+    ticket_number = TicketNumber.first
+    self.number = ticket_number.number.succ
+    self.open = true
+    ticket_number.number = self.number
+    ticket_number.save
   end
 
   def get_gross_weight
