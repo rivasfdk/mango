@@ -1,0 +1,15 @@
+<label for="number">Número:</label>
+<%= text_field_tag :number, params[:number]%>
+<%= label_tag("Fecha") %>
+<%= label_tag(:start_date, "Desde:") %>
+<%= text_field_tag :start_date, params[:start_date], class: 'datepicker' %>
+<%= label_tag(:end_date, "Hasta:") %>
+<%= text_field_tag :end_date, params[:end_date], class: 'datepicker' %>
+<br /><br />
+<%= label_tag(:driver_id, "Chofer") %>
+<%= select_tag(:driver_id, options_from_collection_for_select(@drivers, :id, :to_collection_select, params[:driver_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+<%= label_tag(:carrier_id, "Transportista") %>
+<%= select_tag(:carrier_id, options_from_collection_for_select(@carriers, :id, :name, params[:carrier_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+<br /><br />
+<%= submit_tag "Buscar", :name => nil %>
+<%= link_to "Limpiar campos", tickets_path %>

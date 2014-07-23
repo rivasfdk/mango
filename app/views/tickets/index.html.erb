@@ -2,9 +2,7 @@
 <% i = 0 %>
 <div id="searchform">
 <%= form_tag tickets_path, :method => 'get' do %>
-  <label for="number">Número de ticket:</label>
-  <%= text_field_tag :number, params[:number]%>
-  <%= submit_tag "Buscar", :name => nil %>
+  <%= render :partial=>'search_form' %>
 <% end %>
 </div>
 <% if @tickets.length > 0 %>

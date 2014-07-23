@@ -53,10 +53,14 @@ class Ticket < ActiveRecord::Base
     end
   end
 
-  def self.search(number, page, per_page)
+  def self.search(params)
     tickets = Ticket.includes({ticket_type: {}, driver: {}, truck: {carrier: {}}})
-    tickets = tickets.where(number: number) if number.present?
+    tickets = tickets.where(number: params[:number]) if params[:number].present?
+    tickets = tickets.where('tickets.incoming_date >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
+    tickets = tickets.where('tickets.outgoing_date <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
+    tickets = tickets.where(driver_id: params[:driver_id]) if params[:driver_id].present?
+    tickets = tickets.where(trucks: {carrier_id: params[:carrier_id]}) if params[:carrier_id].present?
     tickets = tickets.order('number DESC')
-    tickets.paginate page: page, per_page: per_page
+    tickets.paginate page: params[:page], per_page: params[:per_page]
   end
 end

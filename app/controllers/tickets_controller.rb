@@ -4,7 +4,9 @@ class TicketsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @tickets = Ticket.search(params[:number], params[:page], session[:per_page])
+        @tickets = Ticket.search(params)
+        @drivers = Driver.where(frequent: true)
+        @carriers = Carrier.where(frequent: true)
         render html: @tickets
       end
       format.json do
