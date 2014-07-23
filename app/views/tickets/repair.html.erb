@@ -48,7 +48,15 @@
         <% class_row, i = alternate_row_class(i) %>
         <% t = builder.object %>
         <tr class="<%= class_row %>">
-          <td><%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %></td>
+          <td>
+            <% if t.new_record? %>
+              <%= builder.radio_button :content_type, "1" %> Materia Prima <%= builder.radio_button :content_type, "2" %> Producto terminado
+              <br />
+              <%= builder.collection_select :content_id, t.content_type == 1 ? @lots : @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
+            <% else %>
+              <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %>
+            <% end %>
+          </td>
           <td class="center"><%= builder.check_box :sack %></td>
           <td class="center"><%= builder.text_field :sacks, size: 5 %></td>
           <td class="center"><%= builder.text_field :sack_weight, size: 5 %></td>

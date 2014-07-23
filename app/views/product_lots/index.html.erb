@@ -1,6 +1,11 @@
 <% title "Lotes de producto terminado" %>
 <% i = 0 %>
-<% if @lots.length > 0 %>
+<div id="searchform">
+<%= form_tag product_lots_path, :method => 'get' do %>
+  <%= render :partial=>'search_form' %>
+<% end %>
+</div>
+<% if @product_lots.length > 0 %>
 <table id="tabledata">
     <thead>
       <tr>
@@ -13,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-    <% @lots.each do |item| %>
+    <% @product_lots.each do |item| %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h item.code %></td>
@@ -34,7 +39,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @lots %>
+    <%=raw show_pagination @product_lots %>
   </div>
 </div>
 <% else %>

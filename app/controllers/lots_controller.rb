@@ -5,15 +5,12 @@ include MangoModule
 class LotsController < ApplicationController
   def index
     respond_to do |format|
-      format.html do 
-        @lots = Lot.includes(:ingredient)
-                   .where(active: true)
-                   .order('id desc')
-                   .paginate page: params[:page],
-                             per_page: session[:per_page]
+      format.html do
+        @lots = Lot.search(params)
+        @ingredients = Ingredient.all
         @transactions_enabled = is_mango_feature_available('transactions')
       end
-      format.json do 
+      format.json do
         @lots = Lot.includes(:ingredient)
                    .where(active: true)
                    .order('id desc')

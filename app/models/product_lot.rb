@@ -25,4 +25,11 @@ class ProductLot < ActiveRecord::Base
   def to_collection_select
     "#{self.product.name} (L: #{self.code})"
   end
+
+  def self.search(params)
+    product_lots = ProductLot.includes(:product).where(active: true)
+    product_lots = product_lots.where(product_id: params[:product_id]) if params[:product_id].present?
+    product_lots = product_lots.order('id desc')
+    product_lots.paginate page: params[:page], per_page: params[:per_page]
+  end
 end

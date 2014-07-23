@@ -1,0 +1,5 @@
+<%= label_tag(:product_id, "Producto") %>
+<%= select_tag(:product_id, options_from_collection_for_select(@products, :id, :to_collection_select, params[:product_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+<br /><br />
+<%= submit_tag "Filtrar", :name => nil %>
+<%= link_to "Limpiar campos", lots_path %>

@@ -34,7 +34,6 @@ class TicketsController < ApplicationController
         t.user_id = @ticket.user_id
         t.client_id = @ticket.client_id
         t.comment = @ticket.comment
-        logger.debug t.new_record?
         t.update_transactions unless t.new_record?
       end
     end
@@ -43,8 +42,8 @@ class TicketsController < ApplicationController
       flash[:notice] = 'Ticket reparado con éxito'
       redirect_to :tickets
     else
-      logger.debug @ticket.errors.messages
       @lots = Lot.includes(:ingredient).where(active: true)
+      @product_lots = ProductLot.includes(:product).where(active: true)
       render :repair
     end
   end

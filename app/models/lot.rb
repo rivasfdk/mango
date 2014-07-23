@@ -65,4 +65,11 @@ class Lot < ActiveRecord::Base
   def to_collection_select
     "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code})"
   end
+
+  def self.search(params)
+    lots = Lot.includes(:ingredient).where(active: true)
+    lots = lots.where(ingredient_id: params[:ingredient_id]) if params[:ingredient_id].present?
+    lots = lots.order('id desc')
+    lots.paginate page: params[:page], per_page: params[:per_page]
+  end
 end

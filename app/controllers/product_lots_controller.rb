@@ -6,11 +6,8 @@ class ProductLotsController < ApplicationController
   def index
     respond_to do |format|
       format.html do 
-        @lots = ProductLot.includes(:product)
-                          .where(active: true)
-                          .order('id desc')
-                          .paginate page: params[:page],
-                                    per_page: session[:per_page]
+        @product_lots = ProductLot.search(params)
+        @products = Product.all
         @transactions_enabled = is_mango_feature_available('transactions')
       end
       format.json do 

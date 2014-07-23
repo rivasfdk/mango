@@ -1,0 +1,5 @@
+<%= label_tag(:ingredient_id, "Materia prima") %>
+<%= select_tag(:ingredient_id, options_from_collection_for_select(@ingredients, :id, :to_collection_select, params[:ingredient_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+<br /><br />
+<%= submit_tag "Filtrar", :name => nil %>
+<%= link_to "Limpiar campos", lots_path %>

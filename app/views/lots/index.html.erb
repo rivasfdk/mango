@@ -1,5 +1,10 @@
 <% title "Lotes de materias primas" %>
 <% i = 0 %>
+<div id="searchform">
+<%= form_tag lots_path, :method => 'get' do %>
+  <%= render :partial=>'search_form' %>
+<% end %>
+</div>
 <% if @lots.length > 0 %>
 <table id="tabledata">
     <thead>

@@ -12,3 +12,7 @@ function add_fields(link, association, content) {
   last_row.addClass(row_count % 2 == 0 ? "alternate" : "blank");
   $('.chosen-select').chosen(chosen_params);
 }
+
+function update_transaction_lots(content_type) {
+  
+}
