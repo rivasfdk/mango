@@ -8,6 +8,7 @@ class ProductLotsController < ApplicationController
       format.html do 
         @product_lots = ProductLot.search(params)
         @products = Product.all
+        @factories = Client.where(factory: true)
         @transactions_enabled = is_mango_feature_available('transactions')
       end
       format.json do 

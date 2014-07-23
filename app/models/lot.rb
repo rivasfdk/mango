@@ -69,6 +69,7 @@ class Lot < ActiveRecord::Base
   def self.search(params)
     lots = Lot.includes(:ingredient).where(active: true)
     lots = lots.where(ingredient_id: params[:ingredient_id]) if params[:ingredient_id].present?
+    lots = lots.where(client_id: params[:client_id]) if params[:client_id].present?
     lots = lots.order('id desc')
     lots.paginate page: params[:page], per_page: params[:per_page]
   end
