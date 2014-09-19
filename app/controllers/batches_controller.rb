@@ -13,7 +13,7 @@ class BatchesController < ApplicationController
 
   def edit
     fill
-    @batch = Batch.find params[:id], :include=>{:batch_hopper_lot=>{:hopper_lot=>[{:lot=>:ingredient}, :hopper]}}
+    @batch = Batch.find params[:id], :include=>{:batch_hopper_lot=>{:hopper_lot=>[{:lot=>:ingredient}, :hopper]}}, order: 'ingredients.code asc'
   end
 
   def create

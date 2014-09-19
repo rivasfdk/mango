@@ -67,13 +67,28 @@ class Order < ActiveRecord::Base
     return false if self.completed
 
     hopper_ingredients = HopperLot
-      .joins(:lot)
-      .where(active: true)
+      .joins(:lot, :hopper)
+      .where(hoppers_lots: {active: true}, hoppers: {main: true})
       .pluck_all("hoppers_lots.id", "lots.ingredient_id")
       .inject({}) do |hash, hl|
         hash[hl["ingredient_id"]] = hl["id"]
         hash
       end
+
+    if self.client.factory
+      hopper_ingredients.each do |ingredient_id, hopper_lot_id|
+        hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot_id, client_id: self.client_id).first
+        if hfl.present? and hfl.lot_id.present?
+          hopper_lot = hfl.hopper_lot.hopper.hopper_lot.new
+          hopper_lot.lot_id = hfl.lot_id
+          hopper_lot.active = false
+          hopper_lot.factory = true
+          hopper_lot.save(validate: false)
+          hopper_ingredients[ingredient_id] = hopper_lot.id
+        end
+      end
+    end
+
     recipe_ingredients = IngredientRecipe
       .where(recipe_id: self.recipe_id)
       .pluck_all(:ingredient_id, :amount)

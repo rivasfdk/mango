@@ -1,7 +1,7 @@
 <tr>
   <td>
-    <%= f.radio_button :content_type, "1", checked: true %> Materia Prima
-    <%= f.radio_button :content_type, "2" %> Producto terminado
+    <%= f.radio_button :content_type, "1", checked: true, class: 'content_type_radio_button' %> Materia Prima
+    <%= f.radio_button :content_type, "2", class: 'content_type_radio_button' %> Producto terminado
     <br />
     <%= f.collection_select :content_id, @lots, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></td>
   <td class="center"><%= f.check_box :sack %></td>

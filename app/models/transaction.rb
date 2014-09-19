@@ -78,7 +78,7 @@ class Transaction < ActiveRecord::Base
                             .round(2)
       Lot.where(id: self.content_id)
          .update_all(stock: self.stock_after, updated_at: Time.now)
-      Ingredient.find(Lot.find(self.get_content.id)).save
+      Ingredient.find(self.get_content.id).save
     else
       self.stock_after = ProductLot.where(id: self.content_id)
                                    .pluck(:stock)

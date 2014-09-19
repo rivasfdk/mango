@@ -9,7 +9,6 @@ gem 'railroady'
 gem "therubyracer", "~> 0.11.4"
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'thinreports'
 gem 'thinreports-rails'
 gem 'ruby-units'
 gem 'gnuplot'

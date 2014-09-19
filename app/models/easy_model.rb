@@ -850,7 +850,7 @@ class EasyModel
                MAX(batches.number) AS num_batches,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std')
-      .where(batch_hoppers_lots: {created_at: start_date .. end_date + 1.day})
+      .where(orders: {created_at: start_date .. end_date + 1.day})
       .group('batches.order_id')
     return nil if batch_hopper_lots.empty?
 
@@ -1189,7 +1189,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batch_hoppers_lots: {created_at: start_date .. end_date + 1.day},
+      .where({orders: {created_at: start_date .. end_date + 1.day},
               recipes: {code: recipe.code}})
       .order('ingredients.code')
       .group('ingredients.id')

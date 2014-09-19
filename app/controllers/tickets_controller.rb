@@ -10,14 +10,8 @@ class TicketsController < ApplicationController
         render html: @tickets
       end
       format.json do
-        @tickets = Ticket.includes(ticket_type: {},
-                                   driver: {},
-                                   truck: {carrier: {}})
-                         .where(open: true)
-        render json: @tickets,
-               include: {ticket_type: {},
-                         driver: {},
-                         truck: {include: {carrier: {}}}}
+        @tickets = Ticket.includes(ticket_type: {}, driver: {}, truck: {carrier: {}}).where(open: true)
+        render json: @tickets, include: {ticket_type: {}, driver: {}, truck: {include: {carrier: {}}}}
       end
     end
   end

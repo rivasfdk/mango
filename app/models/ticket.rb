@@ -13,9 +13,9 @@ class Ticket < ActiveRecord::Base
   validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
   validates_numericality_of :provider_weight, :allow_nil => true
   before_save :generate_number, if: :new_record?
-  before_validation :set_transaction_attributes
+  before_validation :set_transactions_attributes
 
-  def set_transaction_attributes
+  def set_transactions_attributes
     self.transactions.each do |t|
       
     end
