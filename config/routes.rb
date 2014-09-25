@@ -86,6 +86,7 @@ Mango::Application.routes.draw do
   match 'reports/lot_transactions' => "reports#lot_transactions", :via => :post, :as => "lot_transactions_report"
   match 'reports/weekly_recipes_versions' => 'reports#weekly_recipes_versions', via: :post, as: 'weekly_recipes_versions_report'
   match 'reports/production_and_ingredient_distribution' => 'reports#production_and_ingredient_distribution', via: :post, as: 'production_and_ingredient_distribution_report'
+  match 'reports/something_something_porcinas' => 'reports#something_something_porcinas', via: :post, as: 'something_something_porcinas_report'
 
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,

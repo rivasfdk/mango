@@ -261,6 +261,27 @@
   </div>
   <% end %>
 
+  <!--
+  <% if session[:reports_permissions].include?('something_something_porcinas') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#something_something_porcinas')">Consumos por ingrediente y receta con gráfico</h2>
+    <div id="something_something_porcinas" class="report-details">
+      <%= form_for :report, :url=>something_something_porcinas_report_path do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <label for="client_id" class="small">Cliente/Fábrica:</label>
+        <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
+        <br/><br/>
+        <% if @real_production_enabled %>
+        <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
+        <% end %>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+  -->
+
   <% if session[:reports_permissions].include?('hopper_transactions') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#hopper_transactions')">Movimientos de tolva</h2>

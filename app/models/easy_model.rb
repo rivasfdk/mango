@@ -1,6 +1,11 @@
 include MangoModule
+include Rails.application.routes.url_helpers
 
 class EasyModel
+  def self.something_something_porcinas(params)
+
+  end
+
   def self.production_and_ingredient_distribution(date, ingredients_ids)
     return nil if date.nil?
 
@@ -98,7 +103,7 @@ class EasyModel
     data
   end
 
-  def self.weekly_recipes_versions(start_week, end_week)
+  def self.weekly_recipes_versions(start_week, end_week, domain)
     return nil if start_week.nil?
 
     start_week = start_week.beginning_of_week
@@ -142,8 +147,9 @@ class EasyModel
           .joins(:recipe)
           .where(created_at: week_range,
                  recipes: {code: recipe_code})
-          .pluck('DISTINCT recipes.version')
-          .sort
+          .pluck_all('DISTINCT recipes.version, recipes.id')
+          .sort_by { |hash| hash["version"] }
+          .map { |hash| {version: hash["version"], url: domain + recipe_path(hash["id"]) } }
         row[:versions] << week_recipe_orders
       end
       row
@@ -272,10 +278,6 @@ class EasyModel
       }
     end
     data
-  end
-
-  def self.hoppers_stock(datetime)
-    
   end
 
   #This method is nasty as fuck because it only works for PROPORCA
@@ -834,7 +836,6 @@ class EasyModel
       end
     end
     return data
-
   end
 
   def self.daily_production(start_date, end_date)

@@ -542,7 +542,7 @@ class ReportsController < ApplicationController
     start_week = EasyModel.parse_date(params[:report][:start_week])
     end_week = EasyModel.parse_date(params[:report][:end_week])
 
-    @data = EasyModel.weekly_recipes_versions(start_week, end_week)
+    @data = EasyModel.weekly_recipes_versions(start_week, end_week, request.host_with_port)
     if @data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'
@@ -555,6 +555,15 @@ class ReportsController < ApplicationController
     ingredients_ids = params[:report][:ingredients_ids]
 
     @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
+    end
+  end
+
+  def something_something_porcinas
+    @data = EasyModel.something_something_porcinas(params[:report])
     if @data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'
