@@ -6,7 +6,7 @@ class EasyModel
 
   end
 
-  def self.production_and_ingredient_distribution(date, ingredients_ids)
+  def self.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe)
     return nil if date.nil?
 
     return nil if Order.where(created_at: (date .. date + 1.day)).empty?
@@ -27,11 +27,12 @@ class EasyModel
         ipc
       end
 
-    recipes = Recipe
-      .group(:code)
-      .select('code, name, internal_consumption')
-      .where(active: true)
-      .order('internal_consumption desc, code asc')
+    recipes = Recipe.where(active: true)
+    recipes = recipes.where(code: recipe_codes) if by_recipe
+    recipes = recipes.group(:code).select('code, name, internal_consumption')
+    return nil if recipes.empty?
+
+    recipes = recipes.order('internal_consumption desc, code asc')
       .reduce({}) do |recipes, recipe|
         recipes[recipe[:code].to_sym] = {
           name: recipe[:name],
@@ -49,27 +50,7 @@ class EasyModel
       row = {}
       row[:recipe_name] = recipe[:name]
       row[:internal_consumption] = recipe[:internal_consumption]
-
-      orders_versions = Order
-        .joins(:recipe)
-        .where(recipes: {code: recipe_code})
-        .where('orders.created_at < ?', [date + 1.day])
-        .select('recipes.version, orders.created_at')
-        .group('recipes.version')
-        .order('orders.created_at desc')
-        .limit(2)
-      recipes_versions = {}
-      versions_keys = [:last, :second_from_last]
-      orders_versions.each_with_index do |order_version, i|
-        end_date = i == 0 ? date + 1.day : orders_versions[i - 1][:created_at].to_date - 1.day
-        days = (end_date - order_version[:created_at].to_date).to_i
-        recipes_versions[versions_keys[i]] = {
-          version: order_version[:version],
-          days: days < 1 ? 1 : days
-        }
-      end
-
-      row[:recipe_versions] = recipes_versions
+      row[:versions] = []
 
       total = BatchHopperLot
         .joins({hopper_lot: {lot: {}},
@@ -78,14 +59,29 @@ class EasyModel
                recipes: {code: recipe_code})
         .sum(:amount)
 
-      unless total == 0.0
+      next if total == 0.0
+
+      recipe_versions = Order.joins(:recipe)
+        .where(orders: {created_at: (date .. date + 1.day)})
+        .where(recipes: {code: recipe_code})
+        .order('recipes.version')
+        .pluck('DISTINCT recipes.version')
+
+      recipe_versions.each do |recipe_version|
+        version_total = BatchHopperLot
+          .joins({hopper_lot: {lot: {}},
+                  batch: {order: {recipe: {}}}})
+          .where(orders: {created_at: (date .. date + 1.day)},
+                 recipes: {code: recipe_code, version: recipe_version})
+          .sum(:amount)
+
         percentages = BatchHopperLot
           .joins({hopper_lot: {lot: {}},
                   batch: {order: {recipe: {}}}})
           .select("lots.ingredient_id,
-                   SUM(batch_hoppers_lots.amount) / #{total} * 100 AS percentage")
+                   SUM(batch_hoppers_lots.amount) / #{version_total} * 100 AS percentage")
           .where(orders: {created_at: (date .. date + 1.day)},
-                 recipes: {code: recipe_code},
+                 recipes: {code: recipe_code, version: recipe_version},
                  lots: {ingredient_id: ingredients_ids})
           .group('lots.ingredient_id')
           .reduce([{}, 0.0]) do |percentages, percentage|
@@ -94,12 +90,18 @@ class EasyModel
             percentages[1] += p
             percentages
           end
-        row[:total] = total / 1000
-        row[:percentages] = percentages[0]
-        row[:percentage_total] = percentages[1]
+        row[:versions] << {
+          version: recipe_version,
+          total: version_total / 1000,
+          percentages: percentages[0],
+          percentage_total: percentages[1]
+        }
       end
       row
-    end
+    end.compact
+
+    return nil if data[:results].empty?
+
     data
   end
 

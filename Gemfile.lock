@@ -151,7 +151,6 @@ DEPENDENCIES
   ruby-units
   sass-rails
   therubyracer (~> 0.11.4)
-  thinreports
   thinreports-rails
   uglifier
   will_paginate (~> 3.0)

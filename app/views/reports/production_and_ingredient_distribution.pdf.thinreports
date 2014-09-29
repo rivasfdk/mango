@@ -62,34 +62,44 @@ report.start_new_page do |page|
       alternate = 1
       per_consumption_type_production = 0
     end
+
+    first_version, *rest_of_versions = *result[:versions]
+
     table.add_row do |row|
-      # Background
       row.item(:background).style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
-
-      # Recipe name
       row.item(:recipe_name).value(result[:recipe_name])
+      row.item(:version).value(first_version[:version])
 
-      # Recipe versions
-      [:last, :second_from_last].each do |key|
-        unless result[:recipe_versions][key].nil?
-          row.item(key)
-            .value(result[:recipe_versions][key][:version])
-          row.item("#{key}_days".to_sym)
-            .value(result[:recipe_versions][key][:days])
-        end
+      total = first_version[:total]
+      table.store.total += total
+      per_consumption_type_production += total
+      row.item(:total).value(total.round(2))
+
+      12.times do |i|
+        percentage = first_version[:percentages][ipc[i]]
+        next if percentage.nil?
+        row
+          .item("percentage_#{i + 1}".to_sym)
+          .value("#{percentage.round(1)}%")
       end
+      row
+        .item(:percentage_total)
+        .value("#{first_version[:percentage_total].round(1)}%")
+    end
+    alternate *= -1
 
-      if result.has_key? :total
-        # Production
-        total = result[:total]
+    rest_of_versions.each do |version_data|
+      table.add_row do |row|
+        row.item(:background).style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
+        row.item(:version).value(version_data[:version])
+
+        total = version_data[:total]
+        row.item(:total).value(total.round(2))
         table.store.total += total
         per_consumption_type_production += total
 
-        row.item(:total).value(total.round(2))
-
-        # Percentages
         12.times do |i|
-          percentage = result[:percentages][ipc[i]]
+          percentage = version_data[:percentages][ipc[i]]
           next if percentage.nil?
           row
             .item("percentage_#{i + 1}".to_sym)
@@ -97,12 +107,11 @@ report.start_new_page do |page|
         end
         row
           .item(:percentage_total)
-          .value("#{result[:percentage_total].round(1)}%")
+          .value("#{version_data[:percentage_total].round(1)}%")
       end
+      alternate *= -1
     end
-    alternate *= -1
     internal_consumption = result[:internal_consumption]
   end
-
   add_total_row(table, per_consumption_type_production, internal_consumption)
 end

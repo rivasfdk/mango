@@ -155,6 +155,9 @@
         <label for="ingredients_codes" class="small">Ingredientes:</label>
         <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {include_blank: true}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
         <br/><br/>
+        <%= f.check_box :by_recipe, :checked=>false %> &nbsp; <label for="group">Filtrar por receta</label><br/><br/>
+        <%= f.collection_select :recipe_codes, @recipes, :code, :name, {}, {multiple: true, class: 'chosen-select chzn-field-max'} %>
+        <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

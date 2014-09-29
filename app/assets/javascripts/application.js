@@ -22,6 +22,7 @@ $(function(){
     $('#report_alarm_type_id_2_chosen').hide();
     $('#report_factory_id_1_chosen').hide();
     $('#report_factory_id_2_chosen').hide();
+    $('#report_recipe_codes_chosen').hide();
     $('#product_lot').hide();
     $('.report-details').hide();
     $("#order_recipe_id").change(update_product_lots);

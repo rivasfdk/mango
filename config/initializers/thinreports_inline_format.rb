@@ -14,9 +14,8 @@ module ThinReports
         with_text_styles(attrs) do |built_attrs, font_styles|
           # Parse inline formatting
           text_array = Prawn::Text::Formatted::Parser.to_array(content)
-          text_array.each do |text|
-            text[:styles] |= font_styles
-          end
+          text_array.each { |text| text[:styles] |= font_styles }
+          
           pdf.formatted_text_box(text_array, built_attrs.merge(box_attrs))
         end
       rescue Prawn::Errors::CannotFit => e
@@ -29,3 +28,4 @@ module ThinReports
     end
   end
 end
+  
