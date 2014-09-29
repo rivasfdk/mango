@@ -6,7 +6,7 @@ class EasyModel
 
   end
 
-  def self.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe)
+  def self.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe, user_id)
     return nil if date.nil?
 
     return nil if Order.where(created_at: (date .. date + 1.day)).empty?
@@ -20,6 +20,13 @@ class EasyModel
 
     ingredients_ids = ingredients.pluck(:id)
 
+    PreselectedIngredientId.transaction do
+      PreselectedIngredientId.where(user_id: user_id).delete_all
+      ingredients_ids.each do |ingredient_id|
+        PreselectedIngredientId.create ingredient_id: ingredient_id, user_id: user_id
+      end
+    end
+
     ingredient_id_per_column = ingredients_ids
       .each_with_index
       .reduce({}) do |ipc, (ingredient_id, i)|
@@ -31,6 +38,13 @@ class EasyModel
     recipes = recipes.where(code: recipe_codes) if by_recipe
     recipes = recipes.group(:code).select('code, name, internal_consumption')
     return nil if recipes.empty?
+
+    PreselectedRecipeCode.transaction do
+      PreselectedRecipeCode.where(user_id: user_id).delete_all
+      recipe_codes.each do |recipe_code|
+        PreselectedRecipeCode.create recipe_code: recipe_code, user_id: user_id
+      end
+    end
 
     recipes = recipes.order('internal_consumption desc, code asc')
       .reduce({}) do |recipes, recipe|

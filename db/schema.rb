@@ -11,12 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140721165526) do
+ActiveRecord::Schema.define(:version => 20140929062708) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "alarms", :force => true do |t|
@@ -398,6 +398,20 @@ ActiveRecord::Schema.define(:version => 20140721165526) do
     t.datetime "updated_at"
   end
 
+  create_table "preselected_ingredients_id", :force => true do |t|
+    t.integer  "ingredient_id"
+    t.integer  "user_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "preselected_recipes_codes", :force => true do |t|
+    t.string   "recipe_code"
+    t.integer  "user_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "products", :force => true do |t|
     t.string   "code",         :null => false
     t.string   "name",         :null => false
@@ -415,8 +429,6 @@ ActiveRecord::Schema.define(:version => 20140721165526) do
     t.boolean  "active",     :default => true
     t.float    "stock",      :default => 0.0
   end
-
-  add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "products_lots_parameters", :force => true do |t|
     t.integer  "product_lot_parameter_list_id", :null => false
@@ -553,9 +565,9 @@ ActiveRecord::Schema.define(:version => 20140721165526) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id",                    :null => false
-    t.integer  "user_id",                                :null => false
-    t.float    "amount",                                 :null => false
+    t.integer  "transaction_type_id"
+    t.integer  "user_id"
+    t.float    "amount"
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"

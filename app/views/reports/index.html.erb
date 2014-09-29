@@ -153,10 +153,10 @@
       <%= form_for :report, :url=>production_and_ingredient_distribution_report_path(format: 'pdf') do |f| %>
         <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.text_field :date, class: 'datepicker' %><br /><br />
         <label for="ingredients_codes" class="small">Ingredientes:</label>
-        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {include_blank: true}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
+        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
         <br/><br/>
         <%= f.check_box :by_recipe, :checked=>false %> &nbsp; <label for="group">Filtrar por receta</label><br/><br/>
-        <%= f.collection_select :recipe_codes, @recipes, :code, :name, {}, {multiple: true, class: 'chosen-select chzn-field-max'} %>
+        <%= f.collection_select :recipe_codes, @recipes, :code, :name, {selected: @preselected_recipe_codes}, {multiple: true, class: 'chosen-select chzn-field-max'} %>
         <br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

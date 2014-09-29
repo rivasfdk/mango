@@ -17,6 +17,8 @@ class ReportsController < ApplicationController
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
+    @preselected_ingredient_ids = PreselectedIngredientId.where(user_id: session[:user_id]).pluck(:ingredient_id)
+    @preselected_recipe_codes = PreselectedRecipeCode.where(user_id: session[:user_id]).pluck(:recipe_code)
   end
 
   def daily_production
@@ -556,11 +558,11 @@ class ReportsController < ApplicationController
     recipe_codes = params[:report][:recipe_codes]
     by_recipe = params[:report][:by_recipe] == "1"
 
-    @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe)
+    @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe, session[:user_id])
     if @data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'
-      redirect_to action: 'index'
+      redirect_to reports_path
     end
   end
 
@@ -569,7 +571,7 @@ class ReportsController < ApplicationController
     if @data.nil?
       flash[:notice] = 'No hay registros para general el reporte'
       flash[:type] = 'warn'
-      redirect_to action: 'index'
+      redirect_to reports_path
     end
   end
 end

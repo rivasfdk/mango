@@ -22,13 +22,13 @@ $(function(){
     $('#report_alarm_type_id_2_chosen').hide();
     $('#report_factory_id_1_chosen').hide();
     $('#report_factory_id_2_chosen').hide();
-    $('#report_recipe_codes_chosen').hide();
     $('#product_lot').hide();
     $('.report-details').hide();
     $("#order_recipe_id").change(update_product_lots);
     $("#order_client_id").change(update_product_lots);
     $("input[name=client_type]").change(update_product_lots);
     $("#order_auto_product_lot").change(hideProductLots);
+    $('#report_by_recipe').trigger('change');
     hideProductLots();
 });
 

@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :batch
   has_many :transaction
   has_many :tickets
+  has_many :preselected_recipes_codes
   belongs_to :role
 
   validates_uniqueness_of :login
