@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def index
-    redirect_to :action=>'show' if session[:user_id]
+    redirect_to dashboard_path if session[:user_id]
   end
 
   def show
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
       @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
       render :show, :layout => 'dashboard'
     else
-      redirect_to :action=>'index'
+      redirect_to root_path
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140929062708) do
+ActiveRecord::Schema.define(:version => 20140929083021) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -401,8 +401,9 @@ ActiveRecord::Schema.define(:version => 20140929062708) do
   create_table "preselected_ingredients_id", :force => true do |t|
     t.integer  "ingredient_id"
     t.integer  "user_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
+    t.string   "report",        :default => "production_and_ingredient_distribution"
   end
 
   create_table "preselected_recipes_codes", :force => true do |t|

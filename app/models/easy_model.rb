@@ -2,11 +2,98 @@ include MangoModule
 include Rails.application.routes.url_helpers
 
 class EasyModel
-  def self.something_something_porcinas(params)
+  def self.ingredient_consumption_with_plot(start_date, end_date, time_step, by_ingredients, ingredients_ids, by_recipe, recipe_code, user_id)
+    if by_ingredients
+      PreselectedIngredientId.transaction do
+        PreselectedIngredientId.where(user_id: user_id)
+          .where(report: 'ingredient_consumption_with_plot').delete_all
+        ingredients_ids.each do |ingredient_id|
+          PreselectedIngredientId.create ingredient_id: ingredient_id, user_id: user_id, report: 'ingredient_consumption_with_plot'
+        end
+      end
+    end
 
+    return nil if start_date.nil?
+    end_date = Date.today if end_date.nil?
+
+    if time_step == 1.week
+      start_date = start_date.beginning_of_week
+      end_date = end_date.beginning_of_week
+      time_steps = ((end_date - start_date).to_i / 7).floor + 1
+    else
+      start_date = start_date.beginning_of_month
+      end_date = end_date.beginning_of_month
+      time_steps = end_date.month - start_date.month + 1
+    end
+
+    data = self.initialize_data("Consumo por ingredientes y recetas con gráfico")
+    data[:start_date] = start_date
+    data[:time_steps] = time_steps
+    data[:time_step] = time_step
+    data[:first_week] = self.get_first_week
+
+    if by_recipe
+      recipe = Recipe.where(code: recipe_code).first
+      return nil if recipe.nil?
+    end
+
+    unless by_ingredients
+      ingredients_ids = BatchHopperLot
+        .joins({hopper_lot: {lot: {}}, batch: {order: {recipe: {}}}})
+        .where(orders: {created_at: start_date .. end_date + time_step})
+      ingredients_ids = ingredients_ids.where(recipes: {code: recipe.code}) if by_recipe
+      ingredients_ids = ingredients_ids.pluck('DISTINCT lots.ingredient_id')
+    end
+
+    ingredients = Ingredient.where(id: ingredients_ids).order(:code)
+    return nil if ingredients.empty?
+
+    results = ingredients.reduce({}) do |results, ingredient|
+      results[ingredient.id] = {
+        ingredient_name: ingredient.name,
+        consumptions: []
+      }
+      results
+    end
+
+    time_steps.times do |step|
+      offset = time_step == 1.week ? step.weeks : step.months
+      time_range = start_date + offset .. start_date + offset + time_step
+
+      consumptions = BatchHopperLot
+        .joins({hopper_lot: {lot: {}}, batch: {order: {recipe: {}}}})
+        .where(orders: {created_at: time_range})
+      consumptions = consumptions.where(recipes: {code: recipe.code}) if by_recipe
+      consumptions = consumptions
+        .select('lots.ingredient_id, SUM(batch_hoppers_lots.amount) AS total')
+        .group('lots.ingredient_id')
+      consumptions.each do |c|
+        results[c[:ingredient_id]][:consumptions] << (c[:total] / 1000).round(2)
+      end
+      # Ingredients without consumptions
+      (ingredients_ids - consumptions.reduce([]) { |ids, c| ids << c[:ingredient_id] }).each do |ingredient_id|
+        results[ingredient_id][:consumptions] << nil
+      end
+    end
+    data[:results] = results
+    data
   end
 
   def self.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe, user_id)
+    PreselectedIngredientId.transaction do
+      PreselectedIngredientId.where(user_id: user_id)
+        .where(report: 'production_and_ingredient_distribution').delete_all
+      ingredients_ids.each do |ingredient_id|
+        PreselectedIngredientId.create ingredient_id: ingredient_id, user_id: user_id
+      end
+    end
+    PreselectedRecipeCode.transaction do
+      PreselectedRecipeCode.where(user_id: user_id).delete_all
+      recipe_codes.each do |recipe_code|
+        PreselectedRecipeCode.create recipe_code: recipe_code, user_id: user_id
+      end
+    end
+
     return nil if date.nil?
 
     return nil if Order.where(created_at: (date .. date + 1.day)).empty?
@@ -20,13 +107,6 @@ class EasyModel
 
     ingredients_ids = ingredients.pluck(:id)
 
-    PreselectedIngredientId.transaction do
-      PreselectedIngredientId.where(user_id: user_id).delete_all
-      ingredients_ids.each do |ingredient_id|
-        PreselectedIngredientId.create ingredient_id: ingredient_id, user_id: user_id
-      end
-    end
-
     ingredient_id_per_column = ingredients_ids
       .each_with_index
       .reduce({}) do |ipc, (ingredient_id, i)|
@@ -38,13 +118,6 @@ class EasyModel
     recipes = recipes.where(code: recipe_codes) if by_recipe
     recipes = recipes.group(:code).select('code, name, internal_consumption')
     return nil if recipes.empty?
-
-    PreselectedRecipeCode.transaction do
-      PreselectedRecipeCode.where(user_id: user_id).delete_all
-      recipe_codes.each do |recipe_code|
-        PreselectedRecipeCode.create recipe_code: recipe_code, user_id: user_id
-      end
-    end
 
     recipes = recipes.order('internal_consumption desc, code asc')
       .reduce({}) do |recipes, recipe|
@@ -132,11 +205,7 @@ class EasyModel
     data = self.initialize_data("Versiones de receta por semana")
     data[:start_week] = start_week
     data[:weeks] = weeks
-    data[:first_week] = Date
-      .new(Date.today.year,
-           get_mango_field('first_week_month'))
-      .beginning_of_month
-      .strftime('%U').to_i
+    data[:first_week] = self.get_first_week
 
     recipes = Recipe
       .group(:code)
@@ -159,14 +228,13 @@ class EasyModel
 
       weeks.times do |week|
         week_range = start_week + week.weeks .. start_week + week.weeks + 1.week
-        week_recipe_orders = Order
+        row[:versions] << Order
           .joins(:recipe)
           .where(created_at: week_range,
                  recipes: {code: recipe_code})
           .pluck_all('DISTINCT recipes.version, recipes.id')
           .sort_by { |hash| hash["version"] }
           .map { |hash| {version: hash["version"], url: domain + recipe_path(hash["id"]) } }
-        row[:versions] << week_recipe_orders
       end
       row
     end
@@ -1742,6 +1810,12 @@ class EasyModel
     else
       Time.at(seconds).gmtime.strftime('%Hh%Mm:%Ss')
     end
+  end
+
+  def self.get_first_week
+    Date.new(Date.today.year, get_mango_field('first_week_month'))
+      .beginning_of_month
+      .strftime('%U').to_i
   end
 
   private

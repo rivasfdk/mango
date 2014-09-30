@@ -17,7 +17,14 @@ class ReportsController < ApplicationController
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
-    @preselected_ingredient_ids = PreselectedIngredientId.where(user_id: session[:user_id]).pluck(:ingredient_id)
+    @pid_preselected_ingredient_ids = PreselectedIngredientId
+      .where(user_id: session[:user_id])
+      .where(report: 'production_and_ingredient_distribution')
+      .pluck(:ingredient_id)
+    @icwp_preselected_ingredient_ids = PreselectedIngredientId
+      .where(user_id: session[:user_id])
+      .where(report: 'ingredient_consumption_with_plot')
+      .pluck(:ingredient_id)
     @preselected_recipe_codes = PreselectedRecipeCode.where(user_id: session[:user_id]).pluck(:recipe_code)
   end
 
@@ -241,7 +248,7 @@ class ReportsController < ApplicationController
       data = EasyModel.simple_stock_per_lot(content_type, factory_id, date)
     end
     if data.nil?
-      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
@@ -261,7 +268,7 @@ class ReportsController < ApplicationController
     end
     data = EasyModel.simple_stock_projection(factory_id, days)
     if data.nil?
-      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
@@ -449,7 +456,6 @@ class ReportsController < ApplicationController
       report = EasyReport::Report.new data, template
       send_data report.render, :filename => filename, :type => "application/pdf"
     end
-    
   end
 
   def alarms
@@ -546,7 +552,7 @@ class ReportsController < ApplicationController
 
     @data = EasyModel.weekly_recipes_versions(start_week, end_week, request.host_with_port)
     if @data.nil?
-      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to action: 'index'
     end
@@ -560,16 +566,30 @@ class ReportsController < ApplicationController
 
     @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe, session[:user_id])
     if @data.nil?
-      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to reports_path
     end
   end
 
-  def something_something_porcinas
-    @data = EasyModel.something_something_porcinas(params[:report])
+  def ingredient_consumption_with_plot
+    if params[:report][:time_unit] == '1'
+      start_date = EasyModel.parse_date(params[:report][:start_week_2])
+      end_date = EasyModel.parse_date(params[:report][:end_week_2])
+      time_step = 1.week
+    else
+      start_date = EasyModel.parse_date(params[:report][:start_month])
+      end_date = EasyModel.parse_date(params[:report][:end_month])
+      time_step = 1.month
+    end
+    by_ingredients = params[:report][:by_ingredients] == '1'
+    ingredients_ids = params[:report][:ingredients_ids]
+    by_recipe = params[:report][:by_recipe_2] == '1'
+    recipe_code = params[:report][:recipe_code_3]
+
+    @data = EasyModel.ingredient_consumption_with_plot(start_date, end_date, time_step, by_ingredients, ingredients_ids, by_recipe, recipe_code, session[:user_id])
     if @data.nil?
-      flash[:notice] = 'No hay registros para general el reporte'
+      flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to reports_path
     end

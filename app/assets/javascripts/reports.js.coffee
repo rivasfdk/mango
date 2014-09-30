@@ -15,9 +15,9 @@ value_changed_2 = ->
   return
 
 type_changed = ->
-  if $('#content_type_ingredient').is(':checked')
-    $('#lot').toggle($('#content_type_ingredient').is(':checked'))
-    $('#product_lot').toggle(not $('#content_type_ingredient').is(':checked'))
+  lot_checked = $('#content_type_ingredient').is(':checked')
+  $('#lot').toggle(lot_checked)
+  $('#product_lot').toggle(not lot_checked)
   return
 
 load_lots = (lots) ->
@@ -41,6 +41,17 @@ by_recipe_changed = ->
   $('#report_recipe_codes_chosen').toggle($('#report_by_recipe').is(':checked'))
   return
 
+by_recipe_2_changed = ->
+  $('#recipe_form').toggle($('#report_by_recipe_2').is(':checked'))
+
+by_ingredients_changed = ->
+  $('#ingredients_form').toggle($('#report_by_ingredients').is(':checked'))
+
+time_range_changed = ->
+  weeks_checked = $('#report_time_unit_1').is(':checked')
+  $('#weeks_form').toggle(weeks_checked)
+  $('#months_form').toggle(not weeks_checked)
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -52,4 +63,8 @@ $ ->
   $('#report_lot_type_2').change lot_type_changed
   $('.ingredients-select').chosen($.extend(chosen_params, {max_selected_options: 12}))
   $('#report_by_recipe').change by_recipe_changed
+  $('#report_by_recipe_2').change by_recipe_2_changed
+  $('#report_by_ingredients').change by_ingredients_changed
+  $('#report_time_unit_1').change time_range_changed
+  $('#report_time_unit_2').change time_range_changed
   return

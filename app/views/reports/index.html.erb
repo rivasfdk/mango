@@ -153,7 +153,7 @@
       <%= form_for :report, :url=>production_and_ingredient_distribution_report_path(format: 'pdf') do |f| %>
         <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.text_field :date, class: 'datepicker' %><br /><br />
         <label for="ingredients_codes" class="small">Ingredientes:</label>
-        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
+        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
         <br/><br/>
         <%= f.check_box :by_recipe, :checked=>false %> &nbsp; <label for="group">Filtrar por receta</label><br/><br/>
         <%= f.collection_select :recipe_codes, @recipes, :code, :name, {selected: @preselected_recipe_codes}, {multiple: true, class: 'chosen-select chzn-field-max'} %>
@@ -212,14 +212,13 @@
   </div>
   <% end %>
 
-  <% if session[:reports_permissions].include?('consumption_per_ingredient_per_orders') %>
+  <% if session[:reports_permissions].include?('consumption_per_ingredients') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('#consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
-    <div id="consumption_per_ingredient_per_orders" class="report-details">
-      <%= form_for :report, :url=>consumption_per_ingredient_per_orders_report_path do |f| %>
+    <h2 onclick="toggle_report_details('#consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
+    <div id="consumption_per_ingredients" class="report-details">
+      <%= form_for :report, :url=>consumption_per_ingredients_report_path(format: 'pdf') do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :ingredient_code, "Código del ingrediente", :class=>'small' %> <%= f.text_field :ingredient_code, :size=>20 %><br/><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -229,13 +228,46 @@
   </div>
   <% end %>
 
-  <% if session[:reports_permissions].include?('consumption_per_ingredients') %>
+  <% if session[:reports_permissions].include?('ingredient_consumption_with_plot') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('#consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
-    <div id="consumption_per_ingredients" class="report-details">
-      <%= form_for :report, :url=>consumption_per_ingredients_report_path(format: 'pdf') do |f| %>
+    <h2 onclick="toggle_report_details('#ingredient_consumption_with_plot')">Consumo por ingredientes y recetas con gráfico</h2>
+    <div id="ingredient_consumption_with_plot" class="report-details">
+      <%= form_for :report, :url=>ingredient_consumption_with_plot_report_path(format: 'pdf') do |f| %>
+        <%= f.radio_button :time_unit, 1, :checked => true %> Por semana
+        <%= f.radio_button :time_unit, 2%> Por mes<br/><br/>
+        <div id="weeks_form">
+           <%= f.label :start_week_2, "Semana Inicio: ", :class=>'small' %> <%= f.text_field :start_week_2, class: 'weekpicker' %><br/><br/>
+           <%= f.label :end_week_2, "Semana Fin: ", :class=>'small' %> <%= f.text_field :end_week_2, class: 'weekpicker' %><br/><br/>
+        </div>
+        <div id="months_form">
+           <%= f.label :start_month, "Mes Inicio: ", :class=>'small' %> <%= f.text_field :start_month, class: 'monthpicker' %><br/><br/>
+           <%= f.label :end_month, "Mes Fin: ", :class=>'small' %> <%= f.text_field :end_month, class: 'monthpicker' %><br/><br/>
+        </div>
+        <%= f.check_box :by_ingredients, :checked=>false %> &nbsp; <label for="group">Filtrar por ingredientes</label><br/><br/>
+        <div id="ingredients_form">
+          <label for="ingredients_ids" class="small">Ingredientes:</label>
+          <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @icwp_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/>
+        </div>
+        <%= f.check_box :by_recipe_2, :checked=>false %> &nbsp; <label for="group">Filtrar por receta</label><br/><br/>
+        <div id="recipe_form">
+          <label for="recipe_code" class="small">Receta:</label>
+          <%= f.collection_select :recipe_code_3, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
+        </div>
+        
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <% if session[:reports_permissions].include?('consumption_per_ingredient_per_orders') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
+    <div id="consumption_per_ingredient_per_orders" class="report-details">
+      <%= form_for :report, :url=>consumption_per_ingredient_per_orders_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :ingredient_code, "Código del ingrediente", :class=>'small' %> <%= f.text_field :ingredient_code, :size=>20 %><br/><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -263,27 +295,6 @@
     </div>
   </div>
   <% end %>
-
-  <!--
-  <% if session[:reports_permissions].include?('something_something_porcinas') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#something_something_porcinas')">Consumos por ingrediente y receta con gráfico</h2>
-    <div id="something_something_porcinas" class="report-details">
-      <%= form_for :report, :url=>something_something_porcinas_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <label for="client_id" class="small">Cliente/Fábrica:</label>
-        <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
-        <br/><br/>
-        <% if @real_production_enabled %>
-        <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
-        <% end %>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-  -->
 
   <% if session[:reports_permissions].include?('hopper_transactions') %>
   <div class="report-content">

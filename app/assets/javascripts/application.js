@@ -29,6 +29,9 @@ $(function(){
     $("input[name=client_type]").change(update_product_lots);
     $("#order_auto_product_lot").change(hideProductLots);
     $('#report_by_recipe').trigger('change');
+    $('#report_by_recipe_2').trigger('change');
+    $('#report_by_ingredients').trigger('change');
+    $('#report_time_unit_1').trigger('change');
     hideProductLots();
 });
 

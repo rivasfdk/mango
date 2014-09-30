@@ -68,7 +68,7 @@ def render_page(report, page_index, start_week, weeks)
           end
           row.item("versions_week_#{i + 1}".to_sym) do |cell|
             cell.value(version_links.join(', '))
-            cell.style(:font_ size, 6) if version_links.length > 6  
+            cell.style(:font_size, 6.5) if version_links.length > 6
           end
         end
       end

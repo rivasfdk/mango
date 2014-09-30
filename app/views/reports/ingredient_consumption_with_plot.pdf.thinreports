@@ -1,0 +1,100 @@
+report.set_layout tlf: 'reports/thinreports_layouts/ingredient_consumption_with_plot'
+
+report.events.on :generate do |e|
+  e.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
+  end
+end
+
+def to_week_number(week, first_week)
+  week_number = week.strftime('%W').to_i
+  if week_number > first_week
+    week_number - first_week
+  else
+    52 - (first_week - week_number)
+  end
+end
+
+def render_page(report, page_index, start_date, steps)
+  time_step = @data[:time_step]
+  report.start_new_page do |page|
+    page.values company_name: @data['company_name']
+    page.values company_address: @data['company_address']
+    page.values company_rif: @data['company_rif']
+    page.values company_logo: @data['company_logo']
+    page.values title: @data['title']
+    page.values since: EasyModel.print_formatted_date(start_date)
+
+    offset = time_step == 1.week ? steps.weeks : steps.months
+    page.values until: EasyModel.print_formatted_date(start_date + offset - 1.day)
+
+    table = report.list(:results)
+
+    first_week = @data[:first_week]
+
+    if time_step == 1.week
+      steps.times do |i|
+        table.header do |header|
+          week_start = start_date + i.weeks
+          week_end = week_start + 1.week - 1.day
+          header
+            .item("week_number_#{i + 1}".to_sym)
+            .value("Semana #{to_week_number(week_start, first_week)}")
+          header
+            .item("date_range_#{i + 1}".to_sym)
+            .value("#{EasyModel.print_formatted_date(week_start)}\n#{EasyModel.print_formatted_date(week_end)}")
+        end
+      end
+    else
+      steps.times do |i|
+        table.header do |header|
+          month = I18n.localize(start_date + i.months, format: '%b-%Y')
+          header
+            .item("date_range_#{i + 1}".to_sym)
+            .value(month)
+        end
+      end
+    end
+
+    alternate = 1
+    @data[:results].values.each do |result|
+      table.add_row do |row|
+        row.item(:background).style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
+
+        row.item(:ingredient_name).value(result[:ingredient_name])
+
+        steps.times do |i|
+          row.item("consumptions_date_#{i + 1}".to_sym) do |cell|
+            cell.value(result[:consumptions][i + 12 * page_index])
+          end
+        end
+      end
+      alternate *= -1
+    end
+  end
+end
+
+start_date = @data[:start_date]
+time_step = @data[:time_step]
+steps = @data[:time_steps]
+
+
+if steps % 12 == 0
+  pages = steps / 12
+
+  pages.times do |i|
+    offset = time_step == 1.week ? (12 * i).weeks : (12 * i).months
+    render_page(report, i, start_date + months, 12)
+  end
+else
+  pages = (steps / 12).ceil
+
+  (pages - 1).times do |i|
+    offset = time_step == 1.week ? (12 * i).weeks : (12 * i).months
+    render_page(report, i, start_date + offset, 12)
+  end
+
+  offset = time_step == 1.week ? (12 * (pages - 1)).weeks : (12 * (pages - 1)).months
+  render_page(report, pages - 1, start_date + offset, steps % 12)
+end
