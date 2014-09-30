@@ -90,13 +90,14 @@ if steps % 12 == 0
 
   pages.times do |i|
     offset = time_step == 1.week ? (12 * i).weeks : (12 * i).months
-    render_page(report, i, start_date + months, 12)
+    render_page(report, i, start_date + offset, 12)
   end
 else
   pages = (steps / 12).ceil
 
   (pages - 1).times do |i|
     offset = time_step == 1.week ? (12 * i).weeks : (12 * i).months
+
     render_page(report, i, start_date + offset, 12)
   end
 

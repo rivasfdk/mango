@@ -23,7 +23,7 @@ class EasyModel
     else
       start_date = start_date.beginning_of_month
       end_date = end_date.beginning_of_month
-      time_steps = end_date.month - start_date.month + 1
+      time_steps = (end_date.year - start_date.year) * 12 + end_date.month - start_date.month + 1
     end
 
     data = self.initialize_data("Consumo por ingredientes y recetas con gráfico")
@@ -39,9 +39,9 @@ class EasyModel
       data[:recipe] = recipe
     end
 
-
-
-    unless by_ingredients
+    if by_ingredients
+      ingredients_ids = Ingredient.where(id: ingredients_ids).pluck(:id)
+    else
       ingredients_ids = BatchHopperLot
         .joins({hopper_lot: {lot: {}}, batch: {order: {recipe: {}}}})
         .where(orders: {created_at: start_date .. end_date + time_step})
@@ -67,6 +67,7 @@ class EasyModel
       consumptions = BatchHopperLot
         .joins({hopper_lot: {lot: {}}, batch: {order: {recipe: {}}}})
         .where(orders: {created_at: time_range})
+      consumptions = consumptions.where(lots: {ingredient_id: ingredients_ids}) if by_ingredients
       consumptions = consumptions.where(recipes: {code: recipe.code}) if by_recipe
       consumptions = consumptions
         .select('lots.ingredient_id, SUM(batch_hoppers_lots.amount) AS total')
