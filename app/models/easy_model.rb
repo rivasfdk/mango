@@ -35,7 +35,11 @@ class EasyModel
     if by_recipe
       recipe = Recipe.where(code: recipe_code).first
       return nil if recipe.nil?
+
+      data[:recipe] = recipe
     end
+
+
 
     unless by_ingredients
       ingredients_ids = BatchHopperLot

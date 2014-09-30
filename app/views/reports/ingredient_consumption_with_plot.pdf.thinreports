@@ -26,6 +26,11 @@ def render_page(report, page_index, start_date, steps)
     page.values title: @data['title']
     page.values since: EasyModel.print_formatted_date(start_date)
 
+    if @data.has_key? :recipe
+      page.item(:recipe_label).show
+      page.item(:recipe).value(@data[:recipe].to_collection_select_code)
+    end
+
     offset = time_step == 1.week ? steps.weeks : steps.months
     page.values until: EasyModel.print_formatted_date(start_date + offset - 1.day)
 
