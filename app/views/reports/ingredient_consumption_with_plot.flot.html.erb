@@ -1,0 +1,35 @@
+<script type="text/javascript">
+  $(function() {
+    var datasets = [];
+    <% data[:results].values.each do |result| %>
+      var values = []
+      <% data[:steps].times do |i| %>
+        <% consumption = result[:consumptions][i + 12 * data[:page_index]] %>
+        values.push(["<%= data[:time_labels][i] %>", <%= consumption.nil? ? 0 : consumption %>]);
+      <% end %>
+      datasets.push({
+        label: "<%= result[:ingredient_name] %>",
+        data: values,
+      })
+    <% end %>
+    $.plot(
+      "#plot",
+      datasets,
+      {
+        xaxis: {
+          mode: "categories",
+        },
+        legend: {
+          show: true,
+          labelBoxBorderColor: "none",
+          position: "ne"
+        },
+        yaxis: {
+          axisLabel: "Consumo (Ton)"
+        }
+      }
+    );
+  });
+</script>
+<div id="plot" style="width:<%= width %>; height:<%= height %>px;"></div>
+  

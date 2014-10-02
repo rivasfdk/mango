@@ -1,5 +1,3 @@
-report.set_layout tlf: 'reports/thinreports_layouts/ingredient_consumption_with_plot'
-
 report.events.on :generate do |e|
   e.pages.each do |page|
     page.item(:page).value(page.no)
@@ -7,7 +5,8 @@ report.events.on :generate do |e|
   end
 end
 
-def to_week_number(week, first_week)
+def to_week_number(week)
+  first_week = @data[:first_week]
   week_number = week.strftime('%W').to_i
   if week_number > first_week
     week_number - first_week
@@ -16,48 +15,75 @@ def to_week_number(week, first_week)
   end
 end
 
-def render_page(report, page_index, start_date, steps)
-  time_step = @data[:time_step]
-  report.start_new_page do |page|
-    page.values company_name: @data['company_name']
-    page.values company_address: @data['company_address']
-    page.values company_rif: @data['company_rif']
-    page.values company_logo: @data['company_logo']
-    page.values title: @data['title']
-    page.values since: EasyModel.print_formatted_date(start_date)
+def init_page(page, start_date, steps)
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values since: EasyModel.print_formatted_date(start_date)
+  if @data.has_key? :recipe
+    page.item(:recipe_label).show
+    page.item(:recipe).value(@data[:recipe].to_collection_select_code)
+  end
+  offset = @data[:time_step] == 1.week ? steps.weeks : steps.months
+  page.values until: EasyModel.print_formatted_date(start_date + offset - 1.day)
+end
 
-    if @data.has_key? :recipe
-      page.item(:recipe_label).show
-      page.item(:recipe).value(@data[:recipe].to_collection_select_code)
+def render_page(report, page_index, start_date, steps)
+  # Plot
+  if @data[:by_ingredients]
+    time_labels = []
+    if @data[:time_step] == 1.week
+      steps.times do |i|
+        week_start = start_date + i.weeks
+        week_end = week_start + 1.week - 1.day
+        time_labels << "Sem #{to_week_number(week_start)}"
+      end
+    else
+      steps.times do |i|
+        time_labels << I18n.localize(start_date + i.months, format: '%b-%Y')
+      end
     end
 
-    offset = time_step == 1.week ? steps.weeks : steps.months
-    page.values until: EasyModel.print_formatted_date(start_date + offset - 1.day)
+    report.set_layout tlf: 'reports/thinreports_layouts/ingredient_consumption_with_plot_plot'
+    report.start_new_page do |page|
+      init_page(page, start_date, steps)
+      page.item(:plot) do |plot|
+        plot.value(
+          render_flot('ingredient_consumption_with_plot',
+            @data.merge!({
+              page_index: page_index, steps: steps, time_labels: time_labels
+            }), 1040, 716)
+        )
+      end
+    end
+  end
+
+  # Table
+  report.set_layout tlf: 'reports/thinreports_layouts/ingredient_consumption_with_plot'
+  report.start_new_page do |page|
+    init_page(page, start_date, steps)
 
     table = report.list(:results)
 
-    first_week = @data[:first_week]
-
-    if time_step == 1.week
-      steps.times do |i|
-        table.header do |header|
+    table.header do |header|
+      if @data[:time_step] == 1.week
+        steps.times do |i|
           week_start = start_date + i.weeks
           week_end = week_start + 1.week - 1.day
           header
             .item("week_number_#{i + 1}".to_sym)
-            .value("Semana #{to_week_number(week_start, first_week)}")
+            .value("Semana #{to_week_number(week_start)}")
           header
             .item("date_range_#{i + 1}".to_sym)
             .value("#{EasyModel.print_formatted_date(week_start)}\n#{EasyModel.print_formatted_date(week_end)}")
         end
-      end
-    else
-      steps.times do |i|
-        table.header do |header|
-          month = I18n.localize(start_date + i.months, format: '%b-%Y')
+      else
+        steps.times do |i|
           header
             .item("date_range_#{i + 1}".to_sym)
-            .value(month)
+            .value(I18n.localize(start_date + i.months, format: '%b-%Y'))
         end
       end
     end
@@ -83,7 +109,6 @@ end
 start_date = @data[:start_date]
 time_step = @data[:time_step]
 steps = @data[:time_steps]
-
 
 if steps % 12 == 0
   pages = steps / 12

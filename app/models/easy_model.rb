@@ -31,6 +31,7 @@ class EasyModel
     data[:time_steps] = time_steps
     data[:time_step] = time_step
     data[:first_week] = self.get_first_week
+    data[:by_ingredients] = by_ingredients
 
     if by_recipe
       recipe = Recipe.where(code: recipe_code).first
