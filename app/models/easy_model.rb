@@ -157,9 +157,9 @@ class EasyModel
       recipe_versions = Order.joins(:recipe)
         .where(orders: {created_at: (date .. date + 1.day)})
         .where(recipes: {code: recipe_code})
-        .order('orders.created_at ASC')
+        .order('orders.created_at')
         .group('recipes.version')
-        .pluck_all('recipes.version, orders.created_at AS last_used_at')
+        .pluck_all('recipes.version, MAX(orders.created_at) AS last_used_at')
 
       recipe_versions.each do |recipe_version|
         version_total = BatchHopperLot
