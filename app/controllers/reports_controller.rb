@@ -578,8 +578,8 @@ class ReportsController < ApplicationController
       end_date = EasyModel.parse_date(params[:report][:end_week_2])
       time_step = 1.week
     else
-      start_date = EasyModel.parse_date(params[:report][:start_month])
-      end_date = EasyModel.parse_date(params[:report][:end_month])
+      start_date = EasyModel.param_to_date(params[:report], 'start_month')
+      end_date = EasyModel.param_to_date(params[:report], 'end_month')
       time_step = 1.month
     end
     by_ingredients = params[:report][:by_ingredients] == '1'

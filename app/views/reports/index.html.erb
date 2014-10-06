@@ -240,8 +240,8 @@
            <%= f.label :end_week_2, "Semana Fin: ", :class=>'small' %> <%= f.text_field :end_week_2, class: 'weekpicker' %><br/><br/>
         </div>
         <div id="months_form">
-           <%= f.label :start_month, "Mes Inicio: ", :class=>'small' %> <%= f.text_field :start_month, class: 'monthpicker' %><br/><br/>
-           <%= f.label :end_month, "Mes Fin: ", :class=>'small' %> <%= f.text_field :end_month, class: 'monthpicker' %><br/><br/>
+           <%= f.label :start_month, "Mes Inicio: ", :class=>'small' %> <%= f.date_select :start_month, discard_day: true %><br/><br/>
+           <%= f.label :end_month, "Mes Fin: ", :class=>'small' %> <%= f.date_select :end_month, discard_day: true %><br/><br/>
         </div>
         <%= f.check_box :by_ingredients, :checked=>false %> &nbsp; <label for="group">Filtrar por ingredientes</label><br/><br/>
         <div id="ingredients_form">
