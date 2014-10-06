@@ -168,7 +168,7 @@
   <div class="report-content">
     <h2 onclick="toggle_report_details('#weekly_recipes_versions')">Versiones de receta por semana</h2>
     <div id="weekly_recipes_versions" class="report-details">
-      <%= form_for :report, :url=>weekly_recipes_versions_report_path(format: 'pdf') do |f| %>
+      <%= form_for :report, :url=>weekly_recipes_versions_report_path, :method => :get do |f| %>
         <%= f.label :start_week, "Semana Inicio: ", :class=>'small' %> <%= f.text_field :start_week, class: 'weekpicker' %><br/><br/>
         <%= f.label :end_week, "Semana Fin: ", :class=>'small' %> <%= f.text_field :end_week, class: 'weekpicker' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>

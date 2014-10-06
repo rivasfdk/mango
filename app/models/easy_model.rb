@@ -206,18 +206,19 @@ class EasyModel
 
     weeks = ((end_week - start_week).to_i / 7).floor + 1
 
-    return nil if Order.where(created_at: (start_week .. end_week + 1.week)).empty?
-
     data = self.initialize_data("Versiones de receta por semana")
     data[:start_week] = start_week
     data[:weeks] = weeks
     data[:first_week] = self.get_first_week
+    data[:domain] = domain
 
     recipes = Recipe
-      .group(:code)
-      .select('code, name, internal_consumption')
-      .where(active: true)
-      .order('internal_consumption desc, code asc')
+      .joins(:order)
+      .group('recipes.code')
+      .select('recipes.code, recipes.name, recipes.internal_consumption')
+      .where(orders: {created_at: (start_week .. end_week + 1.week)})
+      .where(recipes: {active: true})
+      .order('recipes.internal_consumption desc, recipes.code asc')
       .reduce({}) do |recipes, recipe|
         recipes[recipe[:code].to_sym] = {
           name: recipe[:name],
@@ -225,6 +226,8 @@ class EasyModel
         }
         recipes
       end
+
+    return nil if recipes.empty?
 
     data[:results] = recipes.map do |recipe_code, recipe|
       row = {}
@@ -240,7 +243,7 @@ class EasyModel
                  recipes: {code: recipe_code})
           .pluck_all('DISTINCT recipes.version, recipes.id')
           .sort_by { |hash| hash["version"] }
-          .map { |hash| {version: hash["version"], url: domain + recipe_path(hash["id"]) } }
+          .map { |hash| {version: hash["version"], domain: domain, path: recipe_path(hash["id"]) } }
       end
       row
     end

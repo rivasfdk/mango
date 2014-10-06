@@ -54,7 +54,7 @@ def render_page(report, page_index, start_date, steps)
           render_flot('ingredient_consumption_with_plot',
             @data.merge!({
               page_index: page_index, steps: steps, time_labels: time_labels
-            }), 1040, 716)
+            }), 1040, 716, suffix: page.no)
         )
       end
     end

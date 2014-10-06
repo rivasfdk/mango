@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20140929083021) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "alarms", :force => true do |t|
@@ -431,6 +431,8 @@ ActiveRecord::Schema.define(:version => 20140929083021) do
     t.float    "stock",      :default => 0.0
   end
 
+  add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
+
   create_table "products_lots_parameters", :force => true do |t|
     t.integer  "product_lot_parameter_list_id", :null => false
     t.integer  "product_lot_parameter_type_id", :null => false
@@ -566,9 +568,9 @@ ActiveRecord::Schema.define(:version => 20140929083021) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id"
-    t.integer  "user_id"
-    t.float    "amount"
+    t.integer  "transaction_type_id",                    :null => false
+    t.integer  "user_id",                                :null => false
+    t.float    "amount",                                 :null => false
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"

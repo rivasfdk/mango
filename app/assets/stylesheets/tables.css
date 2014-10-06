@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-#tabledata thead th {
+#tabledata thead th, #tabledata .subheader {
     font-weight: normal;
     font-size: 12px;
     padding: 6px 10px;

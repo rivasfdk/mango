@@ -7,15 +7,6 @@ report.events.on :generate do |e|
   end
 end
 
-def to_week_number(week, first_week)
-  week_number = week.strftime('%W').to_i
-  if week_number > first_week
-    week_number - first_week
-  else
-    52 - (first_week - week_number)
-  end
-end
-
 def render_page(report, page_index, start_week, weeks)
   report.start_new_page do |page|
     page.values company_name: @data['company_name']
@@ -25,6 +16,7 @@ def render_page(report, page_index, start_week, weeks)
     page.values title: @data['title']
     page.values since: EasyModel.print_formatted_date(start_week)
     page.values until: EasyModel.print_formatted_date(start_week + weeks.weeks - 1.day)
+    page.values link: "<link href=\"#{@data[:domain] + weekly_recipes_versions_report_path(utf8: '✓', report: params[:report])}\">Ver reporte en Mango</link>"
 
     table = report.list(:results)
 
@@ -35,7 +27,7 @@ def render_page(report, page_index, start_week, weeks)
         week_end = week_start + 1.week - 1.day
         header
           .item("week_number_#{i + 1}".to_sym)
-          .value("Semana #{to_week_number(week_start, first_week)}")
+          .value("Semana #{to_week_number(week_start)}")
         header
           .item("week_range_#{i + 1}".to_sym)
           .value("#{EasyModel.print_formatted_date(week_start)}\n#{EasyModel.print_formatted_date(week_end)}")
@@ -64,7 +56,7 @@ def render_page(report, page_index, start_week, weeks)
 
         weeks.times do |i|
           version_links = result[:versions][i + 12 * page_index].map do |recipe|
-            "<color rgb='0000ff'><link href=\"#{recipe[:url]}\">#{recipe[:version]}</link></color>"
+            "<color rgb='0000ff'><link href=\"#{recipe[:domain] + recipe[:path]}\">#{recipe[:version]}</link></color>"
           end
           row.item("versions_week_#{i + 1}".to_sym) do |cell|
             cell.value(version_links.join(', '))

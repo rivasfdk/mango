@@ -169,6 +169,8 @@ module MenuHelper
       menu = menu_for_roles_edit
     elsif c == 'reports' and a == 'index'
       menu = menu_for_reports_index
+    elsif c == 'reports' and a == 'weekly_recipes_versions'
+      menu = menu_for_reports_weekly_recipes_versions
     elsif c == 'drivers' and a == 'index'
       menu = menu_for_drivers_index
     elsif c == 'drivers' and (a == 'new' or a == 'create')
@@ -323,7 +325,7 @@ module MenuHelper
   def menu_for_recipes_show
     menu = content_tag(:p, 'Detalle de receta')
     menu += content_tag(:ul,
-      render_back(recipes_path)
+      render_back('javascript:history.back()')
     )
     return menu
   end
@@ -964,7 +966,16 @@ module MenuHelper
     menu += content_tag(:ul, render_back(root_path))
     return menu
   end
-  
+
+  def menu_for_reports_weekly_recipes_versions
+    menu = content_tag(:p, 'Versiones de receta por semana')
+    menu += content_tag(:ul,
+      render_back('javascript:history.back()') +
+      render_action('Generar PDF', 'Generar reporte en PDF', weekly_recipes_versions_report_path(format: :pdf, utf8: '✓', report: params[:report]), 'button-print.png')
+    )
+    return menu
+  end
+
   def menu_for_drivers_index
     menu = content_tag(:p, 'Choferes')
     menu += content_tag(:ul,

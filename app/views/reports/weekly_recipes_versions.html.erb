@@ -1,0 +1,33 @@
+<% title "Versiones de receta por semana" %>
+<style>
+  .wrapper {
+    width: 1300px;
+  }
+  #content {
+    width: 1260px;
+  }
+  #tabledata {
+    margin-bottom: 20px;
+    table-layout: fixed;
+  }
+  #tabledata .subheader {
+    background: #ccc url('table-footer-bg.png') repeat-x 50% 50%;;
+  }
+</style>
+
+<% start_week = @data[:start_week] %>
+<% weeks = @data[:weeks] %>
+
+<% if weeks % 12 == 0 %>
+  <% pages = weeks / 12 %>
+  <%= pages %>
+  <% pages.times do |i| %>
+    <%= render_weekly_recipes_table(i, start_week + (12 * i).weeks, 12) %>
+  <% end %>
+<% else %>
+  <% pages = (weeks / 12).ceil %>
+  <% (pages - 1).times do |i| %>
+    <%= render_weekly_recipes_table(i, start_week + (12 * i).weeks, 12) %>
+  <% end %>
+  <%= render_weekly_recipes_table(pages - 1, start_week + (12 * (pages - 1)).weeks, weeks % 12) %>
+<% end %>
