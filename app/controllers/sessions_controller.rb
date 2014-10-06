@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
       session[:company] = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['application']
       respond_to do |format|
         format.html do
-          redirect_to :action => 'show'
+          redirect_to session[:previous_url] || dashboard_path
         end
         format.json do
           @user = User.find user.id

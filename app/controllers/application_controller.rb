@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
-  before_filter :check_authentication, :check_permissions
+  before_filter :store_location, :check_authentication, :check_permissions
   skip_before_filter :verify_authenticity_token
  
   helper :flash
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
       respond_to do |format|
         format.html do
           session[:request] = action_name
-          redirect_to :controller=>'sessions', :action=>'index'
+          redirect_to sessions_path
         end
         format.json { head :unauthorized }
         format.xml { head :unauthorized }
@@ -49,4 +49,12 @@ class ApplicationController < ActionController::Base
     return false
   end
 
+  def store_location
+    return unless request.get?
+
+    path = request.fullpath
+    if (path != '/sessions' && !request.xhr?)
+      session[:previous_url] = path
+    end
+  end
 end
