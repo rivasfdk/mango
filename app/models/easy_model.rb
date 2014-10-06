@@ -157,15 +157,16 @@ class EasyModel
       recipe_versions = Order.joins(:recipe)
         .where(orders: {created_at: (date .. date + 1.day)})
         .where(recipes: {code: recipe_code})
-        .order('recipes.version')
-        .pluck('DISTINCT recipes.version')
+        .order('orders.created_at ASC')
+        .group('recipes.version')
+        .pluck_all('recipes.version, orders.created_at AS last_used_at')
 
       recipe_versions.each do |recipe_version|
         version_total = BatchHopperLot
           .joins({hopper_lot: {lot: {}},
                   batch: {order: {recipe: {}}}})
           .where(orders: {created_at: (date .. date + 1.day)},
-                 recipes: {code: recipe_code, version: recipe_version})
+                 recipes: {code: recipe_code, version: recipe_version['version']})
           .sum(:amount)
 
         percentages = BatchHopperLot
@@ -174,7 +175,7 @@ class EasyModel
           .select("lots.ingredient_id,
                    SUM(batch_hoppers_lots.amount) / #{version_total} * 100 AS percentage")
           .where(orders: {created_at: (date .. date + 1.day)},
-                 recipes: {code: recipe_code, version: recipe_version},
+                 recipes: {code: recipe_code, version: recipe_version['version']},
                  lots: {ingredient_id: ingredients_ids})
           .group('lots.ingredient_id')
           .reduce([{}, 0.0]) do |percentages, percentage|
@@ -183,8 +184,18 @@ class EasyModel
             percentages[1] += p
             percentages
           end
+        first_used = Order
+          .joins(:recipe)
+          .where(['recipes.code = ? and recipes.version != ?', recipe_code, recipe_version['version']])
+          .where(['orders.created_at < ?', recipe_version['last_used_at']])
+          .order('orders.created_at desc')
+          .first.created_at.to_date
+
+        days = date - first_used + 1
+
         row[:versions] << {
-          version: recipe_version,
+          version: recipe_version['version'],
+          days: days,
           total: version_total / 1000,
           percentages: percentages[0],
           percentage_total: percentages[1]

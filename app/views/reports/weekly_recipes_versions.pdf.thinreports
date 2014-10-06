@@ -16,7 +16,7 @@ def render_page(report, page_index, start_week, weeks)
     page.values title: @data['title']
     page.values since: EasyModel.print_formatted_date(start_week)
     page.values until: EasyModel.print_formatted_date(start_week + weeks.weeks - 1.day)
-    page.values link: "<link href=\"#{@data[:domain] + weekly_recipes_versions_report_path(utf8: '✓', report: params[:report])}\">Ver reporte en Mango</link>"
+    page.values link: "<link href=\"http://#{@data[:domain] + weekly_recipes_versions_report_path(utf8: '✓', report: params[:report])}\">Ver reporte en Mango</link>"
 
     table = report.list(:results)
 
