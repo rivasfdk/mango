@@ -16,9 +16,9 @@
 <div class="field"><%=h @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S") %></div>
 <% end %>
 <label for="incoming_weight" class="small">Peso de entrada:</label>
-<div class="field"><%= f.text_field :incoming_weight, :size=>'20' %><span>*</span></div>
+<div class="field"><%=h @ticket.incoming_weight %></div>
 <label for="incoming_weight" class="small">Peso de salida:</label>
-<div class="field"><%= f.text_field :outgoing_weight, :size=>'20' %><span>*</span></div>
+<div class="field"><%=h @ticket.outgoing_weight %></div>
 <% if @ticket.ticket_type_id == 1 %>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
   <div class="field"><%= f.text_field :provider_weight, :size=>'20' %><span>*</span></div>
@@ -57,10 +57,10 @@
               <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %>
             <% end %>
           </td>
-          <td class="center"><%= builder.check_box :sack %></td>
-          <td class="center"><%= builder.text_field :sacks, size: 5 %></td>
-          <td class="center"><%= builder.text_field :sack_weight, size: 5 %></td>
-          <td class="center"><%= builder.text_field :amount, size: 10 %></td>
+          <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox' %></td>
+          <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field' %></td>
+          <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field' %></td>
+          <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field' %></td>
           <td class="center">
             <%= builder.hidden_field :_destroy %>
             <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>

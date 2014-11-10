@@ -30,6 +30,10 @@ class TicketsController < ApplicationController
         t.user_id = @ticket.user_id
         t.client_id = @ticket.client_id
         t.comment = @ticket.comment
+        unless t.sack
+          t.sacks = nil
+          t.sack_weight = nil
+        end
         t.update_transactions unless t.new_record?
       end
     end
