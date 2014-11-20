@@ -1,6 +1,14 @@
 # encoding: UTF-8
 
 class Recipe < ActiveRecord::Base
+  TYPES = {
+    0 => 'Ninguno',
+    1 => 'Aves',
+    2 => 'Equinos',
+    3 => 'Cerdos',
+    4 => 'Vacunos',
+  }
+
   has_many :ingredient_recipe, dependent: :destroy
   has_many :order
   belongs_to :product
@@ -9,11 +17,18 @@ class Recipe < ActiveRecord::Base
   validates :name, length: {within: 3..40}
 
   before_save :update_all_versions, if: :internal_consumption_changed?
+  before_save :update_all_types, if: :type_id_changed?
 
   def update_all_versions
     Recipe
       .where(code: self.code)
       .update_all(internal_consumption: self.internal_consumption)
+  end
+
+  def update_all_types
+    Recipe
+      .where(code: self.code)
+      .update_all(type_id: self.type_id)
   end
 
   def add_ingredient(args)

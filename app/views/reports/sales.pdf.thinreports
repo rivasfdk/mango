@@ -1,0 +1,47 @@
+report.set_layout tlf: 'reports/thinreports_layouts/sales'
+
+report.events.on :generate do |e|
+  e.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
+  end
+end
+
+columns = @data[:columns]
+total = @data[:total]
+
+report.layout.config.list(:results) do
+  events.on :footer_insert do |e|
+    columns.each_with_index do |column, index|
+      e.section.item("col#{index + 1}").value(column[:total].round(2))
+    end
+    e.section.item(:total).value(total.round(2))
+  end
+end
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values month: I18n.localize(@data[:month], format: '%B %Y').capitalize
+
+  table = report.list(:results)
+  table.header do |header|
+    @data[:columns].each_with_index do |column, index|
+      header.item("col#{index + 1}".to_sym).value(column[:title])
+    end
+  end
+
+  @data[:results].each do |result|
+    table.add_row do |row|
+      row.item(:client_name).value(result[:client_name])
+      result[:columns].each_with_index do |amount, index|
+        row.item("col#{index + 1}".to_sym).value(amount.round(2))
+      end
+      row.item(:total).value(result[:total].round(2))
+      row.item(:perc).value((result[:total] / total * 100).round(2))
+    end
+  end
+end

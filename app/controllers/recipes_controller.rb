@@ -9,6 +9,7 @@ class RecipesController < ApplicationController
 
   def show
     @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'ingredients.code asc'
+    @types = Recipe::TYPES
     @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
@@ -16,6 +17,7 @@ class RecipesController < ApplicationController
 
   def new
     @products = Product.all
+    @types = Recipe::TYPES
   end
 
   def edit
@@ -23,6 +25,7 @@ class RecipesController < ApplicationController
     @total = @recipe.get_total()
     @products = Product.all
     @ingredients = Ingredient.all
+    @types = Recipe::TYPES
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameters_types = ParameterType.all

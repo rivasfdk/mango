@@ -431,6 +431,19 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('sales') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#sales')">Ventas Mensuales</h2>
+    <div id="sales" class="report-details">
+      <%= form_for :report, :url=>sales_report_path(format: 'pdf') do |f| %>
+        <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %>
+<br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('order_lots_parameters') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#order_lots_parameters')">Características de orden de producción (Laboratorio)</h2>

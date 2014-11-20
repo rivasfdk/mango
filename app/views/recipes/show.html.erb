@@ -8,6 +8,8 @@
 <div class="field"><%=h @recipe.version %></div>
 <label for="product" class="small">Producto:</label>
 <div class="field"><%=h @recipe.product.name %></div>
+<label for="type_id" class="small">Tipo:</label>
+<div class="field"><%=h @types[@recipe.type_id] %></div>
 <label for="total" class="small">Total:</label>
 <div class="field"><%=h @total %> Kg</div>
 <label for="comment" class="small">Comentario:</label>

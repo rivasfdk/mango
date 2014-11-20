@@ -7,6 +7,8 @@
 <div class="field"><%= f.text_field :version, :size=>'10' %></div>
 <label for="product_id" class="small">Producto:</label>
 <div class="field"><%= f.collection_select :product_id, @products, :id, :to_collection_select, {include_blank: "Seleccione un producto"}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<label for="type_id" class="small">Tipo:</label>
+<div class="field"><%= f.collection_select :type_id, @types, :first, :second, {include_blank: false}, class: 'chosen-select chzn-field-normal' %></div>
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_field :comment, :size=>'30' %></div>
 <% if action == "edit" %>

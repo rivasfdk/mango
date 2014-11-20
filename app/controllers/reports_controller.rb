@@ -594,4 +594,14 @@ class ReportsController < ApplicationController
       redirect_to reports_path
     end
   end
+
+  def sales
+    month = EasyModel.param_to_date(params[:report], 'month')
+    @data = EasyModel.sales(month)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to reports_path
+    end
+  end
 end

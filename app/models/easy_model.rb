@@ -2,6 +2,57 @@ include MangoModule
 include Rails.application.routes.url_helpers
 
 class EasyModel
+  # Only works for Alimentos La Rosa
+  def self.sales(month)
+    return nil if month.nil?
+    start_date = month.beginning_of_month
+    end_date = month.end_of_month
+
+    clients = Client
+      .includes(:order)
+      .where(orders: {created_at: (start_date .. end_date)})
+      .order(:factory)
+    return nil if clients.empty?
+
+    columns = [
+      {title: 'P.Inic. (P.I.P)', condition: {recipes: {code: ['01/ISA', '01 / AGROP']}, clients: {factory: false}}, total: 0},
+      {title: 'Poll. (F1)', condition: {recipes: {code: ['02/LA ROSA', '02/AGROP.']}, clients: {factory: false}}, total: 0},
+      {title: 'Poll. (F2)', condition: {recipes: {code: ['03/LA ROSA', '03/AGROP']}, clients: {factory: false}}, total: 0},
+      {title: 'Pre.Post.', condition: {recipes: {code: ['04/LA ROSA']}, clients: {factory: false}}, total: 0},
+      {title: 'Post-19%', condition: {recipes: {code: ['05/LA ROSA', '05/ AGROP']}, clients: {factory: false}}, total: 0},
+      {title: 'Post-17%', condition: {recipes: {code: ['06/LA ROSA', '06/ AGROP']}, clients: {factory: false}}, total: 0},
+      {title: 'Maquila', condition: {clients: {factory: true}}, total: 0},
+      {title: 'Equinos', condition: {recipes: {type_id: 2}, clients: {factory: false}}, total: 0},
+      {title: 'Cerdos', condition: {recipes: {type_id: 3}, clients: {factory: false}}, total: 0},
+      {title: 'Vacunos', condition: {recipes: {type_id: 4}, clients: {factory: false}}, total: 0},
+    ]
+
+    data = self.initialize_data("Reporte mensual de ventas")
+    data[:month] = start_date
+    data[:total] = 0
+    data[:columns] = columns
+    data[:results] = clients.map do |client|
+      row = {}
+      row[:client_name] = client.name
+      row[:columns] = []
+      row[:total] = 0
+      columns.each_with_index do |column, index|
+        amount = BatchHopperLot
+          .joins(batch: {order: {recipe: {}, client: {}}})
+          .where(orders: {created_at: start_date .. end_date})
+          .where(orders: {client_id: client.id})
+          .where(column[:condition])
+          .sum(:amount) / 1000
+        row[:columns] << amount
+        row[:total] += amount
+        columns[index][:total] += amount
+        data[:total] += amount
+      end
+      row
+    end
+    data
+  end
+
   def self.ingredient_consumption_with_plot(start_date, end_date, time_step, by_ingredients, ingredients_ids, by_recipe, recipe_code, user_id)
     if by_ingredients
       PreselectedIngredientId.transaction do

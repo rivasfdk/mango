@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140929083021) do
+ActiveRecord::Schema.define(:version => 20141120065004) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -485,9 +485,11 @@ ActiveRecord::Schema.define(:version => 20140929083021) do
     t.boolean  "in_use",               :default => true
     t.integer  "product_id",                              :null => false
     t.boolean  "internal_consumption", :default => false
+    t.integer  "type_id",              :default => 0
   end
 
   add_index "recipes", ["product_id"], :name => "index_recipes_on_product_id"
+  add_index "recipes", ["type_id"], :name => "index_recipes_on_type_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name",        :null => false
