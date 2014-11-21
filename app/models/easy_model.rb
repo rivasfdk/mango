@@ -14,12 +14,12 @@ class EasyModel
     return nil if clients.empty?
 
     columns = [
-      {title: 'P.Inic. (P.I.P)', condition: {recipes: {code: ['01/ISA', '01 / AGROP']}, clients: {factory: false}}, total: 0},
-      {title: 'Poll. (F1)', condition: {recipes: {code: ['02/LA ROSA', '02/AGROP.']}, clients: {factory: false}}, total: 0},
-      {title: 'Poll. (F2)', condition: {recipes: {code: ['03/LA ROSA', '03/AGROP']}, clients: {factory: false}}, total: 0},
-      {title: 'Pre.Post.', condition: {recipes: {code: ['04/LA ROSA']}, clients: {factory: false}}, total: 0},
-      {title: 'Post-19%', condition: {recipes: {code: ['05/LA ROSA', '05/ AGROP']}, clients: {factory: false}}, total: 0},
-      {title: 'Post-17%', condition: {recipes: {code: ['06/LA ROSA', '06/ AGROP']}, clients: {factory: false}}, total: 0},
+      {title: 'P.Inic. (P.I.P)', condition: {recipes: {code: Recipe.where('name LIKE "%INIC%"').where('name LIKE "%POLL%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
+      {title: 'Poll. (F1)', condition: {recipes: {code: Recipe.where('name LIKE "%F1%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
+      {title: 'Poll. (F2)', condition: {recipes: {code: Recipe.where('name LIKE "%F2%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
+      {title: 'Pre.Post.', condition: {recipes: {code: Recipe.where('name LIKE "%PRE%"').where('name LIKE "%POST%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
+      {title: 'Post-19%', condition: {recipes: {code: Recipe.where('name LIKE "%19%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
+      {title: 'Post-17%', condition: {recipes: {code: Recipe.where('name LIKE "%17%"').group(:code)}, clients: {factory: false}}, total: 0},
       {title: 'Maquila', condition: {clients: {factory: true}}, total: 0},
       {title: 'Equinos', condition: {recipes: {type_id: 2}, clients: {factory: false}}, total: 0},
       {title: 'Cerdos', condition: {recipes: {type_id: 3}, clients: {factory: false}}, total: 0},
@@ -1661,13 +1661,15 @@ class EasyModel
 
     lots = []
     if content_type == 1
-      lots = Lot.order('code asc')
-	  lots = lots.where(:active => true)
-	  lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = Lot.joins(:ingredient)
+      lots = lots.where(:active => true)
+      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.order('ingredients.code, lots.code asc')
     else
-      lots = ProductLot.order('code asc')
-	  lots = lots.where(:active => true)
-	  lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = ProductLot.joins(:product)
+      lots = lots.where(:active => true)
+      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.order('products.code, products_lots.code asc')
     end
     lots.each do |lot|
       transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, lot.id, end_date_to_sql(date)], :order => ['created_at desc']
@@ -1685,9 +1687,7 @@ class EasyModel
         }
       end
     end
-
-    data['results'].sort! {|a,b| a['code'] <=> b['code']}
-    return data
+    data
   end
 
   def self.simple_stock(content_type, factory_id, date)
@@ -1734,7 +1734,7 @@ class EasyModel
     results.sort_by {|k,v| k}.map do |key, item|
       data['results'] << item
     end
-    return data
+    data
   end
 
   def self.simple_stock_projection(factory_id, days)
