@@ -14,16 +14,16 @@ class EasyModel
     return nil if clients.empty?
 
     columns = [
-      {title: 'P.Inic. (P.I.P)', condition: {recipes: {code: Recipe.where('name LIKE "%INIC%"').where('name LIKE "%POLL%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Poll. (F1)', condition: {recipes: {code: Recipe.where('name LIKE "%F1%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Poll. (F2)', condition: {recipes: {code: Recipe.where('name LIKE "%F2%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Pre.Post.', condition: {recipes: {code: Recipe.where('name LIKE "%PRE%"').where('name LIKE "%POST%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Post-19%', condition: {recipes: {code: Recipe.where('name LIKE "%19%"').group(:code).pluck(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Post-17%', condition: {recipes: {code: Recipe.where('name LIKE "%17%"').group(:code)}, clients: {factory: false}}, total: 0},
-      {title: 'Maquila', condition: {clients: {factory: true}}, total: 0},
-      {title: 'Equinos', condition: {recipes: {type_id: 2}, clients: {factory: false}}, total: 0},
-      {title: 'Cerdos', condition: {recipes: {type_id: 3}, clients: {factory: false}}, total: 0},
-      {title: 'Vacunos', condition: {recipes: {type_id: 4}, clients: {factory: false}}, total: 0},
+      {title: 'P.Inic. (P.I.P)', condition: {recipes: {type_id: 1}}, total: 0},
+      {title: 'Poll. (F1)', condition: {recipes: {type_id: 2}}, total: 0},
+      {title: 'Poll. (F2)', condition: {recipes: {type_id: 3}}, total: 0},
+      {title: 'Pre.Post.', condition: {recipes: {type_id: 4}}, total: 0},
+      {title: 'Post-19%', condition: {recipes: {type_id: 5}}, total: 0},
+      {title: 'Post-17%', condition: {recipes: {type_id: 6}}, total: 0},
+      {title: 'Maquila', condition: {recipes: {type_id: 7}}, total: 0},
+      {title: 'Equinos', condition: {recipes: {type_id: 8}}, total: 0},
+      {title: 'Cerdos', condition: {recipes: {type_id: 9}}, total: 0},
+      {title: 'Vacunos', condition: {recipes: {type_id: 10}}, total: 0},
     ]
 
     data = self.initialize_data('Reporte mensual de ventas')
@@ -32,19 +32,10 @@ class EasyModel
     start_stock_total = 0
     end_stock_total = 0
     columns.each_with_index do |column, index|
-      unless column[:condition][:clients][:factory]
-        product_ids = Recipe
-          .where(code: column[:condition][:recipes][:code])
-          .group(:product_id)
-          .pluck(:product_id)
-      else
-        product_ids = Recipe
-          .joins(order: {client: {}})
-          .where(clients: {factory: true})
-          .where(orders: {created_at: start_date .. end_date})
-          .group(:product_id)
-          .pluck(:product_id)
-      end
+      product_ids = Recipe
+        .where(type_id: column[:condition][:recipes][:type_id])
+        .group(:product_id)
+        .pluck(:product_id)
       columns[index][:product_ids] = product_ids
 
       product_lots = ProductLot
@@ -89,7 +80,7 @@ class EasyModel
       row[:total] = 0
       columns.each_with_index do |column, index|
         amount = BatchHopperLot
-          .joins(batch: {order: {recipe: {}, client: {}}})
+          .joins(batch: {order: {recipe: {}}})
           .where(orders: {created_at: start_date .. end_date})
           .where(orders: {client_id: client.id})
           .where(column[:condition])

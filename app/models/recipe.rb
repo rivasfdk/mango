@@ -3,10 +3,16 @@
 class Recipe < ActiveRecord::Base
   TYPES = {
     0 => 'Ninguno',
-    1 => 'Aves',
-    2 => 'Equinos',
-    3 => 'Cerdos',
-    4 => 'Vacunos',
+    1 => 'Pre Iniciador Pollos',
+    2 => 'Pollonas (F1)',
+    3 => 'Pollonas (F2)',
+    4 => 'Pre Postura',
+    5 => 'Postura 19%',
+    6 => 'Postura 17%',
+    7 => 'Maquila',
+    8 => 'Equinos',
+    9 => 'Cerdos',
+    10 => 'Vacunos',
   }
 
   has_many :ingredient_recipe, dependent: :destroy
