@@ -81,7 +81,7 @@ class EasyModel
       columns.each_with_index do |column, index|
         amount = BatchHopperLot
           .joins(batch: {order: {recipe: {}}})
-          .where(orders: {created_at: start_date .. end_date})
+          .where(orders: {created_at: start_date .. end_date + 1.day})
           .where(orders: {client_id: client.id})
           .where(column[:condition])
           .sum(:amount) / 1000
@@ -1427,14 +1427,14 @@ class EasyModel
     return nil if ingredients_ids.empty?
 
     batch_hopper_lots = BatchHopperLot
-      .joins({hopper_lot: {lot: {ingredient: {}}}})
+      .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {}}})
       .select('lots.code AS lot_code,
                ingredients.code AS ingredient_code,
                ingredients.name AS ingredient_name,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batch_hoppers_lots: {created_at: start_date .. end_date + 1.day},
+      .where({orders: {created_at: start_date .. end_date + 1.day},
               ingredients: {id: ingredients_ids}})
       .order('ingredients.code')
       .group('ingredients.id')
@@ -1469,13 +1469,13 @@ class EasyModel
     data['results'] = []
 
     batch_hopper_lots = BatchHopperLot
-      .joins({hopper_lot: {lot: {ingredient: {}}}})
+      .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {}}})
       .select('ingredients.code AS ingredient_code,
                ingredients.name AS ingredient_name,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where(batch_hoppers_lots: {created_at: start_date .. end_date + 1.day})
+      .where(orders: {created_at: start_date .. end_date + 1.day})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1519,8 +1519,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day},
-              orders: {client_id: client_id}})
+      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1822,7 +1821,7 @@ class EasyModel
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}, client: {}}}})
                         .select('orders.code AS order_code, clients.code AS client_code, clients.name AS client_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
+                        .where({orders: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
@@ -1854,7 +1853,7 @@ class EasyModel
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}}}})
                         .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where({batch_hoppers_lots: {created_at: start_date..end_date + 1.day}, orders: {client_id: client_id}})
+                        .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
