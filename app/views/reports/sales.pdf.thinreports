@@ -9,13 +9,19 @@ end
 
 columns = @data[:columns]
 total = @data[:total]
+start_stock_total = @data[:start_stock_total]
+end_stock_total = @data[:end_stock_total]
 
 report.layout.config.list(:results) do
   events.on :footer_insert do |e|
     columns.each_with_index do |column, index|
-      e.section.item("col#{index + 1}").value(column[:total].round(2))
+      e.section.item("col#{index + 1}".to_sym).value(column[:total].round(2))
+      e.section.item("start_stock_#{index +1}".to_sym).value(column[:start_stock].round(2))
+      e.section.item("end_stock_#{index +1}".to_sym).value(column[:end_stock].round(2))
     end
     e.section.item(:total).value(total.round(2))
+    e.section.item(:start_stock_total).value(start_stock_total.round(2))
+    e.section.item(:end_stock_total).value(end_stock_total.round(2))
   end
 end
 

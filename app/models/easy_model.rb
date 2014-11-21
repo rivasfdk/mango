@@ -2,7 +2,6 @@ include MangoModule
 include Rails.application.routes.url_helpers
 
 class EasyModel
-  # Only works for Alimentos La Rosa
   def self.sales(month)
     return nil if month.nil?
     start_date = month.beginning_of_month
@@ -27,10 +26,62 @@ class EasyModel
       {title: 'Vacunos', condition: {recipes: {type_id: 4}, clients: {factory: false}}, total: 0},
     ]
 
-    data = self.initialize_data("Reporte mensual de ventas")
+    data = self.initialize_data('Reporte mensual de ventas')
     data[:month] = start_date
-    data[:total] = 0
+
+    start_stock_total = 0
+    end_stock_total = 0
+    columns.each_with_index do |column, index|
+      unless column[:condition][:clients][:factory]
+        product_ids = Recipe
+          .where(code: column[:condition][:recipes][:code])
+          .group(:product_id)
+          .pluck(:product_id)
+      else
+        product_ids = Recipe
+          .joins(order: {client: {}})
+          .where(clients: {factory: true})
+          .where(orders: {created_at: start_date .. end_date})
+          .group(:product_id)
+          .pluck(:product_id)
+      end
+      columns[index][:product_ids] = product_ids
+
+      product_lots = ProductLot
+        .where(active: true, product_id: product_ids)
+
+      start_stock = 0
+      end_stock = 0
+      product_lots.each do |product_lot|
+        transaction = Transaction
+          .where(content_type: 2, content_id: product_lot.id)
+          .where(['created_at < ?', start_date])
+          .order('created_at desc')
+          .first
+        unless transaction.nil?
+          start_stock += transaction.stock_after / 1000
+          start_stock_total += transaction.stock_after / 1000
+        end
+
+        transaction = Transaction
+          .where(content_type: 2, content_id: product_lot.id)
+          .where(['created_at < ?', end_date + 1.day])
+          .order('created_at desc')
+          .first
+        unless transaction.nil?
+          end_stock += transaction.stock_after / 1000
+          end_stock_total += transaction.stock_after / 1000
+        end
+      end
+      columns[index][:start_stock] = start_stock
+      columns[index][:end_stock] = end_stock
+    end
+
     data[:columns] = columns
+    data[:start_stock_total] = start_stock_total
+    data[:end_stock_total] = end_stock_total
+
+    total = 0
     data[:results] = clients.map do |client|
       row = {}
       row[:client_name] = client.name
@@ -46,10 +97,11 @@ class EasyModel
         row[:columns] << amount
         row[:total] += amount
         columns[index][:total] += amount
-        data[:total] += amount
+        total += amount
       end
       row
     end
+    data[:total] = total
     data
   end
 
@@ -435,7 +487,6 @@ class EasyModel
     data
   end
 
-  #This method is nasty as fuck because it only works for PROPORCA
   def self.stats(start_date, end_date)
     @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}, :recipe => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
 
@@ -1647,7 +1698,6 @@ class EasyModel
 
     results = {}
 
-    lots = []
     if content_type == 1
       lots = Lot.order('code asc')
       lots = lots.where(:active => true)
