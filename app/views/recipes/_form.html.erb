@@ -16,8 +16,10 @@
 <div class="field"><%= f.check_box :in_use %></div>
 <label for="active" class="small">Activa:</label>
 <div class="field"><%= f.check_box :active %></div>
+<% if @internal_consumption %>
 <label for="active" class="small">Consumo interno:</label>
 <div class="field"><%= f.check_box :internal_consumption %></div>
+<% end %>
 <% end %>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

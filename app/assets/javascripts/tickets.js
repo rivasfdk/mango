@@ -15,12 +15,16 @@ function add_fields(link, association, content) {
   var new_id = new Date().getTime();
   var regexp = new RegExp("new_" + association, "g");
   $("#tabledata tbody").append(content.replace(regexp, new_id));
-  var row_count =  $("#tabledata tbody tr").size()
+  var row_count =  $("#tabledata tbody tr").size();
   var last_row = $("#tabledata tbody tr").last();
   last_row.addClass(row_count % 2 == 0 ? "alternate" : "blank");
   $('.chosen-select').chosen(chosen_params);
   $('.content_type_checkbox').change(update_transaction_lots);
-  $('.sack_checkbox').change(show_sack_fields);
+  var sack_checkbox = $('.sack_checkbox');
+  sack_checkbox.change(show_sack_fields);
+  sack_checkbox.trigger('change');
+  $('.sacks_field').change(update_sack_total);
+  $('.sack_weight_field').change(update_sack_total);
 }
 
 function update_transaction_lots() {
@@ -50,8 +54,10 @@ function show_sack_fields() {
   sack_weight_field.toggle(sack_selected);
   amount_field.attr('readonly', sack_selected);
   if (sack_selected) {
-  	sacks_field.val(0);
-  	sack_weight_field.val(0);
+    if (sacks_field.val() === '') {
+      sacks_field.val(0);
+      sack_weight_field.val(0);
+    }
     calculate_sack_total(sacks_field, sack_weight_field, amount_field);
   }
 }

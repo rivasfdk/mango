@@ -13,15 +13,17 @@ class RecipesController < ApplicationController
     @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
+    @internal_consumption = is_mango_feature_available("internal_consumption")
   end
 
   def new
     @products = Product.all
     @types = Recipe::TYPES
+    @internal_consumption = is_mango_feature_available("internal_consumption")
   end
 
   def edit
-    @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'id desc'
+    @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'ingredients.code desc'
     @total = @recipe.get_total()
     @products = Product.all
     @ingredients = Ingredient.all
@@ -29,6 +31,7 @@ class RecipesController < ApplicationController
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameters_types = ParameterType.all
+    @internal_consumption = is_mango_feature_available("internal_consumption")
   end
 
   def create

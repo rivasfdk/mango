@@ -24,21 +24,22 @@ class TicketsController < ApplicationController
   def do_repair
     @ticket = Ticket.find params[:id]
     @ticket.update_attributes(params[:ticket])
-    if @ticket.valid?
-      @ticket.transactions.each do |t|
-        t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-        t.user_id = @ticket.user_id
-        t.client_id = @ticket.client_id
-        t.comment = @ticket.comment
-        unless t.sack
-          t.sacks = nil
-          t.sack_weight = nil
-        end
-        t.update_transactions unless t.new_record?
+    @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
+      t.comment = @ticket.comment
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
       end
     end
-    @ticket.repaired = true
-    if @ticket.save
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record?
+      end
+      @ticket.repaired = true
+      @ticket.save
       flash[:notice] = 'Ticket reparado con éxito'
       redirect_to :tickets
     else
