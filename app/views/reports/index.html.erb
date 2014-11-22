@@ -26,6 +26,18 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('sales') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#sales')">Ventas Mensuales</h2>
+    <div id="sales" class="report-details">
+      <%= form_for :report, :url=>sales_report_path(format: 'pdf') do |f| %>
+        <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %><br/><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('stats') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#stats')">Estadísticas de producción</h2>
@@ -328,6 +340,20 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('simple_stock_projection') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#simple_stock_projection')">Proyección de inventario</h2>
+    <div id="simple_stock_projection" class="report-details">
+      <%= form_for :report, :url=>simple_stock_projection_report_path do |f| %>
+        <%= f.label :days, "Días: ", :class=>'small' %> <%= f.text_field :days, :size=>15 %><br/><br/>
+        <%= f.check_box :by_factory_2, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
+        <%= f.collection_select :factory_id_2, @factories, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('lot_transactions') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#lot_transactions')">Movimientos por lote</h2>
@@ -365,20 +391,6 @@
       <%= form_for :report, :url=>lots_incomes_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('simple_stock_projection') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#simple_stock_projection')">Proyección de inventario</h2>
-    <div id="simple_stock_projection" class="report-details">
-      <%= form_for :report, :url=>simple_stock_projection_report_path do |f| %>
-        <%= f.label :days, "Días: ", :class=>'small' %> <%= f.text_field :days, :size=>15 %><br/><br/>
-        <%= f.check_box :by_factory_2, :checked=>false %> &nbsp; <label for="group">Filtrar por Fábrica</label><br/><br/>
-        <%= f.collection_select :factory_id_2, @factories, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -425,19 +437,6 @@
         <label for="client_id2" class="small">Cliente/Fábrica:</label>
         <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br /><br /><br />
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('sales') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#sales')">Ventas Mensuales</h2>
-    <div id="sales" class="report-details">
-      <%= form_for :report, :url=>sales_report_path(format: 'pdf') do |f| %>
-        <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %>
-<br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
