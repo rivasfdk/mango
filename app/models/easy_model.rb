@@ -91,7 +91,7 @@ class EasyModel
         total += amount
       end
       row
-    end
+    end.sort! { |r1, r2| r2[:total] <=> r1[:total] }
     data[:total] = total
     data
   end
