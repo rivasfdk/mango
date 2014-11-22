@@ -5,6 +5,7 @@
 //= require chosen.jquery
 //= require_tree .
 //= stub dynamic_clients
+//= stub jquery.flot.axislabels
 
 var clients = [];
 var lots = [];
