@@ -236,16 +236,13 @@ class ReportsController < ApplicationController
   def simple_stock
     content_type = params[:report][:content_type].to_i
     date = EasyModel.param_to_date(params[:report], 'date')
-	by_factory = params[:report][:by_factory_1].to_i
-    if by_factory != 0
-      factory_id = params[:report][:factory_id_1].to_i
-    else
-      factory_id = 0
-    end
+    by_factory = params[:report][:by_factory_1] == '1'
+    factory_id = params[:report][:factory_id_1]
+    factory_id = nil unless factory_id.present?
     if params[:report][:group] == '1'
-      data = EasyModel.simple_stock(content_type, factory_id, date)
+      data = EasyModel.simple_stock(content_type, by_factory, factory_id, date)
     else
-      data = EasyModel.simple_stock_per_lot(content_type, factory_id, date)
+      data = EasyModel.simple_stock_per_lot(content_type, by_factory, factory_id, date)
     end
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
@@ -255,18 +252,15 @@ class ReportsController < ApplicationController
       filename = (content_type == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
       report = EasyReport::Report.new data, 'simple_stock.yml'
       send_data report.render, :filename => filename, :type => "application/pdf"
-    end   
+    end
   end
 
   def simple_stock_projection
-	by_factory = params[:report][:by_factory_2].to_i
-	days = params[:report][:days]
-    if by_factory != 0
-      factory_id = params[:report][:factory_id_2].to_i
-    else
-      factory_id = 0
-    end
-    data = EasyModel.simple_stock_projection(factory_id, days)
+    days = params[:report][:days]
+    by_factory = params[:report][:by_factory_2] == '1'
+    factory_id = params[:report][:factory_id_2]
+    factory_id = nil unless factory_id.present?
+    data = EasyModel.simple_stock_projection(by_factory, factory_id, days)
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

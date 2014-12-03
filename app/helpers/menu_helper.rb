@@ -635,28 +635,28 @@ module MenuHelper
   end
 
   def menu_for_factories_index
-    menu = content_tag(:p, 'Fábricas')
+    menu = content_tag(:p, 'Maquilas')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Crear', 'Crear nueva fábrica', new_factory_path, 'button-add.png')
+      render_action('Crear', 'Crear nueva maquila', new_factory_path, 'button-add.png')
     )
     return menu
   end
 
   def menu_for_factories_new
-    menu = content_tag(:p, 'Nueva fábrica')
+    menu = content_tag(:p, 'Nueva maquila')
     menu += content_tag(:ul,
       render_back(factories_path) +
-      render_function('Guardar', 'Guardar fábrica', "submit_factory_new_form()", 'button-execute.png')
+      render_function('Guardar', 'Guardar maquila', "submit_factory_new_form()", 'button-execute.png')
     )
     return menu
   end
 
   def menu_for_factories_edit
-    menu = content_tag(:p, 'Editar fábrica')
+    menu = content_tag(:p, 'Editar maquila')
     menu += content_tag(:ul,
       render_back(factories_path) +
-      render_function('Actualizar', 'Actualizar fábrica', "submit_factory_edit_form()", 'button-execute.png')
+      render_function('Actualizar', 'Actualizar maquila', "submit_factory_edit_form()", 'button-execute.png')
     )
     return menu
   end

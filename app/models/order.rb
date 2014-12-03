@@ -273,6 +273,16 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def deep_destroy
+    transaction do
+      batch_ids = Batch.where(order_id: self.id).pluck(:id)
+      BatchHopperLot.where(batch_id: batch_ids).delete_all
+      Batch.where(id: batch_ids).delete_all
+      Alarm.where(order_id: self.id).delete_all
+      self.delete
+    end
+  end
+
   def self.generate_consumption(params, user_id)
     errors = []
     # Add some shitty error handling

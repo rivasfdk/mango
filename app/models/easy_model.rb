@@ -13,6 +13,7 @@ class EasyModel
       .order(:factory)
     return nil if clients.empty?
 
+    # WTF MAN?
     columns = [
       {title: 'P.Inic. (P.I.P)', condition: {recipes: {type_id: 1}}, total: 0},
       {title: 'Poll. (F1)', condition: {recipes: {type_id: 2}}, total: 0},
@@ -1643,7 +1644,7 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock_per_lot(content_type, factory_id, date)
+  def self.simple_stock_per_lot(content_type, by_factory, factory_id, date)
     title = (content_type == 1) ? 'Existencias de Materia Prima por lotes' : 'Existencias de Producto Terminado por lotes'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -1653,12 +1654,12 @@ class EasyModel
     if content_type == 1
       lots = Lot.joins(:ingredient)
       lots = lots.where(:active => true)
-      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.where(:client_id => factory_id) if by_factory
       lots = lots.order('ingredients.code, lots.code asc')
     else
       lots = ProductLot.joins(:product)
       lots = lots.where(:active => true)
-      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.where(:client_id => factory_id) if by_factory
       lots = lots.order('products.code, products_lots.code asc')
     end
     lots.each do |lot|
@@ -1680,7 +1681,7 @@ class EasyModel
     data
   end
 
-  def self.simple_stock(content_type, factory_id, date)
+  def self.simple_stock(content_type, by_factory, factory_id, date)
     title = (content_type == 1) ? 'Existencias de Materia Prima' : 'Existencias de Producto Terminado'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -1691,11 +1692,11 @@ class EasyModel
     if content_type == 1
       lots = Lot.order('code asc')
       lots = lots.where(:active => true)
-      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.where(:client_id => factory_id) if by_factory
     else
       lots = ProductLot.order('code asc')
       lots = lots.where(:active => true)
-      lots = lots.where(:client_id => factory_id) if factory_id != 0
+      lots = lots.where(:client_id => factory_id) if by_factory
     end
 
     return nil if lots.empty?
@@ -1727,7 +1728,7 @@ class EasyModel
     data
   end
 
-  def self.simple_stock_projection(factory_id, days)
+  def self.simple_stock_projection(by_factory, factory_id, days)
     days = days.to_i
     return nil if days <= 0
 
@@ -1736,7 +1737,7 @@ class EasyModel
     data['days'] = days.to_s
 
     lots = Lot.where(active: true)
-    lots = lots.where(client_id: factory_id) if factory_id != 0
+    lots = lots.where(client_id: factory_id) if by_factory
     stocks = lots.group(:ingredient_id).sum(:stock)
 
     return nil if stocks.empty?
@@ -1744,7 +1745,7 @@ class EasyModel
     today = Date.today
     batch_hopper_lots = BatchHopperLot.joins({hopper_lot: {lot: {ingredient: {}}}})
     batch_hopper_lots = batch_hopper_lots.joins(batch: {order: {}})
-                                         .where(orders: {client_id: factory_id}) if factory_id != 0
+                                         .where(orders: {client_id: factory_id}) if by_factory
     batch_hopper_lots = batch_hopper_lots.where(batch_hoppers_lots: {created_at: (today - days) .. today})
                                          .select('ingredients.id AS ingredient_id,
                                                   ingredients.code AS ingredient_code,

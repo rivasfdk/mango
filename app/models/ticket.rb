@@ -15,12 +15,6 @@ class Ticket < ActiveRecord::Base
   before_save :generate_number, if: :new_record?
   before_validation :set_transactions_attributes
 
-  def set_transactions_attributes
-    self.transactions.each do |t|
-      
-    end
-  end
-
   def generate_number
     ticket_number = TicketNumber.first
     self.number = ticket_number.number.succ

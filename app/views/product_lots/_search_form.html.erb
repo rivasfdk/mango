@@ -1,7 +1,7 @@
 <%= label_tag(:product_id, "Producto") %>
 <%= select_tag(:product_id, options_from_collection_for_select(@products, :id, :to_collection_select, params[:product_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
 <%= label_tag(:client_id, "Fábrica") %>
-<%= select_tag(:client_id, options_from_collection_for_select(@factories, :id, :name, params[:client_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+<%= select_tag(:client_id, options_for_select([[session[:company]['name'], -1]] + @factories.collect { |f| [f.name, f.id] }, params[:client_id]), :include_blank => "Todas", :class=>'chosen-select chzn-field-normal chzn-small') %>
 <br /><br />
 <%= submit_tag "Filtrar", :name => nil %>
 <%= link_to "Limpiar campos", product_lots_path %>

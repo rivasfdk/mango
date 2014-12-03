@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141120065004) do
+ActiveRecord::Schema.define(:version => 20141203023717) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -589,6 +589,9 @@ ActiveRecord::Schema.define(:version => 20141120065004) do
     t.integer  "order_id"
   end
 
+  add_index "transactions", ["content_id"], :name => "index_transactions_on_content_id"
+  add_index "transactions", ["content_type"], :name => "index_transactions_on_content_type"
+  add_index "transactions", ["created_at"], :name => "index_transactions_on_created_at"
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
 
   create_table "trucks", :force => true do |t|

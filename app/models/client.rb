@@ -4,7 +4,7 @@ class Client < ActiveRecord::Base
   has_many :tickets
   has_many :lots
   has_many :product_lots
-  has_many :hopper_factory_lots
+  has_many :hopper_factory_lots, dependent: :destroy
 
   validates :ci_rif, uniqueness: true
   validates :code, uniqueness: {scope: :factory}
@@ -26,7 +26,7 @@ class Client < ActiveRecord::Base
   end
 
   def to_collection_select
-    client_type = self.factory ? "(F)" : "(C)"
+    client_type = self.factory ? "(M)" : "(C)"
     return "#{self.name} #{client_type}"
   end
 end
