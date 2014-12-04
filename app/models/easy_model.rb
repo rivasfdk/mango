@@ -1745,7 +1745,7 @@ class EasyModel
     today = Date.today
     batch_hopper_lots = BatchHopperLot.joins({hopper_lot: {lot: {ingredient: {}}}})
     batch_hopper_lots = batch_hopper_lots.joins(batch: {order: {}})
-                                         .where(orders: {client_id: factory_id}) if by_factory
+                                         .where(orders: {client_id: factory_id}) if by_factory and factory_id.present?
     batch_hopper_lots = batch_hopper_lots.where(batch_hoppers_lots: {created_at: (today - days) .. today})
                                          .select('ingredients.id AS ingredient_id,
                                                   ingredients.code AS ingredient_code,

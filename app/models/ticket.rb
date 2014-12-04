@@ -13,7 +13,6 @@ class Ticket < ActiveRecord::Base
   validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
   validates_numericality_of :provider_weight, :allow_nil => true
   before_save :generate_number, if: :new_record?
-  before_validation :set_transactions_attributes
 
   def generate_number
     ticket_number = TicketNumber.first

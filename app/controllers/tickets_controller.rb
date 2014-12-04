@@ -33,6 +33,7 @@ class TicketsController < ApplicationController
         t.sacks = nil
         t.sack_weight = nil
       end
+      t.amount = t.amount_was if t.marked_for_destruction?
     end
     if @ticket.valid?
       @ticket.transactions.each do |t|
