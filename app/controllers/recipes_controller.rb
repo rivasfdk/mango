@@ -61,6 +61,7 @@ class RecipesController < ApplicationController
     
     @ingredients = Ingredient.all
     @products = Product.all
+    @types = Recipe::TYPES
     render :edit
   end
 
