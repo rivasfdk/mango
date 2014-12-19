@@ -3,6 +3,8 @@
 <%= render_error_messages(f.error_messages) %>
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
 <div class="field"><%=h @ticket.ticket_type.description %></div>
+<label for="client_id" class="small">Cliente/Maquila:</label>
+<div class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="driver_id" class="small">Chofer:</label>
 <div class="field"><%=h @ticket.driver.name %></div>
 <label for="truck_id" class="small">Camión:</label>

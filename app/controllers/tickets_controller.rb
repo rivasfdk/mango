@@ -19,6 +19,7 @@ class TicketsController < ApplicationController
   def repair
     @ticket = Ticket.find params[:id], :include => :transactions
     @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
   end
 
   def do_repair
