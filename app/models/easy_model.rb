@@ -2,15 +2,23 @@ include MangoModule
 include Rails.application.routes.url_helpers
 
 class EasyModel
-  def self.sales(month)
-    return nil if month.nil?
-    start_date = month.beginning_of_month
-    end_date = month.end_of_month
+  def self.sales(params)
+    by_month = params[:date_type] == '1'
+    if by_month
+      month = EasyModel.param_to_date(params, 'month')
+      return nil if month.nil?
+      start_date = month.beginning_of_month
+      end_date = month.end_of_month
+    else
+      start_date = EasyModel.param_to_date(params, 'start')
+      end_date = EasyModel.param_to_date(params, 'end')
+    end
 
     clients = Client
       .includes(:order)
       .where(orders: {created_at: (start_date .. end_date)})
       .order(:factory)
+    clients = clients.where(id: params[:clients_ids]) if params[:by_clients] == '1'
     return nil if clients.empty?
 
     # WTF MAN?
@@ -28,7 +36,9 @@ class EasyModel
     ]
 
     data = self.initialize_data('Reporte mensual de ventas')
-    data[:month] = start_date
+    data[:since] = start_date
+    data[:until] = end_date
+    data[:by_month] = by_month
 
     start_stock_total = 0
     end_stock_total = 0

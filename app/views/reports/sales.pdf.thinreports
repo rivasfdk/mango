@@ -11,6 +11,9 @@ columns = @data[:columns]
 total = @data[:total]
 start_stock_total = @data[:start_stock_total]
 end_stock_total = @data[:end_stock_total]
+since = @data[:since]
+_until = @data[:until]
+by_month = @data[:by_month]
 
 report.layout.config.list(:results) do
   events.on :footer_insert do |e|
@@ -22,6 +25,15 @@ report.layout.config.list(:results) do
     e.section.item(:total).value(total.round(2))
     e.section.item(:start_stock_total).value(start_stock_total.round(2))
     e.section.item(:end_stock_total).value(end_stock_total.round(2))
+    if by_month
+      since_text = I18n.localize(since - 1.day, format: '%B %Y').capitalize
+      until_text = I18n.localize(since, format: '%B %Y').capitalize
+    else
+      since_text = EasyModel.print_formatted_date(since)
+      until_text = EasyModel.print_formatted_date(_until)
+    end
+    e.section.item(:since).value(since_text)
+    e.section.item(:until).value(until_text)
   end
 end
 
@@ -31,8 +43,12 @@ report.start_new_page do |page|
   page.values company_rif: @data['company_rif']
   page.values company_logo: @data['company_logo']
   page.values title: @data['title']
-  page.values month: I18n.localize(@data[:month], format: '%B %Y').capitalize
-
+  if @data[:by_month]
+    page.values since: I18n.localize(since, format: '%B %Y').capitalize
+  else
+    page.values since: EasyModel.print_formatted_date(since)
+    page.values until: EasyModel.print_formatted_date(_until)
+  end
   table = report.list(:results)
   table.header do |header|
     @data[:columns].each_with_index do |column, index|

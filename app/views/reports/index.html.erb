@@ -28,10 +28,23 @@
 
   <% if session[:reports_permissions].include?('sales') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('#sales')">Ventas Mensuales</h2>
+    <h2 onclick="toggle_report_details('#sales')">Ventas</h2>
     <div id="sales" class="report-details">
       <%= form_for :report, :url=>sales_report_path(format: 'pdf') do |f| %>
-        <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %><br/><br/><br/>
+        <%= f.radio_button :date_type, 1, :checked => true %> Por mes
+        <%= f.radio_button :date_type, 2%> Por rango de fecha<br/><br/>
+        <div id="by_month">
+          <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %><br/><br/><br/>
+        </div>
+        <div id="by_range">
+          <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+          <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        </div>
+        <%= f.check_box :by_clients, :checked=>false %> &nbsp; <label for="group">Filtrar por clientes</label><br/><br/>
+        <div id="clients_form">
+          <label for="clients_ids" class="small">Clientes:</label>
+          <%= f.collection_select :clients_ids, @clients, :id, :to_collection_select, {selected: @sales_preselected_clients_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/>
+        </div>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -255,7 +268,7 @@
            <%= f.label :start_month, "Mes Inicio: ", :class=>'small' %> <%= f.date_select :start_month, discard_day: true %><br/><br/>
            <%= f.label :end_month, "Mes Fin: ", :class=>'small' %> <%= f.date_select :end_month, discard_day: true %><br/><br/>
         </div>
-        <%= f.check_box :by_ingredients, :checked=>false %> &nbsp; <label for="group">Filtrar por ingredientes</label><br/><br/>
+        <%= f.check_box :by_ingredients, :checked => false %> &nbsp; <label for="group">Filtrar por ingredientes</label><br/><br/>
         <div id="ingredients_form">
           <label for="ingredients_ids" class="small">Ingredientes:</label>
           <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @icwp_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/>

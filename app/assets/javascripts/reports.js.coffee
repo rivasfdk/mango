@@ -47,10 +47,18 @@ by_recipe_2_changed = ->
 by_ingredients_changed = ->
   $('#ingredients_form').toggle($('#report_by_ingredients').is(':checked'))
 
+by_clients_changed = ->
+  $('#clients_form').toggle($('#report_by_clients').is(':checked'))
+
+date_type_changed = ->
+  by_month = $('#report_date_type_1').is(':checked')
+  $('#by_month').toggle(by_month)
+  $('#by_range').toggle(!by_month)
+
 time_range_changed = ->
   weeks_checked = $('#report_time_unit_1').is(':checked')
   $('#weeks_form').toggle(weeks_checked)
-  $('#months_form').toggle(not weeks_checked)
+  $('#by_range').toggle(not weeks_checked)
 
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
@@ -65,6 +73,9 @@ $ ->
   $('#report_by_recipe').change by_recipe_changed
   $('#report_by_recipe_2').change by_recipe_2_changed
   $('#report_by_ingredients').change by_ingredients_changed
+  $('#report_by_clients').change by_clients_changed
+  $('#report_date_type_1').change date_type_changed
+  $('#report_date_type_2').change date_type_changed
   $('#report_time_unit_1').change time_range_changed
   $('#report_time_unit_2').change time_range_changed
   return
