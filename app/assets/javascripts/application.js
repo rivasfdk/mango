@@ -33,6 +33,7 @@ $(function(){
     $('#report_by_recipe_2').trigger('change');
     $('#report_by_ingredients').trigger('change');
     $('#report_by_clients').trigger('change');
+    $('#report_by_products').trigger('change');
     $('#report_date_type_1').trigger('change');
     $('#report_time_unit_1').trigger('change');
     hideProductLots();

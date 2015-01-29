@@ -50,6 +50,9 @@ by_ingredients_changed = ->
 by_clients_changed = ->
   $('#clients_form').toggle($('#report_by_clients').is(':checked'))
 
+by_products_changed = ->
+  $('#products_form').toggle($('#report_by_products').is(':checked'))
+
 date_type_changed = ->
   by_month = $('#report_date_type_1').is(':checked')
   $('#by_month').toggle(by_month)
@@ -70,10 +73,12 @@ $ ->
   $('#report_lot_type_1').change lot_type_changed
   $('#report_lot_type_2').change lot_type_changed
   $('.ingredients-select').chosen($.extend(chosen_params, {max_selected_options: 12}))
+  $('.multiple-select').chosen($.extend(chosen_params))
   $('#report_by_recipe').change by_recipe_changed
   $('#report_by_recipe_2').change by_recipe_2_changed
   $('#report_by_ingredients').change by_ingredients_changed
   $('#report_by_clients').change by_clients_changed
+  $('#report_by_products').change by_products_changed
   $('#report_date_type_1').change date_type_changed
   $('#report_date_type_2').change date_type_changed
   $('#report_time_unit_1').change time_range_changed

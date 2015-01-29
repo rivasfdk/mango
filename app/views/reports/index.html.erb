@@ -43,7 +43,12 @@
         <%= f.check_box :by_clients, :checked=>false %> &nbsp; <label for="group">Filtrar por clientes</label><br/><br/>
         <div id="clients_form">
           <label for="clients_ids" class="small">Clientes:</label>
-          <%= f.collection_select :clients_ids, @clients, :id, :to_collection_select, {selected: @sales_preselected_clients_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/>
+          <%= f.collection_select :clients_ids, @clients, :id, :to_collection_select, {selected: @sales_preselected_clients_ids}, {multiple: true, class: 'multiple-select chzn-field-max'} %><br/><br/>
+        </div>
+        <%= f.check_box :by_products, :checked=>false %> &nbsp; <label for="group">Filtrar por producto</label><br/><br/>
+        <div id="products_form">
+          <label for="recipe_types_ids" class="small">Productos:</label>
+          <%= f.collection_select :recipe_types_ids, @recipe_types, :first, :second, {selected: @sales_preselected_recipe_types_ids}, {multiple: true, class: 'multiple-select chzn-field-max'} %><br/><br/>
         </div>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

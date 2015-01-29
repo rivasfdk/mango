@@ -26,6 +26,9 @@ class ReportsController < ApplicationController
       .where(report: 'ingredient_consumption_with_plot')
       .pluck(:ingredient_id)
     @preselected_recipe_codes = PreselectedRecipeCode.where(user_id: session[:user_id]).pluck(:recipe_code)
+    recipe_types = Recipe::TYPES
+    recipe_types.delete(0)
+    @recipe_types = recipe_types
   end
 
   def daily_production

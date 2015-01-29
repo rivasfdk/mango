@@ -21,7 +21,9 @@ class EasyModel
     clients = clients.where(id: params[:clients_ids]) if params[:by_clients] == '1'
     return nil if clients.empty?
 
-    # WTF MAN?
+    by_products = params[:by_products] == '1'
+
+    # TODO Usar modelo
     columns = [
       {title: 'P.Inic. (P.I.P)', condition: {recipes: {type_id: 1}}, total: 0},
       {title: 'Poll. (F1)', condition: {recipes: {type_id: 2}}, total: 0},
@@ -34,6 +36,18 @@ class EasyModel
       {title: 'Cerdos', condition: {recipes: {type_id: 9}}, total: 0},
       {title: 'Vacunos', condition: {recipes: {type_id: 10}}, total: 0},
     ]
+    if by_products
+      selected_columns = params[:recipe_types_ids].reduce([]) do |selected_columns, recipe_type|
+        recipe_type_id = recipe_type.to_i
+        if recipe_type_id != 0
+          selected_columns << columns[recipe_type_id - 1]
+        end
+        selected_columns
+      end
+      columns = selected_columns
+    end
+    return if columns.empty?
+    # TODO
 
     data = self.initialize_data('Reporte mensual de ventas')
     data[:since] = start_date
