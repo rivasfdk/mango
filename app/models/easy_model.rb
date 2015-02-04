@@ -1002,7 +1002,7 @@ class EasyModel
         end
         sacks = "-"
         sack_weight = "-"
-        if t.sack
+        if transaction.sack
           sacks = transaction.sacks.to_s
           sack_weight = transaction.sack_weight.to_s + " Kg"
         end

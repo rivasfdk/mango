@@ -6,7 +6,7 @@
 <label for="client_id" class="small">Cliente/Maquila:</label>
 <div class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="driver_id" class="small">Chofer:</label>
-<div class="field"><%=h @ticket.driver.name %></div>
+<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="truck_id" class="small">Camión:</label>
 <div class="field"><%=h "#{@ticket.truck.license_plate} - #{@ticket.truck.carrier.name}" %></div>
 <label for="incoming_date" class="small">Fecha entrada:</label>

@@ -20,6 +20,10 @@ class TicketsController < ApplicationController
     @ticket = Ticket.find params[:id], :include => :transactions
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
   end
 
   def do_repair
