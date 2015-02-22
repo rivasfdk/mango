@@ -44,11 +44,17 @@ by_recipe_changed = ->
 by_recipe_2_changed = ->
   $('#recipe_form').toggle($('#report_by_recipe_2').is(':checked'))
 
+by_recipe_3_changed = ->
+  $('#recipe_form').toggle($('#report_by_recipe_3').is(':checked'))
+
 by_ingredients_changed = ->
   $('#ingredients_form').toggle($('#report_by_ingredients').is(':checked'))
 
 by_clients_changed = ->
-  $('#clients_form').toggle($('#report_by_clients').is(':checked'))
+  $('#clients_form').toggle($('#report_by_client').is(':checked'))
+
+by_client_changed = ->
+  $('#client_form').toggle($('#report_by_client').is(':checked'))
 
 by_products_changed = ->
   $('#products_form').toggle($('#report_by_products').is(':checked'))
@@ -76,8 +82,10 @@ $ ->
   $('.multiple-select').chosen($.extend(chosen_params))
   $('#report_by_recipe').change by_recipe_changed
   $('#report_by_recipe_2').change by_recipe_2_changed
+  $('#report_by_recipe_3').change by_recipe_3_changed
   $('#report_by_ingredients').change by_ingredients_changed
   $('#report_by_clients').change by_clients_changed
+  $('#report_by_client').change by_client_changed
   $('#report_by_products').change by_products_changed
   $('#report_date_type_1').change date_type_changed
   $('#report_date_type_2').change date_type_changed

@@ -153,6 +153,26 @@ report:
               perc_num: var_kg
               perc_dem: std_kg
               precision: 2
+          7:
+            var_perc:
+              label: Inc Est %
+              align: right
+              unit: '%'
+              width: 20
+              perc_totalize: true
+              perc_num: var_kg
+              perc_dem: std_kg
+              precision: 2
+          8:
+            var_perc:
+              label: Inc Real %
+              align: right
+              unit: '%'
+              width: 20
+              perc_totalize: true
+              perc_num: var_kg
+              perc_dem: std_kg
+              precision: 2
     10:
       breakline:
   footer:

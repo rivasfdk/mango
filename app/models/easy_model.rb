@@ -1060,7 +1060,13 @@ class EasyModel
     return data
   end
 
-  def self.daily_production(start_date, end_date)
+  def self.daily_production(params)
+    start_date = EasyModel.param_to_date(params, 'start')
+    end_date = EasyModel.param_to_date(params, 'end')
+
+    by_client = params[:by_client] == '1'
+    by_recipe = params[:by_recipe_3] == '1'
+
     batch_hopper_lots = BatchHopperLot
       .joins({batch: {order: {recipe: {}, client: {}}}})
       .select('orders.code AS order_code,
@@ -1074,7 +1080,12 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std')
       .where(orders: {created_at: start_date .. end_date + 1.day})
-      .group('batches.order_id')
+
+    batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_2]}}) if by_client
+    batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_2]}}) if by_recipe
+
+    batch_hopper_lots = batch_hopper_lots.group('batches.order_id')
+
     return nil if batch_hopper_lots.empty?
 
     data = self.initialize_data('Produccion Diaria por Fabrica')
