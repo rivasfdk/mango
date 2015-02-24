@@ -216,7 +216,8 @@
     <h2 onclick="toggle_report_details('#production_and_ingredient_distribution')">Producción y distribución por materia prima</h2>
     <div id="production_and_ingredient_distribution" class="report-details">
       <%= form_for :report, :url=>production_and_ingredient_distribution_report_path(format: 'pdf') do |f| %>
-        <%= f.label :date, "Fecha: ", :class=>'small' %> <%= f.text_field :date, class: 'datepicker' %><br /><br />
+        <%= f.label :start_date, "Fecha Inicio: ", :class=>'small' %> <%= f.text_field :start_date, class: 'datepicker' %><br /><br />
+        <%= f.label :end_date, "Fecha Fin: ", :class=>'small' %> <%= f.text_field :end_date, class: 'datepicker' %><br /><br />
         <label for="ingredients_codes" class="small">Ingredientes:</label>
         <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %>
         <br/><br/>

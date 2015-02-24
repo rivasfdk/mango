@@ -567,12 +567,7 @@ class ReportsController < ApplicationController
   end
 
   def production_and_ingredient_distribution
-    date = EasyModel.parse_date(params[:report][:date])
-    ingredients_ids = params[:report][:ingredients_ids]
-    recipe_codes = params[:report][:recipe_codes]
-    by_recipe = params[:report][:by_recipe] == "1"
-
-    @data = EasyModel.production_and_ingredient_distribution(date, ingredients_ids, recipe_codes, by_recipe, session[:user_id])
+    @data = EasyModel.production_and_ingredient_distribution(params[:report], session[:user_id])
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
