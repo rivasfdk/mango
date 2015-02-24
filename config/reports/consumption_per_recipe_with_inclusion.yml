@@ -2,7 +2,7 @@ report:
   settings:
     page:
       size: Letter
-      orientation: p
+      orientation: L
       margins: 15
     style:
       font_family: 'Helvetica'
@@ -49,7 +49,7 @@ report:
       text:
         label: "Desde: "
         align: right
-        width: 120
+        width: 180
         breakline: 0
         style:
           font_weight: B
@@ -62,7 +62,7 @@ report:
       text:
         label: "Hasta: "
         align: right
-        width: 120
+        width: 180
         breakline: 0
         style:
           font_weight: B
@@ -75,7 +75,7 @@ report:
       text:
         label: "Receta: "
         align: right
-        width: 120
+        width: 180
         breakline: 0
         style:
           font_weight: B
@@ -113,7 +113,7 @@ report:
             ingredient_code:
               label: Codigo
               align: left
-              width: 25
+              width: 20
           2:
             ingredient_name:
               label: Ingrediente
@@ -152,6 +152,22 @@ report:
               perc_totalize: true
               perc_num: var_kg
               perc_dem: std_kg
+              precision: 2
+          7:
+            std_incl:
+              label: Inc Est %
+              align: right
+              unit: '%'
+              width: 20
+              totalize: true
+              precision: 2
+          8:
+            real_incl:
+              label: Inc Real %
+              align: right
+              unit: '%'
+              width: 20
+              totalize: true
               precision: 2
     10:
       breakline:

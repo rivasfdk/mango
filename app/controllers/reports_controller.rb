@@ -17,6 +17,7 @@ class ReportsController < ApplicationController
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
+    @ingredient_inclusion_enabled = mango_features.include?("ingredient_inclusion")
     @pid_preselected_ingredient_ids = PreselectedIngredientId
       .where(user_id: session[:user_id])
       .where(report: 'production_and_ingredient_distribution')
@@ -123,18 +124,21 @@ class ReportsController < ApplicationController
   end
 
   def consumption_per_recipe
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel
-      .consumption_per_recipe(start_date, end_date,
-                              params[:report][:recipe_code])
+    data = EasyModel.consumption_per_recipe(params[:report])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_recipe_real.yml' : 'consumption_per_recipe.yml'
+      include_real = params[:report][:include_real] == "1"
+      ingredient_inclusion = params[:report][:ingredient_inclusion] == "1"
+      if include_real
+        template_name = 'consumption_per_recipe_real.yml'
+      elsif ingredient_inclusion
+        template_name = 'consumption_per_recipe_with_inclusion.yml'
+      else
+        template_name = 'consumption_per_recipe.yml'
+      end
       report = EasyReport::Report.new data, template_name
       send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
     end

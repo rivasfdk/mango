@@ -1405,7 +1405,12 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_recipe(start_date, end_date, recipe_code)
+  def self.consumption_per_recipe(params)
+    start_date = EasyModel.param_to_date(params, 'start_date')
+    end_date = EasyModel.param_to_date(params, 'end_date')
+    recipe_code = params[:recipe_code]
+    ingredient_inclusion = params[:ingredient_inclusion] == '1'
+
     recipe = Recipe.find_by_code recipe_code
     return nil if recipe.nil?
 
@@ -1430,23 +1435,33 @@ class EasyModel
 
     return nil if batch_hopper_lots.empty?
 
+    total_real = 0
+    total_std = 0
+
     batch_hopper_lots.each do |bhl|
       next if bhl[:total_std] == 0
       var_kg = bhl[:total_real] - bhl[:total_std]
       var_perc = var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
       loss_perc = (loss * 100.0) / bhl[:total_real]
+      total_real += bhl[:total_real]
+      total_std += bhl[:total_std]
       data['results'] << {
         'ingredient_code' => bhl[:ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'std_kg' => bhl[:total_std].to_s,
-        'real_kg' => bhl[:total_real].to_s,
-        'real_real_kg' => bhl[:total_real_real].to_s,
+        'std_kg' => bhl[:total_std],
+        'real_kg' => bhl[:total_real],
+        'real_real_kg' => bhl[:total_real_real],
         'var_kg' => var_kg,
         'var_perc' => var_perc,
         'loss' => loss,
         'loss_perc' => loss_perc
       }
+    end
+
+    data['results'].each do |result|
+      result['std_incl'] = result['std_kg'] / total_std * 100
+      result['real_incl'] = result['real_kg'] / total_real * 100
     end
 
     return data
