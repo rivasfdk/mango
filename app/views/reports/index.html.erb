@@ -24,6 +24,30 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('daily_production_details') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#daily_production_details')">Producción Diaria en detalle</h2>
+    <div id="daily_production_details" class="report-details">
+      <%= form_for :report, :url=>daily_production_details_report_path(format: 'pdf') do |f| %>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.check_box :by_client_2, :checked=>false %> &nbsp; <label for="group">Filtrar por cliente</label><br/><br/>
+        <div id="client_form_2">
+          <label for="client_id_3" class="small">Cliente:</label>
+            <%= f.collection_select :client_id_3, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
+        </div>
+        <br />
+        <%= f.check_box :by_recipe_4, :checked=>false %> &nbsp; <label for="group">Filtrar por receta</label><br/><br/>
+        <div id="recipe_form_2">
+          <label for="recipe_code_3" class="small">Receta:</label>
+          <%= f.collection_select :recipe_code_3, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
+        </div>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('real_production') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#real_production')">Producción Físico</h2>
@@ -123,7 +147,7 @@
   <div class="report-content">
     <h2 onclick="toggle_report_details('#order_details')">Detalles de Orden de Producción</h2>
     <div id="order_details" class="report-details">
-      <%= form_for :report, :url=>order_details_report_path do |f| %>
+      <%= form_for :report, :url=>order_details_report_path(format: 'pdf') do |f| %>
         <%= f.label :order, "Nro. Orden: ", :class=>'small' %> <%= f.text_field :order, :size=>15 %><br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

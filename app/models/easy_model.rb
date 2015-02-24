@@ -347,7 +347,6 @@ class EasyModel
       .group('recipes.code')
       .select('recipes.code, recipes.name, recipes.internal_consumption')
       .where(orders: {created_at: (start_week .. end_week + 1.week)})
-      .where(recipes: {active: true})
       .order('recipes.internal_consumption desc, recipes.code asc')
       .reduce({}) do |recipes, recipe|
         recipes[recipe[:code].to_sym] = {
@@ -1242,6 +1241,32 @@ class EasyModel
     return data
   end
 
+  def self.daily_production_details(params)
+    start_date = EasyModel.param_to_date(params, 'start')
+    end_date = EasyModel.param_to_date(params, 'end')
+
+    by_client = params[:by_cilent] == '1'
+    by_recipe = params[:by_recipe] == '1'
+
+    orders = Order.joins(:recipe).where(created_at: start_date .. end_date + 1)
+    orders = orders.where(client_id: params[:client_id]) if by_client
+    orders = orders.where(recipes: {code: params[:recipe_code]}) if by_recipe
+    order_codes = orders.pluck(:code)
+
+    return nil if orders.empty?
+
+    data = self.initialize_data('Producción diaria con detalle')
+    data[:since] = self.print_range_date(start_date)
+    data[:until] = self.print_range_date(end_date)
+    data[:datas] = []
+
+    order_codes.each do |order_code|
+      data[:datas] << order_details(order_code)
+    end
+
+    data
+  end
+
   def self.order_details(order_code)
     @order = Order.find_by_code order_code, :include => {:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}, :client => {}}
     return nil if @order.nil?
@@ -1300,10 +1325,10 @@ class EasyModel
         }
       end
     end
-    
+
     total_std = 0
     total_real = 0
-    
+
     details.each do |key, value|
       total_std += value['std_kg']
       total_real += value['real_kg']

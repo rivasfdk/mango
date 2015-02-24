@@ -1,0 +1,69 @@
+@data[:datas].each do |data|
+  report.set_layout tlf: 'reports/thinreports_layouts/order_details'
+
+  report.events.on :generate do |e|
+    e.pages.each do |page|
+      page.item(:page).value(page.no)
+      page.item(:page_total).value(report.page_count)
+    end
+  end
+
+  report.layout.config.list(:results) do
+    use_stores total_std: '', total_real: '', total_var_kg: '', total_var_perc: '', comment: ''
+
+    events.on :footer_insert do |e|
+      e.section.item(:total_std).value(e.store.total_std)
+      e.section.item(:total_real).value(e.store.total_real)
+      e.section.item(:total_var_kg).value(e.store.total_var_kg)
+      e.section.item(:total_var_perc).value(e.store.total_var_perc)
+      e.section.item(:comment).value(e.store.comment)
+    end
+  end
+
+  report.start_new_page do |page|
+    page.values company_name: data['company_name']
+    page.values company_address: data['company_address']
+    page.values company_rif: data['company_rif']
+    page.values company_logo: data['company_logo']
+    page.values footer: data['footer']
+    page.values title: data['title']
+    page.values since: @data[:since]
+    page.values until: @data[:until]
+
+    page.item(:date_hide).visible(false)
+
+    table = report.list(:results)
+
+    table.header do |header|
+      header.item(:order_code).value(data['order'])
+      header.item(:product).value(data['product'])
+      header.item(:client).value(data['client'])
+      header.item(:recipe).value(data['recipe'])
+      header.item(:version).value(data['version'])
+      header.item(:start_date).value(data['start_date'])
+      header.item(:end_date).value(data['end_date'])
+      header.item(:prog_batches).value(data['prog_batches'])
+      header.item(:real_batches).value(data['real_batches'])
+      header.item(:product_total).value(data['product_total'])
+      header.item(:real_production).value(data['real_production'])
+      header.item(:repaired).value(data['repaired'])
+    end
+
+    data['results'].each do |result|
+      table.add_row ingredient_code: result['code'],
+                    ingredient_name: result['ingredient'],
+                    lot_code: result['lot'],
+                    total_std: result['std_kg'].round(2).to_s + ' Kg',
+                    total_real: result['real_kg'].round(2).to_s + ' Kg',
+                    var_kg: result['var_kg'].round(2).to_s + ' Kg',
+                    var_perc: result['var_perc'].round(2).to_s + ' %',
+                    hopper_name: result['hopper']
+    end
+
+    table.store.total_std = data['total_std'].round(2).to_s + ' Kg'
+    table.store.total_real = data['total_real'].round(2).to_s + ' Kg'
+    table.store.total_var_kg = data['total_var'].round(2).to_s + ' Kg'
+    table.store.total_var_perc = data['total_var_perc'].round(2).to_s + ' %'
+    table.store.comment = data['comment']
+  end
+end
