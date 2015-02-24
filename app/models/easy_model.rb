@@ -1259,15 +1259,18 @@ class EasyModel
     start_date = EasyModel.param_to_date(params, 'start')
     end_date = EasyModel.param_to_date(params, 'end')
 
-    by_client = params[:by_cilent] == '1'
-    by_recipe = params[:by_recipe] == '1'
+    by_client = params[:by_client_2] == "1"
+    Rails.logger.debug "Cliente: #{by_client}"
+    by_recipe = params[:by_recipe_4] == "1"
 
-    orders = Order.joins(:recipe).where(created_at: start_date .. end_date + 1)
-    orders = orders.where(client_id: params[:client_id]) if by_client
-    orders = orders.where(recipes: {code: params[:recipe_code]}) if by_recipe
+    orders = Order.joins(:recipe).where(orders: {created_at: start_date .. end_date + 1})
+    orders = orders.where({orders: {client_id: params[:client_id_3]}}) if by_client
+    orders = orders.where(recipes: {code: params[:recipe_code_3]}) if by_recipe
     order_codes = orders.pluck(:code)
 
     return nil if orders.empty?
+
+    return {total_orders: orders.size} if orders.size > 200
 
     data = self.initialize_data('Producción diaria con detalle')
     data[:since] = self.print_range_date(start_date)

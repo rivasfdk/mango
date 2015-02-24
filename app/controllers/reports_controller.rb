@@ -50,6 +50,10 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
+    elsif @data.has_key? :total_orders
+      flash[:notice] = "El numero de ordenes totales excede el límite de 200 (Se encontraron #{@data[:total_orders]} ordenes)"
+      flash[:type] = 'error'
+      redirect_to :action => 'index'
     end
   end
 
