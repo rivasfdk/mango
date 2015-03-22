@@ -825,7 +825,7 @@ class EasyModel
       }
       total_amount += t.amount
     end
-    data['total_amount'] = total_amount.to_s(2) + " Kg"
+    data['total_amount'] = total_amount.to_s + " Kg"
 
     return data
   end
