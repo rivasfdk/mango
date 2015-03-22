@@ -760,14 +760,15 @@ class EasyModel
     return nil if @ticket.open?
 
     data = self.initialize_data("Ticket #{@ticket.number} - #{@ticket.ticket_type.code}")
+    data['short_title'] = "Ticket de #{@ticket.ticket_type.code} Romana"
 
     data['number'] = @ticket.number
     data['incoming_date'] = @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S")
     data['outgoing_date'] = @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S")
     if @ticket.ticket_type_id == 1 # Reception ticket
-      data['client_title'] = 'Proveedor:'
+      data['client_title'] = 'Origen:'
     else # Dispatch ticket
-      data['client_title'] = 'Cliente:'
+      data['client_title'] = 'Destino:'
     end
 
     data['client_code'] = @ticket.client.code
@@ -800,27 +801,17 @@ class EasyModel
     end
 
     # I fucking hate easyreport
+    data['comment'] = @ticket.comment
     comments = @ticket.comment.split(/\n/)
-    if comments[0]
-      data['comment1'] = comments[0]
-    end
-    if comments[1]
-      data['comment2'] = comments[1]
-    end
-    if comments[2]
-      data['comment3'] = comments[2]
-    end
-    if comments[3]
-      data['comment4'] = comments[3]
-    end
-    if comments[4]
-      data['comment5'] = comments[4]
+    comments.each_with_index do |comment, index|
+      data["comment#{index + 1}"] = comment
     end
 
     data['transactions'] = []
+    total_amount = 0
     @ticket.transactions.each do |t|
-      sacks = "-"
-      sack_weight = "-"
+      sacks = ""
+      sack_weight = ""
       if t.sack
         sacks = t.sacks.to_s
         sack_weight = t.sack_weight.to_s + " Kg"
@@ -832,7 +823,9 @@ class EasyModel
         'sack_weight' => sack_weight,
         'amount' => t.amount
       }
+      total_amount += t.amount
     end
+    data['total_amount'] = total_amount.to_s(2) + " Kg"
 
     return data
   end

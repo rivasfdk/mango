@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class TicketsController < ApplicationController
   def index
     respond_to do |format|
@@ -95,14 +97,22 @@ class TicketsController < ApplicationController
   end
 
   def print
-    data = EasyModel.ticket params[:id]
-    if data.nil?
+    @data = EasyModel.ticket params[:id]
+    if @data.nil?
       flash[:notice] = 'El ticket se encuentra abierto'
       flash[:type] = 'warn'
       redirect_to action: 'index'
     else
-      report = EasyReport::Report.new data, 'ticket.yml'
-      send_data report.render, filename: "ticket_#{data['number']}.pdf", type: "application/pdf"
+      ticket_template = get_mango_field('ticket_template')
+      if ticket_template 
+        @data[:ticket_template] = ticket_template
+        logger.debug("Antes")
+        rendered = render_to_string formats: [:pdf]
+        logger.debug("Despues")
+      else
+        rendered = EasyReport::Report.new(@data, 'ticket.yml').render
+      end
+      send_data rendered, filename: "ticket_#{@data['number']}.pdf", type: "application/pdf"
     end
   end
 

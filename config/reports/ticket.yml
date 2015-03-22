@@ -180,7 +180,6 @@ report:
         field: incoming_weight
         width: 40
         breakline: 0
-        
     18:
       text:
         field: outgoing_weight
@@ -284,7 +283,6 @@ report:
       text:
         field: driver_name
         width: -10
-        
     38: 
       text:
         field: user_name

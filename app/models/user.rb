@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   end
 
   def allow_manual
+    return true if self.role_id == 1
     self.role.permissions.find(:all, :conditions => {:module => "tickets", :action => "manual"}).any?
   end
 
