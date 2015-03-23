@@ -9,6 +9,12 @@ class IngredientsController < ApplicationController
                    :order => ['stock_below_minimum desc']
   end
   
+  def get_all
+    @ingredients = Ingredient.includes(:ingredient)
+      .order('id desc')
+    render json: @ingredients, methods: [:to_collection_select], root: false
+  end
+
   def new
     @transactions_enabled = is_mango_feature_available("transactions")
   end

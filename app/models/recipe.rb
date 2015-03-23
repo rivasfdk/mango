@@ -19,6 +19,8 @@ class Recipe < ActiveRecord::Base
   has_many :order
   belongs_to :product
 
+  accepts_nested_attributes_for :ingredient_recipe, allow_destroy: true, reject_if: lambda { |ir| t[:ingredient_id].blank? }
+
   validates :name, :code, :product, presence: true
   validates :name, length: {within: 3..40}
 

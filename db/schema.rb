@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150323151355) do
+ActiveRecord::Schema.define(:version => 20150323161710) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -188,6 +188,7 @@ ActiveRecord::Schema.define(:version => 20150323151355) do
     t.integer  "base_unit_id"
     t.float    "minimum_stock",       :default => 0.0,   :null => false
     t.boolean  "stock_below_minimum", :default => false, :null => false
+    t.boolean  "active",              :default => true,  :null => false
   end
 
   create_table "ingredients_medicaments_recipes", :force => true do |t|
