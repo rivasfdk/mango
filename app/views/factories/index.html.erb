@@ -19,7 +19,7 @@
         <td><%=h f.name %></td>
         <td>
           <%= render_action_edit(edit_factory_path(f)) %>
-          <%= render_action_delete(factory_path(f), "Desea borrar la fábrica '#{f.name}'?") %>
+          <%= render_action_delete(factory_path(f), "Desea borrar la maquila '#{f.name}'?") %>
         </td>
       </tr>
     <% end %>
@@ -31,5 +31,5 @@
   </div>
 </div>
 <% else %>
-<p>No hay fábricas registradas</p>
+<p>No hay maquilas registradas</p>
 <% end %>
