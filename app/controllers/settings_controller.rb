@@ -1,10 +1,21 @@
+include MangoModule
+
 class SettingsController < ApplicationController
+  skip_before_filter :check_permissions, only: [:show]
+  def show
+    @settings = Settings.first
+    render json: @settings
+  end
+
   def edit
     @settings = Settings.first
+    @mango_features = get_mango_features()
+    @hoppers_transactions_enabled = @mango_features.include?("hoppers_transactions")
+    @romano_enabled = @mango_features.include?("romano")
   end
 
   def update
-    @settings = Settings.first
+    edit
     @settings.update_attributes(params[:settings])
     if @settings.save
       flash[:notice] = 'Configuración actualizada con éxito'

@@ -255,6 +255,9 @@ es:
     min: "El valor mínimo"
     unit: "La unidad"
     amount: "La cantidad"
+    ticket_reception_diff: "La diferencia de peso máxima para recepción"
+    ticket_dispatch_diff: "La diferencia de peso máxima para despacho"
+
   will_paginate:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"

@@ -1,5 +1,14 @@
 <%= render_error_messages(f.error_messages) %>
+<% if @hoppers_transactions_enabled %>
 <label for="ci" class="small">Nivel mínimo en tolvas (%):</label>
 <div class="field"><%= f.text_field :hopper_minimum_level, :size=>'20' %><span>*</span></div>
+<% end %>
+<% if @romano_enabled %>
+  <h2>Romana</h2>
+  <label for="ci" class="small">Diferencia de peso máxima recepción (%):</label>
+  <div class="field"><%= f.text_field :ticket_reception_diff, :size=>'20' %><span>*</span></div>
+  <label for="ci" class="small">Diferencia de peso máxima despacho (%):</label>
+  <div class="field"><%= f.text_field :ticket_dispatch_diff, :size=>'20' %><span>*</span></div>
+<% end %>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
