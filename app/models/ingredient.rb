@@ -9,6 +9,8 @@ class Ingredient < ActiveRecord::Base
 
   before_save :check_stock
 
+  default_scope { where(active: true) }
+
   validates :name, :code, :minimum_stock, presence: true
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}

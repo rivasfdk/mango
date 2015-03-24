@@ -13,7 +13,7 @@ class Order < ActiveRecord::Base
   has_many :order_stats
   has_many :areas
 
-  attr_protected :completed
+  #attr_protected :completed
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true

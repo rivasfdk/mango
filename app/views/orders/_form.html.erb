@@ -44,6 +44,10 @@
 </div>
 <label for="prog_batchs" class="small">Batch Prog.:</label>
 <div class="field"><%= f.text_field :prog_batches, size: '10' %> <span>*</span></div>
+<% if action != 'new' %>
+  <label for="completed" class="small">Completada:</label>
+  <div class="field"><%= f.check_box :completed %></div>
+<% end %>
 <% if @real_production_enabled %>
 <% if action != 'new' %>
   <label for="real_production" class="small">Producción Real:</label>
