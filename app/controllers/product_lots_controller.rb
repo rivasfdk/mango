@@ -3,6 +3,8 @@
 include MangoModule
 
 class ProductLotsController < ApplicationController
+  skip_before_filter :check_permissions, only: [:show]
+
   def index
     respond_to do |format|
       format.html do 
@@ -18,6 +20,11 @@ class ProductLotsController < ApplicationController
         render json: @lots, methods: [:get_content]
       end
     end
+  end
+
+  def show
+    @product_lot = ProductLot.find(params[:id])
+    render json: @product_lot, root: false
   end
 
   def get_all

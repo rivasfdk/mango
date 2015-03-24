@@ -28,6 +28,7 @@ $(function(){
     $("#order_recipe_id").change(update_product_lots);
     $("#order_client_id").change(update_product_lots);
     $("input[name=client_type]").change(update_product_lots);
+    $("#order_product_lot_id").change(update_product_lot_comment);
     $("#order_auto_product_lot").change(hideProductLots);
     $('#report_by_recipe').trigger('change');
     $('#report_by_recipe_2').trigger('change');

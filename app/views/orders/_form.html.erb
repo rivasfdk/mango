@@ -42,6 +42,8 @@
 <% end %>
 <%= f.collection_select :product_lot_id, @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
 </div>
+<label class="small"></label>
+<div class="field" id="product_lot_comment"></div>
 <label for="prog_batchs" class="small">Batch Prog.:</label>
 <div class="field"><%= f.text_field :prog_batches, size: '10' %> <span>*</span></div>
 <% if action != 'new' %>

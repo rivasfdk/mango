@@ -5,6 +5,7 @@ function recipeSelected() {
       select.append(new Option(product_lot.to_collection_select, product_lot.id));
     });
     select.trigger("chosen:updated");
+    update_product_lot_comment();
 }
 
 function hideProductLots() {
@@ -28,4 +29,22 @@ function update_product_lots() {
       recipeSelected();
     }
   );
+}
+
+function update_product_lot_comment() {
+  var product_lot_id = $("#order_product_lot_id").val();
+  var product_comment_div = $("#product_lot_comment")
+  product_comment_div.text("")
+  if (product_lot_id !== null) {
+    $.getJSON(
+      "/product_lots/" + product_lot_id,
+      function(product_lot) {
+        var comment = ""
+        if (product_lot.comment !== null) {
+          comment = product_lot.comment;
+        }
+        product_comment_div.text(comment);
+      }
+    );
+  }
 }
