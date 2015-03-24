@@ -40,6 +40,7 @@ class RecipesController < ApplicationController
       flash[:notice] = 'Receta guardada con éxito'
       redirect_to :recipes
     else
+      new
       render :new
     end
   end
