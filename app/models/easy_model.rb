@@ -1357,6 +1357,7 @@ class EasyModel
     data['recipe_id'] = @order.recipe.id
     data['recipe'] = "#{@order.recipe.code} - #{@order.recipe.name}"
     data['version'] = @order.recipe.version
+    data['recipe_comment'] = @order.recipe.comment
     data['comment'] = @order.comment
     data['product'] = @order.product_lot.nil? ? "" : "#{@order.product_lot.code} - #{@order.product_lot.product.name}"
     data['start_date'] = @order.batch.empty? ? "" : @order.batch

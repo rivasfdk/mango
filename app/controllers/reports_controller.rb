@@ -91,9 +91,6 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
-    #else
-    #  report = EasyReport::Report.new data, 'order_details.yml'
-    #  send_data report.render, :filename => "detalle_orden_produccion.pdf", :type => "application/pdf"
     end
   end
 

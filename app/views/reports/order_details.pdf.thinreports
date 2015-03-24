@@ -36,6 +36,7 @@ report.start_new_page do |page|
     header.item(:product).value(@data['product'])
     header.item(:client).value(@data['client'])
     header.item(:recipe).value(@data['recipe'])
+    header.item(:recipe_comment).value(@data['recipe_comment'])
     header.item(:version).value(@data['version'])
     header.item(:start_date).value(@data['start_date'])
     header.item(:end_date).value(@data['end_date'])
@@ -43,7 +44,7 @@ report.start_new_page do |page|
     header.item(:real_batches).value(@data['real_batches'])
     header.item(:product_total).value(@data['product_total'])
     header.item(:real_production).value(@data['real_production'])
-    header.item(:repaired).value(@data['product'])
+    header.item(:repaired).value(@data['repaired'])
   end
 
   @data['results'].each do |result|
