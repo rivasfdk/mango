@@ -6,6 +6,8 @@
 <div class="field"><%=h @data['client'] %></div>
 <label for="client" class="small">Fórmula:</label>
 <div class="field"><%= link_to @data['recipe'], recipe_path(@data['recipe_id']) %></div>
+<label for="client" class="small"></label>
+<div class="field"><%= @data['recipe_comment'] %></div>
 <label for="client" class="small">Version:</label>
 <div class="field"><%=h @data['version'] %></div>
 <label for="client" class="small">Prod. Term.:</label>
