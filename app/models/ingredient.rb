@@ -33,4 +33,10 @@ class Ingredient < ActiveRecord::Base
     self.stock_below_minimum = total_stock < self.minimum_stock
     true
   end
+
+  def self.search(params)
+    @ingredients = Ingredient.order("stock_below_minimum desc")
+    @ingredients = @ingredients.where(["code LIKE ? OR name LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"]) if params[:search].present?
+    @ingredients.paginate page: params[:page], per_page: params[:per_page]
+  end
 end

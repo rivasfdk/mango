@@ -5,8 +5,7 @@ include MangoModule
 class IngredientsController < ApplicationController
   def index
     @transactions_enabled = is_mango_feature_available("transactions")
-    @ingredients = Ingredient.paginate :page=>params[:page], :per_page=>session[:per_page],
-                   :order => ['stock_below_minimum desc']
+    @ingredients = Ingredient.search(params)
   end
   
   def get_all
