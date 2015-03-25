@@ -821,12 +821,14 @@ class EasyModel
         'name' => t.get_content.name,
         'sacks' => sacks,
         'sack_weight' => sack_weight,
-        'amount' => t.amount
+        'amount' => t.amount,
+        'comment' => t.get_lot.comment
       }
       total_amount += t.amount
     end
     data['total_amount'] = total_amount.to_s + " Kg"
-
+    data['perc_dif'] = "#{((@ticket.get_net_weight - total_amount) / total_amount * 100).round(2)} %"
+    data[:transactions_count] = @ticket.transactions.count
     return data
   end
 
