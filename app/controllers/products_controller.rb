@@ -2,7 +2,7 @@
 
 class ProductsController < ApplicationController
   def index
-    @products = Product.paginate :page=>params[:page], :per_page=>session[:per_page]
+    @products = Product.search(params)
   end
   
   def edit
