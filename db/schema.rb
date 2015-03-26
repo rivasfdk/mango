@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150324131558) do
+ActiveRecord::Schema.define(:version => 20150326070353) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -432,6 +432,7 @@ ActiveRecord::Schema.define(:version => 20150324131558) do
     t.boolean  "active",     :default => true
     t.float    "stock",      :default => 0.0
     t.string   "comment"
+    t.boolean  "in_use",     :default => true
   end
 
   add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"

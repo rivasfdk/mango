@@ -5,6 +5,7 @@ include MangoModule
 class ProductLotsController < ApplicationController
   skip_before_filter :check_permissions, only: [:show]
 
+  # Romano
   def index
     respond_to do |format|
       format.html do 
@@ -22,11 +23,13 @@ class ProductLotsController < ApplicationController
     end
   end
 
+  # New order (product lot comment)
   def show
     @product_lot = ProductLot.find(params[:id])
     render json: @product_lot, root: false
   end
 
+  # Repair ticket
   def get_all
     @lots = ProductLot.includes(:product)
       .where(active: true)
@@ -34,10 +37,12 @@ class ProductLotsController < ApplicationController
     render json: @lots, methods: [:to_collection_select], root: false
   end
 
+  # New order
   def by_recipe
     product_id = Recipe.find(params[:recipe_id]).product_id if params[:recipe_id].present?
     product_lots = ProductLot.includes(:product)
                              .where(active: true,
+                                    in_use: true,
                                     product_id: product_id,
                                     client_id: params[:factory_id])
                              .order('id desc')

@@ -17,7 +17,7 @@ class Ingredient < ActiveRecord::Base
   validates :minimum_stock, numericality: {greater_than_or_equal_to: 0}
 
   def to_collection_select
-    "#{self.code} - #{self.name}"
+    "#{self.name} - #{self.code}"
   end
 
   def generate_parameter_type_ranges

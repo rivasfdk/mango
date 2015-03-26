@@ -62,7 +62,7 @@ class Lot < ActiveRecord::Base
   end
 
   def to_collection_select
-    "#{self.ingredient.code} - #{self.ingredient.name} (L: #{self.code})"
+    "#{self.ingredient.name} - #{self.ingredient.code} (L: #{self.code})"
   end
 
   def self.search(params)
