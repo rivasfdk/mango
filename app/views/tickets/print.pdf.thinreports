@@ -18,7 +18,7 @@ report.start_new_page do |page|
   page.values company_name: @data['company_name'].upcase
   page.values company_rif: @data['company_rif'].upcase
   page.values title: @data['short_title'].upcase
-  page.values number: @data['number']
+  page.values number: "%010d" % @data['number']
   page.values client_title: @data['client_title'].upcase
   page.values client_name: @data['client_name'].upcase
   page.values incoming_date: @data['incoming_date']
