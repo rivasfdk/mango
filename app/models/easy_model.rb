@@ -12,7 +12,7 @@ class EasyModel
       .where(id: recipe_id).first
     return nil if recipe.nil?
 
-    data = self.initialize_data('Nota de producción')
+    data = self.initialize_data('Nota de Producción')
     data[:recipe_code] = recipe.code
     data[:recipe_name] = recipe.name
     data[:recipe_version] = recipe.version

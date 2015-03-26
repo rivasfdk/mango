@@ -63,7 +63,7 @@
 
   <% if session[:reports_permissions].include?('production_note') %>
   <div class="report-content">
-    <h2 onclick="toggle_report_details('#production_note')">Nota de despacho</h2>
+    <h2 onclick="toggle_report_details('#production_note')">Nota de Producción</h2>
     <div id="production_note" class="report-details">
       <%= form_for :report, :url=>production_note_report_path(format: 'pdf') do |f| %>
         <%= f.label :n_batch, "Batches:", :class=>'small' %><%= f.text_field :n_batch, :size=>15 %><br/><br/>

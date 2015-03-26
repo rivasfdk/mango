@@ -27,6 +27,15 @@ class Recipe < ActiveRecord::Base
   before_save :update_all_versions, if: :internal_consumption_changed?
   before_save :update_all_types, if: :type_id_changed?
 
+  def self.lastests_by_code
+    recipes = []
+    codes = Recipe.group(:code).pluck(:code)
+    codes.each do |code|
+      recipes << Recipe.where(code: code).order('id desc').first
+    end
+    recipes
+  end
+
   def update_all_versions
     Recipe
       .where(code: self.code)
@@ -174,11 +183,11 @@ class Recipe < ActiveRecord::Base
   end
 
   def to_collection_select
-    return "#{self.code} - #{self.name} - V#{self.version}"
+    return "#{self.name} - #{self.code} - V#{self.version}"
   end
 
   def to_collection_select_code
-    return "#{self.code} - #{self.name}"
+    return "#{self.name} - #{self.code}"
   end
 
   def deactivate

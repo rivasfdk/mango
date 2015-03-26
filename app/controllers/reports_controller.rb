@@ -11,7 +11,7 @@ class ReportsController < ApplicationController
     @factories = Client.where({factory: true})
     @alarm_types = AlarmType.all
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
-    @recipes = Recipe.all(group: :code)
+    @recipes = Recipe.lastests_by_code()
     @recipes_all = Recipe.where(active: true, in_use: true)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
     @ingredients = Ingredient.all
