@@ -12,6 +12,7 @@ class ReportsController < ApplicationController
     @alarm_types = AlarmType.all
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
     @recipes = Recipe.all(group: :code)
+    @recipes_all = Recipe.where(active: true, in_use: true)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
     @ingredients = Ingredient.all
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
@@ -601,6 +602,15 @@ class ReportsController < ApplicationController
 
   def sales
     @data = EasyModel.sales(params[:report])
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to reports_path
+    end
+  end
+
+  def production_note
+    @data = EasyModel.production_note(params[:report])
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

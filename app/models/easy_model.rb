@@ -2,6 +2,44 @@ include MangoModule
 include Rails.application.routes.url_helpers
 
 class EasyModel
+  def self.production_note(params)
+    n_batch = params[:n_batch].to_i
+    return nil if n_batch <= 0
+
+    recipe_id = params[:recipe_id]
+    recipe = Recipe
+      .includes({ingredient_recipe: {ingredient: {}}})
+      .where(id: recipe_id).first
+    return nil if recipe.nil?
+
+    data = self.initialize_data('Nota de producción')
+    data[:recipe_code] = recipe.code
+    data[:recipe_name] = recipe.name
+    data[:recipe_version] = recipe.version
+    data[:comment] = recipe.comment
+    data[:n_batch] = n_batch
+    data[:date] = Date.today.strftime("%d/%m/%Y")
+
+    results = []
+    total_production = 0
+    total_recipe = 0
+    recipe.ingredient_recipe.each do |ir|
+      total_amount = ir.amount * n_batch
+      results << {
+        code: ir.ingredient.code,
+        name: ir.ingredient.name,
+        amount: ir.amount,
+        total_amount: total_amount,
+      }
+      total_recipe += ir.amount
+      total_production += total_amount
+    end
+    data[:results] = results
+    data[:total_recipe] = total_recipe
+    data[:total_production] = total_production
+    data
+  end
+
   def self.sales(params)
     by_month = params[:date_type] == '1'
     if by_month

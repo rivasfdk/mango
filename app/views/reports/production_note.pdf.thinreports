@@ -1,0 +1,47 @@
+report.set_layout tlf: 'reports/thinreports_layouts/production_note'
+
+report.events.on :generate do |e|
+  e.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
+  end
+end
+
+report.layout.config.list(:results) do
+  use_stores total_recipe: '', total_production: '', comment: ''
+
+  events.on :footer_insert do |e|
+    e.section.item(:total_recipe).value(e.store.total_recipe)
+    e.section.item(:total_production).value(e.store.total_production)
+    e.section.item(:comment).value(e.store.comment)
+  end
+end
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values footer: @data['footer']
+  page.values title: @data['title']
+  page.values date: @data[:date]
+
+  table = report.list(:results)
+
+  table.header do |header|
+    header.item(:recipe_desc).value("#{@data[:recipe_code]} - #{@data[:recipe_name]}")
+    header.item(:version).value(@data[:recipe_version])
+    header.item(:n_batch).value(@data[:n_batch])
+  end
+
+  @data[:results].each do |result|
+    table.add_row code: result[:code],
+                  name: result[:name],
+                  amount: result[:amount].round(2).to_s + ' Kg',
+                  total_amount: result[:total_amount].round(2).to_s + ' Kg'
+  end
+
+  table.store.total_recipe = @data[:total_recipe].round(2).to_s + ' Kg'
+  table.store.total_production = @data[:total_production].round(2).to_s + ' Kg'
+  table.store.comment = @data[:comment]
+end

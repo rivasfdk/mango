@@ -61,6 +61,20 @@
   </div>
   <% end %>
 
+  <% if session[:reports_permissions].include?('production_note') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#production_note')">Nota de despacho</h2>
+    <div id="production_note" class="report-details">
+      <%= form_for :report, :url=>production_note_report_path(format: 'pdf') do |f| %>
+        <%= f.label :n_batch, "Batches:", :class=>'small' %><%= f.text_field :n_batch, :size=>15 %><br/><br/>
+        <%= f.label :recipe_id, "Receta:", :class=>'small' %>
+        <%= f.collection_select :recipe_id, @recipes_all, :id, :to_collection_select, {:include_blank => false}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
   <% if session[:reports_permissions].include?('sales') %>
   <div class="report-content">
     <h2 onclick="toggle_report_details('#sales')">Ventas</h2>
