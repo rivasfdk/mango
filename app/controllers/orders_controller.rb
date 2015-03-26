@@ -5,8 +5,8 @@ include MangoModule
 class OrdersController < ApplicationController
   def index
     @orders = Order.search(params)
-    @clients = Client.all
-    @recipes = Recipe.group(:code)
+    @clients = Client.get_all()
+    @recipes = Recipe.lastests_by_code()
   end
 
   def show
@@ -20,7 +20,7 @@ class OrdersController < ApplicationController
   def new
     @recipes = Recipe.where({active: true, in_use: true}).order('name ASC')
     @medicament_recipes = MedicamentRecipe.where(active: true).order('name ASC')
-    @clients = Client.where(factory: false).order('name ASC')
+    @clients = Client.get_all().select {|c| not c.factory}
     @product_lots = []
     @users = User.order('name ASC')
     @order = Order.new if @order.nil?

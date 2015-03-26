@@ -29,4 +29,10 @@ class Client < ActiveRecord::Base
     client_type = self.factory ? "(M)" : "(C)"
     return "#{self.name} #{client_type}"
   end
+
+  def self.get_all()
+    # Proporca
+    #Client.where(factory: true).unshift Client.where(id: 980190963).first
+    Client.all
+  end
 end

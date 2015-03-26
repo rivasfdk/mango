@@ -7,7 +7,7 @@ class ReportsController < ApplicationController
   def index
     @drivers = Driver.where({frequent: true})
     @carriers = Carrier.where({frequent: true})
-    @clients = Client.all
+    @clients = Client.get_all()
     @factories = Client.where({factory: true})
     @alarm_types = AlarmType.all
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})

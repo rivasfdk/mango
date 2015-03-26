@@ -1,8 +1,11 @@
 # encoding: UTF-8
 
+include MangoModule
+
 class ClientsController < ApplicationController
   def index
     respond_to do |format|
+      # Mango
       format.html do
         @clients = Client.where(factory: false)
                          .order('code ASC')
@@ -10,6 +13,7 @@ class ClientsController < ApplicationController
                                    per_page: session[:per_page])
         render html: @clients
       end
+      # Romano
       format.json do
         @clients = Client.where factory: false
         render json: @clients
@@ -18,7 +22,9 @@ class ClientsController < ApplicationController
   end
 
   def all
-    render json: Client.all, root: false
+    # Mango
+    clients = Client.get_all()
+    render json: clients, root: false
   end
 
   def edit
