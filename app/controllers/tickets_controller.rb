@@ -53,6 +53,11 @@ class TicketsController < ApplicationController
     else
       @lots = Lot.includes(:ingredient).where(active: true)
       @product_lots = ProductLot.includes(:product).where(active: true)
+      @clients = Client.all
+      @drivers = Driver.where(frequent: true)
+      unless @ticket.driver.frequent
+        @drivers << @ticket.driver
+      end
       render :repair
     end
   end
