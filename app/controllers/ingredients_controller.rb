@@ -16,10 +16,12 @@ class IngredientsController < ApplicationController
 
   def new
     @transactions_enabled = is_mango_feature_available("transactions")
+    @loss_enabled = is_mango_feature_available("ingredient_loss")
   end
 
   def edit
     @transactions_enabled = is_mango_feature_available("transactions")
+    @loss_enabled = is_mango_feature_available("ingredient_loss")
     @ingredient = Ingredient.find params[:id]
   end
 
@@ -30,6 +32,8 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Materia prima guardada con éxito'
       redirect_to :ingredients
     else
+      @transactions_enabled = is_mango_feature_available("transactions")
+      @loss_enabled = is_mango_feature_available("ingredient_loss")
       render :new
     end
   end
@@ -41,6 +45,8 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Materia prima actualizada con éxito'
       redirect_to :ingredients
     else
+      @transactions_enabled = is_mango_feature_available("transactions")
+      @loss_enabled = is_mango_feature_available("ingredient_loss")
       render :edit
     end
   end

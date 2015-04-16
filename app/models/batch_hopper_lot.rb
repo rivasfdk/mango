@@ -1,3 +1,5 @@
+include MangoModule
+
 class BatchHopperLot < ActiveRecord::Base
   belongs_to :hopper_lot
   belongs_to :batch
@@ -23,7 +25,11 @@ class BatchHopperLot < ActiveRecord::Base
     t.transaction_type_id = 1 # SA-CSM
     t.content_type = 1
     t.content_id = self.hopper_lot.lot_id
-    t.amount = self.amount
+    if is_mango_feature_available("ingredient_loss")
+      t.amount = (1 + self.hopper_lot.lot.ingredient.loss / 100) * self.amount
+    else
+      t.amount = self.amount
+    end
     t.user_id = user_id
     t.save(validate: false)
   end

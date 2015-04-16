@@ -4,8 +4,12 @@
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
 <% if @transactions_enabled %>
-<label for="code" class="small">Existencia mínima (Kg):</label>
+<label for="minimum_stock" class="small">Existencia mínima (Kg):</label>
 <div class="field"><%= f.text_field :minimum_stock, :size=>'15' %><span>*</span></div>
+<% end %>
+<% if @loss_enabled %>
+<label for="loss" class="small">Merma (%):</label>
+<div class="field"><%= f.text_field :loss, :size=>'15' %><span>*</span></div>
 <% end %>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

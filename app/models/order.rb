@@ -180,6 +180,7 @@ class Order < ActiveRecord::Base
   end
 
   def generate_transactions(user_id)
+    loss_enabled = is_mango_feature_available("ingredient_loss")
     consumptions = {}
     order_transactions = self.transactions
     batches = Batch
@@ -188,10 +189,14 @@ class Order < ActiveRecord::Base
     batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot_id
+        amount = bhl.amount
+        if loss_enabled
+          amount *= (1 + bhl.hopper_lot.lot.ingredient.loss / 100)
+        end
         if consumptions.has_key? key
-          consumptions[key] += bhl.amount
+          consumptions[key] += amount
         else
-          consumptions[key] = bhl.amount
+          consumptions[key] = amount
         end
       end
     end
