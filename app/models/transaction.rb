@@ -75,7 +75,7 @@ class Transaction < ActiveRecord::Base
       self.stock_after = Lot.where(id: self.content_id)
                             .pluck(:stock)
                             .first + actual_amount
-                            .round(2)
+                            .round(4)
       Lot.where(id: self.content_id)
          .update_all(stock: self.stock_after, updated_at: Time.now)
       Ingredient.find(self.get_content.id).save
@@ -83,7 +83,7 @@ class Transaction < ActiveRecord::Base
       self.stock_after = ProductLot.where(id: self.content_id)
                                    .pluck(:stock)
                                    .first + actual_amount
-                                   .round(2)
+                                   .round(4)
       ProductLot.where(id: self.content_id)
                 .update_all(stock: stock_after, updated_at: Time.now)
     end
