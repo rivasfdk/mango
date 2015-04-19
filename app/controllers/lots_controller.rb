@@ -92,17 +92,11 @@ class LotsController < ApplicationController
   end
 
   def do_adjust
-    amount = Float(params[:amount]) rescue -1
+    amount = Float(params[:amount]) rescue 0
     comment = params[:comment]
-    if amount >= 0
-      @lot = Lot.find params[:id]
-      @lot.adjust(amount, session[:user_id], comment)
-      flash[:notice] = "Lote ajustado exitosamente"
-      redirect_to session.delete(:return_to)
-    else
-      flash[:type] = 'error'
-      flash[:notice] = "El monto de ajuste es inválido"
-      redirect_to session.delete(:return_to)
-    end
+    @lot = Lot.find params[:id]
+    @lot.adjust(amount, session[:user_id], comment)
+    flash[:notice] = "Lote ajustado exitosamente"
+    redirect_to session.delete(:return_to)
   end
 end

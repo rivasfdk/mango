@@ -39,7 +39,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @product_lots %>
+    <%= will_paginate @product_lots %>
   </div>
 </div>
 <% else %>

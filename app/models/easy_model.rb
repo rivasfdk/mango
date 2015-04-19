@@ -1776,6 +1776,7 @@ class EasyModel
     data['date'] = self.print_range_date(date)
     data['results'] = []
 
+    date += 7.hours
     lots = []
     if content_type == 1
       lots = Lot.joins(:ingredient)
@@ -1789,7 +1790,10 @@ class EasyModel
       lots = lots.order('products.code, products_lots.code asc')
     end
     lots.each do |lot|
-      transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, lot.id, end_date_to_sql(date)], :order => ['created_at desc']
+      transaction = Transaction.first :conditions => [
+        'content_type = ? and content_id = ? and created_at < ?',
+        content_type, lot.id, date.strftime("%Y-%m-%d %H:%M:%S")
+      ], :order => ['created_at desc']
       if transaction
         data['results'] << {
           'code' => lot.code,
@@ -1814,7 +1818,7 @@ class EasyModel
     data['results'] = []
 
     results = {}
-
+    date += 7.hours
     if content_type == 1
       lots = Lot.order('code asc')
       lots = lots.where(:active => true)
@@ -1829,7 +1833,10 @@ class EasyModel
 
     lots.each do |l|
       key = l.get_content.code
-      transaction = Transaction.first :conditions => ['content_type = ? and content_id = ? and created_at < ?', content_type, l.id, end_date_to_sql(date)], :order => ['created_at desc']
+      transaction = Transaction.first :conditions => [
+        'content_type = ? and content_id = ? and created_at < ?',
+        content_type, l.id, date.strftime("%Y-%m-%d %H:%M:%S")
+      ], :order => ['created_at desc']
       if transaction
         if results.has_key?(key)
           results[key]['stock'] += transaction.stock_after
