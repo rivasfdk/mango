@@ -11,12 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150401144404) do
+ActiveRecord::Schema.define(:version => 20150419195251) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "alarms", :force => true do |t|
@@ -243,10 +243,10 @@ ActiveRecord::Schema.define(:version => 20150401144404) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"
-    t.boolean  "active",        :default => true
-    t.boolean  "in_use",        :default => true
-    t.float    "stock",         :default => 0.0
-    t.float    "density",       :default => 1.0,  :null => false
+    t.boolean  "active",                                       :default => true
+    t.boolean  "in_use",                                       :default => true
+    t.decimal  "stock",         :precision => 15, :scale => 4, :default => 0.0,  :null => false
+    t.float    "density",                                      :default => 1.0,  :null => false
     t.string   "comment"
   end
 
@@ -426,15 +426,17 @@ ActiveRecord::Schema.define(:version => 20150401144404) do
 
   create_table "products_lots", :force => true do |t|
     t.integer  "product_id"
-    t.string   "code",                         :null => false
+    t.string   "code",                                                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"
-    t.boolean  "active",     :default => true
-    t.float    "stock",      :default => 0.0
+    t.boolean  "active",                                    :default => true
+    t.decimal  "stock",      :precision => 15, :scale => 4, :default => 0.0,  :null => false
     t.string   "comment"
-    t.boolean  "in_use",     :default => true
+    t.boolean  "in_use",                                    :default => true
   end
+
+  add_index "products_lots", ["product_id"], :name => "fk_products_lots_product_id"
 
   create_table "products_lots_parameters", :force => true do |t|
     t.integer  "product_lot_parameter_list_id", :null => false
@@ -575,9 +577,9 @@ ActiveRecord::Schema.define(:version => 20150401144404) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id"
-    t.integer  "user_id"
-    t.float    "amount"
+    t.integer  "transaction_type_id",                    :null => false
+    t.integer  "user_id",                                :null => false
+    t.float    "amount",                                 :null => false
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
