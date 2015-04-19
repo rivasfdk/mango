@@ -9,7 +9,7 @@ class Ingredient < ActiveRecord::Base
 
   before_save :check_stock
 
-  default_scope { where(active: true) }
+  scope :actives, -> { where(active: true) }
 
   validates :name, :code, :minimum_stock, presence: true
   validates :code, uniqueness: true
@@ -35,7 +35,7 @@ class Ingredient < ActiveRecord::Base
   end
 
   def self.search(params)
-    @ingredients = Ingredient.order("stock_below_minimum desc")
+    @ingredients = Ingredient.actives.order("stock_below_minimum desc")
     @ingredients = @ingredients.where(["code LIKE ? OR name LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"]) if params[:search].present?
     @ingredients.paginate page: params[:page], per_page: params[:per_page]
   end

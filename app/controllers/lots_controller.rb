@@ -7,7 +7,7 @@ class LotsController < ApplicationController
     respond_to do |format|
       format.html do
         @lots = Lot.search(params)
-        @ingredients = Ingredient.all
+        @ingredients = Ingredient.actives
         @factories = Client.where(factory: true)
         @transactions_enabled = is_mango_feature_available('transactions')
       end

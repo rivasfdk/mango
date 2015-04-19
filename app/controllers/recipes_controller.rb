@@ -26,7 +26,7 @@ class RecipesController < ApplicationController
     @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'ingredients.code desc'
     @total = @recipe.get_total()
     @products = Product.all
-    @ingredients = Ingredient.all
+    @ingredients = Ingredient.actives.all
     @types = Recipe::TYPES
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
@@ -60,7 +60,7 @@ class RecipesController < ApplicationController
     original_recipe.in_use = false
     original_recipe.save
     
-    @ingredients = Ingredient.all
+    @ingredients = Ingredient.actives.all
     @products = Product.all
     @types = Recipe::TYPES
     render :edit
@@ -80,7 +80,7 @@ class RecipesController < ApplicationController
 
   def destroy
     @recipe = Recipe.find params[:id]
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.actives
     @recipe.eliminate
     if @recipe.errors.size.zero?
       flash[:notice] = "Receta eliminada con éxito"

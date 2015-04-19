@@ -16,7 +16,7 @@ class LotParameterType < ActiveRecord::Base
       parameter.save
     end
     unless self.is_string
-      Ingredient.all.each do |i|
+      Ingredient.actives.each do |i|
         iptr = self.ingredient_parameter_type_ranges.new
         iptr.ingredient_id = i.id
         iptr.save

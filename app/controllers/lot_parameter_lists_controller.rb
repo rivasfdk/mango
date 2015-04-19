@@ -1,7 +1,7 @@
 class LotParameterListsController < ApplicationController
   def index
     @lots = Lot.search(params)
-    @ingredients = Ingredient.all
+    @ingredients = Ingredient.actives.all
     @factories = Client.where(factory: true)
   end
 

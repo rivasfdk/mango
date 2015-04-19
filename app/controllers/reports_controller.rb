@@ -14,7 +14,7 @@ class ReportsController < ApplicationController
     @recipes = Recipe.lastests_by_code()
     @recipes_all = Recipe.where(active: true, in_use: true)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
-    @ingredients = Ingredient.all
+    @ingredients = Ingredient.actives.all
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
