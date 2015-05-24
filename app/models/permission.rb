@@ -61,7 +61,7 @@ class Permission < ActiveRecord::Base
   end
 
   def self.is_change?(action)
-    return (action == 'change' or action == 'do_change')
+    return (action == 'change' or action == 'do_change' or action == 'change_factory_lots' or action == 'do_change_factory_lots')
   end
 
   def self.is_fill?(action)
