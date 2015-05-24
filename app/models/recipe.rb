@@ -30,6 +30,7 @@ class Recipe < ActiveRecord::Base
   def self.lastests_by_code
     recipes = []
     codes = Recipe.group(:code).pluck(:code)
+    # WTF???
     codes.each do |code|
       recipes << Recipe.where(code: code).order('id desc').first
     end

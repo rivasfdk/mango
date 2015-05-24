@@ -123,6 +123,21 @@ class OrdersController < ApplicationController
     end
   end
 
+  def notify
+    @order = Order.find params[:id]
+    redirect_to :orders unless (@order.completed && !@order.notified)
+    @data = EasyModel.order_details(@order.code)
+  end
+
+  def do_notify
+    @order = Order.find params[:id]
+    redirect_to :orders unless (@order.completed && !@order.notified)
+    @order.generate_transactions(session[:user_id])
+    @order.update_column(:notified, true)
+    flash[:notice] = "Orden notificada exitosamente"
+    redirect_to :orders
+  end
+
   def generate_transactions
     @order = Order.find params[:id]
     @order.generate_transactions(session[:user_id])

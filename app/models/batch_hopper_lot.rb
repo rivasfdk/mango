@@ -20,6 +20,7 @@ class BatchHopperLot < ActiveRecord::Base
   end
 
   def generate_transaction(user_id)
+    return true if is_mango_feature_available("notifications")
     t = Transaction.new
     t.order_id = self.batch.order_id
     t.transaction_type_id = 1 # SA-CSM

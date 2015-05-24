@@ -25,7 +25,8 @@ class Order < ActiveRecord::Base
   validate :product_lot_factory
   validate :product_lot_recipe
 
-  before_save :create_code, if: :new_record?
+  before_create :create_code
+  before_create :set_notified
   before_save :update_real_consumptions, if: :real_production_changed?
 
   def product_lot_factory
@@ -50,6 +51,11 @@ class Order < ActiveRecord::Base
     order_number.code = self.code
     order_number.save
     self.product_lot_id = nil if self.auto_product_lot
+  end
+
+  def set_notified
+    self.notified = !is_mango_feature_available("transactions")
+    true
   end
 
   def update_real_consumptions
@@ -174,9 +180,10 @@ class Order < ActiveRecord::Base
                      repaired: true,
                      updated_at: now})
     end
-    if is_mango_feature_available("transactions")
+    if is_mango_feature_available("transactions") && !is_mango_feature_available("notifications")
       self.generate_transactions(user_id)
     end
+    true
   end
 
   def generate_transactions(user_id)
@@ -232,7 +239,7 @@ class Order < ActiveRecord::Base
   def close(user_id)
     unless self.completed
       self.create_product_lot if self.auto_product_lot
-      self.generate_transactions(user_id) if is_mango_feature_available("transactions")
+      self.generate_transactions(user_id) if is_mango_feature_available("transactions") && !is_mango_feature_available("notifications")
       self.update_column(:completed, true)
     else
       false

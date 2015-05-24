@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150419195251) do
+ActiveRecord::Schema.define(:version => 20150524110726) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(:version => 20150419195251) do
     t.boolean  "repaired",             :default => false
     t.integer  "parameter_list_id"
     t.boolean  "auto_product_lot",     :default => false
+    t.boolean  "notified",             :default => true
   end
 
   add_index "orders", ["client_id"], :name => "fk_orders_client_id"

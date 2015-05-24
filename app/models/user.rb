@@ -88,6 +88,8 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'fill' and Permission.is_fill?(action)
         valid = true
+      elsif pm.permission.action == 'notify' and Permission.is_notify?(action)
+        valid = true
       elsif pm.permission.action == action
         valid = true
       end

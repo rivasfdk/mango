@@ -36,8 +36,10 @@
         <td class="center">
           <%= render_action_show(order_path(o)) %>
           <%= render_action_edit(edit_order_path(o)) %> <br />
-          <% unless o.completed %>
+          <% if !o.completed %>
             <%= render_action_repair(repair_order_path(o)) %>
+          <% elsif !o.notified %>
+            <%= render_action_notify(notify_order_path(o)) %>
           <% end %>
           <br />
           <%= render_action_delete(order_path(o), "Desea borrar la orden '#{o.code}'?") %>

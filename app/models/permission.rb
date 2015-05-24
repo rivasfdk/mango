@@ -72,6 +72,10 @@ class Permission < ActiveRecord::Base
     return (action == 'adjust' or action == 'do_adjust')
   end
 
+  def self.is_notify?(action)
+    return (action == 'notify' or action == 'do_notify')
+  end
+
   def self.get_all
     find :all, :order => 'module ASC, name ASC'
   end

@@ -27,6 +27,8 @@ Mango::Application.routes.draw do
   match 'orders/close' => "orders#close", :via => :post, :as => 'order_close'
   match 'orders/create_order_stat' => "orders#create_order_stat", :via => :post, :as => 'create_order_stat'
   match 'orders/update_order_area' => "orders#update_order_area", :via => :post, :as => 'update_order_area'
+  match 'orders/:id/notify' => "orders#notify", :via => :get, :as => 'notify_order'
+  match 'orders/:id/notify' => "orders#do_notify", :via => :post, :as => 'notify_order'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
@@ -49,6 +51,8 @@ Mango::Application.routes.draw do
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
   match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
+  match 'tickets/:id/notify' => "tickets#notify", :via => :get, :as => "notify"
+  match 'tickets/:id/notify' => "tickets#do_notify", :via => :post, :as => "notify_ticket"
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :post, :as => "recipes_report"

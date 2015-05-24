@@ -149,6 +149,10 @@ function submit_order_repair_form() {
     $('#order_repair_form').submit();
 }
 
+function submit_order_notify_form() {
+    $('#order_notify_form').submit();
+}
+
 function submit_client_new_form() {
     $('#client_new_form').submit();
 }
