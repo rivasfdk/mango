@@ -99,4 +99,13 @@ module ActionsHelper
     return link_to image + " Eliminar", url, :method => :delete, :remote=>true, :confirm =>confirm, :html=>{:class => 'action'}
   end
 
+  def render_action_modify()
+    image = image_tag('action-edit.png', :alt=>'Modificar')
+    return link_to image + " Modificar", '#!', class: 'action action-modify'
+  end
+
+  def render_action_cancel()
+    image = image_tag('action-cancel.png', :alt=>'Cancelar')
+    return link_to image + " Cancelar", '#!', class: 'action action-cancel'
+  end
 end

@@ -9,4 +9,46 @@
   <label for="amount" class="small">Batches a reparar:</label>
   <div class="field"><%= text_field_tag :n_batch, params[:n_batch], :size=>'15' %> <span>*</span></div>
   <div class="clearfix"></div>
+<h5>Consumos totales</h5>
+<% i = 0 %>
+<% if @data['results'].length > 0 %>
+<div id="order_details_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Materia Prima<span class="order_arrow"></span></th>
+        <th>Lote<span class="order_arrow"></span></th>
+        <th>Estandar<span class="order_arrow"></span></th>
+        <th colspan="2">Real<span class="order_arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @data['results'].each do |r| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <%= hidden_field_tag :"ingredients[][id]", r['ingredient_id'] %>
+          <%= hidden_field_tag :"ingredients[][modify]", '0' %>
+          <td class="center"><%=h r['code'] %></td>
+          <td><%=h r['ingredient'] %></td>
+          <td class="center"><%=h r['lot'] %></td>
+          <td class="right"><%=h r['std_kg'] %></td>
+          <td class="right"><%= text_field_tag :"ingredients[][real]", r['real_kg'], class: 'new-real' %> <%= content_tag :span, r['real_kg'], class: 'current-real' %></td>
+          <td class="center"><%= render_action_modify() %> <%= render_action_cancel() %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td class="total">TOTAL</td>
+      <td><%=h @data['total_std'] %></td>
+      <td id="order-total"><%=h @data['total_real'] %></td>
+      <td></td>
+    </tfoot>
+  </table>
+</div>
+<% else %>
+<p>No existen consumos de esta orden de producción</p>
+<% end %>
 <% end %>

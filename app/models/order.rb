@@ -69,9 +69,8 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def repair(user_id, n_batch)
+  def repair(user_id, params)
     return false if self.completed
-
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
       .where(hoppers_lots: {active: true}, hoppers: {main: true})

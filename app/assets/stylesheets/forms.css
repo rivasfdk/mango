@@ -94,3 +94,11 @@ form .field .chzn-single span {
 form .field input[type='checkbox'] {
   margin-bottom: 10px;
 }
+
+form .new-real {
+  display: none;
+}
+
+form .action-cancel {
+  display: none;
+}

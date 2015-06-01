@@ -95,15 +95,15 @@ class OrdersController < ApplicationController
 
   def repair
     @order = Order.find params[:id]
+    @data = EasyModel.order_details(@order.code)
   end
 
   def do_repair
-    n_batch = Integer(params[:n_batch]) rescue 0
     @order = Order.find params[:id]
 
     if @order.recipe.validate
       if n_batch.between?(1, @order.prog_batches)
-        if @order.repair(session[:user_id], n_batch)
+        if @order.repair(session[:user_id], params)
           flash[:notice] = "Orden reparada exitosamente"
           redirect_to :orders
         else

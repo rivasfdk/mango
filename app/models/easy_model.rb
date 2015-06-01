@@ -1343,6 +1343,7 @@ class EasyModel
         hopper_name = bhl.hopper_lot.hopper.name.present? ? bhl.hopper_lot.hopper.name : bhl.hopper_lot.hopper.number
         unless details.has_key?(key)
           details[key] = {
+            'ingredient_id' => bhl.hopper_lot.lot.ingredient_id,
             'ingredient' => bhl.hopper_lot.lot.ingredient.name,
             'lot' => bhl.hopper_lot.lot.code,
             'hopper' => hopper_name,
