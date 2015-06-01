@@ -66,6 +66,7 @@ class TicketsController < ApplicationController
   def notify
     @ticket = Ticket.find params[:id]
     @ticket.notify unless @ticket.open
+    flash[:notice] = 'Ticket notificado con éxito'
     redirect_to :tickets
   end
 
