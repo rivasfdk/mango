@@ -45,7 +45,7 @@ class TicketsController < ApplicationController
     end
     if @ticket.valid?
       @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record?
+        t.update_transactions unless t.new_record? || !t.notified
       end
       @ticket.repaired = true
       @ticket.save

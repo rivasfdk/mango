@@ -96,6 +96,7 @@ class OrdersController < ApplicationController
   def repair
     @order = Order.find params[:id]
     @data = EasyModel.order_details(@order.code)
+    session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def do_repair
@@ -106,22 +107,22 @@ class OrdersController < ApplicationController
       if n_batch.between?(1, @order.prog_batches)
         if @order.repair(session[:user_id], params)
           flash[:notice] = "Orden reparada exitosamente"
-          redirect_to :orders
+          redirect_to session[:return_to]
         else
           flash[:type] = 'error'
           flash[:notice] = "Error al reparar la orden"
           logger.debug "error"
-          redirect_to :orders
+          redirect_to session[:return_to]
         end
       else
         flash[:type] = 'error'
         flash[:notice] = "El numero de batches es inválido"
-        redirect_to :orders
+        redirect_to session[:return_to]
       end
     else
       flash[:type] = 'error'
       flash[:notice] = "Algunos ingredientes de la receta no se encuentran en las tolvas"
-      redirect_to :orders
+      redirect_to session[:return_to]
     end
   end
 

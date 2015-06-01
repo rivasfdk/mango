@@ -31,6 +31,8 @@
 <div class="clearfix"></div>
 <% end %>
 <h5>Consumos totales</h5>
+<p><%= link_to image_tag('action-edit.png', :alt=>'Reparar') + " Reparar consumos", repair_order_path(@order) %></p>
+<br />
 <% i = 0 %>
 <% if @data['results'].length > 0 %>
 <div id="order_details_grid">
@@ -73,8 +75,4 @@
 </div>
 <% else %>
 <p>No existen consumos de esta orden de producción</p>
-<% end %>
-<% if @parameter_list %>
-  <h5>Parámetros</h5>
-  <%= render :partial=>'recipes/show_parameters_grid', :locals =>{:parameter_list => @parameter_list} %>
 <% end %>

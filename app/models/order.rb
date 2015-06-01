@@ -71,7 +71,7 @@ class Order < ActiveRecord::Base
 
   def repair(user_id, params)
     n_batch = Integer(params[:n_batch]) rescue 0
-    return false if self.completed
+    #return false if self.completed
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
       .where(hoppers_lots: {active: true}, hoppers: {main: true})
@@ -209,10 +209,12 @@ class Order < ActiveRecord::Base
     batches = Batch
       .includes({batch_hopper_lot: {hopper_lot: {}}})
       .where(order_id: self.id)
+    production = 0
     batches.each do |b|
       b.batch_hopper_lot.each do |bhl|
         key = bhl.hopper_lot.lot_id
         amount = bhl.amount
+        production += amount
         if loss_enabled
           amount *= (1 + bhl.hopper_lot.lot.ingredient.loss / 100)
         end
@@ -223,9 +225,7 @@ class Order < ActiveRecord::Base
         end
       end
     end
-    production = 0
     consumptions.each do |key, amount|
-      production += amount
       previous_amount = order_transactions.inject(0) do |sum, t|
         (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum
       end
