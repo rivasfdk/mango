@@ -12,7 +12,8 @@ class Ticket < ActiveRecord::Base
   validates_numericality_of :incoming_weight, :greater_than => 0
   validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
   validates_numericality_of :provider_weight, :allow_nil => true
-  before_save :generate_number, if: :new_record?
+  before_create :generate_number
+  before_create :set_notified
 
   def generate_number
     ticket_number = TicketNumber.first
@@ -20,6 +21,23 @@ class Ticket < ActiveRecord::Base
     self.open = true
     ticket_number.number = self.number
     ticket_number.save
+  end
+
+  def set_notified
+    self.notified = !is_mango_feature_available("notifications")
+    true
+  end
+
+  def notify
+    return false if self.notified
+    update_column(:notified, true)
+    self.transactions.each do |t|
+      new_t = t.dup
+      t.delete
+      new_t.notified = true
+      new_t.save
+    end
+    true
   end
 
   def get_gross_weight

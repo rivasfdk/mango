@@ -54,7 +54,7 @@ class Order < ActiveRecord::Base
   end
 
   def set_notified
-    self.notified = !is_mango_feature_available("transactions")
+    self.notified = !is_mango_feature_available("notifications")
     true
   end
 
@@ -70,6 +70,7 @@ class Order < ActiveRecord::Base
   end
 
   def repair(user_id, params)
+    n_batch = Integer(params[:n_batch]) rescue 0
     return false if self.completed
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
@@ -179,6 +180,22 @@ class Order < ActiveRecord::Base
                      repaired: true,
                      updated_at: now})
     end
+
+    transaction do
+      params[:ingredients].each do |ingredient|
+        if ingredient[:modify] == "1"
+          total = ingredient[:real].to_f
+          next if total < 0
+          amount = total / n_batch
+          BatchHopperLot
+            .joins({batch: {}, hopper_lot: {lot: {}}})
+            .where({batches: {order_id: self.id}})
+            .where({lots: {ingredient_id: ingredient[:id]}})
+            .update_all(amount: amount)
+        end
+      end
+    end
+
     if is_mango_feature_available("transactions") && !is_mango_feature_available("notifications")
       self.generate_transactions(user_id)
     end

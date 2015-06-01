@@ -17,6 +17,7 @@ Mango::Application.routes.draw do
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
   match 'roles/:id/clone' => "roles#clone", :via => :get, :as => 'clone_role'
   match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
+  match 'tickets/:id/notify' => "tickets#notify", :via => :get, :as => 'notify_ticket'
   match 'orders/:id/repair' => "orders#repair", :via => :get, :as => 'repair_order'
   match 'orders/:id/repair' => "orders#do_repair", :via => :put, :as => 'repair_order'
   match 'orders/:id/print' => "orders#print", :via => :get, :as => 'print_order'

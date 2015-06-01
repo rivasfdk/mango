@@ -36,6 +36,7 @@ class TicketsController < ApplicationController
       t.user_id = @ticket.user_id
       t.client_id = @ticket.client_id
       t.comment = @ticket.comment
+      t.notified = @ticket.notified
       unless t.sack
         t.sacks = nil
         t.sack_weight = nil
@@ -62,6 +63,12 @@ class TicketsController < ApplicationController
     end
   end
 
+  def notify
+    @ticket = Ticket.find params[:id]
+    @ticket.notify unless @ticket.open
+    redirect_to :tickets
+  end
+
   def create
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
@@ -81,6 +88,7 @@ class TicketsController < ApplicationController
       t.user_id = @ticket.user_id
       t.client_id = @ticket.client_id
       t.comment = @ticket.comment
+      t.notified = @ticket.notified
     end
     @ticket.outgoing_date = Time.now
     @ticket.open = false

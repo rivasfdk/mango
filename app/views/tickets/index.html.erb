@@ -34,10 +34,13 @@
         <td class="center"><%=h item.truck.license_plate %></td>
         <td>
           <% if item.open %>
-          <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
+            <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
           <% else %>
-          <%= render_action_repair(repair_ticket_path(item)) %>
-          <%= render_action_print(print_ticket_path(item)) %>
+            <%= render_action_repair(repair_ticket_path(item)) %> <br />
+            <% if !item.notified %>
+            <%= render_action_notify_confirm(notify_ticket_path(item), "Desea notificar el ticket '#{item.number}'?") %> <br />
+            <% end %>
+            <%= render_action_print(print_ticket_path(item)) %>
           <% end %>
         </td>
       </tr>

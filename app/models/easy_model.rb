@@ -439,6 +439,7 @@ class EasyModel
 
     transactions = Transaction
       .includes(:user, :transaction_type, :order, :ticket)
+      .where(notified: true)
       .where(created_at: start_date .. end_date + 1.day)
       .where(content_type: lot_type)
       .where(content_id: lot.id)
@@ -1792,8 +1793,8 @@ class EasyModel
     end
     lots.each do |lot|
       transaction = Transaction.first :conditions => [
-        'content_type = ? and content_id = ? and created_at < ?',
-        content_type, lot.id, date.strftime("%Y-%m-%d %H:%M:%S")
+        'notified = true and created_at < ? and content_type = ? and content_id = ? ',
+        date.strftime("%Y-%m-%d %H:%M:%S"), content_type, lot.id
       ], :order => ['created_at desc']
       if transaction
         data['results'] << {
@@ -1835,8 +1836,8 @@ class EasyModel
     lots.each do |l|
       key = l.get_content.code
       transaction = Transaction.first :conditions => [
-        'content_type = ? and content_id = ? and created_at < ?',
-        content_type, l.id, date.strftime("%Y-%m-%d %H:%M:%S")
+        'notified = true and created_at < ? and content_type = ? and content_id = ? ',
+        date.strftime("%Y-%m-%d %H:%M:%S"), content_type, l.id
       ], :order => ['created_at desc']
       if transaction
         if results.has_key?(key)

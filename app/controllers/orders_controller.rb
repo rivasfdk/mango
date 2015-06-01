@@ -99,6 +99,7 @@ class OrdersController < ApplicationController
   end
 
   def do_repair
+    n_batch = Integer(params[:n_batch]) rescue 0
     @order = Order.find params[:id]
 
     if @order.recipe.validate
@@ -109,6 +110,7 @@ class OrdersController < ApplicationController
         else
           flash[:type] = 'error'
           flash[:notice] = "Error al reparar la orden"
+          logger.debug "error"
           redirect_to :orders
         end
       else

@@ -54,6 +54,11 @@ module ActionsHelper
     return link_to image + "Notificar", url, :class => 'action'
   end
 
+  def render_action_notify_confirm(url, confirm)
+    image = image_tag('action-edit.png', :alt=>'Notificar')
+    return link_to image + "Notificar", url, :class => 'action', :confirm => confirm
+  end
+
   def render_action_recalculate(url)
     image = image_tag('action-reset.png', :alt=>'Recalcular')
     return link_to image + "Recalcular", url, :class => 'action'

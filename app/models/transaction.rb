@@ -70,22 +70,24 @@ class Transaction < ActiveRecord::Base
   private
 
   def update_stock
-    actual_amount = self.get_sign == '+' ? self.amount : -1 * self.amount
-    if self.content_type == 1
-      self.stock_after = Lot.where(id: self.content_id)
-                            .pluck(:stock)
-                            .first + actual_amount
-                            .round(4)
-      Lot.where(id: self.content_id)
-         .update_all(stock: self.stock_after, updated_at: Time.now)
-      Ingredient.find(self.get_content.id).save
-    else
-      self.stock_after = ProductLot.where(id: self.content_id)
-                                   .pluck(:stock)
-                                   .first + actual_amount
-                                   .round(4)
-      ProductLot.where(id: self.content_id)
-                .update_all(stock: stock_after, updated_at: Time.now)
+    if self.notified
+      actual_amount = self.get_sign == '+' ? self.amount : -1 * self.amount
+      if self.content_type == 1
+        self.stock_after = Lot.where(id: self.content_id)
+                              .pluck(:stock)
+                              .first + actual_amount
+                              .round(4)
+        Lot.where(id: self.content_id)
+           .update_all(stock: self.stock_after, updated_at: Time.now)
+        Ingredient.find(self.get_content.id).save
+      else
+        self.stock_after = ProductLot.where(id: self.content_id)
+                                     .pluck(:stock)
+                                     .first + actual_amount
+                                     .round(4)
+        ProductLot.where(id: self.content_id)
+                  .update_all(stock: stock_after, updated_at: Time.now)
+      end
     end
   end
 end

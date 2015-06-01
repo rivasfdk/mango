@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150524110726) do
+ActiveRecord::Schema.define(:version => 20150601120058) do
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -549,6 +549,7 @@ ActiveRecord::Schema.define(:version => 20150524110726) do
     t.boolean  "manual_incoming",          :default => false
     t.boolean  "manual_outgoing",          :default => false
     t.boolean  "repaired",                 :default => false, :null => false
+    t.boolean  "notified",                 :default => true
   end
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
@@ -595,6 +596,7 @@ ActiveRecord::Schema.define(:version => 20150524110726) do
     t.integer  "content_id",                             :null => false
     t.integer  "content_type",                           :null => false
     t.integer  "order_id"
+    t.boolean  "notified",            :default => true
   end
 
   add_index "transactions", ["content_id"], :name => "index_transactions_on_content_id"
