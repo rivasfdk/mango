@@ -76,19 +76,19 @@ class HoppersController < ApplicationController
   end
 
   def do_change
-	@hopper = Hopper.find params[:id]
-	params[:change][:amount] = 0 unless is_mango_feature_available("hoppers_transactions")
-	if @hopper.change(params[:change], session[:user_id])
-	  flash[:notice] = "Cambio de lote realizado con éxito"
-	  current_hopper_lot = @hopper.current_hopper_lot
-	  factory_lots = Lot.where(['client_id is not null and active = true and in_use = true and ingredient_id = ?', current_hopper_lot.lot.ingredient_id]).count
-	  if factory_lots > 0
-	    redirect_to change_factory_lots_scale_hopper_path(@hopper.scale_id, @hopper.id)
-	  else
-	    redirect_to scale_path(@hopper.scale_id)
-	  end
-	else
-	  flash[:type] = 'error'
+    @hopper = Hopper.find params[:id]
+    params[:change][:amount] = 0 unless is_mango_feature_available("hoppers_transactions")
+    if @hopper.change(params[:change], session[:user_id])
+      flash[:notice] = "Cambio de lote realizado con éxito"
+      current_hopper_lot = @hopper.current_hopper_lot
+      factory_lots = Lot.where(['client_id is not null and active = true and in_use = true and ingredient_id = ?', current_hopper_lot.lot.ingredient_id]).count
+      if factory_lots > 0
+        redirect_to change_factory_lots_scale_hopper_path(@hopper.scale_id, @hopper.id)
+      else
+        redirect_to scale_path(@hopper.scale_id)
+      end
+    else
+      flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar el lote de la tolva"
       redirect_to scale_path(@hopper.scale_id)
     end
@@ -100,14 +100,14 @@ class HoppersController < ApplicationController
   end
 
   def do_adjust
-	@hopper = Hopper.find params[:id]
-	if @hopper.adjust(params[:adjust], session[:user_id])
-	  flash[:notice] = "Ajuste realizado con éxito"
-	else
-	  flash[:type] = 'error'
+    @hopper = Hopper.find params[:id]
+    if @hopper.adjust(params[:adjust], session[:user_id])
+      flash[:notice] = "Ajuste realizado con éxito"
+    else
+      flash[:type] = 'error'
       flash[:notice] = "No se pudo realizar el ajuste"
     end
-	redirect_to scale_path(@hopper.scale_id)    
+    redirect_to scale_path(@hopper.scale_id)
   end
 
   def fill

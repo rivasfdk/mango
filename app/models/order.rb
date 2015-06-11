@@ -71,7 +71,6 @@ class Order < ActiveRecord::Base
 
   def repair(user_id, params)
     n_batch = Integer(params[:n_batch]) rescue 0
-    #return false if self.completed
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
       .where(hoppers_lots: {active: true}, hoppers: {main: true})
@@ -80,20 +79,6 @@ class Order < ActiveRecord::Base
         hash[hl["ingredient_id"]] = hl["id"]
         hash
       end
-
-    if self.client.factory
-      hopper_ingredients.each do |ingredient_id, hopper_lot_id|
-        hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot_id, client_id: self.client_id).first
-        if hfl.present? and hfl.lot_id.present?
-          hopper_lot = hfl.hopper_lot.hopper.hopper_lot.new
-          hopper_lot.lot_id = hfl.lot_id
-          hopper_lot.active = false
-          hopper_lot.factory = true
-          hopper_lot.save(validate: false)
-          hopper_ingredients[ingredient_id] = hopper_lot.id
-        end
-      end
-    end
 
     recipe_ingredients = IngredientRecipe
       .where(recipe_id: self.recipe_id)
@@ -112,12 +97,38 @@ class Order < ActiveRecord::Base
         hash
       end ) unless self.medicament_recipe.nil?
 
-    return false unless (recipe_ingredients.keys - hopper_ingredients.keys).empty?
+    unavailable_ingredients_ids = recipe_ingredients.keys - hopper_ingredients.keys
+
+    unavailable_ingredients_ids.each do |ingredient_id|
+      last_hopperlot = HopperLot
+        .joins(:lot, :hopper)
+        .where(hoppers: {main: true})
+        .where(lots: {ingredient_id: ingredient_id})
+        .last
+      return false if last_hopperlot.nil?
+      hopper_ingredients[ingredient_id] = last_hopperlot.id
+    end
+
+    if self.client.factory
+      hopper_ingredients.each do |ingredient_id, hopper_lot_id|
+        hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot_id, client_id: self.client_id).first
+        if hfl.present? and hfl.lot_id.present?
+          hopper_lot = hfl.hopper_lot.hopper.hopper_lot.new
+          hopper_lot.lot_id = hfl.lot_id
+          hopper_lot.active = false
+          hopper_lot.factory = true
+          hopper_lot.save(validate: false)
+          hopper_ingredients[ingredient_id] = hopper_lot.id
+        end
+      end
+    end
 
     transaction do
-      BatchHopperLot.skip_callback(:create,
-                                   :after,
-                                   :update_batch_end_date)
+      BatchHopperLot.skip_callback(
+        :create,
+        :after,
+        :update_batch_end_date
+      )
       now = Time.now
       real_batch = self.batch.count
       if real_batch < n_batch

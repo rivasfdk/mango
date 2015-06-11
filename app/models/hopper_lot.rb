@@ -10,14 +10,14 @@ class HopperLot < ActiveRecord::Base
   validates :hopper, :lot, presence: true
 
   before_save :update_active, if: :new_record?, unless: :factory
-  after_create :update_main_hopper, :update_factory_lots, unless: :factory
+  after_create :update_main_hopper, :set_factory_lots, unless: :factory
   after_save :check_hopper_stock, unless: :factory
 
   def update_active
     HopperLot.where(hopper_id: self.hopper_id).update_all(active: false)
     self.active = true
   end
-  
+
   def check_hopper_stock
     level = ((self.stock / self.lot.density) / self.hopper.capacity * 100).round(2)
     self.hopper.stock_below_minimum = self.hopper.scale.not_weighed ? false : level < Settings.first.hopper_minimum_level
@@ -44,14 +44,12 @@ class HopperLot < ActiveRecord::Base
     end
   end
 
-  def update_factory_lots
-    previous = previous_hopper_lot
-    unless previous.nil?
-      previous.hoppers_factory_lots.each do |hfl|
-        hfl.hopper_lot = self
-        hfl.lot = Lot.where(:ingredient_id => self.lot.ingredient_id, :client_id => hfl.client_id, :active => true, :in_use => true).last unless previous.lot.ingredient_id == self.lot.ingredient_id
-        hfl.save
-      end
+  def set_factory_lots
+    Client.where(factory: true).pluck(:id).each do |client_id|
+      hfl = self.hoppers_factory_lots.new
+      hfl.client_id = client_id
+      hfl.lot = Lot.where(ingredient_id: self.lot.ingredient_id, client_id: client_id, active: true, in_use: true).last
+      hfl.save
     end
   end
 

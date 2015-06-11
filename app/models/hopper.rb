@@ -77,7 +77,7 @@ class Hopper < ActiveRecord::Base
       end
     else
       false
-    end    
+    end
   end
 
   def fill(params, user_id)

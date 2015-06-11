@@ -103,25 +103,18 @@ class OrdersController < ApplicationController
     n_batch = Integer(params[:n_batch]) rescue 0
     @order = Order.find params[:id]
 
-    if @order.recipe.validate
-      if n_batch.between?(1, @order.prog_batches)
-        if @order.repair(session[:user_id], params)
-          flash[:notice] = "Orden reparada exitosamente"
-          redirect_to session[:return_to]
-        else
-          flash[:type] = 'error'
-          flash[:notice] = "Error al reparar la orden"
-          logger.debug "error"
-          redirect_to session[:return_to]
-        end
+    if n_batch.between?(1, @order.prog_batches)
+      if @order.repair(session[:user_id], params)
+        flash[:notice] = "Orden reparada exitosamente"
+        redirect_to session[:return_to]
       else
         flash[:type] = 'error'
-        flash[:notice] = "El numero de batches es inválido"
+        flash[:notice] = "Error al reparar la orden"
         redirect_to session[:return_to]
       end
     else
       flash[:type] = 'error'
-      flash[:notice] = "Algunos ingredientes de la receta no se encuentran en las tolvas"
+      flash[:notice] = "El numero de batches es inválido"
       redirect_to session[:return_to]
     end
   end
