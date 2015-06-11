@@ -10,7 +10,7 @@ class Transaction < ActiveRecord::Base
   validates :sacks, :sack_weight, numericality: {allow_nil: true}
 
   before_create :update_stock
-  after_destroy :update_transactions
+  after_destroy :update_transactions, if: :notified
 
   def update_transactions
     old_stock_after = self.stock_after
