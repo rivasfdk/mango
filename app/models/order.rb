@@ -101,8 +101,7 @@ class Order < ActiveRecord::Base
 
     unavailable_ingredients_ids.each do |ingredient_id|
       last_hopperlot = HopperLot
-        .joins(:lot, :hopper)
-        .where(hoppers: {main: true})
+        .joins(:lot)
         .where(lots: {ingredient_id: ingredient_id})
         .last
       return false if last_hopperlot.nil?
