@@ -5,6 +5,9 @@ class Client < ActiveRecord::Base
   has_many :lots
   has_many :product_lots
   has_many :hopper_factory_lots, dependent: :destroy
+  has_many :addresses, dependent: :destroy
+
+  accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: lambda { |a| a[:address].blank? }
 
   validates :ci_rif, uniqueness: true
   validates :code, uniqueness: {scope: :factory}
@@ -15,7 +18,7 @@ class Client < ActiveRecord::Base
   after_create :generate_factory_lots, if: :factory
 
   def generate_factory_lots
-    hopper_lots = HopperLot.includes(:hoppers_factory_lots).where(:active => true)
+    hopper_lots = HopperLot.includes(:hoppers_factory_lots).where(active: true)
     hopper_lots.each do |hl|
       if hl.hoppers_factory_lots.count > 0
         hopper_factory_lot = hl.hoppers_factory_lots.new

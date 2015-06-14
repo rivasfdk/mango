@@ -4,12 +4,17 @@ class FactoriesController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @factories = Client.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:factory => true}
-        render :html => @factories
+        @factories = Client
+          .where(factory: false)
+          .paginate(
+            page: params[:page],
+            per_page: session[:per_page]
+          )
+        render html: @factories
       end
       format.json do
-        @factories = Client.find :all, :conditions => {:factory => true}
-        render :json => @factories
+        @factories = Client.includes(:addresses).where(factory: true)
+        render json: @factories, include: :addresses
       end
     end
   end

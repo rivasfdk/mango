@@ -4,6 +4,7 @@ class Ticket < ActiveRecord::Base
   belongs_to :ticket_type
   belongs_to :user
   belongs_to :client
+  belongs_to :document_type
 
   has_many :transactions
   accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }

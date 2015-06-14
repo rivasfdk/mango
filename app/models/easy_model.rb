@@ -812,6 +812,9 @@ class EasyModel
 
     data['client_code'] = @ticket.client.code
     data['client_name'] = @ticket.client.name
+    data['client_rif'] = @ticket.client.ci_rif
+    data['document_type'] = @ticket.document_type.nil? ? "DOCUMENTO" : @ticket.document_type.name
+    data['client_address'] = @ticket.address || ""
     data['user_name'] = @ticket.user.name
     data['driver_name'] = @ticket.driver.name
     data['driver_id'] = @ticket.driver.ci

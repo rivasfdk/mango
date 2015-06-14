@@ -1,10 +1,15 @@
 include MangoModule
 
 class SettingsController < ApplicationController
-  skip_before_filter :check_permissions, only: [:show]
+  skip_before_filter :check_permissions, only: [:show, :features]
   def show
     @settings = Settings.first
     render json: @settings
+  end
+
+  def features
+    @features = get_mango_features()
+    render json: @features
   end
 
   def edit

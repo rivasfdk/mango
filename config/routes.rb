@@ -45,6 +45,7 @@ Mango::Application.routes.draw do
   match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post
   match 'scales/:scale_id/hoppers/:id/change_factory_lots' => "hoppers#do_change_factory_lots", :via => :put
   match 'settings.json' => "settings#show", via: :get
+  match 'settings/features.json' => "settings#features", via: :get
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
   match 'settings' => "settings#update", :via => :put
   match 'clients/all' => "clients#all", :via => :get
@@ -101,6 +102,7 @@ Mango::Application.routes.draw do
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, only: [:index, :new, :create]
+  resources :document_types, only: [:index]
   resources :tickets, except: :new
 
   resources :recipes do

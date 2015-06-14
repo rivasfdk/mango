@@ -7,16 +7,19 @@ class ClientsController < ApplicationController
     respond_to do |format|
       # Mango
       format.html do
-        @clients = Client.where(factory: false)
-                         .order('code ASC')
-                         .paginate(page: params[:page],
-                                   per_page: session[:per_page])
+        @clients = Client
+          .where(factory: false)
+          .order('code ASC')
+          .paginate(
+            page: params[:page],
+            per_page: session[:per_page]
+          )
         render html: @clients
       end
       # Romano
       format.json do
-        @clients = Client.where factory: false
-        render json: @clients
+        @clients = Client.includes(:addresses).where(factory: false)
+        render json: @clients, include: :addresses
       end
     end
   end
@@ -29,6 +32,7 @@ class ClientsController < ApplicationController
 
   def edit
     @client = Client.find params[:id]
+    @multiple_addresses = is_mango_feature_available('multiple_addresses')
   end
 
   def create
@@ -55,6 +59,7 @@ class ClientsController < ApplicationController
   def update
     @client = Client.find params[:id]
     @client.update_attributes(params[:client])
+    logger.debug @client.addresses
     if @client.save
       flash[:notice] = 'Cliente guardado con éxito'
       redirect_to :clients

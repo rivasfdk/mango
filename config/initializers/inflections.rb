@@ -17,6 +17,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.singular /([aeriout])s([A-Z]|_|$)/, '\1\2'
   #inflect.singular /([rlnd])es([A-Z]|_|$)/, '\1\2'
   inflect.irregular 'factory', 'factories'
+  inflect.irregular 'address', 'addresses'
 end
 # extender la clase Inflector
 module Inflector

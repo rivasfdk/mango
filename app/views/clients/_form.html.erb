@@ -11,7 +11,42 @@
 <div class="field"><%= f.text_field :tel2, :size=>'20' %></div>
 <label for="email" class="small">E-mail:</label>
 <div class="field"><%= f.text_field :email, :size=>'20' %></div>
-<label for="address" class="small">Dirección:</label>
+<label for="address" class="small">Dirección principal:</label>
 <div class="field"><%= f.text_field :address, :size=>'50' %> <span>*</span></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
+<% if @multiple_addresses %>
+  <h5>Direcciones adicionales</h5>
+  <% i = 0 %>
+<div id="lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Dirección<span class="order_arrow"></span></th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :addresses do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <tr class="<%= class_row %>">
+          <td>
+            <%= builder.text_field :address, size: 60 %>
+          </td>
+          <td class="center">
+            <%= builder.hidden_field :_destroy %>
+            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td class="center">
+        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :addresses %>
+      </td>
+    </tfoot>
+  </table>
+</div>
+<br/>
+<% end %>

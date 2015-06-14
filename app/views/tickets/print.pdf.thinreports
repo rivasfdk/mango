@@ -19,8 +19,12 @@ report.start_new_page do |page|
   page.values company_rif: @data['company_rif'].upcase
   page.values title: @data['short_title'].upcase
   page.values number: "%010d" % @data['number']
+  page.values document_type: @data['document_type'].upcase + ":"
+  page.values document_number: @data['provider_document_number'].upcase
   page.values client_title: @data['client_title'].upcase
   page.values client_name: @data['client_name'].upcase
+  page.values client_rif: @data['client_rif'].upcase
+  page.values client_address: @data['client_address'].upcase
   page.values incoming_date: @data['incoming_date']
   page.values outgoing_date: @data['outgoing_date']
   page.values carrier: @data['carrier'].upcase

@@ -120,9 +120,7 @@ class TicketsController < ApplicationController
       ticket_template = get_mango_field('ticket_template')
       if ticket_template 
         @data[:ticket_template] = ticket_template
-        logger.debug("Antes")
         rendered = render_to_string formats: [:pdf]
-        logger.debug("Despues")
       else
         rendered = EasyReport::Report.new(@data, 'ticket.yml').render
       end

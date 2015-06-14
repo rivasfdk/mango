@@ -11,7 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150601120058) do
+ActiveRecord::Schema.define(:version => 20150613143951) do
+
+  create_table "addresses", :force => true do |t|
+    t.integer  "client_id",  :null => false
+    t.string   "address",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "alarm_types", :force => true do |t|
     t.string   "description"
@@ -103,6 +110,12 @@ ActiveRecord::Schema.define(:version => 20150601120058) do
     t.float    "rate",         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "documents_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "drivers", :force => true do |t|
@@ -550,6 +563,8 @@ ActiveRecord::Schema.define(:version => 20150601120058) do
     t.boolean  "manual_outgoing",          :default => false
     t.boolean  "repaired",                 :default => false, :null => false
     t.boolean  "notified",                 :default => true
+    t.string   "address"
+    t.integer  "document_type_id"
   end
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
