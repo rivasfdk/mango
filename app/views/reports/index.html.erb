@@ -285,7 +285,7 @@
       <%= form_for :report, :url=>consumption_per_selected_ingredients_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :client, "Códigos de ingredientes", :class=>'small' %> <%= f.text_field :ingredients_codes, :size=>80 %><br/><br/><br/>
+        <%= f.label :client, "Ingredientes", :class=>'small' %> <%= f.collection_select :ingredients_ids_2, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -350,7 +350,8 @@
       <%= form_for :report, :url=>consumption_per_ingredient_per_orders_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :ingredient_code, "Código del ingrediente", :class=>'small' %> <%= f.text_field :ingredient_code, :size=>20 %><br/><br/><br/>
+        <%= f.label :ingredient_id, "ingrediente", :class=>'small' %>
+        <%= f.collection_select :ingredient_id, @ingredients, :id, :to_collection_select, {include_blank: false}, class: 'chosen-select chzn-field-normal' %><br/><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -558,7 +559,8 @@
         <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
         <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
         <br/><br/>
-        <%= f.label :clients_codes, "Códigos Cliente(s) / Proveedor(es): " %> <%= f.text_field :clients_codes, :size=>60 %>
+        <label for="clients_ids" class="small">Clientes:</label>
+          <%= f.collection_select :clients_ids_2, @clients, :id, :to_collection_select, {selected: @sales_preselected_clients_ids}, {multiple: true, class: 'multiple-select chzn-field-max'} %><br/><br/>
         <br/><br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

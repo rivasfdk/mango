@@ -51,7 +51,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @tickets %>
+    <%= will_paginate @tickets %>
   </div>
 </div>
 <% else %>

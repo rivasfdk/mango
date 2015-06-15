@@ -158,8 +158,8 @@ class ReportsController < ApplicationController
   def consumption_per_selected_ingredients
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    ingredients_codes = params[:report]['ingredients_codes'].delete(" ").split(",")
-    data = EasyModel.consumption_per_selected_ingredients(start_date, end_date, ingredients_codes)
+    ingredients_ids = params[:report][:ingredients_ids_2]
+    data = EasyModel.consumption_per_selected_ingredients(start_date, end_date, ingredients_ids, session[:user_id])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
@@ -372,8 +372,8 @@ class ReportsController < ApplicationController
     end_date = EasyModel.param_to_date(params[:report], 'end')
     ticket_type_id = params[:report][:ticket_type_id].to_i
     warehouse_type_id = params[:report][:warehouse_type_id].to_i
-    clients_codes = params[:report][:clients_codes].delete(" ").split(",")
-    data = EasyModel.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, clients_codes)
+    clients_ids = params[:report][:clients_ids_2]
+    data = EasyModel.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, warehouse_type_id, clients_ids)
     
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'

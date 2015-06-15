@@ -914,8 +914,9 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, content_type, clients_codes)
-    @tickets = Ticket.find :all, :include => {:transactions => {}, :client => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, content_type, clients_ids)
+    return nil if clients_ids.empty?
+    @tickets = Ticket.find :all, :include => {:transactions => {}, :client => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.id in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_ids, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
 
     return nil if @tickets.length.zero?
 
@@ -1548,15 +1549,21 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_selected_ingredients(start_date, end_date, ingredients_codes)
+  def self.consumption_per_selected_ingredients(start_date, end_date, ingredients_ids, user_id)
     data = self.initialize_data('Consumo por Ingrediente')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
 
-    ingredients_ids = Ingredient.where(code: ingredients_codes).pluck(:id)
-
     return nil if ingredients_ids.empty?
+
+    PreselectedIngredientId.transaction do
+      PreselectedIngredientId.where(user_id: user_id)
+        .where(report: 'ingredient_consumption_with_plot').delete_all
+      ingredients_ids.each do |ingredient_id|
+        PreselectedIngredientId.create ingredient_id: ingredient_id, user_id: user_id, report: 'ingredient_consumption_with_plot'
+      end
+    end
 
     batch_hopper_lots = BatchHopperLot
       .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {}}})
