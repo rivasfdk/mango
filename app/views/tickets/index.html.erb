@@ -15,6 +15,7 @@
         <th>Peso de entrada<span class="order_arrow"></th>
         <th>Peso de Salida<span class="order_arrow"></th>
         <th>Camión<span class="order_arrow"></th>
+        <th>Nro. documento</th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
@@ -32,6 +33,7 @@
         <td class="right"><%=h item.incoming_weight %></td>
         <td class="right"><%=h item.outgoing_weight.nil? ? "-" : item.outgoing_weight %></td>
         <td class="center"><%=h item.truck.license_plate %></td>
+        <td class="center"><%=h item.provider_document_number %></td>
         <td>
           <% if item.open %>
             <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>

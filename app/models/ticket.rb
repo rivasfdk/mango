@@ -72,6 +72,7 @@ class Ticket < ActiveRecord::Base
     tickets = tickets.where('tickets.outgoing_date <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
     tickets = tickets.where(driver_id: params[:driver_id]) if params[:driver_id].present?
     tickets = tickets.where(trucks: {carrier_id: params[:carrier_id]}) if params[:carrier_id].present?
+    tickets = tickets.where('provider_document_number LIKE ?', "%#{params[:document_number]}%") if params[:document_number].present?
     tickets = tickets.order('number DESC')
     tickets.paginate page: params[:page], per_page: params[:per_page]
   end
