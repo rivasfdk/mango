@@ -7,6 +7,7 @@ class OrdersController < ApplicationController
     @orders = Order.search(params)
     @clients = Client.get_all()
     @recipes = Recipe.lastests_by_code()
+    @states = Order::STATES
   end
 
   def show

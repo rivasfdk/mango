@@ -6,6 +6,7 @@ class TicketsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
+        @states = Ticket::STATES
         @tickets = Ticket.search(params)
         @drivers = Driver.where(frequent: true)
         @carriers = Carrier.where(frequent: true)

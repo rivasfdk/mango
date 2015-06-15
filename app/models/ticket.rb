@@ -10,11 +10,17 @@ class Ticket < ActiveRecord::Base
   accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }
 
   validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight
-  validates_numericality_of :incoming_weight, :greater_than => 0
-  validates_numericality_of :outgoing_weight, :allow_nil => true, :greater_than => 0
-  validates_numericality_of :provider_weight, :allow_nil => true
+  validates_numericality_of :incoming_weight, greater_than: 0
+  validates_numericality_of :outgoing_weight, allow_nil: true, greater_than: 0
+  validates_numericality_of :provider_weight, allow_nil: true
   before_create :generate_number
   before_create :set_notified
+
+  STATES = {
+    0 => {name: 'Abiertos', condition: 'open = TRUE'},
+    1 => {name: 'Por notificar', condition: 'open = FALSE AND notified = FALSE'},
+    2 => {name: 'Notificados', condition: 'open = FALSE AND notified = TRUE'},
+  }
 
   def generate_number
     ticket_number = TicketNumber.first
@@ -73,6 +79,7 @@ class Ticket < ActiveRecord::Base
     tickets = tickets.where(driver_id: params[:driver_id]) if params[:driver_id].present?
     tickets = tickets.where(trucks: {carrier_id: params[:carrier_id]}) if params[:carrier_id].present?
     tickets = tickets.where('provider_document_number LIKE ?', "%#{params[:document_number]}%") if params[:document_number].present?
+    tickets = tickets.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
     tickets = tickets.order('number DESC')
     tickets.paginate page: params[:page], per_page: params[:per_page]
   end

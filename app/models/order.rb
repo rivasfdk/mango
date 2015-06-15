@@ -29,6 +29,12 @@ class Order < ActiveRecord::Base
   before_create :set_notified
   before_save :update_real_consumptions, if: :real_production_changed?
 
+  STATES = {
+    0 => {name: 'Sin completar', condition: 'completed = false'},
+    1 => {name: 'Sin notificar', condition: 'completed = TRUE AND notified = FALSE'},
+    2 => {name: 'Notificadas', condition: 'completed = TRUE AND notified = TRUE'},
+  }
+
   def product_lot_factory
     if self.client_id and self.product_lot_id and not self.auto_product_lot
       if self.client.factory and not self.product_lot.client_id == self.client_id
@@ -492,6 +498,7 @@ class Order < ActiveRecord::Base
     orders = orders.where(client_id: params[:client_id]) if params[:client_id].present?
     orders = orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     orders = orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
+    orders = orders.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
     orders = orders.order('orders.created_at DESC')
     orders.paginate page: params[:page], per_page: params[:per_page]
   end

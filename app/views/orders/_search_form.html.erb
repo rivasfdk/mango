@@ -1,6 +1,7 @@
 <%= label_tag(:code, "Código") %>
 <%= text_field_tag :code, params[:code] %>
-<br /><br />
+<label for="state_id" class="small">Estado:</label>
+<%= select_tag(:state_id, options_for_select(@states.collect { |k, v| [v[:name], k] }), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %><br /><br />
 <%= label_tag(:recipe_code, "Receta") %>
 <%= select_tag(:recipe_code, options_from_collection_for_select(@recipes, :code, :to_collection_select_code, params[:recipe_code]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
 <%= label_tag(:client_id, "Cliente") %>
