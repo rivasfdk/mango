@@ -5,7 +5,7 @@ class FactoriesController < ApplicationController
     respond_to do |format|
       format.html do
         @factories = Client
-          .where(factory: false)
+          .where(factory: true)
           .paginate(
             page: params[:page],
             per_page: session[:per_page]
