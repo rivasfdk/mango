@@ -1372,6 +1372,7 @@ class EasyModel
         std_amount = value * n_batch
         details[key] = {
           'ingredient' => Ingredient.find_by_code(key).name,
+          'ingredient_id' => Ingredient.find_by_code(key).id,
           'lot' => "N/A",
           'hopper' => "N/A",
           'real_kg' => 0,

@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
         end
         format.json do
           @user = User.find user.id
-          render :json => @user, :methods => [:allow_manual],  :except => [:password_hash, :password_salt]
+          render :json => @user, :methods => [:allow_manual], :except => [:password_hash, :password_salt]
         end
         format.xml do
           render xml: {success: true, user_name: user.name, user_role_id: user.role_id}

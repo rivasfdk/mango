@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150613143951) do
+ActiveRecord::Schema.define(:version => 20150711092834) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "client_id",  :null => false
@@ -594,24 +594,24 @@ ActiveRecord::Schema.define(:version => 20150613143951) do
   end
 
   create_table "transactions", :force => true do |t|
-    t.integer  "transaction_type_id",                    :null => false
-    t.integer  "user_id",                                :null => false
-    t.float    "amount",                                 :null => false
+    t.integer  "transaction_type_id",                                                   :null => false
+    t.integer  "user_id",                                                               :null => false
+    t.float    "amount",                                                                :null => false
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "processed_in_stock",  :default => 0
+    t.integer  "processed_in_stock",                                 :default => 0
     t.integer  "client_id"
     t.integer  "ticket_id"
-    t.boolean  "sack",                :default => false
+    t.boolean  "sack",                                               :default => false
     t.float    "sack_weight"
     t.integer  "sacks"
     t.string   "document_number"
-    t.float    "stock_after"
-    t.integer  "content_id",                             :null => false
-    t.integer  "content_type",                           :null => false
+    t.decimal  "stock_after",         :precision => 15, :scale => 4
+    t.integer  "content_id",                                                            :null => false
+    t.integer  "content_type",                                                          :null => false
     t.integer  "order_id"
-    t.boolean  "notified",            :default => true
+    t.boolean  "notified",                                           :default => true
   end
 
   add_index "transactions", ["content_id"], :name => "index_transactions_on_content_id"

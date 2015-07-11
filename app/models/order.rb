@@ -202,16 +202,20 @@ class Order < ActiveRecord::Base
         if ingredient[:modify] == "1"
           total = ingredient[:real].to_f
           next if total < 0
-          amount = total / n_batch
-          BatchHopperLot
+
+          amount = (total / n_batch).round(2)
+          diff = total - amount * n_batch
+          bhls = BatchHopperLot
             .joins({batch: {}, hopper_lot: {lot: {}}})
             .where({batches: {order_id: self.id}})
             .where({lots: {ingredient_id: ingredient[:id]}})
-            .update_all(amount: amount)
+          bhls.update_all(amount: amount)
+          unless bhls.last.nil?
+            bhls.last.update_column(:amount, amount + diff)
+          end
         end
       end
     end
-
     if is_mango_feature_available("transactions") && !is_mango_feature_available("notifications")
       self.generate_transactions(user_id)
     end
