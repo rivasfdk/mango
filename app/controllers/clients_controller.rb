@@ -48,9 +48,9 @@ class ClientsController < ApplicationController
       end
       format.json do
         if @client.save
-          render :json => @client
+          render json: @client, include: :addresses
         else
-          render :json => @client.errors, :status => :unprocessable_entity
+          render json: @client.errors, status: :unprocessable_entity
         end
       end
     end
