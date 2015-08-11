@@ -835,11 +835,11 @@ class EasyModel
     data['comment5'] = " "
     
     if @ticket.ticket_type_id == 1
-      data['dif_label'] = "Dif.:"
-      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
+      data['diff_label'] = "Dif.:"
+      data['diff'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
     else
-      data['dif_label'] = ""
-      data['dif'] = ""
+      data['diff_label'] = ""
+      data['diff'] = ""
     end
 
     # I fucking hate easyreport
@@ -869,7 +869,8 @@ class EasyModel
       total_amount += t.amount
     end
     data['total_amount'] = total_amount.to_s + " Kg"
-    data['perc_dif'] = "#{((@ticket.get_net_weight - total_amount) / total_amount * 100).round(2)} %"
+    provider_weight = @ticket.provider_weight.nil? ? total_amount : @ticket.provider_weight
+    data['perc_diff'] = "#{((@ticket.get_net_weight - provider_weight) / provider_weight * 100).round(2)} %"
     data[:transactions_count] = @ticket.transactions.count
     return data
   end
