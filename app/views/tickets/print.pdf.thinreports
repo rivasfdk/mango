@@ -6,7 +6,7 @@ report.layout.config.list(:transactions) do
   events.on :footer_insert do |e|
     e.section.item(:total_amount).value(e.store.total_amount)
     e.section.item(:net_weight).value(e.store.net_weight)
-    #e.section.item(:provider_weight).value(e.store.provider_weight)
+    e.section.item(:provider_weight).value(e.store.provider_weight)
     e.section.item(:dif).value(e.store.dif)
     e.section.item(:comment).value(e.store.comment)
     e.section.item(:incoming_weight).value(e.store.incoming_weight)
@@ -46,7 +46,7 @@ report.start_new_page do |page|
 
   table.store.total_amount = @data['total_amount'].upcase
   table.store.net_weight = @data['net_weight'].upcase
-  #table.store.provider_weight = @data['provider_weight'].upcase
+  table.store.provider_weight = @data['provider_weight'].upcase
   table.store.dif = @data['perc_dif'].upcase
   table.store.comment = "NOTA: #{@data['comment'].upcase}"
   table.store.incoming_weight = @data['incoming_weight'].upcase
