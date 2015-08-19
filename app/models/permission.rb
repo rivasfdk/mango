@@ -17,7 +17,7 @@ class Permission < ActiveRecord::Base
 
   # Rails actions
   CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all']
-  MODIFY = ['new', 'edit', 'create', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper']
+  MODIFY = ['new', 'edit', 'create', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
   DELETE = ['destroy']
 
   def self.get_modules

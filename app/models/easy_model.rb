@@ -361,7 +361,7 @@ class EasyModel
         if end_date - start_date > 1
           days = "-"
         else
-          days = date - first_used + 1
+          days = start_date - first_used_at + 1
         end
 
         row[:versions] << {
