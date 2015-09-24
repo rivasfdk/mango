@@ -136,9 +136,9 @@ report:
               width: 12
           6:
             real_batches:
-              label: Baches
+              label: Batch(Real/Prog)
               align: right
-              width: 20
+              width: 30
               totalize: true
           7:
             total_real:

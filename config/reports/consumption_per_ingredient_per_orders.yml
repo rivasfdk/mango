@@ -123,7 +123,7 @@ report:
             recipe_code:
               label: Receta
               align: left
-              width: 30
+              width: 20
           4:
             recipe_name:
               label: Desc. Receta
@@ -136,10 +136,9 @@ report:
               width: 12
           6:
             real_batches:
-              label: Baches
+              label: Batch(Real/Prog)
               align: right
-              width: 20
-              totalize: true
+              width: 30
           7:
             total_standard:
               label: Total Est.(Kg)

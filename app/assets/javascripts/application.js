@@ -42,6 +42,10 @@ $(function(){
     $('#report_by_products').trigger('change');
     $('#report_date_type_1').trigger('change');
     $('#report_time_unit_1').trigger('change');
+    $('#report_by_ticket_type').trigger('change');
+    $('#report_by_driver').trigger('change');
+    $('#report_by_ticket_content').trigger('change');
+    $('#report_by_factory_3').trigger('change');
     hideProductLots();
 });
 

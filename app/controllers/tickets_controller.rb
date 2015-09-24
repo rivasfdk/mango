@@ -6,10 +6,12 @@ class TicketsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @states = Ticket::STATES
-        @tickets = Ticket.search(params)
+        @states = Ticket.get_states()
+        @tickets, @paginated_transactions = Ticket.search(params)
         @drivers = Driver.where(frequent: true)
         @carriers = Carrier.where(frequent: true)
+        @ticket_types = TicketType.all
+        @ingredients = Ingredient.actives
         render html: @tickets
       end
       format.json do
@@ -119,7 +121,7 @@ class TicketsController < ApplicationController
       redirect_to action: 'index'
     else
       ticket_template = get_mango_field('ticket_template')
-      if ticket_template 
+      if ticket_template
         @data[:ticket_template] = ticket_template
         rendered = render_to_string formats: [:pdf]
       else

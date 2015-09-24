@@ -10,39 +10,33 @@
     <thead>
       <tr>
         <th>Número<span class="order_arrow"></th>
-        <th>Estado<span class="order_arrow"></th>
+        <th>Fecha<span class="order_arrow"></th>
         <th>Tipo<span class="order_arrow"></th>
-        <th>Peso de entrada<span class="order_arrow"></th>
-        <th>Peso de Salida<span class="order_arrow"></th>
-        <th>Camión<span class="order_arrow"></th>
-        <th>Nro. documento</th>
+        <th>Chofer<span class="order_arrow"></th>
+        <th>Origen/Destino<span class="order_arrow"></th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
     <tbody>
-    <% @tickets.each do |item| %>
+    <% @tickets.each do |ticket_id, transactions| %>
       <% class_row, i = alternate_row_class(i) %>
+      <% ft = transactions.first %>
       <tr class="<%= class_row %>">
-        <td><%=h item.number %></td>
-        <% if item.open %>
-        <td class="center">Abierto</td>
-        <% else %>
-        <td class="center">Cerrado</td>
-        <% end %>
-        <td><%=h item.ticket_type.code %></td>
-        <td class="right"><%=h item.incoming_weight %></td>
-        <td class="right"><%=h item.outgoing_weight.nil? ? "-" : item.outgoing_weight %></td>
-        <td class="center"><%=h item.truck.license_plate %></td>
-        <td class="center"><%=h item.provider_document_number %></td>
+        <td><%=h ft[:ticket_number] %></td>
+        <td><%=h ft[:ticket_incoming_date].strftime("%d/%m/%Y %H:%M:%S") %></td>
+        <td><%=h ft[:ticket_type] %></td>
+        <td><%=h ft[:driver_name] %></td>
+        <td><%=h ft[:client_name] %></td>
         <td>
-          <% if item.open %>
-            <%= render_action_delete(ticket_path(item), "Desea borrar el ticket '#{item.number}'?") %>
+          <% logger.debug ft[:ticket_open] %>
+          <% if ft[:ticket_open] %>
+            <%= render_action_delete(ticket_path(ticket_id), "Desea borrar el ticket '#{ft[:ticket_number]}'?") %>
           <% else %>
-            <%= render_action_repair(repair_ticket_path(item)) %> <br />
-            <% if !item.notified %>
-            <%= render_action_notify_confirm(notify_ticket_path(item), "Desea notificar el ticket '#{item.number}'?") %> <br />
+            <%= render_action_repair(repair_ticket_path(ticket_id)) %> <br />
+            <% if !ft[:ticket_notified] %>
+            <%= render_action_notify_confirm(notify_ticket_path(ticket_id), "Desea notificar el ticket '#{ft[:ticket_number]}'?") %> <br />
             <% end %>
-            <%= render_action_print(print_ticket_path(item)) %>
+            <%= render_action_print(print_ticket_path(ticket_id)) %>
           <% end %>
         </td>
       </tr>
@@ -51,7 +45,7 @@
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%= will_paginate @tickets %>
+    <%= will_paginate @paginated_transactions %>
   </div>
 </div>
 <% else %>

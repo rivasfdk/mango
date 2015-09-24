@@ -11,6 +11,7 @@ Mango::Application.routes.draw do
   match 'product_lot_parameter_lists/:product_lot_id/create' => "product_lot_parameter_lists#create", :via => :post, :as => 'create_product_lot_parameter_list'
   match 'ingredients/:id/lots' => "ingredients#lots", :via => :get, :as => 'ingredient_lots'
   match 'ingredients/get_all' => "ingredients#get_all", via: :get
+  match 'products/get_all' => "products#get_all", via: :get
   match 'ingredient_parameter_type_ranges/:id/create' => "ingredient_parameter_type_ranges#create", :via => :post, :as => 'create_ingredient_parameter_type_range'
   match 'product_parameter_type_ranges/:id/create' => "product_parameter_type_ranges#create", :via => :post, :as => 'create_product_parameter_type_range'
   match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'
@@ -78,11 +79,6 @@ Mango::Application.routes.draw do
   match 'reports/products_stock' => "reports#products_stock", :via => :post, :as => "products_stock_report"
   match 'reports/product_lots_dispatches' => "reports#product_lots_dispatches", :via => :post, :as => "product_lots_dispatches_report"
   match 'reports/tickets_transactions' => "reports#tickets_transactions", :via => :post, :as => "tickets_transactions_report"
-  match 'reports/tickets_transactions_per_clients' => "reports#tickets_transactions_per_clients", :via => :post, :as => "tickets_transactions_per_clients_report"
-  match 'reports/tickets_transactions_per_contents' => "reports#tickets_transactions_per_contents", :via => :post, :as => "tickets_transactions_per_contents_report"
-  match 'reports/tickets_transactions_per_contents_per_clients' => "reports#tickets_transactions_per_contents_per_clients", :via => :post, :as => "tickets_transactions_per_contents_per_clients_report"
-  match 'reports/tickets_transactions_per_carrier' => "reports#tickets_transactions_per_carrier", :via => :post, :as => "tickets_transactions_per_carrier_report"
-  match 'reports/tickets_transactions_per_driver' => "reports#tickets_transactions_per_driver", :via => :post, :as => "tickets_transactions_per_driver_report"
   match 'reports/production_per_recipe' => "reports#production_per_recipe", :via => :post, :as => "production_per_recipe_report"
   match 'reports/production_per_client' => "reports#production_per_client", :via => :post, :as => "production_per_client_report"
   match 'reports/alarms' => "reports#alarms", :via => :post, :as => "alarms_report"

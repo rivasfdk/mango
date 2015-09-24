@@ -11,7 +11,7 @@ class Product < ActiveRecord::Base
   validates :code, :name, length: {within: 3..40}
 
   def to_collection_select
-    "#{self.code} - #{self.name}"
+    "#{self.name} - #{self.code}"
   end
 
   def generate_parameter_type_ranges

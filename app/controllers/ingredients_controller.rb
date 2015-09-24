@@ -7,9 +7,9 @@ class IngredientsController < ApplicationController
     @transactions_enabled = is_mango_feature_available("transactions")
     @ingredients = Ingredient.search(params)
   end
-  
+
   def get_all
-    @ingredients = Ingredient.includes(:ingredient)
+    @ingredients = Ingredient.actives
       .order('id desc')
     render json: @ingredients, methods: [:to_collection_select], root: false
   end

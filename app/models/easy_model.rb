@@ -875,241 +875,65 @@ class EasyModel
     return data
   end
 
-  def self.tickets_transactions(start_date, end_date, ticket_type_id, content_type)
-    @tickets = Ticket.find :all, :include => {:transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+  def self.tickets_transactions(params, company_name)
+    start_date = EasyModel.param_to_date(params, 'start')
+    end_date = EasyModel.param_to_date(params, 'end')
 
-    return nil if @tickets.length.zero?
+    by_ticket_type = params[:by_ticket_type] == '1'
+    by_factory = params[:by_factory_3] == '1'
+    by_driver = params[:by_driver] == '1'
+    by_content = params[:by_ticket_content] == '1'
 
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
 
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['table1'] = []
+    transactions = Ticket.base_search
+      .where('tickets.open = FALSE')
+      .where('tickets.outgoing_date BETWEEN ? AND ?', start_date, end_date + 1.day)
 
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        #TODO Right way to discard pallets transactions
-        if content_type == 2 and transaction.get_content.code == "1000"
-          next
-        end
-
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
+    transactions = transactions.where('tickets.ticket_type_id = ?', params[:ticket_type_id]) if by_ticket_type
+    if by_factory
+      if params[:factory_id_3].present?
+        conditions = ['lots.client_id = ? or products_lots.client_id = ?', params[:factory_id_3], params[:factory_id_3]]
+      else
+        conditions = 'lots.client_id is null and products_lots.client_id is null'
       end
+      transactions = transactions.where(conditions)
     end
-    return data
-  end
+    transactions = transactions.where('tickets.driver_id = ?', params[:driver_id]) if by_driver
+    transactions = transactions.where('transactions.content_type = ? and (ingredients.id = ? or products.id = ?)', params[:ticket_content_type], params[:content_id], params[:content_id]) if by_content
 
-  def self.tickets_transactions_per_clients(start_date, end_date, ticket_type_id, content_type, clients_ids)
-    return nil if clients_ids.empty?
-    @tickets = Ticket.find :all, :include => {:transactions => {}, :client => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.id in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_ids, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
+    transactions = transactions.order('tickets.id asc')
 
-    return nil if @tickets.length.zero?
+    return nil if transactions.empty?
 
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
+    data = self.initialize_data('Movimientos de Romana')
+    data[:since] = self.print_range_date(start_date)
+    data[:until] = self.print_range_date(end_date)
 
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['table1'] = []
-
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        if content_type == 2 and transaction.get_content.code == "1000"
-          next
-        end
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
-      end
+    data[:ticket_type] = TicketType.where(id: params[:ticket_type_id]).first.code if params[:by_ticket_type] == '1'
+    if params[:by_factory_3] == '1'
+      data[:factory] = params[:factory_id].present? ? Client.where(id: params[:factory_id_3]).first.name : company_name
     end
-    return data
-  end
+    data[:driver_name] = Driver.where(id: params[:driver_id]).first.name
 
-  def self.tickets_transactions_per_contents(start_date, end_date, ticket_type_id, content_type, contents_codes)
-    @tickets = Ticket.find :all, :include => {:transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
-
-    return nil if @tickets.length.zero?
-
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
-
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['table1'] = []
-
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        unless contents_codes.include? transaction.get_content.code
-          next
-        end
-
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
-      end
+    if params[:ticket_content_type] == '1'
+      data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
+    else
+      data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
     end
-    return data
-  end
-
-  def self.tickets_transactions_per_contents_per_clients(start_date, end_date, ticket_type_id, content_type, contents_codes, clients_codes)
-    @tickets = Ticket.find :all, :include => {:client => {}, :transactions => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and clients.code in (?) and outgoing_date >= ? and outgoing_date <= ?', ticket_type_id, content_type, clients_codes, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['tickets.number ASC']
-
-    return nil if @tickets.length.zero?
-
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones" : "Despachos"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
-
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['table1'] = []
-
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        unless contents_codes.include? transaction.get_content.code
-          next
-        end
-
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
-      end
+    data[:transactions] = transactions.map do |t|
+      {
+        ticket_number: "#{t[:ticket_number]}\n#{t[:ticket_type]}",
+        outgoing_date: t[:ticket_outgoing_date],
+        driver_name: t[:driver_name],
+        document: "#{t[:document_type]}\n#{t[:document_number]}",
+        provider_weight: t[:provider_weight],
+        net_weight: t[:net_weight].round(2),
+        diff: "#{(t[:net_weight] - t[:provider_weight]).round(2)}\n(#{((t[:net_weight] - t[:provider_weight]) / t[:provider_weight] * 100).round(2)} %)",
+        content_name: t[:content_name],
+        lot_code: t[:lot_code],
+      }
     end
-    return data
-  end
-
-  def self.tickets_transactions_per_carrier(start_date, end_date, ticket_type_id, content_type, carrier_id)
-    @tickets = Ticket.find :all, :include => {:transactions => {}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ? and trucks.carrier_id = ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), carrier_id], :order=>['tickets.number ASC']
-
-    return nil if @tickets.length.zero?
-
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
-
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    carrier = Carrier.find(carrier_id)
-    data['carrier'] = carrier.name
-    data['table1'] = []
-
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        if content_type == 2 and transaction.get_content.code == "1000"
-          next
-        end
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
-      end
-    end
-    return data
-  end
-
-  def self.tickets_transactions_per_driver(start_date, end_date, ticket_type_id, content_type, driver_id)
-    @tickets = Ticket.find :all, :include => {:transactions => {}, :truck => {}}, :conditions => ['open = FALSE and ticket_type_id = ? and transactions.content_type = ? and outgoing_date >= ? and outgoing_date <= ? and driver_id = ?', ticket_type_id, content_type, self.start_date_to_sql(start_date), self.end_date_to_sql(end_date), driver_id], :order=>['tickets.number ASC']
-
-    return nil if @tickets.length.zero?
-
-    ticket_type_title = (ticket_type_id == 1) ? "Recepciones por Transportista" : "Despachos por Transportista"
-    content_type_title = (content_type == 1) ? "Materia Prima" : "Producto Terminado"
-
-    data = self.initialize_data("#{ticket_type_title} de #{content_type_title}")
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    driver = Driver.find(driver_id)
-    data['driver'] = "#{driver.ci} - #{driver.name}"
-    data['table1'] = []
-
-    @tickets.each do |ticket|
-      ticket.transactions.each do |transaction|
-        if content_type == 2 and transaction.get_content.code == "1000"
-          next
-        end
-        sacks = "-"
-        sack_weight = "-"
-        if transaction.sack
-          sacks = transaction.sacks.to_s
-          sack_weight = transaction.sack_weight.to_s + " Kg"
-        end
-
-        data['table1'] << {
-          'number' => ticket.number,
-          'client' => ticket.client.name,
-          'content_name' => transaction.get_content.name,
-          'sacks' => sacks,
-          'sack_weight' => sack_weight,
-          'amount' => transaction.amount,
-        }
-      end
-    end
-    return data
+    data
   end
 
   def self.daily_production(params)
@@ -1208,8 +1032,8 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_code)
-    ingredient = Ingredient.find_by_code ingredient_code
+  def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_id)
+    ingredient = Ingredient.find_by_id ingredient_id
     return nil if ingredient.nil?
 
     batch_hopper_lots = BatchHopperLot
@@ -1219,9 +1043,10 @@ class EasyModel
                recipes.code AS recipe_code,
                recipes.name AS recipe_name,
                recipes.version AS recipe_version,
+               orders.prog_batches AS prog_batches,
                COUNT(batches.id) AS real_batches,
                SUM(amount) AS total_real,
-               SUM(standard_amount) AS total_std,
+               standard_amount AS total_std,
                SUM(real_amount) AS total_real_real')
       .where({batches: {created_at: start_date .. end_date + 1.day},
               lots: {ingredient_id: ingredient.id}})
@@ -1234,6 +1059,7 @@ class EasyModel
     data['ingredient'] = "#{ingredient.code} - #{ingredient.name}"
 
     batch_hopper_lots.each do |bhl|
+      bhl[:total_std] *= bhl[:prog_batches]
       var_kg = bhl[:total_real] - bhl[:total_std]
       var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
@@ -1244,7 +1070,8 @@ class EasyModel
         'recipe_code' => bhl[:recipe_code],
         'recipe_name' => bhl[:recipe_name],
         'recipe_version' => bhl[:recipe_version],
-        'real_batches' => bhl[:real_batches].to_s,
+        'prog_batches' => bhl[:prog_batches],
+        'real_batches' => "#{bhl[:real_batches].to_s}/#{bhl[:prog_batches]}",
         'total_standard' => bhl[:total_std].to_s,
         'total_real' => bhl[:total_real].to_s,
         'total_real_real' => bhl[:total_real_real].to_s,
@@ -1252,7 +1079,7 @@ class EasyModel
         'var_perc' => var_perc.to_s,
         'loss' => loss,
         'loss_perc' => loss_perc
-      }
+      }# unless bhl[:real_batches] == bhl[:prog_batches]
     end
 
     return data
@@ -1523,7 +1350,6 @@ class EasyModel
     total_std = 0
 
     batch_hopper_lots.each do |bhl|
-      next if bhl[:total_std] == 0
       var_kg = bhl[:total_real] - bhl[:total_std]
       var_perc = var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]

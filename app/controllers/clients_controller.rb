@@ -59,7 +59,6 @@ class ClientsController < ApplicationController
   def update
     @client = Client.find params[:id]
     @client.update_attributes(params[:client])
-    logger.debug @client.addresses
     if @client.save
       flash[:notice] = 'Cliente guardado con éxito'
       redirect_to :clients

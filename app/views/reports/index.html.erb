@@ -531,124 +531,36 @@
   <div class="report-content">
     <h2 onclick="toggle_report_details('#tickets_transactions')">Movimientos de Romana</h2>
     <div id="tickets_transactions" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_report_path do |f| %>
+      <%= form_for :report, url: tickets_transactions_report_path(format: 'pdf') do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('tickets_transactions_per_clients') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#tickets_transactions_per_clients')">Movimientos de Romana por Cliente(s) / Proveedor(es)</h2>
-    <div id="tickets_transactions_per_clients" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_per_clients_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <label for="clients_ids" class="small">Clientes:</label>
-          <%= f.collection_select :clients_ids_2, @clients, :id, :to_collection_select, {selected: @sales_preselected_clients_ids}, {multiple: true, class: 'multiple-select chzn-field-max'} %><br/><br/>
-        <br/><br/><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('tickets_transactions_per_contents') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#tickets_transactions_per_contents')">Movimientos de Romana por Mat. Prima / Prod. Term.</h2>
-    <div id="tickets_transactions_per_contents" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_per_contents_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <%= f.label :contents_codes, "Códigos Mat. Prima / Prod. Term.: " %> <%= f.text_field :contents_codes, :size=>60 %><br/><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('tickets_transactions_per_contents_per_clients') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#tickets_transactions_per_contents_per_clients')">Movimientos de Romana por Mat. Prima / Prod. Term. y por Cliente(s) / Proveedor(es)</h2>
-    <div id="tickets_transactions_per_contents_per_clients" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_per_contents_per_clients_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <%= f.label :contents_codes, "Códigos Mat. Prima / Prod. Term.: " %> <%= f.text_field :contents_codes, :size=>60 %>
-        <br/><br/><br/><br/>
-        <%= f.label :clients_codes, "Códigos Cliente(s) / Proveedor(es): " %> <%= f.text_field :clients_codes, :size=>60 %>
-        <br/><br/><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('tickets_transactions_per_carrier') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#tickets_transactions_per_carrier')">Movimientos de Romana por Mat. Prima / Prod. Term. por Transportista</h2>
-    <div id="tickets_transactions_per_carrier" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_per_carrier_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <label for="carrier_id" class="small">Empresa de transporte:</label>
-        <%= f.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
-        <br/><br/><br/>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('tickets_transactions_per_driver') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#tickets_transactions_per_driver')">Movimientos de Romana por Mat. Prima / Prod. Term. por Chofer</h2>
-    <div id="tickets_transactions_per_driver" class="report-details">
-      <%= form_for :report, :url=>tickets_transactions_per_driver_report_path do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
-        <%= f.radio_button :ticket_type_id, 2%> Despachos
-        <br/><br/>
-        <%= f.radio_button :warehouse_type_id, 1, :checked => true %> Materia prima
-        <%= f.radio_button :warehouse_type_id, 2%> Producto terminado
-        <br/><br/>
-        <label for="driver_id" class="small">Chofer:</label>
-        <%= f.collection_select :driver_id, @drivers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
-        <br/><br/><br/>
+        <%= f.check_box :by_ticket_type, checked: false %> &nbsp; <label for="group">Filtrar por tipo</label>
+        <br /><br />
+        <div id="ticket_type_form">
+          <%= f.radio_button :ticket_type_id, 1, :checked => true %> Recepciones
+          <%= f.radio_button :ticket_type_id, 2%> Despachos
+          <br /><br />
+        </div>
+        <%= f.check_box :by_factory_3, checked: false %> &nbsp; <label for="group">Filtrar por fábrica</label>
+        <br /><br />
+        <div id="factory_form">
+          <%= f.collection_select :factory_id_3, @factories, :id, :name, {include_blank: session[:company]['name']}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+        <%= f.check_box :by_driver, checked: false %> &nbsp; <label for="group">Filtrar por chofer</label>
+        <br /><br />
+        <div id="driver_form">
+          <%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+        <%= f.check_box :by_ticket_content, checked: false %> &nbsp; <label for="group">Filtrar por rubro</label>
+        <br /><br />
+        <div id="ticket_content_form">
+          <%= f.radio_button :ticket_content_type, 1, checked: true %> Materia prima
+          <%= f.radio_button :ticket_content_type, 2 %> Producto terminado
+          <%= f.collection_select :content_id, @ingredients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

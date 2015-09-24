@@ -6,13 +6,19 @@
 <%= label_tag(:end_date, "Hasta:") %>
 <%= text_field_tag :end_date, params[:end_date], class: 'datepicker' %>
 <br /><br />
+<%= label_tag(:ticket_type_id, "Tipo") %>
+<%= select_tag(:ticket_type_id, options_from_collection_for_select(@ticket_types, :id, :description, params[:ticket_type_id]), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %>
 <%= label_tag(:driver_id, "Chofer") %>
-<%= select_tag(:driver_id, options_from_collection_for_select(@drivers, :id, :to_collection_select, params[:driver_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
-<%= label_tag(:carrier_id, "Transportista") %>
-<%= select_tag(:carrier_id, options_from_collection_for_select(@carriers, :id, :name, params[:carrier_id]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %> <br /><br />
+<%= select_tag(:driver_id, options_from_collection_for_select(@drivers, :id, :to_collection_select, params[:driver_id]), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %>
+<br /><br />
+<%= label_tag(:content_type, "Rubro") %>
+<%= radio_button_tag(:ticket_content_type, 1, checked: true) %> Materia prima
+<%= radio_button_tag(:ticket_content_type, 2)%> Producto terminado
+<%= select_tag(:content_id, options_from_collection_for_select(@ingredients, :id, :to_collection_select, params[:content_id]), include_blank: true, class: 'chosen-select chzn-field-normal') %>
+<br/><br/>
 <%= label_tag(:document_number, "Nro. documento:") %>
 <%= text_field_tag :document_number, params[:document_number] %>
 <label for="state_id" class="small">Estado:</label>
-<%= select_tag(:state_id, options_for_select(@states.collect { |k, v| [v[:name], k] }), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %><br /><br />
-<%= submit_tag "Buscar", :name => nil %>
+<%= select_tag(:state_id, options_for_select(@states), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %><br /><br />
+<%= submit_tag "Buscar", name: nil %>
 <%= link_to "Limpiar campos", tickets_path %>

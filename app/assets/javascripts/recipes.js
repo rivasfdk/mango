@@ -1,3 +1,3 @@
 $(function(){
-	$('#data_progress').hide();}
-);
+  $('#data_progress').hide();
+});

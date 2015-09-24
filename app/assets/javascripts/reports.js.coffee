@@ -59,6 +59,18 @@ by_clients_changed = ->
 by_client_changed = ->
   $('#client_form').toggle($('#report_by_client').is(':checked'))
 
+by_ticket_type_changed = ->
+  $('#ticket_type_form').toggle($('#report_by_ticket_type').is(':checked'))
+
+by_ticket_content_changed = ->
+  $('#ticket_content_form').toggle($('#report_by_ticket_content').is(':checked'))
+
+by_driver_changed = ->
+  $('#driver_form').toggle($('#report_by_driver').is(':checked'))
+
+by_factory_changed = ->
+  $('#factory_form').toggle($('#report_by_factory_3').is(':checked'))
+
 by_client_2_changed = ->
   $('#client_form_2').toggle($('#report_by_client_2').is(':checked'))
 
@@ -99,4 +111,8 @@ $ ->
   $('#report_date_type_2').change date_type_changed
   $('#report_time_unit_1').change time_range_changed
   $('#report_time_unit_2').change time_range_changed
+  $('#report_by_ticket_type').change by_ticket_type_changed
+  $('#report_by_driver').change by_driver_changed
+  $('#report_by_ticket_content').change by_ticket_content_changed
+  $('#report_by_factory_3').change by_factory_changed
   return

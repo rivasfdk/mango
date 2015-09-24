@@ -1,0 +1,39 @@
+report.set_layout tlf: 'reports/thinreports_layouts/tickets_transactions'
+
+report.events.on :generate do |e|
+  e.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
+  end
+end
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values since: @data[:since]
+  page.values until: @data[:until]
+
+  table = report.list(:results)
+
+  table.header do |header|
+    header.item(:ticket_type).value(@data[:ticket_type])
+    header.item(:factory).value(@data[:factory])
+    header.item(:driver_name).value(@data[:driver_name])
+    header.item(:content).value(@data[:content_name])
+  end
+
+  @data[:transactions].each do |t|
+    table.add_row ticket_number: t[:ticket_number],
+                  outgoing_date: t[:outgoing_date],
+                  driver_name: t[:driver_name],
+                  document: t[:document],
+                  provider_weight: t[:provider_weight],
+                  net_weight: t[:net_weight],
+                  diff: "#{t[:diff]}\n(#{t[:perc_diff]} %)",
+                  content_name: t[:content_name],
+                  lot_code: t[:lot_code]
+  end
+end

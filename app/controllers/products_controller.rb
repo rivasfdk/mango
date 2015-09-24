@@ -4,11 +4,16 @@ class ProductsController < ApplicationController
   def index
     @products = Product.search(params)
   end
-  
+
+  def get_all
+    @products = Product.order('id desc')
+    render json: @products, methods: [:to_collection_select], root: false
+  end
+
   def edit
     @product = Product.find params[:id]
   end
-  
+
   def create
     @product = Product.new params[:product]
     if @product.save
@@ -18,7 +23,7 @@ class ProductsController < ApplicationController
       render :new
     end
   end
-  
+
   def update
     @product = Product.find params[:id]
     @product.update_attributes(params[:product])
@@ -29,7 +34,7 @@ class ProductsController < ApplicationController
       render :edit
     end
   end
-  
+
   def destroy
     @product = Product.find params[:id]
     @product.eliminate
