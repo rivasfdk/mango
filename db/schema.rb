@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150711092834) do
+ActiveRecord::Schema.define(:version => 20150925214530) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "client_id",  :null => false
@@ -569,6 +569,7 @@ ActiveRecord::Schema.define(:version => 20150711092834) do
 
   add_index "tickets", ["client_id"], :name => "fk_tickets_client_id"
   add_index "tickets", ["driver_id"], :name => "fk_tickets_driver_id"
+  add_index "tickets", ["driver_id"], :name => "index_tickets_on_driver_id"
   add_index "tickets", ["truck_id"], :name => "fk_tickets_truck_id"
   add_index "tickets", ["user_id"], :name => "fk_tickets_user_id"
 
@@ -618,6 +619,7 @@ ActiveRecord::Schema.define(:version => 20150711092834) do
   add_index "transactions", ["content_type"], :name => "index_transactions_on_content_type"
   add_index "transactions", ["created_at"], :name => "index_transactions_on_created_at"
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id"
+  add_index "transactions", ["ticket_id"], :name => "index_transactions_on_ticket_id"
 
   create_table "trucks", :force => true do |t|
     t.integer  "carrier_id"
