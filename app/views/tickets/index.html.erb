@@ -21,7 +21,7 @@
     <% @tickets.each do |t| %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
-        <td><%=h t[:ticket_number] %></td>
+        <td class="center"><%=h t[:ticket_number] %></td>
         <td class="center"><%=h t[:ticket_incoming_date].strftime("%d/%m/%Y %H:%M:%S") %></td>
         <td><%=h t[:ticket_type] %></td>
         <td><%=h t[:driver_name] %></td>
@@ -38,19 +38,21 @@
           <% end %>
         </td>
       </tr>
-      <tr class="<%= class_row %> tr_header">
-        <th colspan="3">Rubro</th>
-        <th>Lote</th>
-        <th>Cantidad</th>
-        <th></th>
-      </tr>
-      <% t.index_transactions.each do |tr| %>
-        <tr class="<%= class_row %> tr_row">
-          <td class="center" colspan="3"><%= tr[:content_name] %></td>
-          <td class="center"><%= tr[:lot_code] %></td>
-          <td class="center"><%= tr[:transaction_amount] %></td>
-          <td></td>
+      <% unless t[:ticket_open] %>
+        <tr class="<%= class_row %> tr_header">
+          <th colspan="3">Rubro</th>
+          <th>Lote</th>
+          <th>Cantidad</th>
+          <th></th>
         </tr>
+        <% t.index_transactions.each do |tr| %>
+          <tr class="<%= class_row %> tr_row">
+            <td class="center" colspan="3"><%= tr[:content_name] %></td>
+            <td class="center"><%= tr[:lot_code] %></td>
+            <td class="center"><%= tr[:transaction_amount] %></td>
+            <td></td>
+          </tr>
+        <% end %>
       <% end %>
       <tr><td></td></tr>
     <% end %>
