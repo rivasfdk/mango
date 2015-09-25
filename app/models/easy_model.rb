@@ -532,9 +532,9 @@ class EasyModel
     includes = {hopper_lot: {lot: {ingredient: {}}}, hopper_lot_transaction_type: {}, user: {}}
     hlts = HopperLotTransaction.includes(includes)
     hlts = hlts.where(created_at: start_datetime .. end_datetime)
-    hlts = hlts.where({hoppers_lots: {hopper_id: hopper_id}})   
+    hlts = hlts.where({hoppers_lots: {hopper_id: hopper_id}})
     return nil if hlts.empty?
-    
+
     data = self.initialize_data("Movimientos de tolva #{hopper.name} (#{hopper.scale.name})")
     data['since'] = self.print_range_date(start_datetime, true)
     data['until'] = self.print_range_date(end_datetime, true)
@@ -672,7 +672,7 @@ class EasyModel
     data[:plot_path] = "#{Rails.root}/tmp/stats_plot.jpg"
     data[:results] = []
 
-    unix_start_datetime = start_datetime.to_i    
+    unix_start_datetime = start_datetime.to_i
     unix_end_datetime = (end_datetime + 1.day).to_i
 
     stats = OrderStat.joins(:order_stat_type)
@@ -742,9 +742,9 @@ class EasyModel
       real_real_kg = real_kg * real_production / product_total # DAE fer reelz? LOL
       var_kg = real_real_kg - std_kg
       var_perc = var_kg / std_kg * 100
-      result["real_real_kg"] = real_real_kg  
-      result["var_kg"] = var_kg  
-      result["var_"] = var_perc  
+      result["real_real_kg"] = real_real_kg
+      result["var_kg"] = var_kg
+      result["var_"] = var_perc
     end
     _order_details
   end
@@ -833,7 +833,7 @@ class EasyModel
     data['comment3'] = " "
     data['comment4'] = " "
     data['comment5'] = " "
-    
+
     if @ticket.ticket_type_id == 1
       data['dif_label'] = "Dif.:"
       data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
@@ -913,12 +913,13 @@ class EasyModel
     if params[:by_factory_3] == '1'
       data[:factory] = params[:factory_id].present? ? Client.where(id: params[:factory_id_3]).first.name : company_name
     end
-    data[:driver_name] = Driver.where(id: params[:driver_id]).first.name
-
-    if params[:ticket_content_type] == '1'
-      data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
-    else
-      data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
+    data[:driver_name] = Driver.where(id: params[:driver_id]).first.name if by_driver
+    if by_content
+      if params[:ticket_content_type] == '1'
+        data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
+      else
+        data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
+      end
     end
     data[:transactions] = transactions.map do |t|
       {
@@ -1250,7 +1251,7 @@ class EasyModel
     data['total_var'] = total_var
     data['total_var_perc'] = total_var_perc
     data['product_total'] = "#{total_real} Kg"
-    data['real_production'] = @order.real_production.present? ? "#{@order.real_production} Kg" : "" 
+    data['real_production'] = @order.real_production.present? ? "#{@order.real_production} Kg" : ""
     data['repaired'] = @order.repaired ? "Si" : "No"
     data['results'] = []
 
@@ -1537,7 +1538,7 @@ class EasyModel
       lot_code = lot.code
       content_code = ''
       content_name = ''
-      if a.content_type == 1 # content = lot 
+      if a.content_type == 1 # content = lot
         content_code = lot.ingredient.code
         content_name = lot.ingredient.name
       else # content = product lot

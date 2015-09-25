@@ -27,7 +27,7 @@ report.start_new_page do |page|
 
   @data[:transactions].each do |t|
     table.add_row ticket_number: t[:ticket_number],
-                  outgoing_date: t[:outgoing_date],
+                  outgoing_date: t[:outgoing_date].strftime("%d/%m/%Y %H:%M:%S"),
                   driver_name: t[:driver_name],
                   document: t[:document],
                   provider_weight: t[:provider_weight],

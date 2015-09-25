@@ -16,9 +16,12 @@
 <%= radio_button_tag(:ticket_content_type, 2)%> Producto terminado
 <%= select_tag(:content_id, options_from_collection_for_select(@ingredients, :id, :to_collection_select, params[:content_id]), include_blank: true, class: 'chosen-select chzn-field-normal') %>
 <br/><br/>
-<%= label_tag(:document_number, "Nro. documento:") %>
-<%= text_field_tag :document_number, params[:document_number] %>
+<%= label_tag(:factory_code, "Fábrica") %>
+<%= select_tag(:factory_code, options_from_collection_for_select(@factories, :code, :name, params[:factory_code]), include_blank: true, class: 'chosen-select chzn-field-normal') %>
 <label for="state_id" class="small">Estado:</label>
 <%= select_tag(:state_id, options_for_select(@states), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %><br /><br />
+<%= label_tag(:document_number, "Nro. documento:") %>
+<%= text_field_tag :document_number, params[:document_number] %>
+<br /><br />
 <%= submit_tag "Buscar", name: nil %>
 <%= link_to "Limpiar campos", tickets_path %>

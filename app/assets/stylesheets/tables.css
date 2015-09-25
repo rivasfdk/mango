@@ -113,3 +113,8 @@
     cursor: pointer;
     float: right;
 }
+
+.tr_header th {
+  border: none;
+  color: #999;
+}

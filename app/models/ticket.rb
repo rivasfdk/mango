@@ -9,6 +9,8 @@ class Ticket < ActiveRecord::Base
   has_many :transactions
   accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }
 
+  attr_accessor :index_transactions
+
   validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight
   validates_numericality_of :incoming_weight, greater_than: 0
   validates_numericality_of :outgoing_weight, allow_nil: true, greater_than: 0
@@ -88,22 +90,32 @@ class Ticket < ActiveRecord::Base
     transactions = transactions.where('tickets.provider_document_number LIKE ?', "%#{params[:document_number]}%") if params[:document_number].present?
     transactions = transactions.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
     transactions = transactions.where('tickets.ticket_type_id = ?', params[:ticket_type_id]) if params[:ticket_type_id].present?
-    transactions = transactions.where('ingredients.id = ? and content_type = ?', params[:content_id], params[:content_type]) if params[:content_id].present?
-    transactions = transactions
-      .order('tickets.number desc')
-      .limit(WillPaginate.per_page)
-    transactions = transactions.offset((params[:page].to_i - 1) * WillPaginate.per_page) if params[:page].present?
-
-    paginated_transactions = transactions.paginate(page: params[:page])
-
-    tickets = transactions.each_with_object(Hash.new {|hash, key| hash[key] = []}) do |transaction, tickets|
-      tickets[transaction[:ticket_id]] <<= transaction
+    transactions = transactions.where('transactions.content_type = ? and (ingredients.id = ? or products.id = ?)', params[:ticket_content_type], params[:content_id], params[:content_id]) if params[:content_id].present?
+    if params[:factory_code].present?
+      unless params[:factory_code] == "-1"
+        factory_id = Client.where(factory: true).where(code: params[:factory_code]).pluck(:id).first
+        conditions = ['lots.client_id = ? or products_lots.client_id = ?', factory_id, factory_id]
+      else
+        conditions = 'lots.client_id is null and products_lots.client_id is null'
+      end
+      transactions = transactions.where(conditions)
     end
-    [tickets, paginated_transactions]
+    tickets = transactions.group('tickets.id')
+    tickets = tickets.order('tickets.id desc')
+
+    tickets = tickets.paginate page: params[:page], per_page: 15
+
+    tickets.each do |ticket|
+      ticket[:ticket_open] = ticket[:ticket_open] == 1
+      ticket[:ticket_notified] = ticket[:ticket_notified] == 1
+      ticket.index_transactions = Ticket.base_search(ticket[:ticket_id])
+    end
+
+    tickets
   end
 
-  def self.base_search
-    Ticket
+  def self.base_search(ticket_id = nil)
+    transactions = Ticket
       .joins({ticket_type: {}, document_type: {}, driver: {}, client: {}, transactions: {}})
       .joins('left outer join lots on transactions.content_id = lots.id and transactions.content_type = 1')
       .joins('left outer join products_lots on transactions.content_id = products_lots.id and transactions.content_type = 2')
@@ -138,5 +150,7 @@ class Ticket < ActiveRecord::Base
         coalesce(ingredients.code, products.code) as content_code,
         coalesce(ingredients.name, products.name) as content_name
       ')
+    transactions = transactions.where('tickets.id = ?', ticket_id) unless ticket_id.nil?
+    transactions
   end
 end

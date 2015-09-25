@@ -7,11 +7,12 @@ class TicketsController < ApplicationController
     respond_to do |format|
       format.html do
         @states = Ticket.get_states()
-        @tickets, @paginated_transactions = Ticket.search(params)
         @drivers = Driver.where(frequent: true)
         @carriers = Carrier.where(frequent: true)
         @ticket_types = TicketType.all
         @ingredients = Ingredient.actives
+        @tickets = Ticket.search(params)
+        @factories = Client.where(factory: true) << Client.new(code: "-1", name: session[:company]['name'])
         render html: @tickets
       end
       format.json do
