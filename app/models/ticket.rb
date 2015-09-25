@@ -116,7 +116,8 @@ class Ticket < ActiveRecord::Base
 
   def self.base_search(ticket_id = nil)
     transactions = Ticket
-      .joins({ticket_type: {}, document_type: {}, driver: {}})
+      .joins({ticket_type: {}, driver: {}})
+      .joins('left join documents_types on tickets.document_type_id = documents_types.id')
       .joins('left join clients on tickets.client_id = clients.id')
       .joins('left join transactions on tickets.id = transactions.ticket_id')
       .joins('left outer join lots on transactions.content_id = lots.id and transactions.content_type = 1')
