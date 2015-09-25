@@ -87,6 +87,7 @@ class TicketsController < ApplicationController
 
   def update
     @ticket = Ticket.find params[:id]
+    redirect_to :tickets unless @ticket.open
     @ticket.update_attributes(params[:ticket])
     @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|

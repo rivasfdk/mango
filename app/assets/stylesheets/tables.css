@@ -118,3 +118,7 @@
   border: none;
   color: #999;
 }
+
+.tr_row {
+  border-bottom: solid 1px #ccc;
+}

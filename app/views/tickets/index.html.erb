@@ -45,7 +45,7 @@
         <th></th>
       </tr>
       <% t.index_transactions.each do |tr| %>
-        <tr class="<%= class_row %>">
+        <tr class="<%= class_row %> tr_row">
           <td class="center" colspan="3"><%= tr[:content_name] %></td>
           <td class="center"><%= tr[:lot_code] %></td>
           <td class="center"><%= tr[:transaction_amount] %></td>
