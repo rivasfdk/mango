@@ -30,6 +30,10 @@ class TicketsController < ApplicationController
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
     end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
+    end
   end
 
   def do_repair

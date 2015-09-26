@@ -6,6 +6,6 @@ class Driver < ActiveRecord::Base
   validates_length_of :name, :within => 3..40
 
   def to_collection_select
-    return "#{self.ci} - #{self.name}"
+    "#{self.ci} - #{self.name}"
   end
 end
