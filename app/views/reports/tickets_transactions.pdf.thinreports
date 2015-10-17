@@ -7,6 +7,14 @@ report.events.on :generate do |e|
   end
 end
 
+report.layout.config.list(:results) do
+  use_stores total: 0
+
+  events.on :footer_insert do |e|
+    e.section.item(:total).value(e.store.total)
+  end
+end
+
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
   page.values company_address: @data['company_address']
@@ -34,6 +42,8 @@ report.start_new_page do |page|
                   net_weight: t[:net_weight],
                   diff: "#{t[:diff]}\n(#{t[:perc_diff]} %)",
                   content_name: t[:content_name],
-                  lot_code: t[:lot_code]
+                  lot_code: t[:lot_code],
+                  client_name: t[:client_name]
+    table.store.total += t[:net_weight]
   end
 end

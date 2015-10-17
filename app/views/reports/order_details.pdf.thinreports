@@ -8,14 +8,10 @@ report.events.on :generate do |e|
 end
 
 report.layout.config.list(:results) do
-  use_stores total_std: '', total_real: '', total_var_kg: '', total_var_perc: '', comment: ''
+  use_stores total_std: 0
 
   events.on :footer_insert do |e|
-    e.section.item(:total_std).value(e.store.total_std)
-    e.section.item(:total_real).value(e.store.total_real)
-    e.section.item(:total_var_kg).value(e.store.total_var_kg)
-    e.section.item(:total_var_perc).value(e.store.total_var_perc)
-    e.section.item(:comment).value(e.store.comment)
+    e.section.item(:total).value(e.store.total)
   end
 end
 
@@ -56,6 +52,7 @@ report.start_new_page do |page|
                   var_kg: result['var_kg'].round(2).to_s + ' Kg',
                   var_perc: result['var_perc'].round(2).to_s + ' %',
                   hopper_name: result['hopper']
+    table.store.total +=
   end
 
   table.store.total_std = @data['total_std'].round(2).to_s + ' Kg'

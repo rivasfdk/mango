@@ -883,7 +883,7 @@ class EasyModel
     by_factory = params[:by_factory_3] == '1'
     by_driver = params[:by_driver] == '1'
     by_content = params[:by_ticket_content] == '1'
-
+    by_client = params[:by_client_4] == '1'
 
     transactions = Ticket.base_search
       .where('tickets.open = FALSE')
@@ -898,6 +898,7 @@ class EasyModel
       end
       transactions = transactions.where(conditions)
     end
+    transactions = transactions.where('tickets.client_id = ?', params[:client_id_4]) if by_client
     transactions = transactions.where('tickets.driver_id = ?', params[:driver_id]) if by_driver
     transactions = transactions.where('transactions.content_type = ? and (ingredients.id = ? or products.id = ?)', params[:ticket_content_type], params[:content_id], params[:content_id]) if by_content
 
@@ -928,10 +929,11 @@ class EasyModel
         driver_name: t[:driver_name],
         document: "#{t[:document_type]}\n#{t[:document_number]}",
         provider_weight: t[:provider_weight],
-        net_weight: t[:net_weight].round(2),
+        net_weight: t[:transaction_amount],
         diff: "#{(t[:net_weight] - t[:provider_weight]).round(2)}\n(#{((t[:net_weight] - t[:provider_weight]) / t[:provider_weight] * 100).round(2)} %)",
         content_name: t[:content_name],
         lot_code: t[:lot_code],
+        client_name: t[:client_name]
       }
     end
     data

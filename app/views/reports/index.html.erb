@@ -336,7 +336,7 @@
           <label for="recipe_code_3" class="small">Receta:</label>
           <%= f.collection_select :recipe_code_3, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
         </div>
-        
+
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -545,6 +545,12 @@
         <br /><br />
         <div id="factory_form">
           <%= f.collection_select :factory_id_3, @factories, :id, :name, {include_blank: session[:company]['name']}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+        <%= f.check_box :by_client_4, checked: false %> &nbsp; <label for="group">Filtrar por origen/destino</label>
+        <br /><br />
+        <div id="client_form_3">
+          <%= f.collection_select :client_id_4, @all_clients, :id, :name, {}, class: 'chosen-select chzn-field-normal' %>
           <br /><br />
         </div>
         <%= f.check_box :by_driver, checked: false %> &nbsp; <label for="group">Filtrar por chofer</label>

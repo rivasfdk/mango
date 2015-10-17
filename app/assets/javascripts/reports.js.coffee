@@ -74,6 +74,9 @@ by_factory_changed = ->
 by_client_2_changed = ->
   $('#client_form_2').toggle($('#report_by_client_2').is(':checked'))
 
+by_client_4_changed = ->
+  $('#client_form_3').toggle($('#report_by_client_4').is(':checked'))
+
 by_products_changed = ->
   $('#products_form').toggle($('#report_by_products').is(':checked'))
 
@@ -115,4 +118,5 @@ $ ->
   $('#report_by_driver').change by_driver_changed
   $('#report_by_ticket_content').change by_ticket_content_changed
   $('#report_by_factory_3').change by_factory_changed
+  $('#report_by_client_4').change by_client_4_changed
   return

@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
     @drivers = Driver.where({frequent: true})
     @carriers = Carrier.where({frequent: true})
     @clients = Client.get_all()
+    @all_clients = Client.where({factory: false})
     @factories = Client.where({factory: true})
     @alarm_types = AlarmType.all
     @hoppers = Hopper.includes(:scale).where(scales: {not_weighed: false})
@@ -171,7 +172,7 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
     end
   end
-  
+
   def consumption_per_ingredient_per_orders
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
@@ -285,7 +286,7 @@ class ReportsController < ApplicationController
       filename = "proyeccion_materia_prima.pdf"
       report = EasyReport::Report.new data, 'simple_stock_projection.yml'
       send_data report.render, :filename => filename, :type => "application/pdf"
-    end   
+    end
   end
 
   def product_lots_dispatches
@@ -347,7 +348,7 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "caracteristicas_de_orden.pdf", :type => "application/pdf"
     end
   end
-  
+
   def tickets_transactions
     @data = EasyModel.tickets_transactions(params[:report], session[:company]['name'])
     if @data.nil?

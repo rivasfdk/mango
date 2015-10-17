@@ -46,6 +46,7 @@ $(function(){
     $('#report_by_driver').trigger('change');
     $('#report_by_ticket_content').trigger('change');
     $('#report_by_factory_3').trigger('change');
+    $('#report_by_client_4').trigger('change');
     hideProductLots();
 });
 
