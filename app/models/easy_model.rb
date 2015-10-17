@@ -885,6 +885,8 @@ class EasyModel
     by_content = params[:by_ticket_content] == '1'
     by_client = params[:by_client_4] == '1'
 
+    data = self.initialize_data('Movimientos de Romana')
+
     transactions = Ticket.base_search
       .where('tickets.open = FALSE')
       .where('tickets.outgoing_date BETWEEN ? AND ?', start_date, end_date + 1.day)
@@ -898,7 +900,11 @@ class EasyModel
       end
       transactions = transactions.where(conditions)
     end
-    transactions = transactions.where('tickets.client_id = ?', params[:client_id_4]) if by_client
+
+    if by_client
+      transactions = transactions.where('tickets.client_id = ?', params[:client_id_4])
+      data[:client_name] = Client.find(params[:client_id_4]).name
+    end
     transactions = transactions.where('tickets.driver_id = ?', params[:driver_id]) if by_driver
     transactions = transactions.where('transactions.content_type = ? and (ingredients.id = ? or products.id = ?)', params[:ticket_content_type], params[:content_id], params[:content_id]) if by_content
 
@@ -906,7 +912,6 @@ class EasyModel
 
     return nil if transactions.empty?
 
-    data = self.initialize_data('Movimientos de Romana')
     data[:since] = self.print_range_date(start_date)
     data[:until] = self.print_range_date(end_date)
 
