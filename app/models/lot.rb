@@ -11,7 +11,7 @@ class Lot < ActiveRecord::Base
 
   after_save :check_stock, :check_hopper_stock
 
-  after_create :create_hopper_factory_lot, if: :client_id
+  after_create :update_hopper_factory_lot, if: :client_id
 
   validates :code, presence: true,
                    uniqueness: true,
@@ -63,7 +63,7 @@ class Lot < ActiveRecord::Base
     self.ingredient
   end
 
-  def create_hopper_factory_lot
+  def update_hopper_factory_lot
     active_hopper_lots = HopperLot
       .joins(:lot)
       .where(active: true)

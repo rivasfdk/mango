@@ -1056,7 +1056,7 @@ class EasyModel
                SUM(amount) AS total_real,
                standard_amount AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batches: {created_at: start_date .. end_date + 1.day},
+      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true},
               lots: {ingredient_id: ingredient.id}})
       .group('batches.order_id')
 
@@ -1348,7 +1348,8 @@ class EasyModel
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
       .where({orders: {created_at: start_date .. end_date + 1.day},
-              recipes: {code: recipe.code}})
+              recipes: {code: recipe.code},
+              notified: true})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1410,7 +1411,8 @@ class EasyModel
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
       .where({orders: {created_at: start_date .. end_date + 1.day},
-              ingredients: {id: ingredients_ids}})
+              ingredients: {id: ingredients_ids},
+              notified: true})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1450,7 +1452,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where(orders: {created_at: start_date .. end_date + 1.day})
+      .where(orders: {created_at: start_date .. end_date + 1.day, notified: true})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1494,7 +1496,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
+      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id, notified: true}})
       .order('ingredients.code')
       .group('ingredients.id')
 
