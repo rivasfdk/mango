@@ -11,6 +11,8 @@ class Lot < ActiveRecord::Base
 
   after_save :check_stock, :check_hopper_stock
 
+  after_create :create_hopper_factory_lot, if: :client_id
+
   validates :code, presence: true,
                    uniqueness: true,
                    length: {within: 3..20}
@@ -59,6 +61,18 @@ class Lot < ActiveRecord::Base
 
   def get_content
     self.ingredient
+  end
+
+  def create_hopper_factory_lot
+    active_hopper_lots = HopperLot
+      .joins(:lot)
+      .where(active: true)
+      .where({lots: {ingredient_id: self.ingredient_id}})
+
+    active_hopper_lots.each do |ahl|
+      hopper_factory_lots = HopperFactoryLot.where(hopper_lot_id: ahl.id, client_id: self.client_id, lot_id: nil)
+      hopper_factory_lots.update_all(lot_id: self.id)
+    end
   end
 
   def to_collection_select
