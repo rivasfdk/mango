@@ -1347,9 +1347,8 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day},
-              recipes: {code: recipe.code},
-              notified: true})
+      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true},
+              recipes: {code: recipe.code}})
       .order('ingredients.code')
       .group('ingredients.id')
 
