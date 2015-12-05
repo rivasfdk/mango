@@ -62,7 +62,11 @@ class User < ActiveRecord::Base
       report_permissions << p.permission.action unless report_permissions.include? p.permission.action
     end
     return report_permissions
-  end    
+  end
+
+  def get_reports_permissions_fdk
+    # ADD CODE HERE
+  end
 
   def has_global_permission?(controller, action)
     return true if self.role_id == 1 # Admin
