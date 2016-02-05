@@ -34,7 +34,7 @@
 <p><%= link_to image_tag('action-edit.png', :alt=>'Reparar') + " Reparar consumos", repair_order_path(@order) %></p>
 <br />
 <% i = 0 %>
-<% if @data['results'].length > 0 %>
+<% if @data['results'].any? %>
 <div id="order_details_grid">
   <table id="tabledata">
     <thead>

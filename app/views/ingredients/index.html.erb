@@ -7,7 +7,7 @@
   <%= submit_tag "Filtrar", :name => nil %>
 <% end %>
 </div>
-<% if @ingredients.length > 0 %>
+<% if @ingredients.any? %>
 <table id="tabledata">
     <thead>
       <tr>

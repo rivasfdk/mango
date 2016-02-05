@@ -5,7 +5,7 @@
   <%= render :partial=>'search_form' %>
 <% end %>
 </div>
-<% if @tickets.length > 0 %>
+<% if @tickets.any? %>
 <table id="tabledata">
     <thead>
       <tr>

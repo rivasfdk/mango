@@ -78,7 +78,7 @@ class OrdersController < ApplicationController
   def destroy
     @order = Order.find params[:id]
     @order.eliminate
-    if @order.errors.size.zero?
+    if @order.errors.empty?
       flash[:notice] = 'Orden de producción eliminada con éxito'
     else
       logger.error("Error eliminando orden: #{@order.errors.inspect}")
@@ -156,7 +156,7 @@ class OrdersController < ApplicationController
   end
 
   def close
-    @order = Order.find_by_code params[:order_code]
+    @order = Order.where(code: params[:order_code]).first
     render xml: {closed: @order.close(session[:user_id])}
   end
 

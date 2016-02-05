@@ -54,7 +54,7 @@ class Recipe < ActiveRecord::Base
     overwrite = args[:overwrite]
     icode = args[:ingredient].split(' ')[0]
     iname = args[:ingredient][(icode.length + 1)..args[:ingredient].length].strip()
-    ingredient = Ingredient.find_by_code(icode)
+    ingredient = Ingredient.where(code: icode).first
     if ingredient.nil?
       logger.debug("  - El ingrediente no existe. Se crea")
       ingredient = Ingredient.create code: icode, name: iname

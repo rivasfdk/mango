@@ -27,7 +27,7 @@ class BatchesHopperLotController < ApplicationController
   def destroy
     @batch_hopper_lot = BatchHopperLot.find params[:id]
     @batch_hopper_lot.eliminate
-    if @batch_hopper_lot.errors.size.zero?
+    if @batch_hopper_lot.errors.empty?
       flash[:notice] = "Detalle de batch eliminado con éxito"
     else
       logger.error("Error eliminando detalle de batch: #{@batch_hopper_lot.errors.inspect}")

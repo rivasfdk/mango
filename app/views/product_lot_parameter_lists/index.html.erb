@@ -5,7 +5,7 @@
   <%= render :partial=>'search_form' %>
 <% end %>
 </div>
-<% if @product_lots.length > 0 %>
+<% if @product_lots.any? %>
 <table id="tabledata">
     <thead>
       <tr>

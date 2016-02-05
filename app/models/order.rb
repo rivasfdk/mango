@@ -336,7 +336,7 @@ class Order < ActiveRecord::Base
     # Add some shitty error handling
     if errors.empty?
       now = Time.now
-      order = Order.find_by_code params[:order_code]
+      order = Order.where(code: params[:order_code]).first
       batch = order.batch
         .find_or_create_by_number number: params[:batch_number],
                                   schedule_id: Schedule.get_current_schedule_id(now),
@@ -379,7 +379,7 @@ class Order < ActiveRecord::Base
   def self.generate_not_weighed_consumptions(params, user_id)
     errors = []
     now = Time.now
-    order = Order.find_by_code(params[:order_code])
+    order = Order.where(code: params[:order_code]).first
 
     amounts = IngredientRecipe
       .where(recipe_id: order.recipe_id)

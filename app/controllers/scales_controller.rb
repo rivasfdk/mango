@@ -44,7 +44,7 @@ class ScalesController < ApplicationController
   def destroy
     @scale = Scale.find params[:id]
     @scale.eliminate
-    if @scale.errors.size.zero?
+    if @scale.errors.empty?
       flash[:notice] = "Balanza eliminada con éxito"
     else
       logger.error("Error eliminando balanza: #{@scale.errors.inspect}")

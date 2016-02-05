@@ -15,7 +15,7 @@ class TransactionType < ActiveRecord::Base
 
   def destroy_permission
     begin
-      p = Permission.find :first, :conditions=>{:module=>'transactions', :action=>self.code, :mode=>'module'}
+      p = Permission.where({:module=>'transactions', :action=>self.code, :mode=>'module'}).first
       p.destroy
     rescue
     end

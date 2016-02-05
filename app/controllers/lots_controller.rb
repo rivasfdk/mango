@@ -67,7 +67,7 @@ class LotsController < ApplicationController
     if lot_transactions.none?
       @lot = Lot.find params[:id]
       @lot.eliminate
-      if @lot.errors.size.zero?
+      if @lot.errors.empty?
         flash[:notice] = "Lote eliminado con éxito"
       else
         logger.error("Error eliminando lote: #{@lot.errors.inspect}")

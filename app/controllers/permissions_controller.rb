@@ -40,7 +40,7 @@ class PermissionsController < ApplicationController
   def destroy
     @permission = Permission.find params[:id]
     @permission.eliminate
-    if @permission.errors.size.zero?
+    if @permission.errors.empty?
       flash[:notice] = "Permiso eliminado con éxito"
     else
       logger.error("Error eliminando permiso: #{@permission.errors.inspect}")

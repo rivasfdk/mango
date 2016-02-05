@@ -46,7 +46,7 @@ class ProductLotParameterListsController < ApplicationController
   def destroy
     @product_lot_parameter_list = ProductLotParameterList.find params[:id]
     @product_lot_parameter_list.eliminate
-    if @product_lot_parameter_list.errors.size.zero?
+    if @product_lot_parameter_list.errors.empty?
       flash[:notice] = "Características de lote eliminado con éxito"
     else
       logger.error("Error eliminando características de lote: #{@product_lot_parameter_list.errors.inspect}")

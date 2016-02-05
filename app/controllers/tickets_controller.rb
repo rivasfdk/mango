@@ -141,7 +141,7 @@ class TicketsController < ApplicationController
     @ticket = Ticket.find params[:id]
     if @ticket.open
       @ticket.eliminate
-      if @ticket.errors.size.zero?
+      if @ticket.errors.empty?
         flash[:notice] = "Ticket eliminado con éxito"
       else
         logger.error("Error eliminando ticket: #{@ticket.errors.inspect}")

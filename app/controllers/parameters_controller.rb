@@ -25,7 +25,7 @@ class ParametersController < ApplicationController
   def destroy
     @parameter = Parameter.find params[:id]
     @parameter.eliminate
-    if @parameter.errors.size.zero?
+    if @parameter.errors.empty?
       flash[:notice] = "Parámetro eliminado de la receta con éxito"
     else
       logger.error("Error eliminando parámetro de la receta: #{@parameter.errors.inspect}")

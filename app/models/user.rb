@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
   attr_protected :id, :password_salt
 
   def self.auth(login, password)
-    user = User.find :first, :conditions =>["login = ?", login], :include=>[:role]
+    user = User.includes(:role).where(["login = ?", login]).first
     return nil if user.nil?
     return user if User.encrypt(password, user.password_salt) == user.password_hash
     return nil
@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
 
   def allow_manual
     return true if self.role_id == 1
-    self.role.permissions.find(:all, :conditions => {:module => "tickets", :action => "manual"}).any?
+    self.role.permissions.where({:module => "tickets", :action => "manual"}).any?
   end
 
   def get_dashboard_permissions
@@ -32,9 +32,9 @@ class User < ActiveRecord::Base
 
     # You shall not question my god.
     if self.role_id == 1 # Sure there is a better way
-      perm = PermissionRole.find :all, :conditions=>{:permissions=>{:action=>'consult'}}, :include=>[:permission]
+      perm = PermissionRole.includes(:permission).where({:permissions=>{:action=>'consult'}})
     else
-      perm = PermissionRole.find :all, :conditions=>{:role_id=>self.role_id, :permissions=>{:action=>'consult'}}, :include=>[:permission]
+      perm = PermissionRole.includes(:permission).where({:role_id=>self.role_id, :permissions=>{:action=>'consult'}})
     end
 
     perm.each do |pr|
@@ -53,9 +53,9 @@ class User < ActiveRecord::Base
   def get_reports_permissions
     report_permissions = []
     if self.role_id == 1 # It's even nastier than I thought
-      perm = PermissionRole.find :all, :conditions=>{:permissions=>{:module=>'reports'}}, :include=>[:permission]
+      perm = PermissionRole.includes(:permission).where({:permissions=>{:module=>'reports'}})
     else
-      perm = PermissionRole.find :all, :conditions=>{:role_id=>self.role_id, :permissions=>{:module=>'reports'}}, :include=>[:permission]
+      perm = PermissionRole.includes(:permission).where({:role_id=>self.role_id, :permissions=>{:module=>'reports'}})
     end
 
     perm.each do |p|

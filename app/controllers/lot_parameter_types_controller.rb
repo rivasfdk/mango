@@ -31,7 +31,7 @@ class LotParameterTypesController < ApplicationController
   def destroy
     @lot_parameter_type = LotParameterType.find params[:id]
     @lot_parameter_type.eliminate
-    if @lot_parameter_type.errors.size.zero?
+    if @lot_parameter_type.errors.empty?
       flash[:notice] = "Tipo de parámetro eliminado con éxito"
     else
       logger.error("Error eliminando tipo de parámetro: #{@lot_parameter_type.errors.inspect}")

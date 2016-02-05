@@ -33,7 +33,7 @@ class ParameterTypesController < ApplicationController
   def destroy
     @parameter_type = ParameterType.find params[:id]
     @parameter_type.eliminate
-    if @parameter_type.errors.size.zero?
+    if @parameter_type.errors.empty?
       flash[:notice] = "Tipo de parámetro eliminado con éxito"
     else
       logger.error("Error eliminando tipo de parámetro: #{@parameter_type.errors.inspect}")

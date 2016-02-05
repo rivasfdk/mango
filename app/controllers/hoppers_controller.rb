@@ -49,7 +49,7 @@ class HoppersController < ApplicationController
   def destroy
     @hopper = Hopper.find params[:id]
     @hopper.eliminate
-    if @hopper.errors.size.zero?
+    if @hopper.errors.empty?
       flash[:notice] = "Tolva eliminada con éxito"
     else
       logger.error("Error eliminando tolva: #{@hopper.errors.inspect}")
@@ -162,9 +162,8 @@ class HoppersController < ApplicationController
 
   def fill_new
     @hoppers_transactions_enabled = is_mango_feature_available("hoppers_transactions")
-    @lots = Lot.find :all,
-                     :include => :ingredient,
-                     :conditions => {:active => true, :in_use => true}
+    @lots = Lot.includes(:ingredient)
+      .where({:active => true, :in_use => true})
     @scales = Scale.all
   end
 

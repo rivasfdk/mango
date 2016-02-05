@@ -30,8 +30,7 @@ class HopperLotTransaction < ActiveRecord::Base
   end
 
   def get_sign
-    hltt = HopperLotTransactionType.find(self.hopper_lot_transaction_type_id)
-    hltt.sign
+    HopperLotTransactionType.find(self.hopper_lot_transaction_type_id).sign
   end
 
   def do_stock_update

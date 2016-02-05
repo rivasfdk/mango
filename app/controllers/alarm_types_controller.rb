@@ -33,7 +33,7 @@ class AlarmTypesController < ApplicationController
   def destroy
     @alarm_type = AlarmType.find params[:id]
     @alarm_type.eliminate
-    if @alarm_type.errors.size.zero?
+    if @alarm_type.errors.empty?
       flash[:notice] = "Tipo de alarma eliminada con éxito"
     else
       logger.error("Error eliminando tipo de alarma: #{@alarm_type.errors.inspect}")

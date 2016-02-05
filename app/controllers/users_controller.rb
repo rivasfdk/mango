@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find params[:id]
     @user.eliminate
-    if @user.errors.size.zero?
+    if @user.errors.empty?
       flash[:notice] = "Usuario eliminado con éxito"
     else
       logger.error("Error eliminando usuario: #{@user.errors.inspect}")

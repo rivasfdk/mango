@@ -432,7 +432,7 @@ class EasyModel
   end
 
   def self.lot_transactions(start_date, end_date, lot_type, lot_code)
-    lot = lot_type == 1 ? Lot.find_by_code(lot_code) : ProductLot.find_by_code(lot_code)
+    lot = lot_type == 1 ? Lot.where(code: lot_code).first : ProductLot.where(lot: lot_code).first
     return nil if lot.nil?
 
     content = lot_type == 1 ? lot.ingredient : lot.product
@@ -526,7 +526,7 @@ class EasyModel
   end
 
   def self.hopper_transactions(hopper_id, start_datetime, end_datetime)
-    hopper = Hopper.find_by_id hopper_id, :include => :scale
+    hopper = Hopper.find_by id: hopper_id, :include => :scale
     return nil if hopper.nil?
 
     includes = {hopper_lot: {lot: {ingredient: {}}}, hopper_lot_transaction_type: {}, user: {}}
@@ -556,7 +556,8 @@ class EasyModel
   end
 
   def self.stats(start_date, end_date)
-    @orders = Order.find :all, :include=>{:order_stats => {}, :batch => {}, :recipe => {}}, :conditions=>['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC']
+    @orders = Order.includes({:order_stats => {}, :batch => {}, :recipe => {}})
+      .where(['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)], :order=>['batches.start_date ASC'])
 
     data = self.initialize_data("Estadisticas de produccion")
     data['since'] = self.print_range_date(start_date)
@@ -616,7 +617,7 @@ class EasyModel
   end
 
   def self.order_stats(order_code)
-    order = Order.find_by_code order_code
+    order = Order.where(code: order_code).first
     return nil if order.nil?
 
     data = self.initialize_data('Estadisticas de orden')
@@ -771,7 +772,7 @@ class EasyModel
   end
 
   def self.alarms_per_order(order_code, alarm_type_id)
-    order = Order.find_by_code order_code
+    order = Order.where(code: order_code).first
     return nil if order.nil?
     alarms = []
     if alarm_type_id == 0
@@ -1041,7 +1042,7 @@ class EasyModel
   end
 
   def self.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_id)
-    ingredient = Ingredient.find_by_id ingredient_id
+    ingredient = Ingredient.find_by id: ingredient_id
     return nil if ingredient.nil?
 
     batch_hopper_lots = BatchHopperLot
@@ -1159,7 +1160,8 @@ class EasyModel
   end
 
   def self.order_details(order_code)
-    @order = Order.find_by_code order_code, :include => {:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}, :client => {}}
+    @order = Order.includes({:batch => {:batch_hopper_lot => {:hopper_lot => {:hopper => {}, :lot=>{:ingredient=>{}}}}}, :recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient => {}}}, :product_lot => {:product => {}}, :client => {}})
+      .where(code: order_code).first
     return nil if @order.nil?
 
     ingredients = {}
@@ -1206,9 +1208,10 @@ class EasyModel
     ingredients.each do |key, value|
       unless details.has_key?(key)
         std_amount = value * n_batch
+        ingredient = Ingredient.where(code: key).first
         details[key] = {
-          'ingredient' => Ingredient.find_by_code(key).name,
-          'ingredient_id' => Ingredient.find_by_code(key).id,
+          'ingredient' => ingredient.name,
+          'ingredient_id' => ingredient.id,
           'lot' => "N/A",
           'hopper' => "N/A",
           'real_kg' => 0,
@@ -1270,10 +1273,11 @@ class EasyModel
   end
 
   def self.batch_details(order_code, batch_number)
-    order = Order.find_by_code(order_code)
+    order = Order.where(code: order_code).first
     return nil if order.nil?
 
-    batch = Batch.find :first, :include => {:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient =>{}}}}}, :conditions => {:number => batch_number, :orders => {:code => order_code}}
+    batch = Batch.includes({:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient =>{}}}}})
+      .where({:number => batch_number, :orders => {:code => order_code}})
     return nil if batch.nil?
 
     data = self.initialize_data('Detalle de Batch')
@@ -1284,7 +1288,9 @@ class EasyModel
     data['end_date'] = batch.end_date.strftime("%d/%m/%Y %H:%M:%S")
     data['results'] = []
 
-    batch_hopper_lots = BatchHopperLot.find :all, :include => {:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}}, :conditions => {:batch_id => batch.id}, :order=>['ingredients.code ASC']
+    batch_hopper_lots = BatchHopperLot.includes({:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}})
+      .where({:batch_id => batch.id})
+      .order('ingredients.code ASC')
 
     ingredients = {}
     batch.order.recipe.ingredient_recipe.each do |ir|
@@ -1330,7 +1336,7 @@ class EasyModel
     recipe_code = params[:recipe_code]
     ingredient_inclusion = params[:ingredient_inclusion] == '1'
 
-    recipe = Recipe.find_by_code recipe_code
+    recipe = Recipe.where(code: recipe_code).first
     return nil if recipe.nil?
 
     data = self.initialize_data('Consumo por Receta')
@@ -1523,7 +1529,7 @@ class EasyModel
   end
 
   def self.stock_adjustments(start_date, end_date)
-    transaction_types = TransactionType.find :all
+    transaction_types = TransactionType.all
     adjustment_type_ids = []
     transaction_types.each do |ttype|
       unless ttype.code.match(/(?i)AJU/).nil?
@@ -1531,10 +1537,10 @@ class EasyModel
         adjustment_type_ids << ttype.id
       end
     end
-    return nil if adjustment_type_ids.length.zero?
+    return nil if adjustment_type_ids.empty?
 
-    adjustments = Transaction.find :all, :conditions => {:transaction_type_id => adjustment_type_ids, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC']
-    return nil if adjustments.length.zero?
+    adjustments = Transaction.where({:transaction_type_id => adjustment_type_ids, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
+    return nil if adjustments.empty?
 
     data = self.initialize_data('Ajustes de Existencias')
     data['since'] = self.print_range_date(start_date)
@@ -1577,12 +1583,12 @@ class EasyModel
   end
 
   def self.lots_incomes(start_date, end_date)
-    income_type = TransactionType.find :first, :conditions => {:code => 'EN-COM'}
+    income_type = TransactionType.where({:code => 'EN-COM'}).first
     "Income code found: " + income_type.code
     return nil if income_type.nil?
 
-    incomes = Transaction.find :all, :conditions => {:transaction_type_id => income_type, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC']
-    return nil if incomes.length.zero?
+    incomes = Transaction.find.where({:transaction_type_id => income_type, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
+    return nil if incomes.empty?
 
     data = self.initialize_data('Entradas de Materia Prima')
     data['since'] = self.print_range_date(start_date)
@@ -1761,8 +1767,8 @@ class EasyModel
       conditions = {:transaction_type_id=>5, :transactions=>{:document_number=>doc_number}, :created_at => (start_date)..((end_date) + 1.day)}
     end
 
-    dispatches = Transaction.find :all, :conditions => conditions, :order=>['created_at DESC']
-    return nil if dispatches.length.zero?
+    dispatches = Transaction.where(conditions).order('created_at DESC')
+    return nil if dispatches.empty?
 
     data = self.initialize_data('Despacho de producto terminado')
     data['since'] = self.print_range_date(start_date)
@@ -1791,7 +1797,7 @@ class EasyModel
   end
 
   def self.production_per_recipe(start_date, end_date, recipe_code)
-    recipe = Recipe.find_by_code recipe_code
+    recipe = Recipe.where(code: recipe_code).first
     return nil if recipe.nil?
 
     data = self.initialize_data('Produccion por Receta')
@@ -1824,7 +1830,7 @@ class EasyModel
   end
 
   def self.production_per_client(start_date, end_date, client_id)
-    client = Client.find client_id rescue nil
+    client = Client.find_by id: client_id
     return nil if client.nil?
 
     data = self.initialize_data('Produccion por Cliente')

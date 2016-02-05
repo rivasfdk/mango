@@ -70,7 +70,7 @@ class ClientsController < ApplicationController
   def destroy
     @client = Client.find params[:id]
     @client.eliminate
-    if @client.errors.size.zero?
+    if @client.errors.empty?
       flash[:notice] = "Cliente eliminado con éxito"
     else
       logger.error("Error eliminando cliente: #{@client.errors.inspect}")

@@ -20,7 +20,7 @@ class Hopper < ActiveRecord::Base
   end
 
   def capacity_in_kg_by_lot(lot_id)
-    lot = Lot.find(lot_id)
+    lot = Lot.find_by id: lot_id
     unless lot.nil?
       (capacity.present? and lot.density.present?) ? capacity * lot.density : 0
     else
@@ -125,7 +125,7 @@ class Hopper < ActiveRecord::Base
   def eliminate
     begin
       b = BatchHopperLot.includes(:hopper_lot).where({hoppers_lots: {hopper_id: self.id}})
-      if b.length > 0
+      if b.any?
         errors.add(:foreign_key, 'no se puede eliminar porque tiene registros asociados')
         return
       end
