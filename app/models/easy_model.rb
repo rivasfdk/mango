@@ -1,5 +1,4 @@
 include MangoModule
-include Rails.application.routes.url_helpers
 
 class EasyModel
   def self.production_note(params)

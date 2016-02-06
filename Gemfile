@@ -18,14 +18,13 @@ gem 'gnuplot'
 gem 'pry-rails'
 gem 'sass-rails'
 gem 'coffee-rails'
+gem 'coffee-script-source', '1.8.0'
 gem 'uglifier'
 
 group :development do
-  #gem 'better_errors'
-  #gem 'binding_of_caller'
   gem 'quiet_assets'
-  #gem 'rails_layout'
-  #gem 'autoprefixer-rails'
 end
 
 gem 'passenger'
+gem 'thin'
+gem 'thin_service'
