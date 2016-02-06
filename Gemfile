@@ -26,5 +26,7 @@ group :development do
 end
 
 gem 'passenger'
+
 gem 'thin'
 gem 'thin_service'
+gem 'actionpack-xml_parser'

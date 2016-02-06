@@ -46,5 +46,6 @@ module Mango
     config.i18n.default_locale = :es
     config.active_record.default_timezone = :local
     config.active_record.time_zone_aware_attributes = false
+    config.middleware.insert_after ActionDispatch::ParamsParser, ActionDispatch::XmlParamsParser
   end
 end
