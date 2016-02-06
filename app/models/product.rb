@@ -1,4 +1,6 @@
 class Product < ActiveRecord::Base
+  attr_protected :id
+
   has_many :product_lot
   has_many :recipes
   belongs_to :base_unit

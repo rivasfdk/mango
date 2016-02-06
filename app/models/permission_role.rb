@@ -1,4 +1,6 @@
 class PermissionRole < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :role
   belongs_to :permission
 

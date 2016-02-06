@@ -1,4 +1,6 @@
 class Parameter < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :parameter_list
   belongs_to :parameter_type
 

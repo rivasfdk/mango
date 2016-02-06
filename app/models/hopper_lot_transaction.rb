@@ -1,4 +1,6 @@
 class HopperLotTransaction < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :hopper_lot_transaction_type
   belongs_to :hopper_lot
   belongs_to :user

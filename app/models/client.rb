@@ -1,4 +1,6 @@
 class Client < ActiveRecord::Base
+  attr_protected :id
+
   has_many :order, inverse_of: :client
   has_many :transactions
   has_many :tickets

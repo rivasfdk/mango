@@ -1,4 +1,6 @@
 class IngredientParameterTypeRange < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :ingredient
   belongs_to :lot_parameter_type
 

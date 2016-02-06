@@ -1,4 +1,6 @@
 class TransactionType < ActiveRecord::Base
+  attr_protected :id
+
   has_many :transactions
 
   validates_uniqueness_of :code

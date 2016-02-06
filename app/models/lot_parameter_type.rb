@@ -1,4 +1,6 @@
 class LotParameterType < ActiveRecord::Base
+  attr_protected :id
+
   has_many :lot_parameters
   has_many :ingredient_parameter_type_ranges
 

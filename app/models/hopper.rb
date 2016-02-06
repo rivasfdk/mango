@@ -1,4 +1,6 @@
 class Hopper < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :scale
   has_many :hopper_lot
   validates :number, :name, :scale, :capacity, presence: true
@@ -57,7 +59,7 @@ class Hopper < ActiveRecord::Base
       amount = params[:amount].to_f
       new_lot_id = params[:lot_id].to_i
       if current_lot.id == new_lot_id
-        logger.debug("lot can't be the same") 
+        logger.debug("lot can't be the same")
         false
       elsif amount < 0
         logger.debug("amount can't be less than or equal to 0")

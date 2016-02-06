@@ -1,4 +1,6 @@
 class HopperLot < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :hopper
   belongs_to :lot
   has_many :batch_hopper_lot

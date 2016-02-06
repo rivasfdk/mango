@@ -1,4 +1,6 @@
 class Ticket < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :truck
   belongs_to :driver
   belongs_to :ticket_type

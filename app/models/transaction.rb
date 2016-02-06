@@ -1,4 +1,6 @@
 class Transaction < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :transaction_type
   belongs_to :user
   belongs_to :client

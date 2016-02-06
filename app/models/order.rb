@@ -1,6 +1,8 @@
 include MangoModule
 
 class Order < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :recipe
   belongs_to :medicament_recipe
   belongs_to :parameter_list

@@ -1,4 +1,6 @@
 class HopperFactoryLot < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :hopper_lot
   belongs_to :client
   belongs_to :lot

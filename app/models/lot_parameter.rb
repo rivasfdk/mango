@@ -1,4 +1,6 @@
 class LotParameter < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :lot_parameter_list
   belongs_to :lot_parameter_type
 

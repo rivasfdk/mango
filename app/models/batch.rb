@@ -1,4 +1,6 @@
 class Batch < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :order
   belongs_to :schedule
   belongs_to :user

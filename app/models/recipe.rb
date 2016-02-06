@@ -1,6 +1,8 @@
 # encoding: UTF-8
 
 class Recipe < ActiveRecord::Base
+  attr_protected :id
+
   TYPES = {
     0 => 'Ninguno',
     1 => 'Pre Iniciador Pollos',

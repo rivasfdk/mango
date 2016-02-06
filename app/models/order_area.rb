@@ -1,4 +1,6 @@
 class OrderArea < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :area
   belongs_to :order
 

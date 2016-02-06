@@ -1,4 +1,6 @@
 class Scale < ActiveRecord::Base
+  attr_protected :id
+
   has_many :hoppers
   validates :name, presence: true
   validates :name, uniqueness: true
