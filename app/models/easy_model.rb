@@ -1644,10 +1644,10 @@ class EasyModel
       lots = lots.order('products.code, products_lots.code asc')
     end
     lots.each do |lot|
-      transaction = Transaction.first :conditions => [
+      transaction = Transaction.where([
         'notified = true and created_at < ? and content_type = ? and content_id = ? ',
         date.strftime("%Y-%m-%d %H:%M:%S"), content_type, lot.id
-      ], :order => ['created_at desc']
+      ]).order('created_at desc').first
       if transaction
         data['results'] << {
           'code' => lot.code,
@@ -1687,10 +1687,10 @@ class EasyModel
 
     lots.each do |l|
       key = l.get_content.code
-      transaction = Transaction.first :conditions => [
+      transaction = Transaction.where([
         'notified = true and created_at < ? and content_type = ? and content_id = ? ',
         date.strftime("%Y-%m-%d %H:%M:%S"), content_type, l.id
-      ], :order => ['created_at desc']
+      ]).order('created_at desc').first
       if transaction
         if results.has_key?(key)
           results[key]['stock'] += transaction.stock_after

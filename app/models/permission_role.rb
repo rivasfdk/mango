@@ -5,7 +5,7 @@ class PermissionRole < ActiveRecord::Base
   belongs_to :permission
 
   def self.find_with_permissions(role_id, controller, mode)
-    return find :all, :conditions => {:role_id => role_id, :permissions => {:module => controller, :mode=>mode}}, :include => [:permission]
+    return includes(:permission).where({:role_id => role_id, :permissions => {:module => controller, :mode=>mode}})
   end
 
   def self.generate_god_role

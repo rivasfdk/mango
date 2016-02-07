@@ -19,7 +19,7 @@ class IngredientRecipe < ActiveRecord::Base
   end
 
   def validate_existence
-    if IngredientRecipe.find(:first, :conditions => ["ingredient_id = ? and recipe_id = ?", self.ingredient_id, self.recipe_id])
+    if IngredientRecipe.where(["ingredient_id = ? and recipe_id = ?", self.ingredient_id, self.recipe_id]).first
       errors.add_to_base("ingredient already exist")
     end
     return (errors.size > 0) ? false : true

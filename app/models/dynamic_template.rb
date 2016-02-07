@@ -1,6 +1,4 @@
 class DynamicTemplate
-  attr_protected :id
-
   def self.generate(data, filename)
     filepath = "#{Rails.root.to_s}/config/reports/dynamic/#{filename}"
     template = YAML::load(File.open(filepath))

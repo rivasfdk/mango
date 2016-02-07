@@ -4,7 +4,7 @@ class CarriersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @carriers = Carrier.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC', :conditions => {:frequent => true}
+        @carriers = Carrier.where(frecuent: true).paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
         render :html => @carriers
       end
       format.json do
