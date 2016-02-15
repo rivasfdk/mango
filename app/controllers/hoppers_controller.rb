@@ -18,6 +18,7 @@ class HoppersController < ApplicationController
   def create
     @hopper = Scale.find(params[:scale_id]).hoppers.new params[:hopper]
     if @hopper.save
+      # This should be an after_create callback
       @hopper_lot = @hopper.hopper_lot.new params[:hopper_lot]
       @hopper_lot.save
       flash[:notice] = 'Tolva guardada con éxito'

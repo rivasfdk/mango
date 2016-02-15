@@ -180,4 +180,13 @@ class OrdersController < ApplicationController
       send_data rendered, filename: "detalle_orden_produccion.pdf", type: "application/pdf"
     end
   end
+
+  def open
+    render xml: Order.get_open, root: 'orders'
+  end
+
+  def validate
+    order = Order.where(code: params[:order_code]).first
+    render xml: order.validate, root: 'order_validation'
+  end
 end

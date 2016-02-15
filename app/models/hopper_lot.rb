@@ -1,6 +1,9 @@
 class HopperLot < ActiveRecord::Base
   attr_protected :id
 
+  #TODO Bloquear cambio de tolvas cuando la balanza se encuenta ocupada
+  #TODO Eliminar dependencia de un lote "TOLVA VACIA" (trabajar con lot_id = nil para tolvas vacias)
+
   belongs_to :hopper
   belongs_to :lot
   has_many :batch_hopper_lot

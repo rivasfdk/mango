@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   def index
-    @users = User.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+    @users = User.order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new

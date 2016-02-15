@@ -59,4 +59,8 @@ class ScalesController < ApplicationController
     end
     redirect_to :scales
   end
+
+  def hoppers_ingredients
+    render xml: Scale.get_hoppers_ingredients, root: 'scales'
+  end
 end

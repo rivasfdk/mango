@@ -32,6 +32,8 @@ Mango::Application.routes.draw do
   match 'orders/update_order_area' => "orders#update_order_area", :via => :post, :as => 'update_order_area'
   match 'orders/:id/notify' => "orders#notify", :via => :get#, :as => 'notify_order'
   match 'orders/:id/notify' => "orders#do_notify", :via => :post, :as => 'notify_order'
+  match 'orders/open' => "orders#open", :via => :get, :as => 'open_orders'
+  match 'orders/validate' => "orders#validate", :via => :get, :as => 'validate_order'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get#, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
@@ -46,6 +48,7 @@ Mango::Application.routes.draw do
   match 'scales/:scale_id/hoppers/:id/change' => "hoppers#do_change", :via => :post
   match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post
   match 'scales/:scale_id/hoppers/:id/change_factory_lots' => "hoppers#do_change_factory_lots", :via => :put
+  match 'scales/hoppers_ingredients' => "scales#hoppers_ingredients", :via => :get
   match 'settings.json' => "settings#show", via: :get
   match 'settings/features.json' => "settings#features", via: :get
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
@@ -98,6 +101,7 @@ Mango::Application.routes.draw do
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, only: [:index, :new, :create]
+  resources :alarms, only: [:create]
   resources :document_types, only: [:index]
   resources :tickets, except: :new
 
