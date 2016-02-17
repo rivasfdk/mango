@@ -119,9 +119,10 @@ class Order < ActiveRecord::Base
       end
     end
 
+    parameters = []
     parameters = self.parameter_list.parameters.map { |parameter|
       {type: parameter.parameter_type_id, value: parameter.value}
-    }
+    } if self.parameter_list
 
     {
       valid: valid,
