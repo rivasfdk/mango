@@ -439,18 +439,18 @@ class Order < ActiveRecord::Base
 
     amounts = IngredientRecipe
       .where(recipe_id: order.recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject({}) do |hash, item|
-        hash[item["ingredient_id"]] = item["amount"]
+        hash[item[0]] = item[1]
         hash
       end
 
     unless order.medicament_recipe_id.nil?
       amounts.merge!(IngredientMedicamentRecipe
         .where(medicament_recipe_id: order.medicament_recipe_id)
-        .pluck_all(:ingredient_id, :amount)
+        .pluck(:ingredient_id, :amount)
         .inject({}) do |hash, item|
-          hash[item["ingredient_id"]] = item["amount"]
+          hash[item[0]] = item[1]
           hash
         end )
     end
@@ -463,9 +463,9 @@ class Order < ActiveRecord::Base
               scales: {not_weighed: true},
               ingredients: {id: amounts.keys}})
       .order('hoppers.number ASC')
-      .pluck_all("hoppers_lots.id", "ingredient_id")
+      .pluck("hoppers_lots.id", "ingredient_id")
       .inject({}) do |hash, item|
-        hash[item["id"]] = amounts[item["ingredient_id"]]
+        hash[item[0]] = amounts[item[1]]
         hash
       end
 
