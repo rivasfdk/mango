@@ -323,16 +323,16 @@ class EasyModel
         .where(recipes: {code: recipe_code})
         .order('orders.created_at')
         .group('recipes.version')
-        .pluck_all('recipes.version, MAX(orders.created_at) AS last_used_at')
+        .pluck('recipes.version, MAX(orders.created_at) AS last_used_at')
 
-      recipe_versions.sort! {|v1, v2| v1['last_used_at'] <=> v2['last_used_at']}
+      recipe_versions.sort! {|v1, v2| v1[1] <=> v2[1]}
 
       recipe_versions.each do |recipe_version|
         version_total = BatchHopperLot
           .joins({hopper_lot: {lot: {}},
                   batch: {order: {recipe: {}}}})
           .where(orders: {created_at: (start_date .. end_date + 1.day)},
-                 recipes: {code: recipe_code, version: recipe_version['version']})
+                 recipes: {code: recipe_code, version: recipe_version[0]})
           .sum(:amount)
 
         percentages = BatchHopperLot
@@ -341,7 +341,7 @@ class EasyModel
           .select("lots.ingredient_id,
                    SUM(batch_hoppers_lots.amount) / #{version_total} * 100 AS percentage")
           .where(orders: {created_at: (start_date .. end_date + 1.day)},
-                 recipes: {code: recipe_code, version: recipe_version['version']},
+                 recipes: {code: recipe_code, version: recipe_version[0]},
                  lots: {ingredient_id: ingredients_ids})
           .group('lots.ingredient_id')
           .reduce([{}, 0.0]) do |percentages, percentage|
@@ -352,8 +352,8 @@ class EasyModel
           end
         first_used_at = Order
           .joins(:recipe)
-          .where(['recipes.code = ? and recipes.version != ?', recipe_code, recipe_version['version']])
-          .where(['orders.created_at < ?', recipe_version['last_used_at']])
+          .where(['recipes.code = ? and recipes.version != ?', recipe_code, recipe_version[0]])
+          .where(['orders.created_at < ?', recipe_version[1]])
           .order('orders.created_at desc')
           .first.created_at.to_date
 
@@ -364,7 +364,7 @@ class EasyModel
         end
 
         row[:versions] << {
-          version: recipe_version['version'],
+          version: recipe_version[0],
           days: days,
           total: version_total / 1000,
           percentages: percentages[0],
@@ -421,9 +421,9 @@ class EasyModel
           .joins(:recipe)
           .where(created_at: week_range,
                  recipes: {code: recipe_code})
-          .pluck_all('DISTINCT recipes.version, recipes.id')
-          .sort_by { |hash| hash["version"] }
-          .map { |hash| {version: hash["version"], domain: domain, path: recipe_path(hash["id"]) } }
+          .pluck('DISTINCT recipes.version, recipes.id')
+          .sort_by { |hash| hash[0] }
+          .map { |hash| {version: hash[0], domain: domain, path: recipe_path(hash[1]) } }
       end
       row
     end

@@ -137,25 +137,25 @@ class Order < ActiveRecord::Base
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
       .where(hoppers_lots: {active: true}, hoppers: {main: true})
-      .pluck_all("hoppers_lots.id", "lots.ingredient_id")
+      .pluck("hoppers_lots.id", "lots.ingredient_id")
       .inject({}) do |hash, hl|
-        hash[hl["ingredient_id"]] = hl["id"]
+        hash[hl[1]] = hl[0]
         hash
       end
 
     recipe_ingredients = IngredientRecipe
       .where(recipe_id: self.recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject({}) do |hash, ir|
-        hash[ir["ingredient_id"]] = ir["amount"]
+        hash[ir[0]] = ir[1]
         hash
       end
     recipe_ingredients.merge!(IngredientMedicamentRecipe
       .where(medicament_recipe_id: self.medicament_recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject(recipe_ingredients) do |hash, ir|
-        unless recipe_ingredients.has_key? ir["ingredient_id"]
-          hash[ir["ingredient_id"]] = ir["amount"]
+        unless recipe_ingredients.has_key? ir[0]
+          hash[ir[0]] = ir[1]
         end
         hash
       end ) unless self.medicament_recipe.nil?
@@ -215,9 +215,9 @@ class Order < ActiveRecord::Base
 
       batches_ingredients = self.batch
         .joins(batch_hopper_lot: {hopper_lot: {lot: {}}})
-        .pluck_all("batches.id", "lots.ingredient_id")
+        .pluck("batches.id", "lots.ingredient_id")
         .inject(Hash.new {|hash, key| hash[key] = []}) do |hash, bi|
-          hash[bi["id"]] << bi["ingredient_id"]
+          hash[bi[0]] << bi[1]
           hash
         end
 
