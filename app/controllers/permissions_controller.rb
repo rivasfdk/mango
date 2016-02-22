@@ -2,7 +2,7 @@
 
 class PermissionsController < ApplicationController
   def index
-    @permissions = Permission.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'module ASC, name ASC'
+    @permissions = Permission.order('module ASC, name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new
