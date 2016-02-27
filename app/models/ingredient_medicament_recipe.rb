@@ -1,4 +1,6 @@
 class IngredientMedicamentRecipe < ActiveRecord::Base
+  self.table_name = 'ingredients_medicaments_recipes'
+
   attr_protected :id
 
   belongs_to :ingredient

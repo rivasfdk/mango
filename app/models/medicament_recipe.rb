@@ -13,11 +13,6 @@ class MedicamentRecipe < ActiveRecord::Base
   end
 
   def get_total
-    total = 0
-    ingredients = IngredientMedicamentRecipe.where(:medicament_recipe_id => self.id)
-    ingredients.each do |i|
-      total+= i.amount
-    end
-    return total
+    ingredient_medicament_recipe.pluck(:amount).reduce { |total, amount| total + amount }
   end
 end

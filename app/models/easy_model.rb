@@ -1276,7 +1276,7 @@ class EasyModel
     return nil if order.nil?
 
     batch = Batch.includes({:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient =>{}}}}})
-      .where({:number => batch_number, :orders => {:code => order_code}})
+      .where({:number => batch_number, :orders => {:code => order_code}}).first
     return nil if batch.nil?
 
     data = self.initialize_data('Detalle de Batch')
