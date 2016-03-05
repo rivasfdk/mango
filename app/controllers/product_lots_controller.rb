@@ -16,7 +16,7 @@ class ProductLotsController < ApplicationController
       end
       format.json do 
         @lots = ProductLot.includes(:product)
-                          .where(active: true)
+                          .where({active: true, in_use: true})
                           .order('id desc')
         render json: @lots, methods: [:get_content]
       end
