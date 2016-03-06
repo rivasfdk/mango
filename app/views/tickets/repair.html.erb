@@ -27,6 +27,8 @@
   <label for="provider_document_number" class="small">N# documento SADA:</label>
   <div class="field"><%= f.text_field :provider_document_number, :size=>'20' %><span>*</span></div>
 <% end %>
+<label for="address" class="small">Direccion:</label>
+<div class="field"><%= f.text_field :address, :size=>'90' %><span>*</span></div>
 <label for="comment" class="small">Comentario;</label>
 <div class="field"><%= f.text_area :comment, :size=>'60x10' %></div>
 <div class="clearfix"></div>
