@@ -80,6 +80,9 @@ by_client_4_changed = ->
 by_products_changed = ->
   $('#products_form').toggle($('#report_by_products').is(':checked'))
 
+by_products_2_changed = ->
+  $('#products_form_2').toggle($('#report_by_products_2').is(':checked'))
+
 date_type_changed = ->
   by_month = $('#report_date_type_1').is(':checked')
   $('#by_month').toggle(by_month)
@@ -118,6 +121,7 @@ $ ->
   $('#report_by_client').change by_client_changed
   $('#report_by_client_2').change by_client_2_changed
   $('#report_by_products').change by_products_changed
+  $('#report_by_products_2').change by_products_2_changed
   $('#report_date_type_1').change date_type_changed
   $('#report_date_type_2').change date_type_changed
   $('#report_time_unit_1').change time_range_changed

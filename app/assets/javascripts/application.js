@@ -40,6 +40,7 @@ $(function(){
     $('#report_by_client').trigger('change');
     $('#report_by_client_2').trigger('change');
     $('#report_by_products').trigger('change');
+    $('#report_by_products_2').trigger('change');
     $('#report_date_type_1').trigger('change');
     $('#report_time_unit_1').trigger('change');
     $('#report_by_ticket_type').trigger('change');

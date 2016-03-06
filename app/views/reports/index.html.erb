@@ -518,8 +518,13 @@
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
         <label for="client_id2" class="small">Cliente/Maquila:</label>
-        <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
-        <br /><br /><br />
+        <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
+        <%= f.check_box :by_products_2, :checked=>false %> &nbsp; <label for="group">Filtrar por productos</label><br/><br/>
+        <div id="products_form_2">
+          <label for="products_ids" class="small">Productos:</label>
+          <%= f.collection_select :products_ids, @products, :id, :to_collection_select, {}, {multiple: true, class: 'multiple-select chzn-field-max'} %><br/><br/>
+        </div>
+        <br /><br />
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
