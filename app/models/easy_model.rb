@@ -1619,7 +1619,7 @@ class EasyModel
     return data
   end
 
-  def self.simple_stock_per_lot(content_type, by_factory, factory_id, date)
+  def self.simple_stock_per_lot(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     title = (content_type == 1) ? 'Existencias de Materia Prima por lotes' : 'Existencias de Producto Terminado por lotes'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -1631,11 +1631,13 @@ class EasyModel
       lots = Lot.joins(:ingredient)
       lots = lots.where(:active => true)
       lots = lots.where(:client_id => factory_id) if by_factory
+      lots = lots.where(:ingredient_id => ingredients_id) if by_content
       lots = lots.order('ingredients.code, lots.code asc')
     else
       lots = ProductLot.joins(:product)
       lots = lots.where(:active => true)
       lots = lots.where(:client_id => factory_id) if by_factory
+      lots = lots.where(:product_id => products_id) if by_content
       lots = lots.order('products.code, products_lots.code asc')
     end
     lots.each do |lot|
@@ -1660,7 +1662,7 @@ class EasyModel
     data
   end
 
-  def self.simple_stock(content_type, by_factory, factory_id, date)
+  def self.simple_stock(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     title = (content_type == 1) ? 'Existencias de Materia Prima' : 'Existencias de Producto Terminado'
     data = self.initialize_data(title)
     data['date'] = self.print_range_date(date)
@@ -1672,10 +1674,12 @@ class EasyModel
       lots = Lot.order('code asc')
       lots = lots.where(:active => true)
       lots = lots.where(:client_id => factory_id) if by_factory
+      lots = lots.where(:ingredient_id => ingredients_id) if by_content
     else
       lots = ProductLot.order('code asc')
       lots = lots.where(:active => true)
       lots = lots.where(:client_id => factory_id) if by_factory
+      lots = lots.where(:product_id => products_id) if by_content
     end
 
     return nil if lots.empty?
