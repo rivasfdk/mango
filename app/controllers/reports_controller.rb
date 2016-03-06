@@ -254,13 +254,16 @@ class ReportsController < ApplicationController
   def simple_stock
     content_type = params[:report][:content_type].to_i
     date = EasyModel.param_to_date(params[:report], 'date')
+    by_content = params[:report][:by_content] == '1'
+    ingredients_id = params[:report][:ingredients_ids_3]
+    products_id = params[:report][:products_ids]
     by_factory = params[:report][:by_factory_1] == '1'
     factory_id = params[:report][:factory_id_1]
     factory_id = nil unless factory_id.present?
     if params[:report][:group] == '1'
-      data = EasyModel.simple_stock(content_type, by_factory, factory_id, date)
+      data = EasyModel.simple_stock(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     else
-      data = EasyModel.simple_stock_per_lot(content_type, by_factory, factory_id, date)
+      data = EasyModel.simple_stock_per_lot(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     end
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'

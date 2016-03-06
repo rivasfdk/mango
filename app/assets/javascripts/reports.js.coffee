@@ -93,6 +93,14 @@ time_range_changed = ->
   $('#weeks_form').toggle(weeks_checked)
   $('#by_range').toggle(not weeks_checked)
 
+by_content_changed = ->
+  checked = $('#report_by_content').is(':checked')
+  $('#content_box').toggle(checked)
+
+content_type_1_changed = ->
+  $('#ingredients_box').toggle($('#report_content_type_1').is(':checked'))
+  $('#products_box').toggle($('#report_content_type_2').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -123,4 +131,7 @@ $ ->
   $('#report_by_ticket_content').change by_ticket_content_changed
   $('#report_by_factory_3').change by_factory_changed
   $('#report_by_client_4').change by_client_4_changed
+  $('#report_by_content').change by_content_changed
+  $('#report_content_type_1').change content_type_1_changed
+  $('#report_content_type_2').change content_type_1_changed
   return
