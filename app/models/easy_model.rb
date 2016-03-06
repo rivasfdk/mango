@@ -1823,9 +1823,13 @@ class EasyModel
     return data
   end
 
-  def self.production_per_client(start_date, end_date, client_id)
-    client = Client.find client_id rescue nil
+  def self.production_per_client(params)
+    start_date = EasyModel.param_to_date(params[:report], 'start')
+    end_date = EasyModel.param_to_date(params[:report], 'end')
+    client = Client.find params[:report][:client_id2] rescue nil
     return nil if client.nil?
+
+    by_product = params[:report][:by_products_2] == '1'
 
     data = self.initialize_data('Produccion por Cliente')
     data['client'] = "#{client.ci_rif} - #{client.name}"
@@ -1834,10 +1838,12 @@ class EasyModel
     data['results'] = []
 
     batch_hopper_lots = BatchHopperLot
-                        .joins({batch: {order: {recipe: {}}}})
+                        .joins({batch: {order: {recipe: {}, product_lot: {}}}})
                         .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
-                        .group('batches.order_id')
+                        .where({orders: {created_at: start_date..end_date + 1.day, client_id: client.id}})
+    batch_hopper_lots = batch_hopper_lots.where({products_lots: {product_id: params[:report][:products_ids]}}) if by_product
+
+    batch_hopper_lots = batch_hopper_lots.group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
 

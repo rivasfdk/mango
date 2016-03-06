@@ -16,6 +16,7 @@ class ReportsController < ApplicationController
     @recipes_all = Recipe.where(active: true, in_use: true)
     @units = OrderStatType::UNITS.select {|key, value| OrderStatType.group(:unit).pluck(:unit).include?(key)}
     @ingredients = Ingredient.actives.all
+    @products = Product.all
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
@@ -320,7 +321,7 @@ class ReportsController < ApplicationController
   def production_per_client
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_client(start_date, end_date, params[:report][:client_id2])
+    data = EasyModel.production_per_client(params)
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
