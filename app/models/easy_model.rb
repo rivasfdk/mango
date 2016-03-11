@@ -921,15 +921,7 @@ class EasyModel
       data[:factory] = params[:factory_id].present? ? Client.where(id: params[:factory_id_3]).first.name : company_name
     end
     data[:driver_name] = Driver.where(id: params[:driver_id]).first.name if by_driver
-    if by_content
-      if params[:ticket_content_type] == '1'
-        #data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
-        #data[:content_name] = Ingredient.where(id: params[:ticket_ingredients_ids])
-      else
-        #data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
-        #data[:content_name] = Product.where(id: params[:ticket_products_ids])
-      end
-    end
+
     data[:transactions] = transactions.map do |t|
       {
         ticket_number: "#{t[:ticket_number]}\n#{t[:ticket_type]}",
