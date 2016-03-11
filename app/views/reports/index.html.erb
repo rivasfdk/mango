@@ -575,13 +575,22 @@
           <%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
           <br /><br />
         </div>
-        <%= f.check_box :by_ticket_content, checked: false %> &nbsp; <label for="group">Filtrar por rubro</label>
+        <%= f.check_box :by_ticket_content, checked: false %> &nbsp; <label for="group">Filtrar por tipo de rubro</label>
         <br /><br />
         <div id="ticket_content_form">
           <%= f.radio_button :ticket_content_type, 1, checked: true %> Materia prima
-          <%= f.radio_button :ticket_content_type, 2 %> Producto terminado
-          <%= f.collection_select :content_id, @ingredients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
-          <br /><br />
+          <%= f.radio_button :ticket_content_type, 2 %> Producto terminado <br/><br/>
+          
+          <%= f.check_box :ticket_by_content, :checked=>false %> &nbsp; <label for="ticket_by_content">Filtrar por rubros</label><br/><br/>
+        <div id="ticket_content_box">
+        <div id="ticket_ingredients_box">
+        <%= f.collection_select :ticket_ingredients_ids, @ingredients, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        <div id="ticket_products_box">
+        <%= f.collection_select :ticket_products_ids, @products, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        </div>
+
         </div>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

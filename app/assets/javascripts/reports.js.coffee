@@ -101,6 +101,13 @@ content_type_1_changed = ->
   $('#ingredients_box').toggle($('#report_content_type_1').is(':checked'))
   $('#products_box').toggle($('#report_content_type_2').is(':checked'))
 
+ticket_by_content_changed = ->
+  $('#ticket_content_box').toggle($('#report_ticket_by_content').is(':checked'))
+
+ticket_content_type_1_changed = ->
+  $('#ticket_ingredients_box').toggle($('#report_ticket_content_type_1').is(':checked'))
+  $('#ticket_products_box').toggle($('#report_ticket_content_type_2').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -134,4 +141,7 @@ $ ->
   $('#report_by_content').change by_content_changed
   $('#report_content_type_1').change content_type_1_changed
   $('#report_content_type_2').change content_type_1_changed
+  $('#report_ticket_by_content').change ticket_by_content_changed
+  $('#report_ticket_content_type_1').change ticket_content_type_1_changed
+  $('#report_ticket_content_type_2').change ticket_content_type_1_changed
   return

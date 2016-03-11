@@ -884,6 +884,7 @@ class EasyModel
     by_driver = params[:by_driver] == '1'
     by_content = params[:by_ticket_content] == '1'
     by_client = params[:by_client_4] == '1'
+    ticket_by_content = params[:ticket_by_content] == '1'
 
     data = self.initialize_data('Movimientos de Romana')
 
@@ -906,8 +907,8 @@ class EasyModel
       data[:client_name] = Client.find(params[:client_id_4]).name
     end
     transactions = transactions.where('tickets.driver_id = ?', params[:driver_id]) if by_driver
-    transactions = transactions.where('transactions.content_type = ? and (ingredients.id = ? or products.id = ?)', params[:ticket_content_type], params[:content_id], params[:content_id]) if by_content
-
+    transactions = transactions.where('transactions.content_type = ?', params[:ticket_content_type]) if by_content
+    transactions = transactions.where('ingredients.id in (?) or products.id in (?)', params[:ticket_ingredients_ids], params[:ticket_products_ids]) if ticket_by_content
     transactions = transactions.order('tickets.id asc')
 
     return nil if transactions.empty?
@@ -922,9 +923,11 @@ class EasyModel
     data[:driver_name] = Driver.where(id: params[:driver_id]).first.name if by_driver
     if by_content
       if params[:ticket_content_type] == '1'
-        data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
+        #data[:content_name] = Ingredient.where(id: params[:content_id]).first.to_collection_select
+        #data[:content_name] = Ingredient.where(id: params[:ticket_ingredients_ids])
       else
-        data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
+        #data[:content_name] = Product.where(id: params[:content_id]).first.to_collection_select
+        #data[:content_name] = Product.where(id: params[:ticket_products_ids])
       end
     end
     data[:transactions] = transactions.map do |t|

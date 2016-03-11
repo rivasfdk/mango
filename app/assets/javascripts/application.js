@@ -51,6 +51,9 @@ $(function(){
     $('#report_by_content').trigger('change');
     $('#report_content_type_1').trigger('change');
     $('#report_content_type_2').trigger('change');
+    $('#report_ticket_by_content').trigger('change');
+    $('#report_ticket_content_type_1').trigger('change');
+    $('#report_ticket_content_type_2').trigger('change');
     hideProductLots();
 });
 
