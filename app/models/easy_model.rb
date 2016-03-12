@@ -933,7 +933,10 @@ class EasyModel
         diff: "#{(t[:net_weight] - t[:provider_weight]).round(2)}\n(#{((t[:net_weight] - t[:provider_weight]) / t[:provider_weight] * 100).round(2)} %)",
         content_name: t[:content_name],
         lot_code: t[:lot_code],
-        client_name: t[:client_name]
+        client_name: t[:client_name],
+        address: t[:ticket_address],
+        license_plate: t[:license_plate],
+        sack: t[:transaction_sack] == 1 ? "S" : "G"
       }
     end
     data

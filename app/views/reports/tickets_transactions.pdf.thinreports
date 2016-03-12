@@ -44,7 +44,10 @@ report.start_new_page do |page|
                   diff: "#{t[:diff]}\n(#{t[:perc_diff]} %)",
                   content_name: t[:content_name],
                   lot_code: t[:lot_code],
-                  client_name: t[:client_name]
+                  client_name: t[:client_name],
+                  address: t[:address],
+                  license_plate: t[:license_plate],
+                  sack: t[:sack]
     table.store.total += t[:net_weight].to_f
   end
 end
