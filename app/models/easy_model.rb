@@ -1327,6 +1327,7 @@ class EasyModel
     end_date = EasyModel.param_to_date(params, 'end_date')
     recipe_code = params[:recipe_code]
     ingredient_inclusion = params[:ingredient_inclusion] == '1'
+    by_lots = params[:by_lots_recipe] == '1'
 
     recipe = Recipe.find_by_code recipe_code
     return nil if recipe.nil?
@@ -1340,7 +1341,8 @@ class EasyModel
     batch_hopper_lots = BatchHopperLot
       .joins({hopper_lot: {lot: {ingredient: {}}},
               batch: {order: {recipe: {}}}})
-      .select('ingredients.code AS ingredient_code,
+      .select('lots.code AS lot_code,
+               ingredients.code AS ingredient_code,
                ingredients.name AS ingredient_name,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
@@ -1348,7 +1350,7 @@ class EasyModel
       .where({orders: {created_at: start_date .. end_date + 1.day, notified: true},
               recipes: {code: recipe.code}})
       .order('ingredients.code')
-      .group('ingredients.id')
+      .group(by_lots ? 'lots.id' : 'ingredients.id')
 
     return nil if batch_hopper_lots.empty?
 
@@ -1363,7 +1365,7 @@ class EasyModel
       total_real += bhl[:total_real]
       total_std += bhl[:total_std]
       data['results'] << {
-        'ingredient_code' => bhl[:ingredient_code],
+        'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
         'std_kg' => bhl[:total_std],
         'real_kg' => bhl[:total_real],
@@ -1383,7 +1385,12 @@ class EasyModel
     return data
   end
 
-  def self.consumption_per_selected_ingredients(start_date, end_date, ingredients_ids, user_id)
+  def self.consumption_per_selected_ingredients(params, user_id)
+    start_date = EasyModel.param_to_date(params, 'start')
+    end_date = EasyModel.param_to_date(params, 'end')
+    ingredients_ids = params[:ingredients_ids_2]
+    by_lots = params[:by_lots] == '1'
+    by_select_ingredients = params[:by_select_ingredients] == '1'
     data = self.initialize_data('Consumo por Ingrediente')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
@@ -1407,11 +1414,12 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day},
-              ingredients: {id: ingredients_ids},
-              notified: true})
-      .order('ingredients.code')
-      .group('ingredients.id')
+      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true}})
+
+
+    batch_hopper_lots = batch_hopper_lots.where(ingredients: {id: ingredients_ids}) if by_select_ingredients
+    batch_hopper_lots = batch_hopper_lots.order('ingredients.code')
+      .group(by_lots ? 'lots.id' : 'ingredients.id')
 
     return nil if batch_hopper_lots.empty?
 
@@ -1421,51 +1429,11 @@ class EasyModel
       loss = bhl[:total_real_real] - bhl[:total_real]
       loss_perc = (loss * 100.0) / bhl[:total_real]
       data['results'] << {
-        'ingredient_code' => bhl[:ingredient_code],
+        'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
         'real_kg' => bhl[:total_real],
         'std_kg' => bhl[:total_std],
         'real_real_kg' => bhl[:total_real_real].to_s,
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
-      }
-    end
-
-    return data
-  end
-
-  def self.consumption_per_ingredients(start_date, end_date)
-    data = self.initialize_data('Consumo por Ingrediente')
-    data['since'] = self.print_range_date(start_date)
-    data['until'] = self.print_range_date(end_date)
-    data['results'] = []
-
-    batch_hopper_lots = BatchHopperLot
-      .joins({hopper_lot: {lot: {ingredient: {}}}, batch: {order: {}}})
-      .select('ingredients.code AS ingredient_code,
-               ingredients.name AS ingredient_name,
-               SUM(amount) AS total_real,
-               SUM(standard_amount) AS total_std,
-               SUM(real_amount) AS total_real_real')
-      .where(orders: {created_at: start_date .. end_date + 1.day, notified: true})
-      .order('ingredients.code')
-      .group('ingredients.id')
-
-    return nil if batch_hopper_lots.empty?
-
-    batch_hopper_lots.each do |bhl|
-      var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = var_kg * 100 / bhl[:total_std]
-      loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
-      data['results'] << {
-        'ingredient_code' => bhl[:ingredient_code],
-        'ingredient_name' => bhl[:ingredient_name],
-        'real_kg' => bhl[:total_real],
-        'std_kg' => bhl[:total_std],
-        'real_real_kg' => bhl[:total_real_real],
         'var_kg' => var_kg,
         'var_perc' => var_perc,
         'loss' => loss,

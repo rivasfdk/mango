@@ -158,10 +158,7 @@ class ReportsController < ApplicationController
   end
 
   def consumption_per_selected_ingredients
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    ingredients_ids = params[:report][:ingredients_ids_2]
-    data = EasyModel.consumption_per_selected_ingredients(start_date, end_date, ingredients_ids, session[:user_id])
+    data = EasyModel.consumption_per_selected_ingredients(params[:report], session[:user_id])
     if data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

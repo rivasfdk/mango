@@ -108,6 +108,9 @@ ticket_content_type_1_changed = ->
   $('#ticket_ingredients_box').toggle($('#report_ticket_content_type_1').is(':checked'))
   $('#ticket_products_box').toggle($('#report_ticket_content_type_2').is(':checked'))
 
+select_ingredients_changed = ->
+  $('#report_ingredients_ids_2_chosen').toggle($('#report_by_select_ingredients').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -144,4 +147,5 @@ $ ->
   $('#report_ticket_by_content').change ticket_by_content_changed
   $('#report_ticket_content_type_1').change ticket_content_type_1_changed
   $('#report_ticket_content_type_2').change ticket_content_type_1_changed
+  $('#report_by_select_ingredients').change select_ingredients_changed
   return
