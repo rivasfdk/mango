@@ -266,6 +266,7 @@
         <%= f.label :end_date, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end_date %><br/><br/>
         <label for="recipe_code" class="small">Receta:</label>
         <%= f.collection_select :recipe_code, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
+        <%= f.check_box :by_lots_recipe, checked: false %> &nbsp; <label for="by_lots_recipe">Desglosar por lotes</label><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -284,24 +285,10 @@
     <div id="consumption_per_selected_ingredients" class="report-details">
       <%= form_for :report, :url=>consumption_per_selected_ingredients_report_path do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
-        <%= f.label :client, "Ingredientes", :class=>'small' %> <%= f.collection_select :ingredients_ids_2, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
-        <% if @real_production_enabled %>
-        <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
-        <% end %>
-        <%= submit_tag 'Generar Reporte' %>
-      <% end %>
-    </div>
-  </div>
-  <% end %>
-
-  <% if session[:reports_permissions].include?('consumption_per_ingredients') %>
-  <div class="report-content">
-    <h2 onclick="toggle_report_details('#consumption_per_ingredients')">Consumo por Ingredientes (Todos)</h2>
-    <div id="consumption_per_ingredients" class="report-details">
-      <%= form_for :report, :url=>consumption_per_ingredients_report_path(format: 'pdf') do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>      
+        <%= f.check_box :by_lots, checked: false %> &nbsp; <label for="by_lots">Desglosar por lotes</label><br/><br/>
+        <%= f.check_box :by_select_ingredients, checked: false %> &nbsp; <label for="by_select_ingredients">Filtrar por ingredientes</label><br/><br/>     
+        <%= f.collection_select :ingredients_ids_2, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
@@ -575,13 +562,22 @@
           <%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
           <br /><br />
         </div>
-        <%= f.check_box :by_ticket_content, checked: false %> &nbsp; <label for="group">Filtrar por rubro</label>
+        <%= f.check_box :by_ticket_content, checked: false %> &nbsp; <label for="group">Filtrar por tipo de rubro</label>
         <br /><br />
         <div id="ticket_content_form">
           <%= f.radio_button :ticket_content_type, 1, checked: true %> Materia prima
-          <%= f.radio_button :ticket_content_type, 2 %> Producto terminado
-          <%= f.collection_select :content_id, @ingredients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
-          <br /><br />
+          <%= f.radio_button :ticket_content_type, 2 %> Producto terminado <br/><br/>
+          
+          <%= f.check_box :ticket_by_content, :checked=>false %> &nbsp; <label for="ticket_by_content">Filtrar por rubros</label><br/><br/>
+        <div id="ticket_content_box">
+        <div id="ticket_ingredients_box">
+        <%= f.collection_select :ticket_ingredients_ids, @ingredients, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        <div id="ticket_products_box">
+        <%= f.collection_select :ticket_products_ids, @products, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        </div>
+
         </div>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>

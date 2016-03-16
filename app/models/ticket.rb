@@ -116,7 +116,7 @@ class Ticket < ActiveRecord::Base
 
   def self.base_search(ticket_id = nil)
     transactions = Ticket
-      .joins({ticket_type: {}, driver: {}})
+      .joins({ticket_type: {}, driver: {}, truck: {}})
       .joins('left join documents_types on tickets.document_type_id = documents_types.id')
       .joins('left join clients on tickets.client_id = clients.id')
       .joins('left join transactions on tickets.id = transactions.ticket_id')
@@ -143,6 +143,7 @@ class Ticket < ActiveRecord::Base
         clients.name as client_name,
         drivers.ci as driver_ci,
         drivers.name as driver_name,
+        trucks.license_plate as license_plate,
         documents_types.name as document_type,
         transactions.amount as transaction_amount,
         transactions.sack as transaction_sack,
