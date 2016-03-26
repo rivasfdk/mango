@@ -42,9 +42,12 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-    #  report = EasyReport::Report.new @data, 'daily_production.yml'
-    #  send_data report.render, :filename => "produccion_diaria.pdf", :type => "application/pdf"
-      render :xlsx => "daily_production", :filename => "daily_production.xlsx"
+      if params[:report][:format] == "pdf"
+        report = EasyReport::Report.new @data, 'daily_production.yml'
+        send_data report.render, :filename => "#{@data['title']}.pdf", :type => "application/pdf"
+      else
+        render :xlsx => "daily_production", :filename => "#{@data['title']}.xlsx"
+      end
     end
   end
 
