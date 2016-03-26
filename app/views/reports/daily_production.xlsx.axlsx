@@ -1,0 +1,15 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: @data['title']) do |sheet|
+  sheet.add_row @data['results'].first.keys
+  @data['results'].each do |result|
+    sheet.add_row result.values
+  end
+  results_count = @data['results'].count
+  sheet.add_row [
+    nil, nil, nil, nil, nil, nil, nil, "Total",
+    "=SUM(I2:I#{results_count + 1})",
+    "=SUM(J2:J#{results_count + 1})",
+    "=SUM(K2:K#{results_count + 1})",
+    "=K#{results_count + 2}/I#{results_count + 2}*100"
+  ]
+end

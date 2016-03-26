@@ -14,6 +14,7 @@ gem 'thinreports'
 gem 'thinreports-rails'
 gem 'ruby-units'
 gem 'gnuplot'
+gem 'axlsx_rails', "~> 0.3.0"
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -24,3 +25,5 @@ group :assets do
 end
 
 gem 'passenger'
+
+gem 'pry-rails', :group => :development

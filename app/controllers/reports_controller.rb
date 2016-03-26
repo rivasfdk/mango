@@ -36,14 +36,15 @@ class ReportsController < ApplicationController
   end
 
   def daily_production
-    data = EasyModel.daily_production(params[:report])
-    if data.nil?
+    @data = EasyModel.daily_production(params[:report])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'daily_production.yml'
-      send_data report.render, :filename => "produccion_diaria.pdf", :type => "application/pdf"
+    #  report = EasyReport::Report.new @data, 'daily_production.yml'
+    #  send_data report.render, :filename => "produccion_diaria.pdf", :type => "application/pdf"
+      render :xlsx => "daily_production", :filename => "daily_production.xlsx"
     end
   end
 
