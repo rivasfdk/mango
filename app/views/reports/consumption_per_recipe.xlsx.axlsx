@@ -1,0 +1,40 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: @data['title']) do |sheet|
+#Styles
+bold_center = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :center}, wrap_text: true)
+bold = wb.styles.add_style(:b => true)
+center = wb.styles.add_style(:alignment=>{:horizontal => :center})
+right_bold = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :right})
+fmt_num = wb.styles.add_style(:num_fmt => 2)
+fmt_num_bold = wb.styles.add_style(:b => true, :num_fmt => 2)
+#Image
+sheet.add_image(:image_src => @data['company_logo']) do |image|
+    image.width = 70
+    image.height = 70
+    image.start_at 0,0
+  end
+#Rows
+sheet.add_row [nil, @data['company_name']], :widths=>[nil, :ignore], :style => bold
+sheet.add_row [nil, @data['company_rif']], :widths=>[nil, :ignore], :style => bold
+sheet.add_row [nil, @data['company_address']], :widths=>[nil, :ignore], :style => bold
+sheet.add_row [nil, nil, "Desde: #{@data['since']}"], :widths=>[nil,nil,:ignore], :style => [nil, nil, bold]
+sheet.add_row [nil, nil, "Hasta: #{@data['until']}"], :widths=>[nil,nil,:ignore], :style => [nil, nil, bold]
+sheet.add_row [nil, nil, "Receta: #{@data['recipe']}"], :widths=>[nil,nil,:ignore], :style => [nil, nil, bold]
+sheet.add_row 
+sheet.add_row [nil, nil, @data['title']], :widths=>[nil, nil, :ignore], :style => bold_center
+sheet.add_row 
+sheet.add_row ["Codigo", "Ingrediente", "Cant. Est.(Kg)", "Cant. Real(Kg)", "Var(Kg)", "Var(%)"], :style => bold_center
+@data['results'].each do |result|
+  sheet.add_row [result['ingredient_code'], result['ingredient_name'], result['std_kg'], result['real_kg'],
+  result['var_kg'], result['var_perc']], :style => [center, nil, fmt_num, fmt_num, fmt_num, fmt_num],
+  :widths=>[:ignore, :auto, :ignore, :ignore, :ignore, :ignore]
+end
+results_count = @data['results'].count
+sheet.add_row [
+  nil, "Total:",
+  "=SUM(C8:C#{results_count + 10})",
+  "=SUM(D8:D#{results_count + 10})",
+  "=SUM(E8:E#{results_count + 10})",
+  "=E#{results_count + 11}/C#{results_count + 11}*100"
+  ], :style => [nil, right_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold]
+end
