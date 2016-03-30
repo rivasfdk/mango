@@ -141,23 +141,27 @@ class ReportsController < ApplicationController
   end
 
   def consumption_per_recipe
-    data = EasyModel.consumption_per_recipe(params[:report])
-    if data.nil?
+    @data = EasyModel.consumption_per_recipe(params[:report])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      include_real = params[:report][:include_real] == "1"
-      ingredient_inclusion = params[:report][:ingredient_inclusion] == "1"
-      if include_real
-        template_name = 'consumption_per_recipe_real.yml'
-      elsif ingredient_inclusion
-        template_name = 'consumption_per_recipe_with_inclusion.yml'
+      if params[:report][:format] == "pdf"
+        include_real = params[:report][:include_real] == "1"
+        ingredient_inclusion = params[:report][:ingredient_inclusion] == "1"
+        if include_real
+          template_name = 'consumption_per_recipe_real.yml'
+        elsif ingredient_inclusion
+          template_name = 'consumption_per_recipe_with_inclusion.yml'
+        else
+          template_name = 'consumption_per_recipe.yml'
+        end
+        report = EasyReport::Report.new @data, template_name
+        send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
       else
-        template_name = 'consumption_per_recipe.yml'
+        render :xlsx => "consumption_per_recipe", :filename => "#{@data['title']}.xlsx"
       end
-      report = EasyReport::Report.new data, template_name
-      send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
     end
   end
 
@@ -179,16 +183,20 @@ class ReportsController < ApplicationController
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
     ingredient_id = params[:report]['ingredient_id']
-    data = EasyModel.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_id)
-    if data.nil?
+    @data = EasyModel.consumption_per_ingredient_per_orders(start_date, end_date, ingredient_id)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
+      if params[:report][:format] == "pdf"
       template_name = params[:report][:include_real] == "1" ?
         'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
-      report = EasyReport::Report.new data, template_name
+      report = EasyReport::Report.new @data, template_name
       send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
+      else
+        render :xlsx => "consumption_per_ingredient_per_orders", :filename => "#{@data['title']}.xlsx"
+      end
     end
   end
 
@@ -210,16 +218,20 @@ class ReportsController < ApplicationController
   def consumption_per_client
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.consumption_per_client(start_date, end_date, params[:report][:client_id])
-    if data.nil?
+    @data = EasyModel.consumption_per_client(start_date, end_date, params[:report][:client_id])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_client_real.yml' : 'consumption_per_client.yml'
-      report = EasyReport::Report.new data, template_name
-      send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
+      if params[:report][:format] == "pdf"
+        template_name = params[:report][:include_real] == "1" ?
+          'consumption_per_client_real.yml' : 'consumption_per_client.yml'
+        report = EasyReport::Report.new @data, template_name
+        send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"      
+      else
+        render :xlsx => "consumption_per_client", :filename => "excel.xlsx"
+      end
     end
   end
 
@@ -360,6 +372,9 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
+
+      
+
     end
   end
 
