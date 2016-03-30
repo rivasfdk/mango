@@ -99,6 +99,9 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     end
+
+    format = params[:report][:format]
+    render format.to_sym => "order_details", :filename => "#{@data['title']}.#{format}"
   end
 
   def order_details_real
