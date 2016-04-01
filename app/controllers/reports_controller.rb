@@ -99,9 +99,6 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     end
-
-    format = params[:report][:format]
-    render format.to_sym => "order_details", :filename => "#{@data['title']}.#{format}"
   end
 
   def order_details_real
@@ -169,16 +166,20 @@ class ReportsController < ApplicationController
   end
 
   def consumption_per_selected_ingredients
-    data = EasyModel.consumption_per_selected_ingredients(params[:report], session[:user_id])
-    if data.nil?
+    @data = EasyModel.consumption_per_selected_ingredients(params[:report], session[:user_id])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_ingredients_real.yml' : 'consumption_per_ingredients.yml'
-      report = EasyReport::Report.new data, template_name
-      send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
+      if params[:report][:format] == "pdf"
+        template_name = params[:report][:include_real] == "1" ?
+          'consumption_per_ingredients_real.yml' : 'consumption_per_ingredients.yml'
+        report = EasyReport::Report.new @data, template_name
+        send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
+      else
+        render :xlsx => "consumption_per_selected_ingredients", :filename => "#{@data['title']}.xlsx"
+      end
     end
   end
 
@@ -231,9 +232,9 @@ class ReportsController < ApplicationController
         template_name = params[:report][:include_real] == "1" ?
           'consumption_per_client_real.yml' : 'consumption_per_client.yml'
         report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"      
+        send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
       else
-        render :xlsx => "consumption_per_client", :filename => "excel.xlsx"
+        render :xlsx => "consumption_per_client", :filename => "#{@data['title']}.xlsx"
       end
     end
   end
@@ -375,10 +376,9 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
-
-      
-
     end
+    format = params[:report][:format]
+    render format.to_sym => "tickets_transactions", :filename => "#{@data['title']}.#{format}"
   end
 
   def alarms
