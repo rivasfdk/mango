@@ -1,0 +1,40 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: @data['title']) do |sheet|
+#Styles
+bold_center = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :center}, wrap_text: true)
+bold = wb.styles.add_style(:b => true)
+center = wb.styles.add_style(:alignment=>{:horizontal => :center})
+right_bold = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :right})
+fmt_num = wb.styles.add_style(:num_fmt => 2)
+fmt_num_bold = wb.styles.add_style(:b => true, :num_fmt => 2)
+#Image
+sheet.add_image(:image_src => @data['company_logo']) do |image|
+  image.width = 70
+  image.height = 70
+  image.start_at 0,0
+end
+#Rows
+sheet.add_row [nil, @data['company_name'], nil, "Desde: #{@data['since']}"],
+ :widths=>[nil, :ignore, nil, :ignore], :style => bold
+sheet.add_row [nil, @data['company_rif'], nil, "Hasta: #{@data['until']}"],
+ :widths=>[nil, :ignore, nil, :ignore], :style => bold
+sheet.add_row [nil, @data['company_address'], nil, "Cliente: #{@data['client']}"],
+ :widths=>[nil, :ignore, nil, :ignore], :style => bold
+sheet.add_row
+sheet.add_row [nil, nil, @data['title']], :widths=>[nil, nil, :ignore], :style => bold_center
+sheet.add_row
+sheet.add_row ["Codigo", "Ingrediente", "Total Teorico(Kg)", "Total Fisico(Kg)", "Merma(Kg)", "Merma(%)"], :style => bold_center
+@data['results'].each do |result|
+  sheet.add_row [result['ingredient_code'], result['ingredient_name'], result['real_kg'], result['real_real_kg'],
+  result['loss'], result['loss_perc']], :style => [center, nil, fmt_num, fmt_num, fmt_num, fmt_num],
+  :widths=>[:ignore, :auto, :ignore, :ignore, :ignore, :ignore]
+end
+results_count = @data['results'].count
+sheet.add_row [
+  nil, "Total:",
+  "=SUM(C8:C#{results_count + 7})",
+  "=SUM(D8:D#{results_count + 7})",
+  "=SUM(E8:E#{results_count + 7})",
+  "=E#{results_count + 8}/C#{results_count + 8}*100"
+  ], :style => [nil, right_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold]
+end
