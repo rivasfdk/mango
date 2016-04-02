@@ -160,8 +160,13 @@ class ReportsController < ApplicationController
         report = EasyReport::Report.new @data, template_name
         send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
       else
-        template_name = include_real ? 
-          'consumption_per_recipe_real.xlsx.axlsx' : 'consumption_per_recipe.xlsx.axlsx'
+        if include_real
+          template_name ='consumption_per_recipe_real'
+        elsif ingredient_inclusion
+          template_name ='consumption_per_recipe_with_inclusion'
+        else
+          template_name ='consumption_per_recipe'
+        end
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end
@@ -181,8 +186,8 @@ class ReportsController < ApplicationController
         send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
       else
         template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_selected_ingredients_real.xlsx.axlsx' :
-          'consumption_per_selected_ingredients.xlsx.axlsx'
+          'consumption_per_selected_ingredients_real' :
+          'consumption_per_selected_ingredients'
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end
@@ -205,8 +210,8 @@ class ReportsController < ApplicationController
       send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
       else
         template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_ingredient_per_orders_real.xlsx.axlsx' :
-          'consumption_per_ingredient_per_orders.xlsx.axlsx'
+          'consumption_per_ingredient_per_orders_real' :
+          'consumption_per_ingredient_per_orders'
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end
@@ -243,7 +248,7 @@ class ReportsController < ApplicationController
         send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
       else
         template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_client_real.xlsx.axlsx' : 'consumption_per_client.xlsx.axlsx'
+          'consumption_per_client_real' : 'consumption_per_client'
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end

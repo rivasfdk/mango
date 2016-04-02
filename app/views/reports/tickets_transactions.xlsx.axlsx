@@ -1,45 +1,45 @@
 wb = xlsx_package.workbook
 wb.add_worksheet() do |sheet|
-#Styles
-bold_center = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :center}, wrap_text: true)
-bold = wb.styles.add_style(:b => true)
-center = wb.styles.add_style(:alignment=>{:horizontal => :center})
-right_bold = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :right})
-fmt_num = wb.styles.add_style(:num_fmt => 2)
-fmt_num_bold = wb.styles.add_style(:b => true, :num_fmt => 2)
-bottom_border = wb.styles.add_style(:border => {:style => :thick, :color => 'FF000000', :edges => [:bottom]  })
-#Image
-sheet.add_image(:image_src => @data['company_logo']) do |image|
-  image.width = 70
-  image.height = 70
-  image.start_at 0,0
-end
-#Rows
-sheet.add_row [nil, @data['company_name'], nil, nil, nil, nil, nil, "Desde: #{@data[:since]}"],
- :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
-sheet.add_row [nil, @data['company_rif'], nil, nil, nil, nil, nil, "Hasta: #{@data[:until]}"],
- :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
-sheet.add_row [nil, @data['company_address']], :widths=>[nil, :ignore], :style => bold
-sheet.add_row
-sheet.add_row [nil, nil, nil, nil, @data['title']], :widths=>[nil, nil, nil, nil, :ignore], :style => bold_center
-sheet.add_row
-sheet.add_row ["N° Ticket", "Fecha", "Chofer", "Documento", "Peso Proveedor", "Peso Recibido",
-  "Dif", "Rubro", "Lote", "Origen/Destino"], :style => bold_center
-@data[:transactions].each do |result|
-  sheet.add_row [
-    result[:ticket_number], result[:outgoin_date], result[:driver_name], result[:document],
-    result[:provider_weight], result[:net_weight], result[:diff], result[:content_name],
-    result[:lot_code], result[:client_name]
-  ], :style => [center, center, nil, center, fmt_num, fmt_num, center, nil, center, nil], :height => 25.0
-  sheet.add_row [
-    "Placa: #{result[:license_plate]}", "S/G: #{result[:sack]}", "Direccion: #{result[:address]}",
-    nil, nil, nil, nil, nil, nil, nil,], :widths=>[:ignore, :ignore, :ignore], :style => bottom_border
-end
+  #Styles
+  bold_center = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :center}, wrap_text: true)
+  bold = wb.styles.add_style(:b => true)
+  center = wb.styles.add_style(:alignment=>{:horizontal => :center})
+  right_bold = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :right})
+  fmt_num = wb.styles.add_style(:num_fmt => 2)
+  fmt_num_bold = wb.styles.add_style(:b => true, :num_fmt => 2)
+  bottom_border = wb.styles.add_style(:border => {:style => :thick, :color => 'FF000000', :edges => [:bottom]  })
+  #Image
+  sheet.add_image(:image_src => @data['company_logo']) do |image|
+    image.width = 70
+    image.height = 70
+    image.start_at 0,0
+  end
+  #Rows
+  sheet.add_row [nil, @data['company_name'], nil, nil, nil, nil, nil, "Desde: #{@data[:since]}"],
+   :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
+  sheet.add_row [nil, @data['company_rif'], nil, nil, nil, nil, nil, "Hasta: #{@data[:until]}"],
+   :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
+  sheet.add_row [nil, @data['company_address']], :widths=>[nil, :ignore], :style => bold
+  sheet.add_row
+  sheet.add_row [nil, nil, nil, nil, @data['title']], :widths=>[nil, nil, nil, nil, :ignore], :style => bold_center
+  sheet.add_row
+  sheet.add_row ["N° Ticket", "Fecha", "Chofer", "Documento", "Peso Proveedor", "Peso Recibido",
+    "Dif", "Rubro", "Lote", "Origen/Destino"], :style => bold_center
+  @data[:transactions].each do |result|
+    sheet.add_row [
+      result[:ticket_number], result[:outgoin_date], result[:driver_name], result[:document],
+      result[:provider_weight], result[:net_weight], result[:diff], result[:content_name],
+      result[:lot_code], result[:client_name]
+    ], :style => [center, center, nil, center, fmt_num, fmt_num, center, nil, center, nil], :height => 25.0
+    sheet.add_row [
+      "Placa: #{result[:license_plate]}", "S/G: #{result[:sack]}", "Direccion: #{result[:address]}",
+      nil, nil, nil, nil, nil, nil, nil,], :widths=>[:ignore, :ignore, :ignore], :style => bottom_border
+  end
 
-results_count = @data[:transactions].count * 2
-sheet.add_row [
-  nil, nil, nil, nil, "Total:",
-  "=SUM(F8:F#{results_count + 7})"
-  ], :style => [nil, nil, nil, nil, right_bold, fmt_num_bold, nil]
+  results_count = @data[:transactions].count * 2
+  sheet.add_row [
+    nil, nil, nil, nil, "Total:",
+    "=SUM(F8:F#{results_count + 7})"
+    ], :style => [nil, nil, nil, nil, right_bold, fmt_num_bold, nil]
 
 end

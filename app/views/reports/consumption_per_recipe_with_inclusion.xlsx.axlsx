@@ -23,11 +23,13 @@ wb.add_worksheet(name: @data['title']) do |sheet|
   sheet.add_row
   sheet.add_row [nil, nil, @data['title']], :widths=>[nil, nil, :ignore], :style => bold_center
   sheet.add_row
-  sheet.add_row ["Codigo", "Ingrediente", "Cant. Est.(Kg)", "Cant. Real(Kg)", "Var(Kg)", "Var(%)"], :style => bold_center
+  sheet.add_row ["Codigo", "Ingrediente", "Cant. Est.(Kg)", "Cant. Real(Kg)", "Var(Kg)", "Var(%)", "Inc Est.(%)", "Inc real(%)"],
+    :style => bold_center
   @data['results'].each do |result|
     sheet.add_row [result['ingredient_code'], result['ingredient_name'], result['std_kg'], result['real_kg'],
-    result['var_kg'], result['var_perc']], :style => [center, nil, fmt_num, fmt_num, fmt_num, fmt_num],
-    :widths=>[:ignore, :auto, :ignore, :ignore, :ignore, :ignore]
+    result['var_kg'], result['var_perc'], result['std_incl'], result['real_incl']],
+    :style => [center, nil, fmt_num, fmt_num, fmt_num, fmt_num, fmt_num, fmt_num],
+    :widths=>[:ignore, :auto, :ignore, :ignore, :ignore, :ignore, :ignore, :ignore]
   end
   results_count = @data['results'].count
   sheet.add_row [
@@ -35,6 +37,8 @@ wb.add_worksheet(name: @data['title']) do |sheet|
     "=SUM(C8:C#{results_count + 7})",
     "=SUM(D8:D#{results_count + 7})",
     "=SUM(E8:E#{results_count + 7})",
-    "=E#{results_count + 8}/C#{results_count + 8}*100"
-    ], :style => [nil, right_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold]
+    "=E#{results_count + 8}/C#{results_count + 8}*100",
+    "=SUM(G8:G#{results_count + 7})",
+    "=SUM(H8:H#{results_count + 7})"
+    ], :style => [nil, right_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold]
 end
