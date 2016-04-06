@@ -27,7 +27,7 @@ wb.add_worksheet() do |sheet|
     "Dif", "Rubro", "Lote", "Origen/Destino"], :style => bold_center
   @data[:transactions].each do |result|
     sheet.add_row [
-      result[:ticket_number], result[:outgoin_date], result[:driver_name], result[:document],
+      result[:ticket_number], result[:outgoing_date].strftime("%d/%m/%Y %H:%M:%S"), result[:driver_name], result[:document],
       result[:provider_weight], result[:net_weight], result[:diff], result[:content_name],
       result[:lot_code], result[:client_name]
     ], :style => [center, center, nil, center, fmt_num, fmt_num, center, nil, center, nil], :height => 25.0
