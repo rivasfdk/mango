@@ -42,12 +42,8 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      if params[:report][:format] == "pdf"
-        report = EasyReport::Report.new @data, 'daily_production.yml'
-        send_data report.render, :filename => "#{@data['title']}.pdf", :type => "application/pdf"
-      else
-        render :xlsx => "daily_production", :filename => "#{@data['title']}.xlsx"
-      end
+      report = EasyReport::Report.new @data, 'daily_production.yml'
+      send_data report.render, :filename => "#{@data['title']}.pdf", :type => "application/pdf"
     end
   end
 
@@ -391,9 +387,10 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
+    else
+      format = params[:report][:format]
+      render format.to_sym => "tickets_transactions", :filename => "#{@data['title']}.#{format}"
     end
-    format = params[:report][:format]
-    render format.to_sym => "tickets_transactions", :filename => "#{@data['title']}.#{format}"
   end
 
   def alarms
