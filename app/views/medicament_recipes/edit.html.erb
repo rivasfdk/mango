@@ -1,6 +1,6 @@
 <% title "Editar receta de medicamentos" %>
 <%= form_for :medicament_recipe, :url=>medicament_recipe_path(@medicament_recipe), :html=>{:method=>:put, :id=>'medicament_recipe_edit_form'} do |f| %>
-  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <%= render :partial=>'form', :locals =>{:f => f, :action => 'edit'} %>
 <% end %>
 <h5>Ingredientes</h5>
 <% unless @medicament_recipe.is_associated? %>
