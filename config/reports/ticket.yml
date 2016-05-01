@@ -210,7 +210,7 @@ report:
         width: 25
     23:
       text:
-        field: diff_label
+        field: dif_label
         align: right
         width: 95
         breakline: 0
@@ -218,7 +218,7 @@ report:
           font_weight: B
     24:
       text:
-        field: diff
+        field: dif
         align: right
         width: 20
         

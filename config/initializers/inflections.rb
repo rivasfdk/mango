@@ -46,7 +46,8 @@ ActiveSupport::Inflector.inflections do |inflect|
     ['product_lot_parameter_type', 'products_lots_parameters_types'],
     ['product_parameter_type_range', 'products_parameters_types_ranges'],
     ['ticket_number', 'tickets_numbers'],
-    ['ticket_type', 'tickets_types']
+    ['ticket_type', 'tickets_types'],
+    ['address', 'addresses']
   ].each { |i| inflect.irregular i.first, i.second }
 
 end
