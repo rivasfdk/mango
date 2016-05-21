@@ -43,7 +43,7 @@ class BatchesController < ApplicationController
   def destroy
     @batch = Batch.find params[:id]
     @batch.eliminate
-    if @batch.errors.size.zero?
+    if @batch.errors.empty?
       flash[:notice] = 'Batch eliminado con éxito'
     else
       logger.error("Error eliminando batch: #{@batch.errors.inspect}")
@@ -62,9 +62,9 @@ class BatchesController < ApplicationController
   private
 
   def fill
-    @orders = Order.find :all, :conditions => ['completed = ?', false]
-    @users = User.find :all, :order => 'name ASC'
-    @schedules = Schedule.find :all, :order => 'name ASC'
+    @orders = Order.where(['completed = ?', false])
+    @users = User.order('name ASC')
+    @schedules = Schedule.order('name ASC')
     @hoppers = Hopper.actives_to_select
     @user = User.find session[:user_id]
   end

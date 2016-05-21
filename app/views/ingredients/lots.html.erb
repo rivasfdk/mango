@@ -1,6 +1,6 @@
 <% title "Lotes de #{@ingredient.name}" %>
 <% i = 0 %>
-<% if @lots.length > 0 %>
+<% if @lots.any? %>
 <% if @transactions_enabled %>
   <% stock_class = @ingredient.stock_below_minimum ? "stock_minimum" : "stock_ok" %>
   <p>Existencia total: <span class="<%= stock_class %>"><%= @stock %></span> Kg. <%= "(Mínima #{@ingredient.minimum_stock} Kg.)"%></p><br />

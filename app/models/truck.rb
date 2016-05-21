@@ -1,4 +1,6 @@
 class Truck < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :carrier
   has_many :tickets
 

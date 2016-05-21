@@ -33,7 +33,7 @@ class TransactionTypesController < ApplicationController
   def destroy
     @transaction_type = TransactionType.find params[:id]
     @transaction_type.eliminate
-    if @transaction_type.errors.size.zero?
+    if @transaction_type.errors.empty?
       flash[:notice] = "Tipo de transacción eliminado con éxito"
     else
       logger.error("Error eliminando tipo de transacción: #{@transaction_type.errors.inspect}")

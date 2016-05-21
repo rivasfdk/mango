@@ -1,4 +1,6 @@
 class Role < ActiveRecord::Base
+  attr_protected :id
+
   has_many :permission_role
   has_many :permissions, :through => :permission_role
   has_one :user

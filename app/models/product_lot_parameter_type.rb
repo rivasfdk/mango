@@ -1,4 +1,6 @@
 class ProductLotParameterType < ActiveRecord::Base
+  attr_protected :id
+
   has_many :product_lot_parameters
   has_many :product_parameter_type_ranges
 

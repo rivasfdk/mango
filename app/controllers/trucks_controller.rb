@@ -63,7 +63,7 @@ class TrucksController < ApplicationController
   def destroy
     @truck = Truck.find params[:id]
     @truck.eliminate
-    if @truck.errors.size.zero?
+    if @truck.errors.empty?
       flash[:notice] = "Camión eliminado con éxito"
     else
       logger.error("Error eliminando camión: #{@truck.errors.inspect}")

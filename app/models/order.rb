@@ -1,6 +1,8 @@
 include MangoModule
 
 class Order < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :recipe
   belongs_to :medicament_recipe
   belongs_to :parameter_list
@@ -75,30 +77,85 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def validate
+    hopper_ingredients_ids = HopperLot
+      .includes(:lot, :hopper)
+      .where(hoppers_lots: {active: true}, hoppers: {main: true})
+      .pluck("lots.ingredient_id")
+
+    recipe_ingredients = IngredientRecipe
+      .where(recipe_id: self.recipe_id)
+      .pluck(:ingredient_id, :amount)
+      .inject({}) do |hash, ir|
+        hash[ir[0]] = ir[1]
+        hash
+      end
+    recipe_ingredients.merge!(IngredientMedicamentRecipe
+      .where(medicament_recipe_id: self.medicament_recipe_id)
+      .pluck(:ingredient_id, :amount)
+      .inject(recipe_ingredients) do |hash, ir|
+        unless recipe_ingredients.has_key? ir[0]
+          hash[ir[0]] = ir[1]
+        end
+        hash
+      end ) if self.medicament_recipe_id
+
+    unavailable_ingredients_ids = recipe_ingredients.keys - hopper_ingredients_ids
+
+    valid = unavailable_ingredients_ids.empty?
+
+    missing_ingredients_names = Ingredient.where(id: unavailable_ingredients_ids)
+      .pluck(:name)
+
+    scale_amounts = []
+    if valid
+      scale_amounts = Scale.where(not_weighed: false).map do |scale|
+        hopper_amounts = HopperLot
+          .includes(:lot, :hopper)
+          .where(hoppers_lots: {active: true}, hoppers: {main: true, scale_id: scale.id}, lots: {ingredient_id: recipe_ingredients.keys})
+          .pluck('hoppers.number', 'lots.ingredient_id')
+          .map { |hopper| {number: hopper[0], amount: recipe_ingredients[hopper[1]]} }
+        {scale_id: scale.id, hoppers: hopper_amounts}
+      end
+    end
+
+    parameters = []
+    parameters = self.parameter_list.parameters.map { |parameter|
+      {type: parameter.parameter_type_id, value: parameter.value}
+    } if self.parameter_list
+
+    {
+      valid: valid,
+      missing_ingredient_names: missing_ingredients_names,
+      scale_amounts: scale_amounts,
+      parameters: parameters
+    }
+  end
+
   def repair(user_id, params)
     n_batch = Integer(params[:n_batch]) rescue 0
     hopper_ingredients = HopperLot
       .joins(:lot, :hopper)
       .where(hoppers_lots: {active: true}, hoppers: {main: true})
-      .pluck_all("hoppers_lots.id", "lots.ingredient_id")
+      .pluck("hoppers_lots.id", "lots.ingredient_id")
       .inject({}) do |hash, hl|
-        hash[hl["ingredient_id"]] = hl["id"]
+        hash[hl[1]] = hl[0]
         hash
       end
 
     recipe_ingredients = IngredientRecipe
       .where(recipe_id: self.recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject({}) do |hash, ir|
-        hash[ir["ingredient_id"]] = ir["amount"]
+        hash[ir[0]] = ir[1]
         hash
       end
     recipe_ingredients.merge!(IngredientMedicamentRecipe
       .where(medicament_recipe_id: self.medicament_recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject(recipe_ingredients) do |hash, ir|
-        unless recipe_ingredients.has_key? ir["ingredient_id"]
-          hash[ir["ingredient_id"]] = ir["amount"]
+        unless recipe_ingredients.has_key? ir[0]
+          hash[ir[0]] = ir[1]
         end
         hash
       end ) unless self.medicament_recipe.nil?
@@ -158,9 +215,9 @@ class Order < ActiveRecord::Base
 
       batches_ingredients = self.batch
         .joins(batch_hopper_lot: {hopper_lot: {lot: {}}})
-        .pluck_all("batches.id", "lots.ingredient_id")
+        .pluck("batches.id", "lots.ingredient_id")
         .inject(Hash.new {|hash, key| hash[key] = []}) do |hash, bi|
-          hash[bi["id"]] << bi["ingredient_id"]
+          hash[bi[0]] << bi[1]
           hash
         end
 
@@ -336,7 +393,7 @@ class Order < ActiveRecord::Base
     # Add some shitty error handling
     if errors.empty?
       now = Time.now
-      order = Order.find_by_code params[:order_code]
+      order = Order.where(code: params[:order_code]).first
       batch = order.batch
         .find_or_create_by_number number: params[:batch_number],
                                   schedule_id: Schedule.get_current_schedule_id(now),
@@ -379,22 +436,22 @@ class Order < ActiveRecord::Base
   def self.generate_not_weighed_consumptions(params, user_id)
     errors = []
     now = Time.now
-    order = Order.find_by_code(params[:order_code])
+    order = Order.where(code: params[:order_code]).first
 
     amounts = IngredientRecipe
       .where(recipe_id: order.recipe_id)
-      .pluck_all(:ingredient_id, :amount)
+      .pluck(:ingredient_id, :amount)
       .inject({}) do |hash, item|
-        hash[item["ingredient_id"]] = item["amount"]
+        hash[item[0]] = item[1]
         hash
       end
 
     unless order.medicament_recipe_id.nil?
       amounts.merge!(IngredientMedicamentRecipe
         .where(medicament_recipe_id: order.medicament_recipe_id)
-        .pluck_all(:ingredient_id, :amount)
+        .pluck(:ingredient_id, :amount)
         .inject({}) do |hash, item|
-          hash[item["ingredient_id"]] = item["amount"]
+          hash[item[0]] = item[1]
           hash
         end )
     end
@@ -407,9 +464,9 @@ class Order < ActiveRecord::Base
               scales: {not_weighed: true},
               ingredients: {id: amounts.keys}})
       .order('hoppers.number ASC')
-      .pluck_all("hoppers_lots.id", "ingredient_id")
+      .pluck("hoppers_lots.id", "ingredient_id")
       .inject({}) do |hash, item|
-        hash[item["id"]] = amounts[item["ingredient_id"]]
+        hash[item[0]] = amounts[item[1]]
         hash
       end
 
@@ -505,5 +562,15 @@ class Order < ActiveRecord::Base
     orders = orders.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
     orders = orders.order('orders.created_at DESC')
     orders.paginate page: params[:page], per_page: params[:per_page]
+  end
+
+  def self.get_open
+    orders = Order.includes(:recipe, :client)
+      .where(completed: false)
+      .pluck('orders.code AS order_code', 'clients.name AS client_name', 'recipes.name AS recipe_name',
+        'recipes.code AS recipe_code', 'orders.prog_batches')
+      .map do |order|
+        {code: order[0], client_name: order[1], recipe_name: order[2], recipe_code: order[3], prog_batches: order[4]}
+      end
   end
 end

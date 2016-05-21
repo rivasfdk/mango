@@ -38,7 +38,7 @@ class ProductsController < ApplicationController
   def destroy
     @product = Product.find params[:id]
     @product.eliminate
-    if @product.errors.size.zero?
+    if @product.errors.empty?
       flash[:notice] = "Producto terminado eliminado con éxito"
     else
       logger.error("Error eliminando producto: #{@product.errors.inspect}")

@@ -4,11 +4,11 @@ class CarriersController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @carriers = Carrier.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC', :conditions => {:frequent => true}
+        @carriers = Carrier.where(frecuent: true).paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
         render :html => @carriers
       end
       format.json do
-        @carriers = Carrier.find :all, :conditions => {:frequent => true}
+        @carriers = Carrier.where({:frequent => true})
         render :json => @carriers
       end
     end
@@ -54,7 +54,7 @@ class CarriersController < ApplicationController
   def destroy
     @carrier = Carrier.find params[:id]
     @carrier.eliminate
-    if @carrier.errors.size.zero?
+    if @carrier.errors.empty?
       flash[:notice] = "Empresa de transporte eliminada con éxito"
     else
       logger.error("Error eliminando empresa de transporte: #{@carrier.errors.inspect}")

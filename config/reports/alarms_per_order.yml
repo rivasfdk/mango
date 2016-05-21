@@ -2,8 +2,8 @@ report:
   settings:
     page:
       size: Letter
-      orientation: P
-      margins: 20
+      orientation: L
+      margins: 10
     style:
       font_family: 'Helvetica'
       font_size: 10
@@ -50,7 +50,7 @@ report:
         field: title
         align: center
         style:
-          font_size: 12
+          font_size: 10
           font_weight: B
     2:
       table:
@@ -70,7 +70,7 @@ report:
             description:
               label: Descripcion
               align: left
-              width: 140
+              width: 220
     3:
       breakline:
 

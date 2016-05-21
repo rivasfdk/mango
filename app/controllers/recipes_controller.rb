@@ -82,7 +82,7 @@ class RecipesController < ApplicationController
     @recipe = Recipe.find params[:id]
     @ingredients = Ingredient.actives
     @recipe.eliminate
-    if @recipe.errors.size.zero?
+    if @recipe.errors.empty?
       flash[:notice] = "Receta eliminada con éxito"
     else
       logger.error("Error eliminando receta: #{@recipe.errors.inspect}")
@@ -101,7 +101,7 @@ class RecipesController < ApplicationController
   def deactivate
     @recipe = Recipe.find params[:id]
     @recipe.deactivate
-    if @recipe.errors.size.zero?
+    if @recipe.errors.empty?
       flash[:notice] = "Receta desactivada con éxito"
     else
       logger.error("Error desactivando receta: #{@recipe.errors.inspect}")

@@ -69,7 +69,7 @@ class RolesController < ApplicationController
   def destroy
     @role = Role.find params[:id]
     @role.eliminate
-    if @role.errors.size.zero?
+    if @role.errors.empty?
       flash[:notice] = "Rol eliminado con éxito"
     else
       logger.error("Error eliminando rol: #{@role.errors.inspect}")

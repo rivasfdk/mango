@@ -2,7 +2,7 @@
 
 class MedicamentRecipesController < ApplicationController
   def index
-    @medicament_recipes = MedicamentRecipe.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => ['active = ?', true]
+    @medicament_recipes = MedicamentRecipe.where(active: true).paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def show
@@ -11,7 +11,7 @@ class MedicamentRecipesController < ApplicationController
 
   def edit
     @medicament_recipe = MedicamentRecipe.find(params[:id], :include=>'ingredient_medicament_recipe', :order=>'id desc')
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.all
   end
 
   def create
@@ -38,9 +38,9 @@ class MedicamentRecipesController < ApplicationController
 
   def destroy
     @medicament_recipe = MedicamentRecipe.find params[:id]
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.all
     @medicament_recipe.eliminate
-    if @medicament_recipe.errors.size.zero?
+    if @medicament_recipe.errors.empty?
       flash[:notice] = "Receta de medicamento eliminada con éxito"
     else
       logger.error("Error eliminando receta: #{@medicament_recipe.errors.inspect}")

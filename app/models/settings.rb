@@ -1,4 +1,6 @@
 class Settings < ActiveRecord::Base
+  attr_protected :id
+
   validates :hopper_minimum_level, :presence => true,
             :numericality => true, :inclusion => 0..100
   validates :ticket_reception_diff, :ticket_dispatch_diff, :presence => true,

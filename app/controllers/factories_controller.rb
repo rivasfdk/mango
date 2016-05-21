@@ -48,7 +48,7 @@ class FactoriesController < ApplicationController
   def destroy
     @client = Client.find params[:id]
     @client.eliminate
-    if @client.errors.size.zero?
+    if @client.errors.empty?
       flash[:notice] = "Fábrica eliminada con éxito"
     else
       logger.error("Error eliminando fábrica: #{@client.errors.inspect}")

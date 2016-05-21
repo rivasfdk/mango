@@ -4,11 +4,11 @@ class DriversController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @drivers = Driver.paginate :page=>params[:page], :per_page=>session[:per_page], :conditions => {:frequent => true}, :order => 'name ASC'
+        @drivers = Driver.where(frequent: true).order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
         render :html => @drivers
       end
       format.json do
-        @drivers = Driver.find :all, :conditions => {:frequent => true}
+        @drivers = Driver.where({:frequent => true})
         render :json => @drivers
       end
     end
@@ -54,7 +54,7 @@ class DriversController < ApplicationController
   def destroy
     @driver = Driver.find params[:id]
     @driver.eliminate
-    if @driver.errors.size.zero?
+    if @driver.errors.empty?
       flash[:notice] = "Chofer eliminado con éxito"
     else
       logger.error("Error eliminando chofer: #{@driver.errors.inspect}")

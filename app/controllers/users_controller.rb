@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   def index
-    @users = User.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'name ASC'
+    @users = User.order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find params[:id]
     @user.eliminate
-    if @user.errors.size.zero?
+    if @user.errors.empty?
       flash[:notice] = "Usuario eliminado con éxito"
     else
       logger.error("Error eliminando usuario: #{@user.errors.inspect}")

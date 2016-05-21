@@ -3,9 +3,8 @@
 class TransactionsController < ApplicationController
   def index
     @transactions = Transaction.includes(:user, :transaction_type)
-                               .paginate page: params[:page],
-                                         per_page: session[:per_page],
-                                         order: ['id desc']
+      .paginate(page: params[:page], per_page: session[:per_page])
+      .order('id desc')
   end
 
   def new

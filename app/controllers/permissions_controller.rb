@@ -2,7 +2,7 @@
 
 class PermissionsController < ApplicationController
   def index
-    @permissions = Permission.paginate :page=>params[:page], :per_page=>session[:per_page], :order => 'module ASC, name ASC'
+    @permissions = Permission.order('module ASC, name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def new
@@ -40,7 +40,7 @@ class PermissionsController < ApplicationController
   def destroy
     @permission = Permission.find params[:id]
     @permission.eliminate
-    if @permission.errors.size.zero?
+    if @permission.errors.empty?
       flash[:notice] = "Permiso eliminado con éxito"
     else
       logger.error("Error eliminando permiso: #{@permission.errors.inspect}")

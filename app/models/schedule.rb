@@ -1,4 +1,6 @@
 class Schedule < ActiveRecord::Base
+  attr_protected :id
+
   has_many :batch
 
   validates_uniqueness_of :name

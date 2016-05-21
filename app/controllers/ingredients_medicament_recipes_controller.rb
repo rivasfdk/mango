@@ -1,15 +1,15 @@
 # encoding: UTF-8
 
 class IngredientsMedicamentRecipesController < ApplicationController
-def index
+  def index
     @medicament_recipe = Recipe.find(params[:medicament_recipe_id], :include=>'ingredient_medicament_recipe')
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.all
   end
 
   def create
     unless params[:ingredient_medicament_recipe][:code].blank?
       @medicament_recipe = MedicamentRecipe.find(params[:medicament_recipe_id], :include=>'ingredient_medicament_recipe')
-      ingredient = Ingredient.find_by_code(params[:ingredient_medicament_recipe][:code])
+      ingredient = Ingredient.where(code: params[:ingredient_medicament_recipe][:code]).first
 
       ingredient_medicament_recipe = IngredientMedicamentRecipe.new
       ingredient_medicament_recipe.ingredient = ingredient
@@ -35,7 +35,7 @@ def index
   def destroy
     @ingredient_medicament_recipe = IngredientMedicamentRecipe.find params[:id]
     @ingredient_medicament_recipe.eliminate
-    if @ingredient_medicament_recipe.errors.size.zero?
+    if @ingredient_medicament_recipe.errors.empty?
       flash[:notice] = "Ingrediente eliminado de la receta de medicamentos con éxito"
     else
       logger.error("Error eliminando ingrediente de la receta de medicamentos: #{@ingredient_medicament_recipe.errors.inspect}")

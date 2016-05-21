@@ -13,12 +13,21 @@ class Lot < ActiveRecord::Base
 
   after_create :update_hopper_factory_lot, if: :client_id
 
+  before_destroy :check_hopper_lots
+
   validates :code, presence: true,
                    uniqueness: true,
                    length: {within: 3..20}
   validates :ingredient, presence: true
   validates :density, numericality: {greater_than: 0}
   validate :factory
+
+  def check_hopper_lots
+    if self.hopper_lot.any?
+      errors[:base] << "tiene tolvas asociadas"
+      false
+    end
+  end
 
   def factory
     if self.client.present? and not self.client.factory

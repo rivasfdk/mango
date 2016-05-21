@@ -1,4 +1,6 @@
 class ParameterList < ActiveRecord::Base
+  attr_protected :id
+
   has_many :parameters, :dependent => :destroy
   has_many :orders
 

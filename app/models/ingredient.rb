@@ -1,4 +1,6 @@
 class Ingredient < ActiveRecord::Base
+  attr_protected :id
+
   has_many :ingredient_recipe
   has_many :ingredient_medicament_recipe
   has_many :lots

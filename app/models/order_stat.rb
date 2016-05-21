@@ -1,4 +1,6 @@
 class OrderStat < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :order
   belongs_to :order_stat_type
 

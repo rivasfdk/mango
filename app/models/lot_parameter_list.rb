@@ -1,4 +1,6 @@
 class LotParameterList < ActiveRecord::Base
+  attr_protected :id
+
   has_many :lot_parameters, :dependent => :destroy
   belongs_to :lot
 
@@ -24,7 +26,7 @@ class LotParameterList < ActiveRecord::Base
       .each do |lp|
         range = IngredientParameterTypeRange
           .where(lot_parameter_type_id: lp.lot_parameter_type_id,
-                 ingredient_id: self.lot.ingredient_id).first 
+                 ingredient_id: self.lot.ingredient_id).first
         parameters << {
           "name" => lp.lot_parameter_type.name,
           "value" => lp.lot_parameter_type.is_string ? lp.string_value : lp.value,

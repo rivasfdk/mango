@@ -54,7 +54,7 @@ class IngredientsController < ApplicationController
   def destroy
     @ingredient = Ingredient.find params[:id]
     @ingredient.eliminate
-    if @ingredient.errors.size.zero?
+    if @ingredient.errors.empty?
       flash[:notice] = "Materia prima eliminada con éxito"
     else
       logger.error("Error eliminando ingredient: #{@ingredient.errors.inspect}")
@@ -95,7 +95,7 @@ class IngredientsController < ApplicationController
   end
   
   def catalog
-    @ingredients = Ingredient.find :all
+    @ingredients = Ingredient.all
     respond_to do |format|
       format.js { render :layout=>false }
     end

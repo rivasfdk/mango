@@ -1,4 +1,6 @@
 class ParameterType < ActiveRecord::Base
+  attr_protected :id
+
   has_many :parameters
 
   validates_presence_of :name, :default_value

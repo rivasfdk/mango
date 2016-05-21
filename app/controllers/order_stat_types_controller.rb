@@ -40,7 +40,7 @@ class OrderStatTypesController < ApplicationController
   def destroy
     @order_stat_type = OrderStatType.find params[:id]
     @order_stat_type.eliminate
-    if @order_stat_type.errors.size.zero?
+    if @order_stat_type.errors.empty?
       flash[:notice] = "Tipo de estadística eliminada con éxito"
     else
       logger.error("Error eliminando tipo de order_stata: #{@order_stat_type.errors.inspect}")

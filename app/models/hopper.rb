@@ -1,4 +1,6 @@
 class Hopper < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :scale
   has_many :hopper_lot
   validates :number, :name, :scale, :capacity, presence: true
@@ -20,7 +22,7 @@ class Hopper < ActiveRecord::Base
   end
 
   def capacity_in_kg_by_lot(lot_id)
-    lot = Lot.find(lot_id)
+    lot = Lot.find_by id: lot_id
     unless lot.nil?
       (capacity.present? and lot.density.present?) ? capacity * lot.density : 0
     else
@@ -57,7 +59,7 @@ class Hopper < ActiveRecord::Base
       amount = params[:amount].to_f
       new_lot_id = params[:lot_id].to_i
       if current_lot.id == new_lot_id
-        logger.debug("lot can't be the same") 
+        logger.debug("lot can't be the same")
         false
       elsif amount < 0
         logger.debug("amount can't be less than or equal to 0")
@@ -125,7 +127,7 @@ class Hopper < ActiveRecord::Base
   def eliminate
     begin
       b = BatchHopperLot.includes(:hopper_lot).where({hoppers_lots: {hopper_id: self.id}})
-      if b.length > 0
+      if b.any?
         errors.add(:foreign_key, 'no se puede eliminar porque tiene registros asociados')
         return
       end

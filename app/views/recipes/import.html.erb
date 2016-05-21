@@ -1,7 +1,7 @@
 <% title "Importar recetas" %>
 <%= javascript_tag "$(function(){$('#data_progress').hide();});" %>
 <%= form_for :recipe, :url=>recipe_upload_path, :html=>{:multipart=>true, :id=>'recipe_upload_form'} do |f| %>
-  <% if not @recipe.nil? and @recipe.errors.length > 0 %>
+  <% if @recipe and @recipe.errors.any? %>
     <%= f.error_messages %><br/>
   <% end %>
   <label for="datefile">Por favor, seleccione el archivo de recetas que desea importar</label>: <br/><br/>

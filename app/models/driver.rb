@@ -1,4 +1,6 @@
 class Driver < ActiveRecord::Base
+  attr_protected :id
+
   has_many :tickets
 
   validates :name, :ci, presence: true

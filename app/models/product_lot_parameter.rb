@@ -1,4 +1,6 @@
 class ProductLotParameter < ActiveRecord::Base
+  attr_protected :id
+
   belongs_to :product_lot_parameter_list
   belongs_to :product_lot_parameter_type
 
