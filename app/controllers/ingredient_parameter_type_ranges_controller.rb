@@ -1,8 +1,7 @@
 class IngredientParameterTypeRangesController < ApplicationController
   def index
-    @ingredients = Ingredient.paginate :page=>params[:page],
-                                       :per_page=>session[:per_page],
-                                       :order => ['id desc']
+    @ingredients = Ingredient.order('id desc')
+      .paginate(:page=>params[:page], :per_page=>session[:per_page])
   end
 
   def show

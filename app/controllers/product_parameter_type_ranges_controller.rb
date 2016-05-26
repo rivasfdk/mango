@@ -1,8 +1,7 @@
 class ProductParameterTypeRangesController < ApplicationController
 def index
-    @products = Product.paginate :page=>params[:page],
-                                       :per_page=>session[:per_page],
-                                       :order => ['id desc']
+    @products = Product.order('id desc')
+      .paginate(:page=>params[:page], :per_page=>session[:per_page])
   end
 
   def show

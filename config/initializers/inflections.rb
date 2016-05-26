@@ -13,9 +13,7 @@
 #Inflector.inflections.clear
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.plural /([aeriout])([A-Z]|_|$)/, '\1s\2'
-  #inflect.plural /([rlnd])([A-Z]|_|$)/, '\1es\2'
   inflect.singular /([aeriout])s([A-Z]|_|$)/, '\1\2'
-  #inflect.singular /([rlnd])es([A-Z]|_|$)/, '\1\2'
 
   # Models with weird pluralized table names because of reasons
   [
@@ -32,7 +30,6 @@ ActiveSupport::Inflector.inflections do |inflect|
     ['last_imported_recipe', 'lasts_imported_recipes'],
     ['lot_parameter', 'lots_parameters'],
     ['lot_parameter_list', 'lots_parameters_lists'],
-    ['lot_parameter_type', 'lots_parameters_types'],
     ['medicament_recipe', 'medicaments_recipes'],
     ['order_area', 'orders_areas'],
     ['order_number', 'orders_numbers'],
@@ -43,14 +40,17 @@ ActiveSupport::Inflector.inflections do |inflect|
     ['product_lot', 'products_lots'],
     ['product_lot_parameter', 'products_lots_parameters'],
     ['product_lot_parameter_list', 'products_lots_parameters_lists'],
-    ['product_lot_parameter_type', 'products_lots_parameters_types'],
     ['product_parameter_type_range', 'products_parameters_types_ranges'],
     ['ticket_number', 'tickets_numbers'],
     ['ticket_type', 'tickets_types'],
-    ['address', 'addresses']
+    ['address', 'addresses'],
+    ['factory', 'factories'],
+    ['lot_parameter_type', 'lots_parameters_types'],
+    ['product_lot_parameter_type', 'products_lots_parameters_types'],
   ].each { |i| inflect.irregular i.first, i.second }
 
 end
+
 # extender la clase Inflector
 module Inflector
   def pluralize(word)
