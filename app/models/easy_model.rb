@@ -557,7 +557,7 @@ class EasyModel
   def self.stats(start_date, end_date)
     @orders = Order.includes({:order_stats => {}, :batch => {}, :recipe => {}})
       .where(['batches.start_date >= ? and batches.end_date <= ?', self.start_date_to_sql(start_date), self.end_date_to_sql(end_date)])
-      .order('batches.start_date ASC')#correccion
+      .order('batches.start_date ASC')#correccion numero 2
 
     data = self.initialize_data("Estadisticas de produccion")
     data['since'] = self.print_range_date(start_date)
