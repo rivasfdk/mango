@@ -5,6 +5,19 @@ class BatchesHopperLotController < ApplicationController
     if not params[:batch_hopper_lot][:amount].blank? or not params[:batch_hopper_lot][:hopper_lot_id].blank?
       hopper_lot = HopperLot.find(params[:batch_hopper_lot][:hopper_lot_id])
       batch = Batch.find(params[:batch_id])
+      hopper = Hopper.where(id: batch.hopper_id).first
+      order = Order.where(id: batch.order_id).first
+
+      if order.client.factory
+        hfl = HopperFactoryLot.where(hopper_lot_id: hopper_lot.id, client_id: order.client_id).first
+        if hfl.present? and hfl.lot_id.present?
+          hopper_lot = hopper.hopper_lot.new
+          hopper_lot.lot_id = hfl.lot_id
+          hopper_lot.active = false
+          hopper_lot.factory = true
+          hopper_lot.save(validate: false)
+        end
+      end
 
       b = BatchHopperLot.new params[:batch_hopper_lot]
       b.batch = batch
