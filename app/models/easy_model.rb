@@ -431,7 +431,7 @@ class EasyModel
   end
 
   def self.lot_transactions(start_date, end_date, lot_type, lot_code)
-    lot = lot_type == 1 ? Lot.where(code: lot_code).first : ProductLot.where(lot: lot_code).first
+    lot = lot_type == 1 ? Lot.where(code: lot_code).first : ProductLot.where(code: lot_code).first
     return nil if lot.nil?
 
     content = lot_type == 1 ? lot.ingredient : lot.product
