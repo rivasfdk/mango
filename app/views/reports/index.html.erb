@@ -273,7 +273,7 @@
         <% if @ingredient_inclusion_enabled %>
         <%= f.check_box :ingredient_inclusion, :checked => true %>&nbsp; <label for="group">Mostrar inclusión porcental de ingredientes</label><br/><br/>
         <% end %>
-        <% if is_mango_features_available("excel_reports")%>
+        <% if is_mango_feature_available("excel_reports")%>
         <%= render partial: 'pdf_xls', locals: {f: f} %>
         <% end %>
         <%= submit_tag 'Generar Reporte' %>
@@ -295,7 +295,7 @@
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
-        <% if is_mango_features_available("excel_reports")%>
+        <% if is_mango_feature_available("excel_reports")%>
         <%= render partial: 'pdf_xls', locals: {f: f} %>
         <% end %>
         <%= submit_tag 'Generar Reporte' %>
@@ -348,7 +348,7 @@
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
-        <% if is_mango_features_available("excel_reports")%>
+        <% if is_mango_feature_available("excel_reports")%>
         <%= render partial: 'pdf_xls', locals: {f: f} %>
         <% end %>
         <%= submit_tag 'Generar Reporte' %>
@@ -370,7 +370,7 @@
         <% if @real_production_enabled %>
         <%= f.check_box :include_real %>&nbsp; <label for="group">Mostrar consumos físicos</label><br/><br/>
         <% end %>
-        <% if is_mango_features_available("excel_reports")%>
+        <% if is_mango_feature_available("excel_reports")%>
         <%= render partial: 'pdf_xls', locals: {f: f} %>
         <% end %>
         <%= submit_tag 'Generar Reporte' %>
@@ -590,7 +590,7 @@
         </div>
         </div>
         </div>
-        <% if is_mango_features_available("excel_reports")%>
+        <% if is_mango_feature_available("excel_reports")%>
         <%= render partial: 'pdf_xls', locals: {f: f} %>
         <% end %>
         <%= submit_tag 'Generar Reporte' %>
