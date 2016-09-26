@@ -388,7 +388,7 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      format = params[:report][:format]
+      format = params[:report][:format] || 'pdf'
       render format.to_sym => "tickets_transactions", :filename => "#{@data['title']}.#{format}"
     end
   end

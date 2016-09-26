@@ -1716,7 +1716,12 @@ class EasyModel
 
     data['results'] = batch_hopper_lots.inject([]) do |results, bhl|
       stock = stocks[bhl[:ingredient_id]]
-      unless stock.nil?
+      unless stock.nil? || bhl[:total_real] == 0
+
+        Rails.logger.info "Stock: #{stock}"
+        Rails.logger.info "bhl total real: #{bhl[:total_real]}"
+        Rails.logger.info "Days: #{days}"
+
         projection = (stock / (bhl[:total_real] / days)).to_i
         results << {
           'code' => bhl[:ingredient_code],
