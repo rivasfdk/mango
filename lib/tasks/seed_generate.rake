@@ -1,4 +1,4 @@
-namespace :seed_generate1 do
+namespace :seed_generate do
 
   desc "Export seeds from database"
   task load_seeds: :environment do
