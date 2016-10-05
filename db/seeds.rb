@@ -282,3 +282,34 @@ PermissionRole.create("permission_id"=>135, "role_id"=>1)
 PermissionRole.create("permission_id"=>136, "role_id"=>1)
 
 User.create!("name"=>"Administrador", "login"=>"admin", "password"=>"17858395", "password_confirmation"=>"17858395", "admin"=>false, "role_id"=>1)
+
+BaseUnit.create("code"=>"Kg")
+BaseUnit.create("code"=>"L")
+
+DocumentType.create("name"=>"Factura")
+DocumentType.create("name"=>"Planilla")
+DocumentType.create("name"=>"Guia")
+DocumentType.create("name"=>"Nota de Entrega")
+DocumentType.create("name"=>"Nota de Despacho")
+DocumentType.create("name"=>"Nota de Carga")
+
+HopperLotTransactionType.create("code"=>"EN-LLE", "description"=>"Entrada por llenado", "sign"=>"+")
+HopperLotTransactionType.create("code"=>"SA-CSM", "description"=>"Salida por consumo", "sign"=>"-")
+HopperLotTransactionType.create("code"=>"EN-AJU", "description"=>"Entrada por ajuste", "sign"=>"+")
+HopperLotTransactionType.create("code"=>"SA-AJU", "description"=>"Salida por ajuste", "sign"=>"-")
+
+OrderNumber.create("code"=>"0")
+
+Settings.create("hopper_minimum_level"=>10.0, "ticket_reception_diff"=>0.5, "ticket_dispatch_diff"=>0.5)
+
+TicketNumber.create("number"=>"0")
+
+TicketType.create("code"=>"RECEPCION", "description"=>"Ticket de recepción")
+TicketType.create("code"=>"DESPACHO", "description"=>"Ticket de despacho")
+
+TransactionType.create("code"=>"SA-CSM", "description"=>"Salida por consumo", "sign"=>"-")
+TransactionType.create("code"=>"EN-AJU", "description"=>"Entrada por ajuste", "sign"=>"+")
+TransactionType.create("code"=>"SA-AJU", "description"=>"Salida por ajuste", "sign"=>"-")
+TransactionType.create("code"=>"EN-COM", "description"=>"Entrada por compra", "sign"=>"+")
+TransactionType.create("code"=>"SA-DES", "description"=>"Salida por despacho", "sign"=>"-")
+TransactionType.create("code"=>"EN-PRO", "description"=>"Entrada por produccion", "sign"=>"+")
