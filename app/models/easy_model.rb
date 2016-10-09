@@ -655,12 +655,12 @@ class EasyModel
     stats.each do |stat|
       data[:results] << {
         stat_name: stat[:stat_name],
-        min: stat[:min].nil? ? nil : Unit(stat[:min], stat[:unit]),
-        max: stat[:max].nil? ? nil : Unit(stat[:max], stat[:unit]),
-        stat_avg: Unit(stat[:stat_avg], stat[:unit]),
-        stat_min: Unit(stat[:stat_min], stat[:unit]),
-        stat_max: Unit(stat[:stat_max], stat[:unit]),
-        stat_std: Unit(stat[:stat_std], stat[:unit])
+        min: stat[:min].nil? ? nil : Unit.new(stat[:min], stat[:unit]),
+        max: stat[:max].nil? ? nil : Unit.new(stat[:max], stat[:unit]),
+        stat_avg: Unit.new(stat[:stat_avg], stat[:unit]),
+        stat_min: Unit.new(stat[:stat_min], stat[:unit]),
+        stat_max: Unit.new(stat[:stat_max], stat[:unit]),
+        stat_std: Unit.new(stat[:stat_std], stat[:unit])
       }
     end
     data
@@ -693,12 +693,12 @@ class EasyModel
     stats.each do |stat|
       data[:results] << {
         stat_name: stat[:stat_name],
-        min: stat[:min].nil? ? nil : Unit(stat[:min], stat[:unit]),
-        max: stat[:max].nil? ? nil : Unit(stat[:max], stat[:unit]),
-        stat_avg: Unit(stat[:stat_avg], stat[:unit]),
-        stat_min: Unit(stat[:stat_min], stat[:unit]),
-        stat_max: Unit(stat[:stat_max], stat[:unit]),
-        stat_std: Unit(stat[:stat_std], stat[:unit])
+        min: stat[:min].nil? ? nil : Unit.new(stat[:min], stat[:unit]),
+        max: stat[:max].nil? ? nil : Unit.new(stat[:max], stat[:unit]),
+        stat_avg: Unit.new(stat[:stat_avg], stat[:unit]),
+        stat_min: Unit.new(stat[:stat_min], stat[:unit]),
+        stat_max: Unit.new(stat[:stat_max], stat[:unit]),
+        stat_std: Unit.new(stat[:stat_std], stat[:unit])
       }
     end
 
@@ -983,7 +983,7 @@ class EasyModel
         'order' => bhl[:order_code],
         'date' => bhl[:order_start_date].strftime("%Y-%m-%d"),
         'recipe_code' => bhl[:recipe_code],
-        'recipe_name' => bhl[:recipe_name][0..20],
+        'recipe_name' => bhl[:recipe_name],
         'recipe_version' => bhl[:recipe_version],
         'client_code' => bhl[:client_code],
         'client_name' => bhl[:client_name],
@@ -1132,29 +1132,55 @@ class EasyModel
     start_date = EasyModel.param_to_date(params, 'start')
     end_date = EasyModel.param_to_date(params, 'end')
 
-    by_client = params[:by_client_2] == "1"
-    Rails.logger.debug "Cliente: #{by_client}"
-    by_recipe = params[:by_recipe_4] == "1"
+    by_client = params[:by_client_2] == '1'
+    by_recipe = params[:by_recipe_4] == '1'
 
-    orders = Order.joins(:recipe).where(orders: {created_at: start_date .. end_date + 1})
-    orders = orders.where({orders: {client_id: params[:client_id_3]}}) if by_client
-    orders = orders.where(recipes: {code: params[:recipe_code_3]}) if by_recipe
-    order_codes = orders.pluck(:code)
+    batch_hopper_lots = BatchHopperLot
+      .joins({batch: {order: {recipe: {}, client: {}}}})
+      .select('orders.code AS order_code,
+               MIN(batches.start_date) AS order_start_date,
+               recipes.code AS recipe_code,
+               recipes.name AS recipe_name,
+               recipes.version AS recipe_version,
+               clients.code AS client_code,
+               clients.name AS client_name,
+               MAX(batches.number) AS num_batches,
+               SUM(amount) AS total_real,
+               SUM(standard_amount) AS total_std')
+      .where(orders: {created_at: start_date .. end_date + 1.day})
 
-    return nil if orders.empty?
+    batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_3]}}) if by_client
+    batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_3]}}) if by_recipe
 
-    return {total_orders: orders.size} if orders.size > 200
+    batch_hopper_lots = batch_hopper_lots.group('batches.order_id')
 
-    data = self.initialize_data('Producción diaria con detalle')
-    data[:since] = self.print_range_date(start_date)
-    data[:until] = self.print_range_date(end_date)
-    data[:datas] = []
+    return nil if batch_hopper_lots.empty?
 
-    order_codes.each do |order_code|
-      data[:datas] << order_details(order_code)
+    data = self.initialize_data('Produccion Diaria')
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['results'] = []
+
+    batch_hopper_lots.each do |bhl|
+      var_kg = bhl[:total_real] - bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      data['results'] << {
+        'order' => bhl[:order_code],
+        'date' => bhl[:order_start_date].strftime("%Y-%m-%d"),
+        'recipe_code' => bhl[:recipe_code],
+        'recipe_name' => bhl[:recipe_name],
+        'recipe_version' => bhl[:recipe_version],
+        'client_code' => bhl[:client_code],
+        'client_name' => bhl[:client_name],
+        'real_batches' => bhl[:num_batches],
+        'total_standard' => bhl[:total_std].round(2),
+        'total_real' => bhl[:total_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2)
+      }
     end
 
-    data
+    return data
   end
 
   def self.order_details(order_code)

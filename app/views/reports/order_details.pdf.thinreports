@@ -1,24 +1,5 @@
 report.set_layout tlf: 'reports/thinreports_layouts/order_details'
 
-report.events.on :generate do |e|
-  e.pages.each do |page|
-    page.item(:page).value(page.no)
-    page.item(:page_total).value(report.page_count)
-  end
-end
-
-report.layout.config.list(:results) do
-  use_stores total_std: '', total_real: '', total_var_kg: '', total_var_perc: '', comment: ''
-
-  events.on :footer_insert do |e|
-    e.section.item(:total_std).value(e.store.total_std)
-    e.section.item(:total_real).value(e.store.total_real)
-    e.section.item(:total_var_kg).value(e.store.total_var_kg)
-    e.section.item(:total_var_perc).value(e.store.total_var_perc)
-    e.section.item(:comment).value(e.store.comment)
-  end
-end
-
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
   page.values company_address: @data['company_address']
@@ -47,6 +28,14 @@ report.start_new_page do |page|
     header.item(:repaired).value(@data['repaired'])
   end
 
+  table.on_footer_insert do |footer| 
+    footer.item(:total_std).value(@data['total_std'].round(2).to_s + ' Kg')
+    footer.item(:total_real).value(@data['total_real'].round(2).to_s + ' Kg')
+    footer.item(:total_var_kg).value(@data['total_var'].round(2).to_s + ' Kg')
+    footer.item(:total_var_perc).value(@data['total_var_perc'].round(2).to_s + ' %')
+    footer.item(:comment).value(@data['comment'])
+  end
+
   @data['results'].each do |result|
     table.add_row ingredient_code: result['code'],
                   ingredient_name: result['ingredient'],
@@ -57,10 +46,9 @@ report.start_new_page do |page|
                   var_perc: result['var_perc'].round(2).to_s + ' %',
                   hopper_name: result['hopper']
   end
+end
 
-  table.store.total_std = @data['total_std'].round(2).to_s + ' Kg'
-  table.store.total_real = @data['total_real'].round(2).to_s + ' Kg'
-  table.store.total_var_kg = @data['total_var'].round(2).to_s + ' Kg'
-  table.store.total_var_perc = @data['total_var_perc'].round(2).to_s + ' %'
-  table.store.comment = @data['comment']
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
 end

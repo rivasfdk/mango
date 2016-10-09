@@ -1,23 +1,23 @@
 report.set_layout tlf: 'reports/thinreports_layouts/production_and_ingredient_distribution'
 
-report.events.on :generate do |e|
-  e.pages.each do |page|
-    page.item(:page).value(page.no)
-    page.item(:page_total).value(report.page_count)
-  end
-end
+#report.events.on :generate do |e|
+#  e.pages.each do |page|
+#    page.item(:page).value(page.no)
+#    page.item(:page_total).value(report.page_count)
+#  end
+#end
 
-report.layout.config.list(:results) do
-  use_stores total: 0
+#report.layout.config.list(:results) do
+#  use_stores total: 0
 
-  events.on :footer_insert do |e|
-    e.section.item(:total).value(e.store.total.round(2))
-  end
-end
+#  events.on :footer_insert do |e|
+#    e.section.item(:total).value(e.store.total.round(2))
+#  end
+#end
 
 def add_total_row(list, total, internal_consumption)
   list.add_row do |row|
-    row.item(:background).style(:fill, '#7f7f7f')
+    row.item(:background)#.style(:fill, '#7f7f7f')
     row.item(:internal_consumption) do |item|
       item.style(:color, '#ffffff')
       item.value(internal_consumption ? 'TOTAL CONSUMO INTERNO' : 'TOTAL VENTAS')
@@ -29,6 +29,8 @@ def add_total_row(list, total, internal_consumption)
     end
   end
 end
+
+total_for = {totalizado: 0}
 
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
@@ -49,6 +51,10 @@ report.start_new_page do |page|
     end
   end
 
+  table.on_footer_insert do |footer| 
+    footer.item(:total).value(total_for[:totalizado].round(2))
+  end
+
   ipc = @data[:ingredient_id_per_column]
 
   alternate = 1
@@ -67,13 +73,13 @@ report.start_new_page do |page|
     first_version, *rest_of_versions = *result[:versions]
 
     table.add_row do |row|
-      row.item(:background).style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
+      row.item(:background)#.style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
       row.item(:recipe_name).value(result[:recipe_name])
       row.item(:version).value(first_version[:version])
       row.item(:days).value(first_version[:days])
 
       total = first_version[:total]
-      table.store.total += total
+      total_for[:totalizado] += total
       per_consumption_type_production += total
       row.item(:total).value(total.round(2))
 
@@ -92,13 +98,13 @@ report.start_new_page do |page|
 
     rest_of_versions.each do |version_data|
       table.add_row do |row|
-        row.item(:background).style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
+        row.item(:background)#.style(:fill, alternate == 1 ? '#ffffff' : '#eeece1')
         row.item(:version).value(version_data[:version])
         row.item(:days).value(version_data[:days])
 
         total = version_data[:total]
         row.item(:total).value(total.round(2))
-        table.store.total += total
+        total_for[:totalizado] += total
         per_consumption_type_production += total
 
         12.times do |i|
@@ -117,4 +123,9 @@ report.start_new_page do |page|
     internal_consumption = result[:internal_consumption]
   end
   add_total_row(table, per_consumption_type_production, internal_consumption)
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
 end

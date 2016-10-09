@@ -1,11 +1,11 @@
 report.set_layout tlf: 'reports/thinreports_layouts/weekly_recipes_versions'
 
-report.events.on :generate do |e|
-  e.pages.each do |page|
-    page.item(:page).value(page.no)
-    page.item(:page_total).value(report.page_count)
-  end
-end
+#report.events.on :generate do |e|
+#  e.pages.each do |page|
+#    page.item(:page).value(page.no)
+#    page.item(:page_total).value(report.page_count)
+#  end
+#end
 
 def render_page(report, page_index, start_week, weeks)
   report.start_new_page do |page|
@@ -87,4 +87,9 @@ else
   end
 
   render_page(report, pages - 1, start_week + (12 * (pages - 1)).weeks, weeks % 12)
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
 end

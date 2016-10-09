@@ -1,15 +1,15 @@
-report.set_layout tlf: 'reports/thinreports_layouts/consumption_per_ingredients'
-report.layout.config.list(:results) do
-  use_stores total_std: 0, total_real: 0, total_var: 0,
-             total_real_real: 0, total_loss: 0
+#report.set_layout tlf: 'reports/thinreports_layouts/consumption_per_ingredients'
+#report.layout.config.list(:results) do
+#  use_stores total_std: 0, total_real: 0, total_var: 0,
+#             total_real_real: 0, total_loss: 0
 
-  events.on :footer_insert do |e|
-    e.section.item(:total_std).value(e.store.total_std)
-    e.section.item(:total_real).value(e.store.total_real)
-    e.section.item(:total_var).value(e.store.total_var)
-    e.section.item(:total_var_perc).value(e.store.total_var / e.store.total_std * 100)
-  end
-end
+#  events.on :footer_insert do |e|
+#    e.section.item(:total_std).value(e.store.total_std)
+#    e.section.item(:total_real).value(e.store.total_real)
+#    e.section.item(:total_var).value(e.store.total_var)
+#    e.section.item(:total_var_perc).value(e.store.total_var / e.store.total_std * 100)
+#  end
+#end
 
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
@@ -29,8 +29,8 @@ report.start_new_page do |page|
                    var_kg: result['var_kg'],
                    var_perc: result['var_perc']
       list.store.total_std += result['std_kg']
-      list.store.total_real += result['real_kg']
-      list.store.total_var += result['var_kg']
+      #list.store.total_real += result['real_kg']
+      #list.store.total_var += result['var_kg']
     end
   end
 end

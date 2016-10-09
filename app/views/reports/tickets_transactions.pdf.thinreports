@@ -1,19 +1,21 @@
 report.set_layout tlf: 'reports/thinreports_layouts/tickets_transactions'
 
-report.events.on :generate do |e|
-  e.pages.each do |page|
-    page.item(:page).value(page.no)
-    page.item(:page_total).value(report.page_count)
-  end
-end
+#report.events.on :generate do |e|
+#  e.pages.each do |page|
+#    page.item(:page).value(page.no)
+#    page.item(:page_total).value(report.page_count)
+#  end
+#end
 
-report.layout.config.list(:results) do
-  use_stores total: 0
+#report.layout.config.list(:results) do
+#  use_stores total: 0
 
-  events.on :footer_insert do |e|
-    e.section.item(:total).value(e.store.total)
-  end
-end
+#  events.on :footer_insert do |e|
+#    e.section.item(:total).value(e.store.total)
+#  end
+#end
+
+total_for = {net_weight: 0}
 
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
@@ -48,6 +50,16 @@ report.start_new_page do |page|
                   address: t[:address],
                   license_plate: t[:license_plate],
                   sack: t[:sack]
-    table.store.total += t[:net_weight].to_f
+    total_for[:net_weight] += t[:net_weight].to_f
   end
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total).value(total_for[:net_weight])
+  end
+
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
 end

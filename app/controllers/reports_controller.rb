@@ -94,6 +94,9 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
+    else
+      format = params[:report][:format] || 'pdf'
+      render format.to_sym => "order_details", :filename => "#{@data['title']}.#{format}" 
     end
   end
 
@@ -145,7 +148,16 @@ class ReportsController < ApplicationController
     else
       include_real = params[:report][:include_real] == "1"
       ingredient_inclusion = params[:report][:ingredient_inclusion] == "1"
-      if params[:report][:format] == "pdf"
+      if params[:report][:format] == "xlsx"
+        if include_real
+          template_name ='consumption_per_recipe_real'
+        elsif ingredient_inclusion
+          template_name ='consumption_per_recipe_with_inclusion'
+        else
+          template_name ='consumption_per_recipe'
+        end
+        render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
+      else
         if include_real
           template_name = 'consumption_per_recipe_real.yml'
         elsif ingredient_inclusion
@@ -155,15 +167,6 @@ class ReportsController < ApplicationController
         end
         report = EasyReport::Report.new @data, template_name
         send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
-      else
-        if include_real
-          template_name ='consumption_per_recipe_real'
-        elsif ingredient_inclusion
-          template_name ='consumption_per_recipe_with_inclusion'
-        else
-          template_name ='consumption_per_recipe'
-        end
-        render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end
   end
@@ -175,16 +178,16 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      if params[:report][:format] == "pdf"
-        template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_ingredients_real.yml' : 'consumption_per_ingredients.yml'
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
-      else
+      if params[:report][:format] == "xlsx"
         template_name = params[:report][:include_real] == "1" ?
           'consumption_per_selected_ingredients_real' :
           'consumption_per_selected_ingredients'
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
+      else
+        template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_ingredients_real.yml' : 'consumption_per_ingredients.yml'
+        report = EasyReport::Report.new @data, template_name
+        send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
       end
     end
   end
@@ -199,16 +202,16 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      if params[:report][:format] == "pdf"
-      template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
-      report = EasyReport::Report.new @data, template_name
-      send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
-      else
+      if params[:report][:format] == "xlsx"
         template_name = params[:report][:include_real] == "1" ?
           'consumption_per_ingredient_per_orders_real' :
           'consumption_per_ingredient_per_orders'
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
+      else
+        template_name = params[:report][:include_real] == "1" ?
+        'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
+        report = EasyReport::Report.new @data, template_name
+        send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
       end
     end
   end
@@ -237,15 +240,15 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      if params[:report][:format] == "pdf"
+      if params[:report][:format] == "xlsx"
+        template_name = params[:report][:include_real] == "1" ?
+          'consumption_per_client_real' : 'consumption_per_client'
+        render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
+      else
         template_name = params[:report][:include_real] == "1" ?
           'consumption_per_client_real.yml' : 'consumption_per_client.yml'
         report = EasyReport::Report.new @data, template_name
         send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
-      else
-        template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_client_real' : 'consumption_per_client'
-        render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       end
     end
   end

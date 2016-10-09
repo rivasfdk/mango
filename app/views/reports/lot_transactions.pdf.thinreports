@@ -1,12 +1,5 @@
 report.set_layout tlf: 'reports/thinreports_layouts/lot_transactions'
 
-report.events.on :generate do |e|
-  e.pages.each do |page|
-    page.item(:page).value(page.no)
-    page.item(:page_total).value(report.page_count)
-  end
-end
-
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
   page.values company_address: @data['company_address']
@@ -30,4 +23,9 @@ report.start_new_page do |page|
                    stock: result[:stock],
                    comment: diff.abs > 1 ? comment : result[:comment]
   end
+end
+
+report.pages.each do |page|
+    page.item(:page).value(page.no)
+    page.item(:page_total).value(report.page_count)
 end
