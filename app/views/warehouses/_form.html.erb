@@ -1,0 +1,16 @@
+<%= javascript_include_tag "warehouses" %>
+<%= render_error_messages(f.error_messages) %>
+<label for="code" class="small">Código:</label>
+<div class="field"><%= f.text_field :code, :size=>'20' %> <span>*</span></div>
+<label for="name" class="small">Nombre:</label>
+<div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
+<label for="stock" class="small">Existencia (Kg):</label>
+<div class="field"><%= f.text_field :stock, :size=>'20' %> <span>*</span></div>
+<label for="size" class="small">Capacidad:</label>
+<div class="field"><%= f.text_field :size, :size=>'20' %> <span>*</span></div>
+<label for="location" class="small">Ubicación:</label>
+<div class="field"><%= f.text_field :location, :size=>'20' %> <span>*</span></div>
+<div class="clearfix"></div>
+<br/><span class="required">* Campos obligatorios</span>
+
+
