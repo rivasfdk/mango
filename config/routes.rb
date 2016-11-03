@@ -140,6 +140,15 @@ Mango::Application.routes.draw do
     end
   end
 
+   resources :warehouses do
+    resources :warehouses_types do
+      member do
+        get 'change'
+        get 'fill'
+      end
+    end
+  end
+
   root :to => "sessions#index"
 
   match "/sessions/show" => "sessions#show", via: :get, as: 'dashboard'

@@ -13,4 +13,4 @@ test:
 
 production:
   << : *common
-  database: mango
+database: mango
