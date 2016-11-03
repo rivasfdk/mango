@@ -4,6 +4,7 @@
 //= require jquery-ui/datepicker-es
 //= require chosen.jquery
 //= require_tree .
+//= require websocket_rails/main
 //= stub dynamic_clients
 //= stub jquery.flot.axislabels
 
@@ -288,6 +289,10 @@ function submit_truck_edit_form() {
 
 function submit_ticket_new_form() {
     $('#ticket_new_form').submit();
+}
+
+function submit_ticket_edit_form() {
+    $('#ticket_edit_form').submit();
 }
 
 function submit_ticket_repair_form() {
