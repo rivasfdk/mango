@@ -59,7 +59,7 @@ Mango::Application.routes.draw do
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
   match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
   match 'tickets/new' => "tickets#create", :via => :post, :as => "create_ticket"
-  match 'tickets/:id/edit' => "tickets#edit", :via => :post, :as => "edit_ticket"
+  match 'tickets/:id/edit' => "tickets#update", :via => :post, :as => "edit_ticket"
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
