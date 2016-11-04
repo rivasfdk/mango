@@ -8,7 +8,7 @@
 <% end %>
 </div>
 <% if @recipes.any? %>
-<% unless @last_imported_recipe.name.nil? %>
+<% unless @last_imported_recipe.nil? %>
 <p><strong>Ultimo archivo importado:</strong> <%= @last_imported_recipe.name %> (<%= @last_imported_recipe.imported_recipes %> de <%= @last_imported_recipe.total_recipes %>)</p><br />
 <% end %>
 <table id="tabledata">
