@@ -91,6 +91,7 @@ class TicketsController < ApplicationController
   end
 
   def new
+    @ticket = Ticket.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
     @trucks = Truck.includes(:carrier).where(frequent: true)
@@ -111,7 +112,6 @@ class TicketsController < ApplicationController
   end
 
   def update
-    binding.pry
     @ticket = Ticket.find params[:id]
     redirect_to :tickets unless @ticket.open
     @ticket.update_attributes(params[:ticket])
@@ -133,7 +133,7 @@ class TicketsController < ApplicationController
       @ticket.transactions.each do |t|
         t.update_transactions unless t.new_record? || !t.notified
       end
-      @tickets.save
+      @ticket.save
       flash[:notice] = 'Ticket guardado con éxito'
       redirect_to :tickets
     else
