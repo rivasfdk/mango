@@ -4,7 +4,7 @@ class Warehouse < ActiveRecord::Base
   belongs_to :ingredient
   has_many :warehouse_types
 
-  validates :name, :code, :location, presence: true
+  validates :name, :code, presence: true
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}
   validates :stock, numericality: {greater_than_or_equal_to: 0}

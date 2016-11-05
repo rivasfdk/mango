@@ -6,9 +6,17 @@ class WarehousesController < ApplicationController
     @warehouses = Warehouse.search(params)
   end
 
+  def show
+    @warehouse = Warehouse.find params[:id]
+#   @warehouse_types = WarehouseType.find_actives params[:id]
+#   mango_features = get_mango_features()
+#   @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
+#   @show_hopper_factory_lots = mango_features.include?("factories")
+  end
+
   def create
     @s = Warehouse.new params[:warehouse]
-    if @warehouses.save
+    if @warehouse.save
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to :warehouses
     else

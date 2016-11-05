@@ -3,7 +3,7 @@ class WarehouseTypes < ActiveRecord::Base
 
   belongs_to :warehouse
 
-  validates :code, :descirption, presence: true
+  validates :code, :description, presence: true
   validates :code, uniqueness: true
   validates :code, :description, length: {within: 3..40}
  
