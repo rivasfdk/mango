@@ -26,7 +26,7 @@ report:
           font_size: 10
     3:
       image:
-        filename: mango-logo-report.png
+        field: company_logo
         width: 20
         height: 20
         x: 20
