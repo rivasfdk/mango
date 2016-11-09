@@ -91,6 +91,11 @@ class TicketsController < ApplicationController
   end
 
   def new
+    @purchasesordersap = PedidoCompras1.all
+    if @purchasesordersap.present?
+      PurchaseOrder.import()
+    end
+    @purchasesorder = PurchaseOrder.where(closed: false)
     @ticket = Ticket.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
