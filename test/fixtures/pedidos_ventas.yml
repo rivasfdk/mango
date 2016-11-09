@@ -1,0 +1,37 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tip_pedido: MyString
+  num_pedido: MyString
+  pos_pedido: 1
+  tip_material: MyString
+  cod_material: MyString
+  nom_material: MyString
+  can_sacos: 1
+  pre_material: MyString
+  pes_neto: 1.5
+  cod_cliente: MyString
+  nom_cliente: MyString
+  dir_cliente: MyString
+  rif_cliente: MyString
+  tel_cliente: MyString
+  tip_documento: MyString
+  num_documento: MyString
+
+two:
+  tip_pedido: MyString
+  num_pedido: MyString
+  pos_pedido: 1
+  tip_material: MyString
+  cod_material: MyString
+  nom_material: MyString
+  can_sacos: 1
+  pre_material: MyString
+  pes_neto: 1.5
+  cod_cliente: MyString
+  nom_cliente: MyString
+  dir_cliente: MyString
+  rif_cliente: MyString
+  tel_cliente: MyString
+  tip_documento: MyString
+  num_documento: MyString

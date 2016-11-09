@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  id_client: 1
+  closed: false
+
+two:
+  code: MyString
+  id_client: 1
+  closed: false
