@@ -7,6 +7,7 @@ class Ingredient < ActiveRecord::Base
   belongs_to :base_unit
   has_many :ingredient_parameter_type_ranges
   has_many :warehouses
+  has_many :purchase_order_items
 
   accepts_nested_attributes_for :ingredient_parameter_type_ranges
 

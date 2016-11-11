@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  num_orden: MyString
+  num_posicion: 1
+  cod_material: MyString
+  nom_material: MyString
+  can_pedido: 1.5
+  pre_material: MyString
+  can_sacos: 1
+  cod_proveedor: MyString
+  nom_proveedor: MyString
+  rif_proveedor: MyString
+  dir_proveedor: MyString
+  tel_proveedor: MyString
+
+two:
+  num_orden: MyString
+  num_posicion: 1
+  cod_material: MyString
+  nom_material: MyString
+  can_pedido: 1.5
+  pre_material: MyString
+  can_sacos: 1
+  cod_proveedor: MyString
+  nom_proveedor: MyString
+  rif_proveedor: MyString
+  dir_proveedor: MyString
+  tel_proveedor: MyString
