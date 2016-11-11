@@ -1,4 +1,4 @@
-# encoding: UTF-8
+  # encoding: UTF-8
 
 include MangoModule
 
@@ -81,11 +81,38 @@ class TicketsController < ApplicationController
   def create
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
-    respond_to do |format|
-      format.json do
-        @ticket.save
-        render json: @ticket.errors
-      end
+    if @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+   else
+      new
+      render :new
+    end
+  end
+
+  def new
+    @purchasesordersap = PedidoCompras1.all
+    if @purchasesordersap.present?
+      PurchaseOrder.import()
+    end
+    @purchasesorder = PurchaseOrder.where(closed: false)
+    @ticket = Ticket.new
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+  end
+
+  def edit
+    @ticket = Ticket.find params[:id], :include => :transactions
+    @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
     end
   end
 
@@ -95,27 +122,28 @@ class TicketsController < ApplicationController
     @ticket.update_attributes(params[:ticket])
     @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
       t.user_id = @ticket.user_id
       t.client_id = @ticket.client_id
       t.comment = @ticket.comment
       t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
     end
     @ticket.outgoing_date = Time.now
-    @ticket.open = false
-    respond_to do |format|
-      format.html do
-        if @ticket.save
-          flash[:notice] = 'Ticket guardado con éxito'
-          redirect_to :tickets
-        else
-          edit
-          render :edit
-        end
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record? || !t.notified
       end
-      format.json do
-        @ticket.save
-        render json: @ticket.errors
-      end
+      @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+    else
+      edit
+      render :edit
     end
   end
 
