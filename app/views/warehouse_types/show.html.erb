@@ -1,0 +1,54 @@
+<!-- Refactoring pending -->
+
+<% title "Almacen de #{@warehouse_types.name} " %>
+<% i = 0 %>
+<% if @warehouses.any? %>
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <% if @warehouse_types.id == 1 %>
+          <th>Materia prima<span class="order_arrow"></span></th>
+        <% else %>
+          <th>Producto terminado<span class="order_arrow"></span></th>
+        <% end %>
+        <th>Existencia<span class="order_arrow"></span></th>
+        <th>Capacidad<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <% @warehouses.each do |w| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td class="center"><%=h w.code %></td>
+        <% if w.warehouse_types.id == 1 %>
+          <td><%=h w.name %></td>
+          <td><%=h w.ingredient.name %></td>
+          <td><%=h w.stock %></td>
+          <td><%=h w.size %></td>
+        <% elsif w.warehouse_types.id == 2 %>
+          <td><%=h w.name %></td>
+          <td><%=h w.product.name %></td>
+          <td><%=h w.stock %></td>
+         <td><%=h w.size %></td>
+        <% end %>
+         
+      <!-- adjust, edit and delete go here -->
+         
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <!-- = show_pagination @warehouses %-->
+  </div>
+</div>
+      
+
+<% else %>
+<p>No hay materias primas asociadas a este almacen</p>
+<% end %>

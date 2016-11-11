@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20161109011003) do
+=======
+ActiveRecord::Schema.define(version: 20161112082506) do
+>>>>>>> master
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -715,22 +719,38 @@ ActiveRecord::Schema.define(version: 20161109011003) do
 
   create_table "warehouses", force: true do |t|
     t.integer  "ingredient_id"
+<<<<<<< HEAD
     t.integer  "warehouse_type_id"
     t.string   "code",                            null: false
     t.string   "name",                            null: false
     t.float    "stock",             default: 0.0
     t.string   "location",                        null: false
+=======
+    t.integer  "product_id"
+    t.integer  "warehouse_types_id"
+    t.string   "code",                             null: false
+    t.string   "name",                             null: false
+    t.float    "stock",              default: 0.0
+>>>>>>> master
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
+<<<<<<< HEAD
   add_index "warehouses", ["warehouse_type_id"], name: "index_warehouses_on_warehouse_type_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "code",        null: false
     t.string   "description", null: false
+=======
+  add_index "warehouses", ["product_id"], name: "index_warehouses_on_product_id", using: :btree
+  add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
+
+  create_table "warehouses_types", force: true do |t|
+    t.string   "name",       null: false
+>>>>>>> master
     t.datetime "created_at"
     t.datetime "updated_at"
   end
