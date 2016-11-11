@@ -1,5 +1,5 @@
 <% title "Nuevo ticket" %>
-<%= form_for :ticket, :url=>new_ticket_path, :html=>{:id=>'ticket_new_form'} do |f| %>
+<%= form_for :ticket, :url=>tickets_path, :html=>{:id=> 'ticket_new_form'} do |f| %>
 <%= render_error_messages(f.error_messages) %>
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
 <div>
