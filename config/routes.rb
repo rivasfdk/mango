@@ -58,8 +58,10 @@ Mango::Application.routes.draw do
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
   match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
-  match 'warehouses/:warehouse_id/warehouse_types/:id/change' => "warehouse_types#do_change", :via => :post
-  match 'warehouses/:warehouse_id/warehouse_types/:id/adjust' => "warehouse_types#do_adjust", :via => :post
+  match 'warehouse_types/:warehouse_types_id/warehouses/:id/change' => "warehouses#do_change", :via => :post
+  match 'warehouse_types/:warehouse_types_id/warehouses/:id/adjust' => "warehouses#do_adjust", :via => :post
+  match 'warehouse_types' => "warehouse_types#edit", :via => :get, :as => "warehouse_types"
+
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
@@ -142,8 +144,8 @@ Mango::Application.routes.draw do
     end
   end
 
-   resources :warehouses do
-    resources :warehouses_types do
+   resources :warehouse_types do
+    resources :warehouses do
       member do
         get 'change'
         get 'adjust'
