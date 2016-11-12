@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20161109011003) do
+=======
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20161109011003) do
+=======
+ActiveRecord::Schema.define(version: 20161112082506) do
+>>>>>>> master
+>>>>>>> 03afbb04d2f92dfa9eeaf3aae68b4798d8dbedb3
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -715,22 +723,50 @@ ActiveRecord::Schema.define(version: 20161109011003) do
 
   create_table "warehouses", force: true do |t|
     t.integer  "ingredient_id"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afbb04d2f92dfa9eeaf3aae68b4798d8dbedb3
     t.integer  "warehouse_type_id"
     t.string   "code",                            null: false
     t.string   "name",                            null: false
     t.float    "stock",             default: 0.0
     t.string   "location",                        null: false
+<<<<<<< HEAD
+=======
+=======
+    t.integer  "product_id"
+    t.integer  "warehouse_types_id"
+    t.string   "code",                             null: false
+    t.string   "name",                             null: false
+    t.float    "stock",              default: 0.0
+>>>>>>> master
+>>>>>>> 03afbb04d2f92dfa9eeaf3aae68b4798d8dbedb3
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 03afbb04d2f92dfa9eeaf3aae68b4798d8dbedb3
   add_index "warehouses", ["warehouse_type_id"], name: "index_warehouses_on_warehouse_type_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "code",        null: false
     t.string   "description", null: false
+<<<<<<< HEAD
+=======
+=======
+  add_index "warehouses", ["product_id"], name: "index_warehouses_on_product_id", using: :btree
+  add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
+
+  create_table "warehouses_types", force: true do |t|
+    t.string   "name",       null: false
+>>>>>>> master
+>>>>>>> 03afbb04d2f92dfa9eeaf3aae68b4798d8dbedb3
     t.datetime "created_at"
     t.datetime "updated_at"
   end

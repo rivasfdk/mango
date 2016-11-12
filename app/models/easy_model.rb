@@ -1935,7 +1935,7 @@ class EasyModel
     data['company_name'] = company['name']
     data['company_address'] = company['address']
     data['company_rif'] = company['rif']
-    data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/default-report-logo.png"
+    data['company_logo'] = "#{Rails.root.to_s}/app/assets/images/"+company['logo']
     data['footer'] = company['footer']
     data
   end

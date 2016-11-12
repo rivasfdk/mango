@@ -123,7 +123,7 @@ module EasyReport
     end
 
     def render_image(element)
-      path = get_image_path(element['filename'])
+      path = get_text(element)
       w = element['width']
       h = element['height']
       x = element['x']
