@@ -1,0 +1,22 @@
+<% title "Almacenes" %>
+<% if @warehouse_types.any? %>
+<div id="warehouse_types-content" class="yui3-g">
+  <% @warehouse_types.each do |s| %>
+  <div class="module yui3-u-1-2">
+    <% if s.name == "Almacen de Materia Prima" %>
+      <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_types_path(s) %>
+    <% else %>
+      <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_types_path(s) %>
+    <% end %>
+      <div class="module-content">
+        <h2><%= link_to s.name, warehouse_type_path(s) %></h2>
+        <p><%= render_action_edit(edit_warehouse_type_path(s)) %></p>
+        <p><%= render_action_delete(warehouse_type_path(s), "Desea borrar el almacen '#{s.name}'?") %></p>
+      </div>
+  </div>
+  <% end %>
+</div>
+<% else %>
+  <p>No se han creado almacenes</p>
+<% end %>
+
