@@ -1317,7 +1317,7 @@ module MenuHelper
   end
 
   def menu_for_warehouse_types_show
-    menu = content_tag(:p, "Almacenes de #{@warehouse_types.description}")
+    menu = content_tag(:p, "Almacenes de #{@warehouse_types.name}")
     menu += content_tag(:ul,
       render_back(warehouse_type_path) +
       render_action('Crear', 'Crear nuevo almacen', new_warehouse_type_warehouse_path(@warehouse_types), 'button-add.png')

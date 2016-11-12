@@ -2,6 +2,7 @@ class Warehouse < ActiveRecord::Base
   attr_protected :id
 
   belongs_to :ingredient
+  belongs_to :product
   belongs_to :warehouse_types
 
   validates :name, :code, presence: true

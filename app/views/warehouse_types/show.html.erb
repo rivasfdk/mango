@@ -1,3 +1,5 @@
+<!-- Refactoring pending -->
+
 <% title "Almacen de #{@warehouse_types.name} " %>
 <% i = 0 %>
 <% if @warehouses.any? %>
@@ -6,7 +8,11 @@
       <tr>
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
-        <th>Materia prima<span class="order_arrow"></span></th>
+        <% if @warehouse_types.id == 1 %>
+          <th>Materia prima<span class="order_arrow"></span></th>
+        <% else %>
+          <th>Producto terminado<span class="order_arrow"></span></th>
+        <% end %>
         <th>Existencia<span class="order_arrow"></span></th>
         <th>Capacidad<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th>
@@ -18,22 +24,27 @@
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h w.code %></td>
-        <td><%=h w.name %></td>
-        <td><%=h w.ingredient.name %></td>
-        <td><%=h w.stock %></td>
-        <td><%=h w.size %></td>
-        <td class="center">
-        <%= render_action_adjust(adjust_warehouse_type_warehouse_path(@warehouse_types.id, w[:warehouse_id])) %> <br />
-        <%= render_action_edit(edit_warehouse_type_warehouse_path(@warehouse_types.id, w[:warehouse_id])) %>
-          <%= render_action_delete(warehouse_type_warehouse_path(@warehouse_types.id, w[:warehouse_id]), "Desea borrar el almacen '#{w[:name]}'?") %><br />
-        </td>
+        <% if w.warehouse_types.id == 1 %>
+          <td><%=h w.name %></td>
+          <td><%=h w.ingredient.name %></td>
+          <td><%=h w.stock %></td>
+          <td><%=h w.size %></td>
+        <% elsif w.warehouse_types.id == 2 %>
+          <td><%=h w.name %></td>
+          <td><%=h w.product.name %></td>
+          <td><%=h w.stock %></td>
+         <td><%=h w.size %></td>
+        <% end %>
+         
+      <!-- adjust, edit and delete go here -->
+         
       </tr>
     <% end %>
     </tbody>
 </table>
 <div id="tablefooter">
   <div id="pagination">
-    <%=raw show_pagination @warehouses %>
+    <!-- = show_pagination @warehouses %-->
   </div>
 </div>
       

@@ -6,11 +6,8 @@ class Ingredient < ActiveRecord::Base
   has_many :lots
   belongs_to :base_unit
   has_many :ingredient_parameter_type_ranges
-<<<<<<< HEAD
   has_many :warehouses
-=======
   has_many :purchase_order_items
->>>>>>> 85eedefe236d1056bd17fd823a018c303df0d7c1
 
   accepts_nested_attributes_for :ingredient_parameter_type_ranges
 

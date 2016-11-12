@@ -3,7 +3,7 @@
 <div id="warehouse_types-content" class="yui3-g">
   <% @warehouse_types.each do |s| %>
   <div class="module yui3-u-1-2">
-    <% if s.name == "Almacen de Materia Prima" %>
+    <% if s.id == 1 %>
       <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_types_path(s) %>
     <% else %>
       <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_types_path(s) %>

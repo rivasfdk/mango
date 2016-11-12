@@ -1,5 +1,5 @@
 <% title "Editar almacen" %>
-<%= form_for :warehouse_types, :url=>warehouse_types_path(@warehouse_type), :html=>{:method=>:put, :id=>'warehouse_types_edit_form'} do |f| %>
+<%= form_for :warehouse_types, :url=>warehouse_type_path(@warehouse_types), :html=>{:method=>:put, :id=>'warehouse_type_edit_form'} do |f| %>
   <%= render :partial=>'form', :locals =>{:f => f} %>
   <br/>
 <% end %>
