@@ -1,5 +1,5 @@
 <% title "Editar ticket" %>
-<%= form_for @ticket, :url=>edit_ticket_path(@ticket), :html=>{:method=>:post, :id=>'ticket_edit_form'} do |f| %>
+<%= form_for @ticket, :url=>ticket_path(@ticket), :html=>{:method=>:put, :id=>'ticket_edit_form'} do |f| %> 
 <%= render_error_messages(f.error_messages) %>
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
 <div class="field"><%=h @ticket.ticket_type.description %></div>
