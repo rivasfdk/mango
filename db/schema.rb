@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20161106020031) do
+=======
+ActiveRecord::Schema.define(version: 20161109011003) do
+>>>>>>> 85eedefe236d1056bd17fd823a018c303df0d7c1
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -399,6 +403,58 @@ ActiveRecord::Schema.define(version: 20161106020031) do
     t.float    "default_value", null: false
   end
 
+  create_table "pedidos_compras1", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.float    "can_pedido"
+    t.string   "pre_material"
+    t.integer  "can_sacos"
+    t.string   "cod_proveedor"
+    t.string   "nom_proveedor"
+    t.string   "rif_proveedor"
+    t.string   "dir_proveedor"
+    t.string   "tel_proveedor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_compras2", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.float    "can_bruto"
+    t.float    "can_neto"
+    t.float    "can_tara"
+    t.string   "pla_camion"
+    t.string   "ced_chofer"
+    t.string   "num_almacen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_ventas", force: true do |t|
+    t.string   "tip_pedido"
+    t.string   "num_pedido"
+    t.integer  "pos_pedido"
+    t.string   "tip_material"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.integer  "can_sacos"
+    t.string   "pre_material"
+    t.float    "pes_neto"
+    t.string   "cod_cliente"
+    t.string   "nom_cliente"
+    t.string   "dir_cliente"
+    t.string   "rif_cliente"
+    t.string   "tel_cliente"
+    t.string   "tip_documento"
+    t.string   "num_documento"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permission_roles", force: true do |t|
     t.integer  "permission_id"
     t.integer  "role_id"
@@ -491,6 +547,25 @@ ActiveRecord::Schema.define(version: 20161106020031) do
 
   add_index "products_parameters_types_ranges", ["product_id"], name: "fk_product_id", using: :btree
   add_index "products_parameters_types_ranges", ["product_lot_parameter_type_id"], name: "fk_product_lot_parameter_type_id", using: :btree
+
+  create_table "purchases_order", force: true do |t|
+    t.string   "code"
+    t.integer  "id_client"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchases_order_items", force: true do |t|
+    t.integer  "id_purchase_order"
+    t.integer  "id_ingredient"
+    t.integer  "position"
+    t.integer  "quantity"
+    t.boolean  "sack"
+    t.float    "total_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "recipes", force: true do |t|
     t.string   "code"
@@ -644,20 +719,36 @@ ActiveRecord::Schema.define(version: 20161106020031) do
 
   create_table "warehouses", force: true do |t|
     t.integer  "ingredient_id"
+<<<<<<< HEAD
     t.integer  "warehouse_types_id"
     t.string   "code",                             null: false
     t.string   "name",                             null: false
     t.float    "stock",              default: 0.0
+=======
+    t.integer  "warehouse_type_id"
+    t.string   "code",                            null: false
+    t.string   "name",                            null: false
+    t.float    "stock",             default: 0.0
+    t.string   "location",                        null: false
+>>>>>>> 85eedefe236d1056bd17fd823a018c303df0d7c1
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
+<<<<<<< HEAD
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "name",       null: false
+=======
+  add_index "warehouses", ["warehouse_type_id"], name: "index_warehouses_on_warehouse_type_id", using: :btree
+
+  create_table "warehouses_types", force: true do |t|
+    t.string   "code",        null: false
+    t.string   "description", null: false
+>>>>>>> 85eedefe236d1056bd17fd823a018c303df0d7c1
     t.datetime "created_at"
     t.datetime "updated_at"
   end

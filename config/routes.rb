@@ -58,10 +58,15 @@ Mango::Application.routes.draw do
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
   match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
+<<<<<<< HEAD
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/change' => "warehouses#do_change", :via => :post
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/adjust' => "warehouses#do_adjust", :via => :post
   match 'warehouse_types' => "warehouse_types#edit", :via => :get, :as => "warehouse_types"
 
+=======
+  match 'tickets/new' => "tickets#create", :via => :post, :as => "create_ticket"
+  match 'tickets/:id/edit' => "tickets#update", :via => :post, :as => "edit_ticket"
+>>>>>>> 85eedefe236d1056bd17fd823a018c303df0d7c1
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
@@ -103,11 +108,10 @@ Mango::Application.routes.draw do
   match 'reports/production_note' => 'reports#production_note', via: :post, as: 'production_note_report'
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
-    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
+    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges, :tickets
   resources :transactions, only: [:index, :new, :create]
   resources :alarms, only: [:create]
   resources :document_types, only: [:index]
-  resources :tickets, except: :new
 
   resources :recipes do
     resources :ingredients_recipes
