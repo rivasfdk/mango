@@ -9,6 +9,9 @@
 <label for="code" class="small">Orden de compra:</label>
 <div class="field"><%= f.collection_select :id, @purchasesorder, :code, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 
+<label for="code" class="small">Orden de venta:</label>
+<div class="field"><%= f.collection_select :id, @salesorder, :code, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+
 <label for="client_id" class="small">Cliente/Proveedor:</label>
 <div class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="driver_id" class="small">Chofer:</label>
