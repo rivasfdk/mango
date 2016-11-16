@@ -9,6 +9,7 @@ class Client < ActiveRecord::Base
   has_many :hopper_factory_lots, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_many :purchase_order
+  has_many :sale_order
 
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: lambda { |a| a[:address].blank? }
 
