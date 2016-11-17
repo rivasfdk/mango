@@ -1,6 +1,6 @@
 <!-- Refactoring pending -->
 
-<% title "Almacen de #{@warehouse_types.name} " %>
+<% title "Almacen de #{@warehouse_type.name} " %>
 <% i = 0 %>
 <% if @warehouses.any? %>
 <table id="tabledata">
@@ -8,7 +8,7 @@
       <tr>
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
-        <% if @warehouse_types.id == 1 %>
+        <% if @warehouse_type.id == 1 %>
           <th>Materia prima<span class="order_arrow"></span></th>
         <% else %>
           <th>Producto terminado<span class="order_arrow"></span></th>
@@ -24,20 +24,25 @@
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h w.code %></td>
-        <% if w.warehouse_types.id == 1 %>
+        <% if w.warehouse_types_id == 1 %>
           <td><%=h w.name %></td>
           <td><%=h w.ingredient.name %></td>
           <td><%=h w.stock %></td>
           <td><%=h w.size %></td>
-        <% elsif w.warehouse_types.id == 2 %>
+        <% elsif w.warehouse_types_id == 2 %>
           <td><%=h w.name %></td>
           <td><%=h w.product.name %></td>
           <td><%=h w.stock %></td>
          <td><%=h w.size %></td>
         <% end %>
          
-      <!-- adjust, edit and delete go here -->
-         
+        <td class="left">
+          <!-- render_action_change(change_warehouse_type_warehouse_path(@warehouse_type.id, w[:id])) %--><br />
+          <%= render_action_adjust(adjust_warehouse_type_warehouse_path(@warehouse_type.id, w[:id])) %> <br />
+          <%= render_action_edit(edit_warehouse_type_warehouse_path(@warehouse_type.id, w[:id])) %>
+          <%= render_action_delete(warehouse_type_warehouse_path(@warehouse_type.id, w[:id]), "Desea borrar el almacen '#{w[:name]}'?") %><br />
+        </td>
+
       </tr>
     <% end %>
     </tbody>

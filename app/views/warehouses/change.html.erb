@@ -1,11 +1,10 @@
-<!-- Not ready? Check later -->
-
 <% title "Cambiar almacen" %>
-<%= form_for :change, :url=>change_warehouse_type_warehouse_path(@warehouse.warehouse_type_id, @warehouse.id), :html=>{:id=>'warehouse_change_form'} do |f| %>
+<%= form_for :change, :url=>change_warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:id=>'warehouse_change_form'} do |f| %>
   <label for="ingredient" class="small">Ingrediente:</label>
-  <div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :to_collection_select, {:selected => @current_ingredient.id}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <div class="field"><%= f.text_field @warehouse.ingredient.name, :size=>'10' %><span>*</span></div>
   <label for="stock" class="small">Existencia inicial:</label>
-  <div class="field"><%= f.text_field :amount, :size=>'10' %><span>*</span></div>
+  <div class="field"><%= f.text_field :stock, :size=>'10' %><span>*</span></div>
   <div class="clearfix"></div>
   <br/><span class="required">* Campos obligatorios</span>
 <% end %>
+

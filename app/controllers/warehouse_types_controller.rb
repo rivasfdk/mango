@@ -3,17 +3,12 @@ include MangoModule
 class WarehouseTypesController < ApplicationController
 
   def index
-    #@warehouse_types = WarehouseTypes.all (or .get_all)
     @warehouse_types = WarehouseTypes.search(params)
   end
 
   def show
-    @warehouse_types = WarehouseTypes.find params[:id]
+    @warehouse_type = WarehouseTypes.find params[:id]
     @warehouses = Warehouse.all
-#   @warehouse = Warehouse.find_actives params[:id]
-#   mango_features = get_mango_features()
-#   @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
-#   @show_hopper_factory_lots = mango_features.include?("factories")
   end
 
   def create
@@ -22,6 +17,7 @@ class WarehouseTypesController < ApplicationController
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to :warehouse_types
     else
+      new
       render :new
     end
   end
@@ -37,6 +33,7 @@ class WarehouseTypesController < ApplicationController
       flash[:notice] = 'Almacen actualizado con éxito'
       redirect_to :warehouse_types
     else
+      edit
       render :edit
     end
   end
@@ -59,4 +56,8 @@ class WarehouseTypesController < ApplicationController
     end
     redirect_to :warehouse_types
   end
+
+   #def warehouses_ingredients
+    #render xml: WarehouseTypes.get_hoppers_ingredients, root: 'warehouse_types'
+  #end
 end

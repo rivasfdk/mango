@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161112082506) do
+ActiveRecord::Schema.define(version: 20161114023854) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -203,6 +203,7 @@ ActiveRecord::Schema.define(version: 20161112082506) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
+    t.integer  "warehouse_id"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
