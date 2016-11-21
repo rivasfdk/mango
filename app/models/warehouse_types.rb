@@ -7,6 +7,7 @@ class WarehouseTypes < ActiveRecord::Base
   validates :name, length: {within: 3..40}
 
   def self.search(params)
+    @warehouse_types = WarehouseTypes.includes(:ingredient, :product)
     @warehouse_types = WarehouseTypes.order('warehouses_types.id ASC')
     @warehouse_types.paginate page: params[:page], per_page: params[:per_page]
   end

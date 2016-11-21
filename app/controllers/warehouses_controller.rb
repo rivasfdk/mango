@@ -64,14 +64,15 @@ class WarehousesController < ApplicationController
 
   def do_change
     @warehouse = Warehouse.find params[:id]
-    if @warehouse.update_attributes(params[:warehouse])
-      flash[:notice] = "Cambio de lote realizado con éxito"
-      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+    @warehouse.update_attributes(ingredient_id: params[:ingredient_id])
+    if @warehouse.valid?
+      @warehouse.save
+      flash[:notice] = "Cambio de materia prima realizado con éxito"
     else
       flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar el ingredient del almacen"
-      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     end
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
   def adjust
@@ -80,12 +81,15 @@ class WarehousesController < ApplicationController
 
   def do_adjust
     @warehouse = Warehouse.find params[:id]
-    @warehouse.update_attributes(params[:warehouse])
+    @warehouse.update_attributes(stock: params[:stock])
     if @warehouse.valid?
       @warehouse.save
       flash[:notice] = "Almacen ajustado exitosamente"
-      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo realizar el ajuste"
     end
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
   private

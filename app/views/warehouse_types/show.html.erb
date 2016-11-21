@@ -1,5 +1,3 @@
-<!-- Refactoring pending -->
-
 <% title "Almacen de #{@warehouse_type.name} " %>
 <% i = 0 %>
 <% if @warehouses.any? %>
@@ -24,18 +22,15 @@
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h w.code %></td>
-        <% if w.warehouse_types_id == 1 %>
           <td><%=h w.name %></td>
-          <td><%=h w.ingredient.name %></td>
+          <% if w.ingredient != nil %>
+            <td><%=h w.ingredient.name %></td>
+          <% elsif w.product != nil %>
+            <td><%=h w.product.name %></td>
+          <% end %>
           <td><%=h w.stock %></td>
           <td><%=h w.size %></td>
-        <% elsif w.warehouse_types_id == 2 %>
-          <td><%=h w.name %></td>
-          <td><%=h w.product.name %></td>
-          <td><%=h w.stock %></td>
-         <td><%=h w.size %></td>
-        <% end %>
-         
+          
         <td class="left">
           <!-- render_action_change(change_warehouse_type_warehouse_path(@warehouse_type.id, w[:id])) %--><br />
           <%= render_action_adjust(adjust_warehouse_type_warehouse_path(@warehouse_type.id, w[:id])) %> <br />
