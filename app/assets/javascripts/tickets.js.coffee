@@ -78,3 +78,5 @@ content_type_changed = ->
 $ ->
   $("#ticket_content_type_1, #report_ticket_content_type_1").change content_type_changed
   $("#ticket_content_type_2, #report_ticket_content_type_2").change content_type_changed
+
+
