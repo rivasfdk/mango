@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161115002803) do
+ActiveRecord::Schema.define(version: 20161120152832) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -203,6 +203,7 @@ ActiveRecord::Schema.define(version: 20161115002803) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
+    t.integer  "warehouse_id"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -659,6 +660,7 @@ ActiveRecord::Schema.define(version: 20161115002803) do
     t.boolean  "notified",                 default: true
     t.string   "address"
     t.integer  "document_type_id"
+    t.integer  "id_order"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
