@@ -32,18 +32,6 @@ class PurchaseOrder < ActiveRecord::Base
                              id_client: client[0].id,
                              closed: false
       end
-<<<<<<< HEAD
-        ingredient = Ingredient.where(code: purchases.cod_material)
-        purchase_order_act = PurchaseOrder.where(code: purchases.num_orden)
-        if PurchaseOrderItems.where(id_purchase_order: purchase_order_act[0].id, 
-                                    position: purchases.num_posicion).empty?
-        PurchaseOrderItems.create id_purchase_order: purchase_order_act[0].id,
-                                  id_ingredient: ingredient[0].id,
-                                  position:purchases.num_posicion,
-                                  quantity:purchases.can_sacos,
-                                  sack:sack,
-                                  total_weight: purchases.can_pedido
-=======
       ingredient = Ingredient.where(code: purchases.cod_material)
       purchase_order_act = PurchaseOrder.where(code: purchases.num_orden)
       if PurchaseOrderItems.where(id_purchase_order: purchase_order_act[0].id, 
@@ -54,7 +42,6 @@ class PurchaseOrder < ActiveRecord::Base
                                 quantity:purchases.can_sacos,
                                 sack:sack,
                                 total_weight: purchases.can_pedido
->>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
       end
     end
   end
