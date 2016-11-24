@@ -1,8 +1,10 @@
 <% title "Editar ticket" %>
 <%= form_for @ticket, :url=>ticket_path(@ticket), :html=>{:method=>:put, :id=>'ticket_edit_form'} do |f| %> 
 <%= render_error_messages(f.error_messages) %>
+
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
-<div class="field"><%=h @ticket.ticket_type.description %></div>
+<%= f.radio_button :ticket_type_id, "1" %> Recepción <%= f.radio_button :ticket_type_id, "2" %> Despacho
+
 <label for="client_id" class="small">Cliente/Maquila:</label>
 <div class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="driver_id" class="small">Chofer:</label>

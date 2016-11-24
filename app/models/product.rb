@@ -6,6 +6,8 @@ class Product < ActiveRecord::Base
   belongs_to :base_unit
   has_many :product_parameter_type_ranges
   has_many :warehouses
+  has_many :sale_order_items
+
 
   accepts_nested_attributes_for :product_parameter_type_ranges
 

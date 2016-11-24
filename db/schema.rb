@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20161109011003) do
-=======
-ActiveRecord::Schema.define(version: 20161112082506) do
->>>>>>> master
+ActiveRecord::Schema.define(version: 20161120152832) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -207,6 +203,7 @@ ActiveRecord::Schema.define(version: 20161112082506) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
+    t.integer  "warehouse_id"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -592,6 +589,29 @@ ActiveRecord::Schema.define(version: 20161112082506) do
     t.datetime "updated_at"
   end
 
+  create_table "sales_order", force: true do |t|
+    t.string   "code"
+    t.string   "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order_items", force: true do |t|
+    t.integer  "sale_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_wheight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "scales", force: true do |t|
     t.string   "name",                           null: false
     t.float    "maximum_weight"
@@ -640,6 +660,7 @@ ActiveRecord::Schema.define(version: 20161112082506) do
     t.boolean  "notified",                 default: true
     t.string   "address"
     t.integer  "document_type_id"
+    t.integer  "id_order"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -720,18 +741,24 @@ ActiveRecord::Schema.define(version: 20161112082506) do
   create_table "warehouses", force: true do |t|
     t.integer  "ingredient_id"
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.integer  "warehouse_type_id"
     t.string   "code",                            null: false
     t.string   "name",                            null: false
     t.float    "stock",             default: 0.0
     t.string   "location",                        null: false
 =======
+=======
+>>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.integer  "product_id"
     t.integer  "warehouse_types_id"
     t.string   "code",                             null: false
     t.string   "name",                             null: false
     t.float    "stock",              default: 0.0
+<<<<<<< HEAD
 >>>>>>> master
+=======
+>>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -739,18 +766,24 @@ ActiveRecord::Schema.define(version: 20161112082506) do
 
   add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
 <<<<<<< HEAD
+<<<<<<< HEAD
   add_index "warehouses", ["warehouse_type_id"], name: "index_warehouses_on_warehouse_type_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "code",        null: false
     t.string   "description", null: false
 =======
+=======
+>>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
   add_index "warehouses", ["product_id"], name: "index_warehouses_on_product_id", using: :btree
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "name",       null: false
+<<<<<<< HEAD
 >>>>>>> master
+=======
+>>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.datetime "created_at"
     t.datetime "updated_at"
   end

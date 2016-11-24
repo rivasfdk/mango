@@ -62,6 +62,9 @@ Mango::Application.routes.draw do
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/do_change' => "warehouses#do_change", :via => :post
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/adjust' => "warehouses#adjust", :via => :get
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/do_adjust' => "warehouses#do_adjust", :via => :post
+  match 'purchases_order/get_all' => "purchases_order#get_all", :via => :get
+  match 'sales_order/get_all' => "sales_order#get_all", :via => :get
+
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"

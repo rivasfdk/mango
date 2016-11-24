@@ -15,7 +15,6 @@ gem 'thinreports-rails'
 gem 'ruby-units'
 gem 'gnuplot'
 gem 'axlsx_rails', "~> 0.3.0"
-gem 'websocket-rails'
 
 gem 'sass-rails'
 gem 'coffee-rails'

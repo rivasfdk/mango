@@ -9,6 +9,11 @@ class Ingredient < ActiveRecord::Base
   has_many :warehouses
   has_many :purchase_order_items
 
+  has_many :warehouses
+
+  has_many :purchase_order_items
+  has_many :sale_order_items
+
   accepts_nested_attributes_for :ingredient_parameter_type_ranges
 
   before_save :check_stock
