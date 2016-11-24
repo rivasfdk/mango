@@ -203,7 +203,6 @@ ActiveRecord::Schema.define(version: 20161120152832) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
-    t.integer  "warehouse_id"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -740,50 +739,22 @@ ActiveRecord::Schema.define(version: 20161120152832) do
 
   create_table "warehouses", force: true do |t|
     t.integer  "ingredient_id"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    t.integer  "warehouse_type_id"
-    t.string   "code",                            null: false
-    t.string   "name",                            null: false
-    t.float    "stock",             default: 0.0
-    t.string   "location",                        null: false
-=======
-=======
->>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.integer  "product_id"
     t.integer  "warehouse_types_id"
     t.string   "code",                             null: false
     t.string   "name",                             null: false
     t.float    "stock",              default: 0.0
-<<<<<<< HEAD
->>>>>>> master
-=======
->>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
-<<<<<<< HEAD
-<<<<<<< HEAD
-  add_index "warehouses", ["warehouse_type_id"], name: "index_warehouses_on_warehouse_type_id", using: :btree
-
-  create_table "warehouses_types", force: true do |t|
-    t.string   "code",        null: false
-    t.string   "description", null: false
-=======
-=======
->>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
   add_index "warehouses", ["product_id"], name: "index_warehouses_on_product_id", using: :btree
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
 
   create_table "warehouses_types", force: true do |t|
     t.string   "name",       null: false
-<<<<<<< HEAD
->>>>>>> master
-=======
->>>>>>> 777d4b20f7365d35fc7cdbd539a48dd4574332ab
     t.datetime "created_at"
     t.datetime "updated_at"
   end
