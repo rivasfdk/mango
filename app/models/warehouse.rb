@@ -26,6 +26,29 @@ class Warehouse < ActiveRecord::Base
       false
     end
   end
+
+
+  def new_amount(amount)
+    new_stock = self.stock + amount.to_f
+    new_stock.to_f
+  end
+
+
+  def fill(params)
+    if is_a_number? params[:amount]
+      amount = params[:amount].to_f
+      logger.debug("Stock: #{self.stock}")
+      logger.debug("Capacidad: #{self.size}")
+      if amount <= 0 or self.stock + amount > self.size
+        return false
+      end
+      w = Warehouse.new
+      w.stock = amount
+      w.save
+    else
+      return false
+    end
+  end
   
 
   def change(params, user_id)

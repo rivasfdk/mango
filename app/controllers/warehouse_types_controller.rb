@@ -57,7 +57,4 @@ class WarehouseTypesController < ApplicationController
     redirect_to :warehouse_types
   end
 
-   #def warehouses_ingredients
-    #render xml: WarehouseTypes.get_hoppers_ingredients, root: 'warehouse_types'
-  #end
 end

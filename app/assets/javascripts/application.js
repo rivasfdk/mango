@@ -351,6 +351,10 @@ function submit_warehouse_change_form() {
     $('#warehouse_change_form').submit();
 }
 
+function submit_warehouse_fill_form() {
+    $('#warehouse_fill_form').submit();
+}
+
 function submit_warehouse_adjust_form() {
     $('#warehouse_adjust_form').submit();
 }

@@ -62,7 +62,7 @@ class WarehousesController < ApplicationController
     @warehouse = Warehouse.find params[:id]
   end
 
-  def do_change
+  def do_change_ingredient
     @warehouse = Warehouse.find params[:id]
     @warehouse.update_attributes(ingredient_id: params[:ingredient_id])
     if @warehouse.valid?
@@ -73,6 +73,50 @@ class WarehousesController < ApplicationController
       flash[:notice] = "No se pudo cambiar el ingredient del almacen"
     end
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+  end
+
+  def do_change_product
+    @warehouse = Warehouse.find params[:id]
+    @warehouse.update_attributes(product_id: params[:product_id])
+    if @warehouse.valid?
+      @warehouse.save
+      flash[:notice] = "Cambio de producto terminado realizado con éxito"
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo cambiar el producto terminado del almacen"
+    end
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+  end
+
+
+  def fill
+    @warehouse = Warehouse.find params[:id]
+    if @warehouse.stock < 0
+      flash[:type] = 'error'
+      flash[:notice] = "El almacen tiene existencia negativa, realice un ajuste primero"
+      redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+    end
+  end
+
+  def do_fill
+    @warehouse = Warehouse.find params[:id]
+    @warehouse.stock = params[:amount].to_f + @warehouse.stock
+    @warehouse.update_attributes(params[:stock])
+    if @warehouse.valid?
+      @warehouse.save
+      flash[:notice] = "Llenado realizado con éxito"
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo realizar el llenado de la tolva"
+  end
+    respond_to do |format|
+      format.html do
+        redirect_to warehouse_type_path(@warehouse.warehouse_types_id) 
+      end
+      format.xml do
+        render xml: {fill: true}
+      end
+    end
   end
 
   def adjust
