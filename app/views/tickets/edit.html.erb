@@ -47,6 +47,7 @@
       <%= f.fields_for :transactions do |builder| %>
         <% class_row, i = alternate_row_class(i) %>
         <% t = builder.object %>
+        <% binding.pry %>
         <tr class="<%= class_row %>">
           <td>
             <% if t.new_record? %>

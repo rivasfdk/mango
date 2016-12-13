@@ -91,6 +91,8 @@ class TicketsController < ApplicationController
   end
 
   def new
+    filessap = Dir.entries("/home/agromatic")
+
     @purchasesordersap = PedidoCompras1.all
     if @purchasesordersap.present?
       PurchaseOrder.import()
@@ -102,9 +104,11 @@ class TicketsController < ApplicationController
     @purchasesorder = PurchaseOrder.where(closed: false)
     @salesorder = SaleOrder.where(closed: false)
     @ticket = Ticket.new
+    @transaction = Transaction.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
     @trucks = Truck.includes(:carrier).where(frequent: true)
+    @lots = Lot.includes(:ingredient).where(active: true)
   end
 
   def edit

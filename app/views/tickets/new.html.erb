@@ -11,18 +11,9 @@
 <br/>
 
 </td>
-<div class="field"><%= f.collection_select :id_order, :ticket_type_id == 1 ? @order : @salesorder, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %><span>*</span></div>
-<br/>
-<%binding.pry%>
-</td>
-<div id= "purord">
-<label for="code" class="small">Orden de compra:</label>
-<div  class="field"><%= f.collection_select :id_order, @purchasesorder, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
-</div>
-
-<div id= "salord">
-<label for="code" class="small">Orden de venta:</label>
-<div class="field"><%= f.collection_select :id_order, @salesorder, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div id= "orders">
+  <div class="field"><%= f.collection_select :id_order, @purchasesorder, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %><span>*</span>
+  </div>
 </div>
 
 <label for="client_id" class="small">Cliente/Proveedor:</label>
@@ -47,5 +38,6 @@
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
+
 
 <% end %>
