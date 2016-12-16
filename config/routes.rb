@@ -103,7 +103,7 @@ Mango::Application.routes.draw do
   match 'reports/production_note' => 'reports#production_note', via: :post, as: 'production_note_report'
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
-    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges, :tickets
+    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
   resources :transactions, only: [:index, :new, :create]
   resources :alarms, only: [:create]
   resources :document_types, only: [:index]
@@ -149,6 +149,12 @@ Mango::Application.routes.draw do
         get 'change'
         get 'adjust'
       end
+    end
+  end
+
+  resources :tickets do
+    member do
+      get 'get_socket_data'
     end
   end
 

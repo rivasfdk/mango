@@ -1,0 +1,10 @@
+<% title "Cambiar materia prima" %>
+<%= form_for :change_ingredient, :url=>change_ingredient_warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:id=>'warehouse_change_ingredient_form'} do |f| %>
+  <label for="ingredient" class="small">Materia Prima:</label>
+  <div class="field"><%= f.collection_select :ingredient_id, Ingredient.all, :id, :name, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="stock" class="small">Existencia:</label>
+  <div class="field"><%= f.text_field :stock, :size=>'10' %><span>*</span></div>
+  <div class="clearfix"></div>
+  <br/><span class="required">* Campos obligatorios</span>
+<% end %>
+

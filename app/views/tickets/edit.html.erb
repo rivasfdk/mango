@@ -15,6 +15,51 @@
 <div class="field"><%=h @ticket.incoming_weight %></div>
 <label for="incoming_weight" class="small">Peso de salida:</label>
 <div class="field"><%=f.text_field :outgoing_weight, :size=>'20' %><span>*</span></div>
+
+<!-- dynamic weight -->
+
+<script>
+  $(document).ready(function()
+  {
+    $.ajax({
+      method: "GET",
+      url: "test.js",
+      dataType: "script"
+    });
+  });
+</script>
+
+
+<script>
+  jQuery(document).ready(function()
+  {
+    jQuery.getJSON(
+      "/ticket/get_socket_data"), data, function(data){
+      var result = "";
+      res = parseFloat(a[1]);
+      jQuery('.outgoing_weight input').val(res);
+    };
+  });
+</script>
+
+<script>
+  $(document).ready ->
+    $.ajax(
+     url: $("pre").data("source")
+      context: document.body
+    ).done (response) ->
+     $("pre").html response
+     return
+    return
+</script>
+
+<div class="field"><%=h @ticket.get_socket_data %></div>
+
+
+
+
+<!-- end of dynamic weight -->
+
 <% if @ticket.ticket_type_id == 1 %>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
   <div class="field"><%= f.text_field :provider_weight, :size=>'20' %><span>*</span></div>
@@ -23,7 +68,7 @@
 <% end %>
 <label for="address" class="small">Direccion:</label>
 <div class="field"><%= f.text_field :address, :size=>'90' %><span>*</span></div>
-<label for="comment" class="small">Comentario;</label>
+<label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

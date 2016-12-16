@@ -3,15 +3,22 @@
 require 'socket'      # Sockets are in standard library
 
 class SerialThread
-  def incoming_weight
-	 hostname = '192.168.0.106'
+  def self.get_weight_from_socket
+	 hostname = '192.168.0.105'
 	 port = 20000
 
 	 s = TCPSocket.new(hostname, port)
 
-	 while line = s.gets   # Read lines from the socket
-    puts line.chop      # And print with platform line terminator
-	 end
-	 s.close               # Close the socket when done
+   while line = s.gets   # Read lines from the socket
+     @data = line.chomp      # And print with platform line terminator
+   end
+   s.close               # Close the socket when done
+
+	 #while line = s.gets   # Read lines from the socket
+   #  puts line.chop      # And print with platform line terminator
+	 #end
+	 #s.close               # Close the socket when done
+   
   end
 end
+

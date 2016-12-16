@@ -2,6 +2,7 @@
 
 include MangoModule
 
+
 class TicketsController < ApplicationController
   def index
     respond_to do |format|
@@ -193,4 +194,6 @@ class TicketsController < ApplicationController
     end
     redirect_to :tickets
   end
+
 end
+

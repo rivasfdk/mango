@@ -159,4 +159,13 @@ class Ticket < ActiveRecord::Base
     transactions = transactions.where('tickets.id = ?', ticket_id) unless ticket_id.nil?
     transactions
   end
+
+    def get_socket_data
+    @weight = SerialThread.get_weight_from_socket 
+    respond_to do |format|
+      format.json { render json: @weight }
+      end
+    end
+
 end
+ 
