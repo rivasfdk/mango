@@ -92,6 +92,7 @@ class TicketsController < ApplicationController
   end
 
   def new
+    @get_weight = Ticket.get_weight
     @purchasesordersap = PedidoCompras1.all
     if @purchasesordersap.present?
       PurchaseOrder.import()
@@ -194,6 +195,14 @@ class TicketsController < ApplicationController
     end
     redirect_to :tickets
   end
+
+def check_number
+    @old_number = params[:incoming_wieight] # number from the template
+    @new_number = SerialThread.get_weight_from_socket          # number changes
+    respond_to do |format|
+      format.js                             # render your js.erb template
+    end
+end
 
 end
 

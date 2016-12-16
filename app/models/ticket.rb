@@ -1,3 +1,5 @@
+require 'serialport'
+
 class Ticket < ActiveRecord::Base
   attr_protected :id
 
@@ -160,8 +162,8 @@ class Ticket < ActiveRecord::Base
     transactions
   end
 
-    def get_socket_data
-    @weight = SerialThread.get_weight_from_socket 
+    def self.get_weight
+    @weight = Connection.get_socket_data 
     respond_to do |format|
       format.json { render json: @weight }
       end
