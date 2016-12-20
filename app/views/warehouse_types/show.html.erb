@@ -1,4 +1,4 @@
-<% title "Almacen de #{@warehouse_type.name} " %>
+<% title "Almacenes de #{@warehouse_type.name} " %>
 <% i = 0 %>
 <% if @warehouses.any? %>
 <table id="tabledata">
@@ -23,9 +23,9 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h w[:code] %></td>
           <td><%= h w[:name] %></td>
-          <% if w.warehouse_types_id == 1 %>
+          <% if w.ingredient != nil %>
             <td><%= h w.ingredient.name %></td> 
-          <% elsif w.warehouse_types_id == 2 %>
+          <% else %>
             <td><%= h w.product.name %></td>
           <% end %>
           <td><%= h w[:stock] %></td>
@@ -33,9 +33,9 @@
                  
         <td class="left">
           <% if w.warehouse_types_id == 1 %>
-          <%= render_action_change_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+          <%= render_action_change_warehouse_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
           <% else %>
-          <%= render_action_change_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+          <%= render_action_change_warehouse_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
           <% end %>
           <%= render_action_fill_warehouse(fill_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %>
           <%= render_action_adjust(adjust_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %> <br />

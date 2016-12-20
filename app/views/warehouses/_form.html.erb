@@ -3,13 +3,22 @@
 <div class="field"><%= f.text_field :code, :size=>'20' %> <span>*</span></div>
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
-<label for="ingredient" class="small">Materia Prima:</label>
-<div class="field"><%= f.collection_select :ingredient_id, Ingredient.all, :id, :name, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
-<label for="product" class="small">Producto:</label>
-<div class="field"><%= f.collection_select :product_id, Product.all, :id, :name, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+
+<% if @warehouse_types.id == 1 %>
+  <label for="ingredient" class="small">Materia Prima:</label>
+  <div class="field"><%= f.collection_select :ingredient_id, Ingredient.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+<% elsif @warehouse_types.id == 2 %>
+  <label for="product" class="small">Producto:</label>
+  <div class="field"><%= f.collection_select :product_id, Product.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+<% else %> 
+  <label for="ing">Materia Prima:</label>
+  <div id="ingredient_menu" class="field"><%= f.collection_select :ingredient_id, Ingredient.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+
+  <label for="prod">Producto:</label>
+  <div id="product_menu" class="field";"><%= f.collection_select :product_id, Product.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+<% end %>
+
 <label for="size" class="small">Capacidad:</label>
 <div class="field"><%= f.text_field :size, :size=>'20' %> </div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
-
-

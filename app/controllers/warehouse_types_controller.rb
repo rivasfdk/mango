@@ -1,3 +1,6 @@
+# First warehouse_types created must be "Materia Prima"
+# And second one must be "Producto Terminado" 
+
 include MangoModule
 
 class WarehouseTypesController < ApplicationController
@@ -8,7 +11,7 @@ class WarehouseTypesController < ApplicationController
 
   def show
     @warehouse_type = WarehouseTypes.find params[:id]
-    @warehouses = Warehouse.all
+    @warehouses = @warehouse_type.warehouses
   end
 
   def create
@@ -42,7 +45,7 @@ class WarehouseTypesController < ApplicationController
     @warehouse_types = WarehouseTypes.find params[:id]
     @warehouse_types.eliminate
     if @warehouse_types.errors.empty?
-      flash[:notice] = "alamcen eliminado con éxito"
+      flash[:notice] = "Almacen eliminado con éxito"
     else
       logger.error("Error eliminando almacen: #{@warehouse_types.errors.inspect}")
       flash[:type] = 'error'

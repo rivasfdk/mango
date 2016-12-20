@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161114023854) do
+ActiveRecord::Schema.define(version: 20161219220602) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -203,7 +203,6 @@ ActiveRecord::Schema.define(version: 20161114023854) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
-    t.integer  "warehouse_id"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -585,6 +584,29 @@ ActiveRecord::Schema.define(version: 20161114023854) do
   create_table "roles", force: true do |t|
     t.string   "name",        null: false
     t.string   "description", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order", force: true do |t|
+    t.string   "code"
+    t.string   "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order_items", force: true do |t|
+    t.integer  "sale_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_wheight"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -114,12 +114,12 @@ module ActionsHelper
     return link_to image + " Cancelar", '#!', class: 'action action-cancel'
   end
 
-  def render_action_change_ingredient(url)
+  def render_action_change_warehouse_ingredient(url)
     image = image_tag('action-edit.png', alt: 'Cambiar materia prima')
     return link_to image + " Cambiar materia prima", url, class: 'action'
   end
 
-  def render_action_change_product(url)
+  def render_action_change_warehouse_product(url)
     image = image_tag('action-edit.png', alt: 'Cambiar producto terminado')
     return link_to image + " Cambiar producto terminado", url, class: 'action'
   end

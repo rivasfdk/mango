@@ -241,6 +241,10 @@ module MenuHelper
       menu = menu_for_warehouses_fill
     elsif c == 'warehouses' and a == 'adjust'
       menu = menu_for_warehouses_adjust
+    elsif c == 'warehouses' and a == 'change_ingredient' or a == 'do_change_ingredient'
+      menu = menu_for_warehouses_change_ingredient 
+    elsif c == 'warehouses' and a == 'change_product' or a == 'do_change_product'
+      menu = menu_for_warehouses_change_product   
     elsif c == 'warehouse_types' and a == 'index'
       menu = menu_for_warehouse_types_index
     elsif c == 'warehouse_types' and a == 'show'
@@ -1272,7 +1276,7 @@ module MenuHelper
 
 
   def menu_for_warehouses_new
-    menu = content_tag(:p, 'Nuevo almacen')
+    menu = content_tag(:p, "Nuevo Almacen de #{@warehouse_types.name}")
     menu += content_tag(:ul,
       render_back(warehouse_type_path(params[:warehouse_type_id])) +
       render_function('Guardar', 'Guardar almacen', "submit_warehouse_new_form()", 'button-execute.png')
@@ -1345,7 +1349,7 @@ module MenuHelper
   end
 
   def menu_for_warehouse_types_new
-    menu = content_tag(:p, 'Nuevo almacen')
+    menu = content_tag(:p, "Nuevo almacen")
     menu += content_tag(:ul,
       render_back(warehouse_types_path) +
       render_function('Guardar', 'Guardar tipo de parámetro', "submit_warehouse_type_new_form()", 'button-execute.png')

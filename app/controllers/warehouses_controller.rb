@@ -16,9 +16,9 @@ class WarehousesController < ApplicationController
   end
 
   def create
-    @warehouse = WarehouseTypes.find(params[:warehouse_type_id]).warehouses.new params[:warehouse]
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.create params[:warehouse]
     if @warehouse.save
-      # This should be an after_create callback
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
@@ -29,8 +29,7 @@ class WarehousesController < ApplicationController
 
   def update
     @warehouse = Warehouse.find params[:id]
-    @warehouse.update_attributes(params[:warehouse])
-    if @warehouse.save
+    if @warehouse.update_attributes(params[:warehouse])
       flash[:notice] = 'Almacen actualizado con éxito'
       redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
@@ -58,28 +57,32 @@ class WarehousesController < ApplicationController
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
-  def change
+  def change_ingredient
     @warehouse = Warehouse.find params[:id]
   end
 
   def do_change_ingredient
     @warehouse = Warehouse.find params[:id]
-    @warehouse.update_attributes(ingredient_id: params[:ingredient_id])
-    if @warehouse.valid?
-      @warehouse.save
+    new_ingredient = params[:change_ingredient][:new_ingredient_id]
+    new_stock = params[:change_ingredient][:stock]
+    if @warehouse.update_attributes(ingredient_id: new_ingredient, stock: new_stock)
       flash[:notice] = "Cambio de materia prima realizado con éxito"
     else
       flash[:type] = 'error'
-      flash[:notice] = "No se pudo cambiar el ingredient del almacen"
+      flash[:notice] = "No se pudo cambiar el ingrediente del almacen"
     end
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
+  def change_product
+    @warehouse = Warehouse.find params[:id]
+  end
+
   def do_change_product
     @warehouse = Warehouse.find params[:id]
-    @warehouse.update_attributes(product_id: params[:product_id])
-    if @warehouse.valid?
-      @warehouse.save
+    new_product = params[:change_product][:new_product_id]  # Gets new product chosen by user
+    new_stock = params[:change_product][:stock]
+    if @warehouse.update_attributes(product_id: new_product, stock: new_stock) 
       flash[:notice] = "Cambio de producto terminado realizado con éxito"
     else
       flash[:type] = 'error'
@@ -100,10 +103,8 @@ class WarehousesController < ApplicationController
 
   def do_fill
     @warehouse = Warehouse.find params[:id]
-    @warehouse.stock = params[:amount].to_f + @warehouse.stock
-    @warehouse.update_attributes(params[:stock])
-    if @warehouse.valid?
-      @warehouse.save
+    new_stock = params[:do_fill][:amount].to_f + @warehouse.stock
+    if @warehouse.update_attributes(stock: new_stock)
       flash[:notice] = "Llenado realizado con éxito"
     else
       flash[:type] = 'error'
@@ -126,8 +127,7 @@ class WarehousesController < ApplicationController
   def do_adjust
     @warehouse = Warehouse.find params[:id]
     @warehouse.update_attributes(stock: params[:stock])
-    if @warehouse.valid?
-      @warehouse.save
+    if @warehouse.save
       flash[:notice] = "Almacen ajustado exitosamente"
     else
       flash[:type] = 'error'
@@ -139,11 +139,12 @@ class WarehousesController < ApplicationController
   private
 
   def fill_new
-    @warehouse_types = WarehouseTypes.all
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.build
   end
 
   def fill_edit
-    @warehouse_types = WarehouseTypes.all
-    @warehouse = Warehouse.find params[:id]
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.find params[:id]
   end
 end
