@@ -6,7 +6,7 @@
       <tr>
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
-        <% if @warehouse_type.id == 1 %>
+        <% if @warehouses.first.ingredient_id != nil %>
           <th>Materia prima<span class="order_arrow"></span></th>
         <% else %>
           <th>Producto terminado<span class="order_arrow"></span></th>
@@ -23,7 +23,7 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h w[:code] %></td>
           <td><%= h w[:name] %></td>
-          <% if w.ingredient != nil %>
+          <% if w.ingredient_id != nil %>
             <td><%= h w.ingredient.name %></td> 
           <% else %>
             <td><%= h w.product.name %></td>
@@ -32,7 +32,7 @@
           <td><%= h w[:size] %></td>
                  
         <td class="left">
-          <% if w.warehouse_types_id == 1 %>
+          <% if w.ingredient_id != nil %>
           <%= render_action_change_warehouse_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
           <% else %>
           <%= render_action_change_warehouse_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />

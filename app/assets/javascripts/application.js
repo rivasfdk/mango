@@ -347,8 +347,12 @@ function submit_warehouse_edit_form() {
     $('#warehouse_edit_form').submit();
 }
 
-function submit_warehouse_change_form() {
-    $('#warehouse_change_form').submit();
+function submit_warehouse_change_ingredient_form() {
+    $('#warehouse_change_ingredient_form').submit();
+}
+
+function submit_warehouse_change_product_form() {
+    $('#warehouse_change_product_form').submit();
 }
 
 function submit_warehouse_fill_form() {

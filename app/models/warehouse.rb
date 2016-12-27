@@ -10,6 +10,9 @@ class Warehouse < ActiveRecord::Base
   validates :code, :name, length: {within: 3..40}
   validates :stock, numericality: {greater_than_or_equal_to: 0}
 
+  validate :ingredient_id_xor_product_id
+
+
   def adjust(params)
     if is_a_number? params[:stock]
       new_stock = params[:stock].to_f
@@ -87,6 +90,13 @@ class Warehouse < ActiveRecord::Base
     s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) != nil
   end
 
+  private 
+
+    def ingredient_id_xor_product_id
+      unless ingredient_id.blank? ^ product_id.blank?
+        errors.add(:base, "Specify a charge or a payment, not both")
+      end
+    end
 end
 
 

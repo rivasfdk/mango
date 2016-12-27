@@ -1,17 +1,17 @@
 <% title "Almacenes" %>
 <% if @warehouse_types.any? %>
 <div id="warehouse_types-content" class="yui3-g">
-  <% @warehouse_types.each do |s| %>
+  <% @warehouse_types.each do |t| %>
   <div class="module yui3-u-1-2">
-    <% if s.id == 1 %>
-      <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_type_path(s) %>
+    <% if t.name.downcase == "materia prima" %>
+      <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_type_path(t) %>
     <% else %>
-      <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_type_path(s) %>
+      <%= link_to image_tag('products-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_type_path(t) %>
     <% end %>
       <div class="module-content">
-        <h2><%= link_to s.name, warehouse_type_path(s) %></h2>
-        <p><%= render_action_edit(edit_warehouse_type_path(s)) %></p>
-        <p><%= render_action_delete(warehouse_type_path(s), "Desea borrar el almacen '#{s.name}'?") %></p>
+        <h2><%= link_to t.name, warehouse_type_path(t) %></h2>
+        <p><%= render_action_edit(edit_warehouse_type_path(t)) %></p>
+        <p><%= render_action_delete(warehouse_type_path(t), "Desea borrar el almacen '#{t.name}'?") %></p>
       </div>
   </div>
   <% end %>
@@ -19,4 +19,3 @@
 <% else %>
   <p>No se han creado almacenes</p>
 <% end %>
-
