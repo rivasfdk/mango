@@ -7,41 +7,40 @@ class PurchaseOrder < ActiveRecord::Base
     "#{self.code}"
   end
 
-  def self.import
-    pur_ord = PedidoCompras1.all
-    pur_ord.each do |purchases|
-      if Ingredient.where(code: purchases.cod_material).empty?
-        Ingredient.create code: purchases.cod_material,
-                          name: purchases.nom_material
-        ingredient = Ingredient.where(code: purchases.cod_material)
-        Lot.create code: purchases.cod_material,
+  def self.import(purchasesorders)
+    purchasesorders.each do |purchases|
+      if Ingredient.where(code: purchases['mat_code']).empty?
+        Ingredient.create code: purchases['mat_code'],
+                          name: purchases['mat_name']
+        ingredient = Ingredient.where(code: purchases['mat_code'])
+        Lot.create code: purchases['mat_code'],
                    ingredient_id: ingredient[0].id,
                    density: 1
       end
-      if Client.where(code: purchases.cod_proveedor).empty?
-        Client.create code: purchases.cod_proveedor,
-                      name: purchases.nom_proveedor,
-                      ci_rif: purchases.rif_proveedor,
-                      address: purchases.dir_proveedor,
-                      tel1: purchases.tel_proveedor
+      if Client.where(code: purchases['client_code']).empty?
+        Client.create code: purchases['client_code'],
+                      name: purchases['client_name'],
+                      ci_rif: purchases['client_rif'],
+                      address: purchases['client_address'],
+                      tel1: purchases['client_phone']
       end
-      client = Client.where(code: purchases.cod_proveedor)
-      sack = purchases.pre_material.downcase == 's' ? true : false
-      if PurchaseOrder.where(code: purchases.num_orden).empty?
-        PurchaseOrder.create code: purchases.num_orden,
+      client = Client.where(code: purchases['client_code'])
+      sack = purchases['sack'].downcase == 's' ? true : false
+      if PurchaseOrder.where(code: purchases['order_code']).empty?
+        PurchaseOrder.create code: purchases['order_code'],
                              id_client: client[0].id,
                              closed: false
       end
-      ingredient = Ingredient.where(code: purchases.cod_material)
-      purchase_order_act = PurchaseOrder.where(code: purchases.num_orden)
+      ingredient = Ingredient.where(code: purchases['mat_code'])
+      purchase_order_act = PurchaseOrder.where(code: purchases['order_code'])
       if PurchaseOrderItems.where(id_purchase_order: purchase_order_act[0].id, 
-                                  position: purchases.num_posicion).empty?
+                                  position: purchases['position']).empty?
       PurchaseOrderItems.create id_purchase_order: purchase_order_act[0].id,
                                 id_ingredient: ingredient[0].id,
-                                position:purchases.num_posicion,
-                                quantity:purchases.can_sacos,
+                                position:purchases['position'],
+                                quantity:purchases['quantity'],
                                 sack:sack,
-                                total_weight: purchases.can_pedido
+                                total_weight: purchases['total_weight']
       end
     end
   end
