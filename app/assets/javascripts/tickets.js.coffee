@@ -80,24 +80,16 @@ $ ->
 
 
 ticket_type_changed = ->
-  if $("#orden").is(':checked')
-    url = (if $("#ticket_ticket_type_id_1").is(':checked') then '/purchases_order/get_all' else '/sales_order/get_all')
-    select = $("#ticket_id_order")
-    $.getJSON url, (data) ->
-      orders = data
-      select.empty()
-      $.each orders, (_, order) ->
-        select.append new Option(order.to_collection_select, order.id)
-      select.trigger "chosen:updated"
-
-hide_orders = ->
-  if $("#orden").is(':checked')
-    ticket_type_changed
-    $("#orders").show()
-  else
-    $("#orders").hide()
+  url = (if $("#ticket_ticket_type_id_1").is(':checked') then '/purchases_order/get_all' else '/sales_order/get_all')
+  $("#order_type").html((if $("#ticket_ticket_type_id_1").is(':checked') then 'Orden de compra' else 'Orden de salida'))
+  select = $("#ticket_id_order")
+  $.getJSON url, (data) ->
+    orders = data
+    select.empty()
+    $.each orders, (_, order) ->
+      select.append new Option(order.to_collection_select, order.id)
+    select.trigger "chosen:updated"
 
 $ ->
   $("#ticket_ticket_type_id_1").change ticket_type_changed
   $("#ticket_ticket_type_id_2").change ticket_type_changed
-  $("#orden").change hide_orders

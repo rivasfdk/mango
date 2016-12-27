@@ -91,12 +91,23 @@ class TicketsController < ApplicationController
   end
 
   def new
-    filessap = Dir.entries("/home/agromatic")
-
-    @purchasesordersap = PedidoCompras1.all
-    if @purchasesordersap.present?
-      PurchaseOrder.import()
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_purchase_order")
+      sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+      if File.exists?(sharepath+"/orden_compra.txt")
+        orders = []
+        purchasesordersap = File.open(sharepath+"/orden_compra.txt").readlines
+        purchasesordersap.each do |line|
+          keys = ["order_code","position","mat_code","mat_name","total_weight","sack","quantity","client_code","client_name","client_rif","client_address","client_phone"]
+          line = line.chomp
+          values = line.split(';')
+          order = keys.zip(values).to_h
+          orders.push(order)
+        end
+        PurchaseOrder.import(orders)
+      end
     end
+    
     @salesordersap = PedidoVentas.all
     if @salesordersap.present?
       SaleOrder.import()
