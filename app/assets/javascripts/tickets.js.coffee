@@ -86,6 +86,7 @@ ticket_type_changed = ->
   $.getJSON url, (data) ->
     orders = data
     select.empty()
+    select.append new Option("")
     $.each orders, (_, order) ->
       select.append new Option(order.to_collection_select, order.id)
     select.trigger "chosen:updated"
@@ -93,3 +94,18 @@ ticket_type_changed = ->
 $ ->
   $("#ticket_ticket_type_id_1").change ticket_type_changed
   $("#ticket_ticket_type_id_2").change ticket_type_changed
+
+id_order_changed = ->
+  url = (if $("#ticket_ticket_type_id_1").is(':checked') then '/purchases_order/get_order_data' else '/sales_order/get_order_data')
+  select = $("#ticket_client_id")
+  params = {}
+  params["id_order"] = $("#ticket_id_order").val()
+  $.getJSON url, params, (data) ->
+    client = data
+    console.log client.name
+    select.empty()
+    select.append new Option(client.name,client.id)
+    select.trigger "chosen:updated"
+
+$ ->
+  $("#id_order").change id_order_changed

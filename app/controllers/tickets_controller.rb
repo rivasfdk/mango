@@ -92,25 +92,16 @@ class TicketsController < ApplicationController
 
   def new
     mango_features = get_mango_features()
-    if mango_features.include?("sap_purchase_order")
-      sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
-      if File.exists?(sharepath+"/orden_compra.txt")
-        orders = []
-        purchasesordersap = File.open(sharepath+"/orden_compra.txt").readlines
-        purchasesordersap.each do |line|
-          keys = ["order_code","position","mat_code","mat_name","total_weight","sack","quantity","client_code","client_name","client_rif","client_address","client_phone"]
-          line = line.chomp
-          values = line.split(';')
-          order = keys.zip(values).to_h
-          orders.push(order)
-        end
-        PurchaseOrder.import(orders)
+    if mango_features.include?("sap_romano")
+      files = Dir.entries(sharepath)
+      porders = PurchaseOrder.import(files)
+      if not porders.empty?
+        PurchaseOrder.create_orders(porders)
       end
-    end
-    
-    @salesordersap = PedidoVentas.all
-    if @salesordersap.present?
-      SaleOrder.import()
+      sorders = SaleOrder.import(files)
+      if not sorders.empty?
+        SaleOrder.create_orders(sorders)
+      end
     end
     @purchasesorder = PurchaseOrder.where(closed: false)
     @salesorder = SaleOrder.where(closed: false)

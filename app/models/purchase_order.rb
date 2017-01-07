@@ -7,7 +7,26 @@ class PurchaseOrder < ActiveRecord::Base
     "#{self.code}"
   end
 
-  def self.import(purchasesorders)
+  def self.import(files)
+    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+      orders = []
+      files.each do |file|
+        file = file.downcase
+        if file.include? "orden_compra"
+          purchasesordersap = File.open(sharepath+"/orden_compra.txt").readlines
+          purchasesordersap.each do |line|
+            keys = ["order_code","position","mat_code","mat_name","total_weight","sack","quantity","client_code","client_name","client_rif","client_address","client_phone"]
+            line = line.chomp
+            values = line.split(';')
+            order = keys.zip(values).to_h
+            orders.push(order)
+          end
+        end
+      end
+      return orders
+  end
+
+  def self.create_orders(purchasesorders)
     purchasesorders.each do |purchases|
       if Ingredient.where(code: purchases['mat_code']).empty?
         Ingredient.create code: purchases['mat_code'],
