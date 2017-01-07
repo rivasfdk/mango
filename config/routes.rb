@@ -65,6 +65,8 @@ Mango::Application.routes.draw do
   
   match 'purchases_order/get_all' => "purchases_order#get_all", :via => :get
   match 'sales_order/get_all' => "sales_order#get_all", :via => :get
+  match 'purchases_order/get_order_data' => "purchases_order#get_order_data", :via => :get
+  match 'sales_order/get_order_data' => "sales_order#get_order_data", :via => :get
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
