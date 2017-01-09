@@ -109,3 +109,26 @@ id_order_changed = ->
 
 $ ->
   $("#id_order").change id_order_changed
+
+captura = true
+
+update_weight = ->
+  if captura and self.location.href.includes('/tickets/new')
+    socket = new WebSocket('ws://192.168.1.106:2000')
+    socket.onopen = ()->
+      console.log "conected!"
+    socket.onmessage = (msg)->
+      $("#ticket_incoming_weight").val(msg.data)
+
+$ ->
+  setInterval(update_weight, 1000)
+
+capture_weight = ->
+  if captura
+    captura = false
+  else
+    captura = true
+
+$ ->
+  $("#boton_capturar").click capture_weight
+
