@@ -91,20 +91,7 @@ class TicketsController < ApplicationController
   end
 
   def new
-    mango_features = get_mango_features()
-    if mango_features.include?("sap_romano")
-      files = Dir.entries(sharepath)
-      porders = PurchaseOrder.import(files)
-      if not porders.empty?
-        PurchaseOrder.create_orders(porders)
-      end
-      sorders = SaleOrder.import(files)
-      if not sorders.empty?
-        SaleOrder.create_orders(sorders)
-      end
-    end
-    @purchasesorder = PurchaseOrder.where(closed: false)
-    @salesorder = SaleOrder.where(closed: false)
+    @purchasesorder = []
     @ticket = Ticket.new
     @transaction = Transaction.new
     @clients = Client.all
@@ -199,4 +186,5 @@ class TicketsController < ApplicationController
     end
     redirect_to :tickets
   end
+
 end

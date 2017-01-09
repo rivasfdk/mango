@@ -1,5 +1,6 @@
 Mango::Application.routes.draw do
 
+
   match 'ingredients/search' => "ingredients#search", :via => :get, :as => 'ingredient_search'
   match 'ingredients/catalog' => "ingredients#catalog", :via => :get, :as => 'ingredient_catalog'
   match 'ingredients/select' => "ingredients#select", :via => :get, :as => 'ingredient_select'
@@ -62,11 +63,6 @@ Mango::Application.routes.draw do
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/do_change' => "warehouses#do_change", :via => :post
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/adjust' => "warehouses#adjust", :via => :get
   match 'warehouse_types/:warehouse_types_id/warehouses/:id/do_adjust' => "warehouses#do_adjust", :via => :post
-  
-  match 'purchases_order/get_all' => "purchases_order#get_all", :via => :get
-  match 'sales_order/get_all' => "sales_order#get_all", :via => :get
-  match 'purchases_order/get_order_data' => "purchases_order#get_order_data", :via => :get
-  match 'sales_order/get_order_data' => "sales_order#get_order_data", :via => :get
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
