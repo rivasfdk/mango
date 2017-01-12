@@ -20,7 +20,7 @@ class Transaction < ActiveRecord::Base
 
     previous_transaction = Transaction.where(['id < ? and content_type = ? and content_id = ?',
       self.id, self.content_type, self.content_id]).order('id desc').first
-
+binding.pry
     if self.destroyed?
       unless previous_transaction.nil?
         new_stock_after = previous_transaction.stock_after

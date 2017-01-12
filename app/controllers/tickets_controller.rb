@@ -81,6 +81,8 @@ class TicketsController < ApplicationController
   def create
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
+    @ticket.user_id = (User.find session[:user_id]).id
+    binding.pry
     if @ticket.save
       flash[:notice] = 'Ticket guardado con éxito'
       redirect_to :tickets
@@ -134,6 +136,7 @@ class TicketsController < ApplicationController
   end
 
   def update
+    binding.pry
     @ticket = Ticket.find params[:id]
     redirect_to :tickets unless @ticket.open
     @ticket.update_attributes(params[:ticket])
@@ -208,10 +211,8 @@ class TicketsController < ApplicationController
 
   def close
     @ticket = Ticket.find params[:id]
-    binding.pry
     @ticket.update(:open => false, :outgoing_date => Time.now)
-    self.print
-    #redirect_to action: 'index'
+    redirect_to action: 'index'
   end
 
 end
