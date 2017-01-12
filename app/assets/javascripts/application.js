@@ -4,6 +4,7 @@
 //= require jquery-ui/datepicker-es
 //= require chosen.jquery
 //= require_tree .
+//= require websocket_rails/main
 //= stub dynamic_clients
 //= stub jquery.flot.axislabels
 
@@ -55,6 +56,8 @@ $(function(){
     $('#report_ticket_content_type_1').trigger('change');
     $('#report_ticket_content_type_2').trigger('change');
     $('#report_by_select_ingredients').trigger('change');
+    $('#orden').trigger('change');
+    $("#ticket_incoming_weight").val('####');
     hideProductLots();
 });
 
@@ -288,6 +291,10 @@ function submit_truck_edit_form() {
 
 function submit_ticket_new_form() {
     $('#ticket_new_form').submit();
+}
+
+function submit_ticket_edit_form() {
+    $('#ticket_edit_form').submit();
 }
 
 function submit_ticket_repair_form() {

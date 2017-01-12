@@ -25,7 +25,6 @@ update_transaction_lots = ->
     select.empty()
     $.each lots, (_, lot) ->
       select.append new Option(lot.to_collection_select, lot.id)
-
     select.trigger "chosen:updated"
 
 show_sack_fields = ->
@@ -78,3 +77,60 @@ content_type_changed = ->
 $ ->
   $("#ticket_content_type_1, #report_ticket_content_type_1").change content_type_changed
   $("#ticket_content_type_2, #report_ticket_content_type_2").change content_type_changed
+
+
+ticket_type_changed = ->
+  url = (if $("#ticket_ticket_type_id_1").is(':checked') then '/ticket_orders/get_all_reception' else '/ticket_orders/get_all_dispatch')
+  $("#order_type").html((if $("#ticket_ticket_type_id_1").is(':checked') then 'Orden de compra' else 'Orden de salida'))
+  select = $("#ticket_id_order")
+  $.getJSON url, (data) ->
+    orders = data
+    select.empty()
+    select.append new Option("")
+    $.each orders, (_, order) ->
+      select.append new Option(order.to_collection_select, order.id)
+    select.trigger "chosen:updated"
+
+$ ->
+  $("#ticket_ticket_type_id_1").change ticket_type_changed
+  $("#ticket_ticket_type_id_2").change ticket_type_changed
+
+id_order_changed = ->
+  url = '/ticket_orders/get_order_data'
+  client_order = $("#ticket_client_id")
+  params = {}
+  params["id_order"] = $("#ticket_id_order").val()
+  $.getJSON url, params, (data) ->
+    client = data
+    console.log client.name
+    console.log client.address
+    client_order.empty()
+    client_order.append new Option(client.name,client.id)
+    client_order.trigger "chosen:updated"
+    $("#ticket_address").val(client.address)
+
+$ ->
+  $("#id_order").change id_order_changed
+
+captura = true
+
+update_weight = ->
+  if captura and self.location.href.includes('/tickets/new')
+    socket = new WebSocket('ws://192.168.1.106:2000')
+    socket.onopen = ()->
+      console.log "conected!"
+    socket.onmessage = (msg)->
+      $("#ticket_incoming_weight").val(msg.data)
+
+$ ->
+  setInterval(update_weight, 1000)
+
+capture_weight = ->
+  if captura
+    captura = false
+  else
+    captura = true
+
+$ ->
+  $("#boton_capturar").click capture_weight
+

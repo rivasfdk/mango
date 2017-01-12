@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150925214530) do
+ActiveRecord::Schema.define(version: 20170110013304) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -565,6 +565,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.boolean  "notified",                 default: true
     t.string   "address"
     t.integer  "document_type_id"
+    t.integer  "id_order"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -575,6 +576,29 @@ ActiveRecord::Schema.define(version: 20150925214530) do
 
   create_table "tickets_numbers", force: true do |t|
     t.string   "number",     default: "0000000001"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_order", force: true do |t|
+    t.string   "code"
+    t.boolean  "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_order_items", force: true do |t|
+    t.integer  "ticket_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_weight"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -640,6 +664,28 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "role_id"
+  end
+
+  create_table "warehouses", force: true do |t|
+    t.integer  "ingredient_id"
+    t.integer  "product_id"
+    t.integer  "warehouse_types_id"
+    t.string   "code",                             null: false
+    t.string   "name",                             null: false
+    t.float    "stock",              default: 0.0
+    t.float    "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "warehouses", ["ingredient_id"], name: "index_warehouses_on_ingredient_id", using: :btree
+  add_index "warehouses", ["product_id"], name: "index_warehouses_on_product_id", using: :btree
+  add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
+
+  create_table "warehouses_types", force: true do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

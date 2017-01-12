@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  order_type: false
+  client_id: 1
+  document_type_id: 1
+  document_number: MyString
+  closed: false
+
+two:
+  code: MyString
+  order_type: false
+  client_id: 1
+  document_type_id: 1
+  document_number: MyString
+  closed: false

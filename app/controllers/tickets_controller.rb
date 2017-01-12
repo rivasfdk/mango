@@ -1,4 +1,4 @@
-# encoding: UTF-8
+  # encoding: UTF-8
 
 include MangoModule
 
@@ -81,11 +81,55 @@ class TicketsController < ApplicationController
   def create
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
-    respond_to do |format|
-      format.json do
-        @ticket.save
-        render json: @ticket.errors
+    if @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+   else
+      new
+      render :new
+    end
+  end
+
+  def new
+    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      begin
+        files = Dir.entries(sharepath)
+      rescue
+        files = []
       end
+      if files.any?
+        orders = TicketOrder.import(files)
+        if not orders.empty?
+          TicketOrder.create_orders(orders)
+        end
+      end
+    end
+    @rorders = TicketOrder.where(order_type: true,closed: false)
+    @ticket = Ticket.new
+    @transaction = Transaction.new
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    @lots = Lot.includes(:ingredient).where(active: true)
+  end
+
+  def edit
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      TicketOrder.create_transactions(params[:id])
+    end
+    @ticket = Ticket.find params[:id], :include => :transactions
+    @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
     end
   end
 
@@ -95,27 +139,28 @@ class TicketsController < ApplicationController
     @ticket.update_attributes(params[:ticket])
     @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
       t.user_id = @ticket.user_id
       t.client_id = @ticket.client_id
       t.comment = @ticket.comment
       t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
     end
     @ticket.outgoing_date = Time.now
-    @ticket.open = false
-    respond_to do |format|
-      format.html do
-        if @ticket.save
-          flash[:notice] = 'Ticket guardado con éxito'
-          redirect_to :tickets
-        else
-          edit
-          render :edit
-        end
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record? || !t.notified
       end
-      format.json do
-        @ticket.save
-        render json: @ticket.errors
-      end
+      @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+    else
+      edit
+      render :edit
     end
   end
 
@@ -160,4 +205,13 @@ class TicketsController < ApplicationController
     end
     redirect_to :tickets
   end
+
+  def close
+    @ticket = Ticket.find params[:id]
+    binding.pry
+    @ticket.update(:open => false, :outgoing_date => Time.now)
+    self.print
+    #redirect_to action: 'index'
+  end
+
 end
