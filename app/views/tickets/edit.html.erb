@@ -20,7 +20,7 @@
 <% if @ticket.ticket_type_id == 1 %>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
   <div class="field"><%= f.text_field :provider_weight, :size=>'20' %><span>*</span></div>
-  <label for="provider_document_number" class="small">N# documento SADA:</label>
+  <label for="provider_document_number" class="small">N# documento:</label>
   <div class="field"><%= f.text_field :provider_document_number, :size=>'20' %><span>*</span></div>
 <% end %>
 <label for="address" class="small">Direccion:</label>
@@ -47,7 +47,6 @@
       <%= f.fields_for :transactions do |builder| %>
         <% class_row, i = alternate_row_class(i) %>
         <% t = builder.object %>
-        <% binding.pry %>
         <tr class="<%= class_row %>">
           <td>
             <% if t.new_record? %>
