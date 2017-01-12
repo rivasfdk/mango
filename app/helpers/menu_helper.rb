@@ -1110,7 +1110,8 @@ module MenuHelper
     menu = content_tag(:p, 'Editar ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Actualizar', 'Actualizar ticket', "submit_ticket_edit_form()", 'button-execute.png')
+      render_function('Guardar', 'Guardar ticket', "submit_ticket_edit_form()", 'button-execute.png') +
+      render_action('Cerrar', 'Cerrar Ticket', close_ticket_path, 'button-print.png')
     )
     return menu
   end

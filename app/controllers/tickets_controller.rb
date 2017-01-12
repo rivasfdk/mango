@@ -91,7 +91,22 @@ class TicketsController < ApplicationController
   end
 
   def new
-    @purchasesorder = []
+    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      begin
+        files = Dir.entries(sharepath)
+      rescue
+        files = []
+      end
+      if files.any?
+        orders = TicketOrder.import(files)
+        if not orders.empty?
+          TicketOrder.create_orders(orders)
+        end
+      end
+    end
+    @rorders = TicketOrder.where(order_type: true,closed: false)
     @ticket = Ticket.new
     @transaction = Transaction.new
     @clients = Client.all
@@ -101,6 +116,10 @@ class TicketsController < ApplicationController
   end
 
   def edit
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      TicketOrder.create_transactions(params[:id])
+    end
     @ticket = Ticket.find params[:id], :include => :transactions
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
@@ -185,6 +204,14 @@ class TicketsController < ApplicationController
       flash[:notice] = "El ticket no se ha podido eliminar"
     end
     redirect_to :tickets
+  end
+
+  def close
+    @ticket = Ticket.find params[:id]
+    binding.pry
+    @ticket.update(:open => false, :outgoing_date => Time.now)
+    self.print
+    #redirect_to action: 'index'
   end
 
 end

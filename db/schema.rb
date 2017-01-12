@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170107164517) do
+ActiveRecord::Schema.define(version: 20170110013304) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -576,6 +576,29 @@ ActiveRecord::Schema.define(version: 20170107164517) do
 
   create_table "tickets_numbers", force: true do |t|
     t.string   "number",     default: "0000000001"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_order", force: true do |t|
+    t.string   "code"
+    t.boolean  "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_order_items", force: true do |t|
+    t.integer  "ticket_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_weight"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
