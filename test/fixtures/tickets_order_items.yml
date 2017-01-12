@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ticket_order_id: 1
+  position: 1
+  content_type: false
+  content_id: 1
+  sack: false
+  quantity: 1
+  total_weight: 1.5
+
+two:
+  ticket_order_id: 1
+  position: 1
+  content_type: false
+  content_id: 1
+  sack: false
+  quantity: 1
+  total_weight: 1.5
