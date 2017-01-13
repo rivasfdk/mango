@@ -95,10 +95,13 @@ class TicketsController < ApplicationController
     sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
+      files = []
       begin
         files = Dir.entries(sharepath)
       rescue
-        files = []
+        puts "++++++++++++++++++++"
+        puts "+++ error de red +++"
+        puts "++++++++++++++++++++"
       end
       if files.any?
         orders = TicketOrder.import(files)
@@ -159,7 +162,8 @@ class TicketsController < ApplicationController
     plate = (Truck.find @ticket.truck_id).license_plate
     driver = (Driver.find @ticket.driver_id).ci
     sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
-    file = File.open(sharepath+"Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+
+    file = File.open("/home/fdk/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
 
     @ticket.transactions.each do |t|
       if t.content_type == 1
@@ -170,9 +174,23 @@ class TicketsController < ApplicationController
       position = (TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id).position
       file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
                 "#{content_code};#{@ticket.incoming_weight};#{@ticket.outgoing_weight};"+
-                "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002"
+                "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002\r\n"
     end
     file.close
+
+    files = Dir.entries("/home/fdk/mangotmp/")
+    files.each do |f|
+      if f.downcase.include? "entrada_orden_compra"
+        begin
+          FileUtils.mv("/home/fdk/mangotmp/"+f, sharepath)
+        rescue
+          puts "++++++++++++++++++++"
+          puts "+++ error de red +++"
+          puts "++++++++++++++++++++"
+        end
+      end
+    end
+
     if @ticket.valid?
       @ticket.transactions.each do |t|
         t.update_transactions unless t.new_record? || !t.notified
