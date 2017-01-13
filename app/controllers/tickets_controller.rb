@@ -163,30 +163,32 @@ class TicketsController < ApplicationController
     driver = (Driver.find @ticket.driver_id).ci
     sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
 
-    file = File.open("/home/mango/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+    if ticket_order.order_type
+      file = File.open("/home/mango/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
 
-    @ticket.transactions.each do |t|
-      if t.content_type == 1
-        content_code = (Lot.find t.content_id).code
-      else
-        content_code = (ProductLot.find t.content_id).code
+      @ticket.transactions.each do |t|
+        if t.content_type == 1
+          content_code = (Lot.find t.content_id).code
+        else
+          content_code = (ProductLot.find t.content_id).code
+        end
+        position = (TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id).position
+        file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
+                  "#{content_code};#{@ticket.incoming_weight};#{@ticket.outgoing_weight};"+
+                  "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002\r\n"
       end
-      position = (TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id).position
-      file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
-                "#{content_code};#{@ticket.incoming_weight};#{@ticket.outgoing_weight};"+
-                "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002\r\n"
-    end
-    file.close
+      file.close
 
-    files = Dir.entries("/home/mango/mangotmp/")
-    files.each do |f|
-      if f.downcase.include? "entrada_orden_compra"
-        begin
-          FileUtils.mv("/home/mango/mangotmp/"+f, sharepath)
-        rescue
-          puts "++++++++++++++++++++"
-          puts "+++ error de red +++"
-          puts "++++++++++++++++++++"
+      files = Dir.entries("/home/mango/mangotmp/")
+      files.each do |f|
+        if f.downcase.include? "entrada_orden_compra"
+          begin
+            FileUtils.mv("/home/mango/mangotmp/"+f, sharepath)
+          rescue
+            puts "++++++++++++++++++++"
+            puts "+++ error de red +++"
+            puts "++++++++++++++++++++"
+          end
         end
       end
     end
