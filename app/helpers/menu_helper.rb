@@ -1107,11 +1107,10 @@ module MenuHelper
   end
 
   def menu_for_tickets_edit
-    menu = content_tag(:p, 'Editar ticket')
+    menu = content_tag(:p, 'Cerrar ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Guardar', 'Guardar ticket', "submit_ticket_edit_form()", 'button-execute.png') +
-      render_action('Cerrar', 'Cerrar Ticket', close_ticket_path, 'button-print.png')
+      render_function('Cerrar', 'Cerrar ticket', "submit_ticket_edit_form()", 'button-execute.png')
     )
     return menu
   end
