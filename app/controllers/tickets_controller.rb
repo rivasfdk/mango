@@ -163,7 +163,7 @@ class TicketsController < ApplicationController
     driver = (Driver.find @ticket.driver_id).ci
     sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
 
-    file = File.open("/home/fdk/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+    file = File.open("/home/mango/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
 
     @ticket.transactions.each do |t|
       if t.content_type == 1
