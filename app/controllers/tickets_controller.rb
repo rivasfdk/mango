@@ -178,11 +178,11 @@ class TicketsController < ApplicationController
     end
     file.close
 
-    files = Dir.entries("/home/fdk/mangotmp/")
+    files = Dir.entries("/home/mango/mangotmp/")
     files.each do |f|
       if f.downcase.include? "entrada_orden_compra"
         begin
-          FileUtils.mv("/home/fdk/mangotmp/"+f, sharepath)
+          FileUtils.mv("/home/mango/mangotmp/"+f, sharepath)
         rescue
           puts "++++++++++++++++++++"
           puts "+++ error de red +++"
