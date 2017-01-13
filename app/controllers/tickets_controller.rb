@@ -82,7 +82,6 @@ class TicketsController < ApplicationController
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
     @ticket.user_id = (User.find session[:user_id]).id
-    binding.pry
     if @ticket.save
       flash[:notice] = 'Ticket guardado con éxito'
       redirect_to :tickets
@@ -136,7 +135,6 @@ class TicketsController < ApplicationController
   end
 
   def update
-    binding.pry
     @ticket = Ticket.find params[:id]
     redirect_to :tickets unless @ticket.open
     @ticket.update_attributes(params[:ticket])
@@ -153,13 +151,34 @@ class TicketsController < ApplicationController
       end
       t.amount = t.amount_was if t.marked_for_destruction?
     end
+    @ticket.open = false
     @ticket.outgoing_date = Time.now
+
+    order_id = @ticket.id_order
+    ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
+    plate = (Truck.find @ticket.truck_id).license_plate
+    driver = (Driver.find @ticket.driver_id).ci
+    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+    file = File.open(sharepath+"Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+
+    @ticket.transactions.each do |t|
+      if t.content_type == 1
+        content_code = (Lot.find t.content_id).code
+      else
+        content_code = (ProductLot.find t.content_id).code
+      end
+      position = (TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id).position
+      file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
+                "#{content_code};#{@ticket.incoming_weight};#{@ticket.outgoing_weight};"+
+                "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002"
+    end
+    file.close
     if @ticket.valid?
       @ticket.transactions.each do |t|
         t.update_transactions unless t.new_record? || !t.notified
       end
       @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
+      flash[:notice] = 'Ticket cerrado con éxito'
       redirect_to :tickets
     else
       edit
@@ -207,12 +226,6 @@ class TicketsController < ApplicationController
       flash[:notice] = "El ticket no se ha podido eliminar"
     end
     redirect_to :tickets
-  end
-
-  def close
-    @ticket = Ticket.find params[:id]
-    @ticket.update(:open => false, :outgoing_date => Time.now)
-    redirect_to action: 'index'
   end
 
 end

@@ -113,4 +113,9 @@ module ActionsHelper
     image = image_tag('action-cancel.png', alt: 'Cancelar')
     return link_to image + " Cancelar", '#!', class: 'action action-cancel'
   end
+
+  def render_action_close_ticket(url)
+    image = image_tag('action-reset.png', alt: 'Cerrar')
+    return link_to image + " Cerrar", url, class: 'action'
+  end
 end
