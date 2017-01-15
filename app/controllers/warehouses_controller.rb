@@ -16,13 +16,12 @@ class WarehousesController < ApplicationController
   end
 
   def create
-    @warehouse = WarehouseTypes.find(params[:warehouse_types_id]).warehouses.new params[:warehouse]
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.create params[:warehouse]
     if @warehouse.save
-      # This should be an after_create callback
       flash[:notice] = 'Almacen guardado con éxito'
-      redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
-      fill_new
       render :new
     end
   end
@@ -32,7 +31,7 @@ class WarehousesController < ApplicationController
     @warehouse.update_attributes(params[:warehouse])
     if @warehouse.save
       flash[:notice] = 'Almacen actualizado con éxito'
-      redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
       fill_edit
       render :edit
@@ -55,24 +54,69 @@ class WarehousesController < ApplicationController
         flash[:notice] = "El almacen no se ha podido eliminar"
       end
     end
-    redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
-  def change
+  def change_ingredient
     @warehouse = Warehouse.find params[:id]
   end
 
-  def do_change
+  def do_change_ingredient
     @warehouse = Warehouse.find params[:id]
-    if @warehouse.change(params[:change], session[:user_id])
-      flash[:notice] = "Cambio de ingrediente realizado con éxito"
-      current_hopper_lot = @hopper.current_hopper_lot
-      factory_lots = Lot.where(['client_id is not null and active = true and in_use = true and ingredient_id = ?', current_hopper_lot.lot.ingredient_id]).count
-      redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+    new_ingredient = params[:change_ingredient][:new_ingredient_id]
+    new_stock = params[:change_ingredient][:stock]
+    if @warehouse.update_attributes(ingredient_id: new_ingredient, stock: new_stock)
+      flash[:notice] = "Cambio de materia prima realizado con éxito"
     else
       flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar el ingrediente del almacen"
-      redirect_to warehouse_path(@warehouse.warehouse_types_id)
+    end
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+  end
+
+  def change_product
+    @warehouse = Warehouse.find params[:id]
+  end
+
+  def do_change_product
+    @warehouse = Warehouse.find params[:id]
+    new_product = params[:change_product][:new_product_id]  # Gets new product chosen by user
+    new_stock = params[:change_product][:stock]
+    if @warehouse.update_attributes(product_id: new_product, stock: new_stock) 
+      flash[:notice] = "Cambio de producto terminado realizado con éxito"
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo cambiar el producto terminado del almacen"
+    end
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+  end
+
+
+  def fill
+    @warehouse = Warehouse.find params[:id]
+    if @warehouse.stock < 0
+      flash[:type] = 'error'
+      flash[:notice] = "El almacen tiene existencia negativa, realice un ajuste primero"
+      redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+    end
+  end
+
+  def do_fill
+    @warehouse = Warehouse.find params[:id]
+    new_stock = params[:do_fill][:amount].to_f + @warehouse.stock
+    if @warehouse.update_attributes(stock: new_stock)
+      flash[:notice] = "Llenado realizado con éxito"
+    else
+      flash[:type] = 'error'
+      flash[:notice] = "No se pudo realizar el llenado de la tolva"
+  end
+    respond_to do |format|
+      format.html do
+        redirect_to warehouse_type_path(@warehouse.warehouse_types_id) 
+      end
+      format.xml do
+        render xml: {fill: true}
+      end
     end
   end
 
@@ -82,23 +126,25 @@ class WarehousesController < ApplicationController
 
   def do_adjust
     @warehouse = Warehouse.find params[:id]
-    if @warehouse.adjust(params[:adjust], session[:user_id])
-      flash[:notice] = "Ajuste realizado con éxito"
+    @warehouse.update_attributes(stock: params[:stock])
+    if @warehouse.save
+      flash[:notice] = "Almacen ajustado exitosamente"
     else
       flash[:type] = 'error'
       flash[:notice] = "No se pudo realizar el ajuste"
     end
-    redirect_to warehouse_types_path(@warehouse.warehouse_types_id)
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
   private
 
   def fill_new
-    @warehouse_types = WarehouseTypes.all
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.build
   end
 
   def fill_edit
-    @warehouse_types = WarehouseTypes.all
-    @warehouse = Warehouse.find params[:id]
+    @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
+    @warehouse = @warehouse_types.warehouses.find params[:id]
   end
 end
