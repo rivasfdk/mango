@@ -6,7 +6,7 @@
       <tr>
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
-        <% if @warehouses.first.ingredient_id != nil %>
+        <% if @warehouses.first.warehouse_types.content_type == true %>
           <th>Materia prima<span class="order_arrow"></span></th>
         <% else %>
           <th>Producto terminado<span class="order_arrow"></span></th>
@@ -23,16 +23,16 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h w[:code] %></td>
           <td><%= h w[:name] %></td>
-          <% if w.ingredient_id != nil %>
-            <td><%= h w.ingredient.name %></td> 
+          <% if @warehouses.first.warehouse_types.content_type == true %>
+            <td><%= h Ingredient.find(w.content_id).name %></td> 
           <% else %>
-            <td><%= h w.product.name %></td>
+            <td><%= h Product.find(w.content_id).name %></td>
           <% end %>
           <td><%= h w[:stock] %></td>
           <td><%= h w[:size] %></td>
                  
         <td class="left">
-          <% if w.ingredient_id != nil %>
+          <% if @warehouses.first.warehouse_types.content_type == true %>
           <%= render_action_change_warehouse_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
           <% else %>
           <%= render_action_change_warehouse_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
@@ -55,5 +55,5 @@
       
 
 <% else %>
-<p>No hay materias primas asociadas a este almacen</p>
+<p>No hay rubros asociados a este almacen</p>
 <% end %>

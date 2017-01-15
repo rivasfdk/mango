@@ -5,12 +5,10 @@ class Warehouse < ActiveRecord::Base
   belongs_to :product
   belongs_to :warehouse_types
 
-  validates :name, :code, presence: true
+  validates :name, :code, :content_id, presence: true
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}
   validates :stock, numericality: {greater_than_or_equal_to: 0}
-
-  validate :ingredient_id_xor_product_id
 
 
   def adjust(params)
@@ -89,12 +87,4 @@ class Warehouse < ActiveRecord::Base
   def is_a_number?(s)
     s.to_s.match(/\A[+-]?\d+?(\.\d+)?\Z/) != nil
   end
-
-  private 
-
-    def ingredient_id_xor_product_id
-      unless ingredient_id.blank? ^ product_id.blank?
-        errors.add(:base, "Debe especificar una materia prima o un producto (no ambos)")
-      end
-    end
 end
