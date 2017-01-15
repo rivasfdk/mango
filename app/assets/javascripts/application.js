@@ -341,6 +341,38 @@ function submit_scale_edit_form() {
     $('#scale_edit_form').submit();
 }
 
+function submit_warehouse_new_form() {
+    $('#warehouse_new_form').submit();
+}
+
+function submit_warehouse_edit_form() {
+    $('#warehouse_edit_form').submit();
+}
+
+function submit_warehouse_change_ingredient_form() {
+    $('#warehouse_change_ingredient_form').submit();
+}
+
+function submit_warehouse_change_product_form() {
+    $('#warehouse_change_product_form').submit();
+}
+
+function submit_warehouse_fill_form() {
+    $('#warehouse_fill_form').submit();
+}
+
+function submit_warehouse_adjust_form() {
+    $('#warehouse_adjust_form').submit();
+}
+
+function submit_warehouse_type_new_form() {
+    $('#warehouse_type_new_form').submit();
+}
+
+function submit_warehouse_type_edit_form() {
+    $('#warehouse_type_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     $('.report-details').hide();
     $(id).toggle();

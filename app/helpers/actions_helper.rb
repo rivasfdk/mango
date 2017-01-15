@@ -118,4 +118,19 @@ module ActionsHelper
     image = image_tag('action-reset.png', alt: 'Cerrar')
     return link_to image + " Cerrar", url, class: 'action'
   end
+
+  def render_action_change_warehouse_ingredient(url)
+    image = image_tag('action-edit.png', alt: 'Cambiar materia prima')
+    return link_to image + " Cambiar materia prima", url, class: 'action'
+  end
+
+  def render_action_change_warehouse_product(url)
+    image = image_tag('action-edit.png', alt: 'Cambiar producto terminado')
+    return link_to image + " Cambiar producto terminado", url, class: 'action'
+  end
+
+  def render_action_fill_warehouse(url)
+    image = image_tag('action-edit.png', alt: 'Llenar')
+    return link_to image + " Llenar", url, class: 'action'
+  end
 end
