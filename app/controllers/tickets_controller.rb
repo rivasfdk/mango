@@ -85,7 +85,7 @@ class TicketsController < ApplicationController
     if @ticket.save
       flash[:notice] = 'Ticket guardado con éxito'
       redirect_to :tickets
-   else
+    else
       new
       render :new
     end
@@ -111,7 +111,7 @@ class TicketsController < ApplicationController
       end
     end
     @rorders = TicketOrder.where(order_type: true,closed: false)
-    @ticket = Ticket.new
+    @tickets = Ticket.new
     @transaction = Transaction.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
