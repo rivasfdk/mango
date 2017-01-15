@@ -5,6 +5,7 @@ class WarehouseTypes < ActiveRecord::Base
 
   validates :name, presence: true
   validates :name, length: {within: 3..40}
+  validates :content_type, inclusion: [true, false]
 
   def self.search(params)
     @warehouse_types = WarehouseTypes.order('warehouses_types.id ASC')

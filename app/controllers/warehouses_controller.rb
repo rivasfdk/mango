@@ -65,11 +65,11 @@ class WarehousesController < ApplicationController
     @warehouse = Warehouse.find params[:id]
     new_ingredient = params[:change_ingredient][:new_ingredient_id]
     new_stock = params[:change_ingredient][:stock]
-    if @warehouse.update_attributes(ingredient_id: new_ingredient, stock: new_stock)
+    if (@warehouse.stock == 0) && (@warehouse.update_attributes(content_id: new_ingredient, stock: new_stock))
       flash[:notice] = "Cambio de materia prima realizado con éxito"
     else
       flash[:type] = 'error'
-      flash[:notice] = "No se pudo cambiar el ingrediente del almacen"
+      flash[:notice] = "No se pudo cambiar la materia prima del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
     end
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
@@ -82,11 +82,11 @@ class WarehousesController < ApplicationController
     @warehouse = Warehouse.find params[:id]
     new_product = params[:change_product][:new_product_id]  # Gets new product chosen by user
     new_stock = params[:change_product][:stock]
-    if @warehouse.update_attributes(product_id: new_product, stock: new_stock) 
+    if (@warehouse.stock == 0) && (@warehouse.update_attributes(content_id: new_product, stock: new_stock)) 
       flash[:notice] = "Cambio de producto terminado realizado con éxito"
     else
       flash[:type] = 'error'
-      flash[:notice] = "No se pudo cambiar el producto terminado del almacen"
+      flash[:notice] = "No se pudo cambiar el producto terminado del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
     end
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end

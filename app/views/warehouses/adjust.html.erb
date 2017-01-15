@@ -2,9 +2,9 @@
 <%= form_for :adjust, :url=>adjust_warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:id=>'warehouse_adjust_form'} do |f| %>
   <label for="size" class="small">Capacidad (m3):</label>
   <div class="field"><%=h @warehouse.size %></div>
-  <label for="stock" class="small">Existencia actual:</label>
+  <label for="stock" class="small">Existencia actual (kg):</label>
   <div class="field"><%=h @warehouse.stock %></div>
-  <label for="stock" class="small">Nueva existencia:</label>
+  <label for="stock" class="small">Nueva existencia (kg):</label>
   <div class="field"><%= text_field_tag :stock, params[:stock], :size=>'10' %><span>*</span></div>
   <div class="clearfix"></div>
   <br/><span class="required">* Campos obligatorios</span>
