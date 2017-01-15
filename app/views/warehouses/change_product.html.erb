@@ -1,0 +1,12 @@
+<% title "Cambiar producto terminado" %>
+<%= form_for :change_product, :url=>change_product_warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:id=>'warehouse_change_product_form'} do |f| %>
+  <label for="warehouse" class="small">Almacen:</label>
+  <div class="field"><%=h "#{@warehouse.code} - #{@warehouse.name}" %></div>
+  <br /><br />
+  <label for="product" class="small">Producto:</label>
+  <div class="field"><%= f.collection_select :new_product_id, Product.all, :id, :to_collection_select, {:include_blank => "Ninguno"}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="stock" class="small">Existencia:</label>
+  <div class="field"><%= f.text_field :stock, :size=>'10' %><span>*</span></div>
+  <div class="clearfix"></div>
+  <br/><span class="required">* Campos obligatorios</span>
+<% end %>
