@@ -3,17 +3,12 @@ include MangoModule
 class WarehouseTypesController < ApplicationController
 
   def index
-    #@warehouse_types = WarehouseTypes.all (or .get_all)
     @warehouse_types = WarehouseTypes.search(params)
   end
 
   def show
-    @warehouse_types = WarehouseTypes.find params[:id]
-    @warehouses = Warehouse.all
-#   @warehouse = Warehouse.find_actives params[:id]
-#   mango_features = get_mango_features()
-#   @hoppers_transactions_enabled = mango_features.include?("hoppers_transactions")
-#   @show_hopper_factory_lots = mango_features.include?("factories")
+    @warehouse_type = WarehouseTypes.find params[:id]
+    @warehouses = @warehouse_type.warehouses
   end
 
   def create
@@ -45,7 +40,7 @@ class WarehouseTypesController < ApplicationController
     @warehouse_types = WarehouseTypes.find params[:id]
     @warehouse_types.eliminate
     if @warehouse_types.errors.empty?
-      flash[:notice] = "alamcen eliminado con éxito"
+      flash[:notice] = "Almacen eliminado con éxito"
     else
       logger.error("Error eliminando almacen: #{@warehouse_types.errors.inspect}")
       flash[:type] = 'error'
@@ -59,4 +54,5 @@ class WarehouseTypesController < ApplicationController
     end
     redirect_to :warehouse_types
   end
+
 end
