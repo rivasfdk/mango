@@ -237,8 +237,14 @@ module MenuHelper
       menu = menu_for_warehouses_edit
     elsif c == 'warehouses' and a == 'change'
       menu = menu_for_warehouses_change
+    elsif c == 'warehouses' and a == 'fill'
+      menu = menu_for_warehouses_fill
     elsif c == 'warehouses' and a == 'adjust'
       menu = menu_for_warehouses_adjust
+    elsif c == 'warehouses' and a == 'change_ingredient' or a == 'do_change_ingredient'
+      menu = menu_for_warehouses_change_ingredient 
+    elsif c == 'warehouses' and a == 'change_product' or a == 'do_change_product'
+      menu = menu_for_warehouses_change_product   
     elsif c == 'warehouse_types' and a == 'index'
       menu = menu_for_warehouse_types_index
     elsif c == 'warehouse_types' and a == 'show'
@@ -1270,7 +1276,7 @@ module MenuHelper
 
 
   def menu_for_warehouses_new
-    menu = content_tag(:p, 'Nuevo almacen')
+    menu = content_tag(:p, "Nuevo Almacen de #{@warehouse_types.name}")
     menu += content_tag(:ul,
       render_back(warehouse_type_path(params[:warehouse_type_id])) +
       render_function('Guardar', 'Guardar almacen', "submit_warehouse_new_form()", 'button-execute.png')
@@ -1287,15 +1293,32 @@ module MenuHelper
     return menu
   end
 
-  def menu_for_warehouses_change
-    menu = content_tag(:p, 'Cambiar ingrediente de almacen')
+  def menu_for_warehouses_change_ingredient
+    menu = content_tag(:p, 'Cambiar materia prima de almacen')
     menu += content_tag(:ul,
       render_back(warehouse_type_path(params[:warehouse_type_id])) +
-      render_function('Cambiar', 'Cambiar ingrediente de almacen', "submit_warehouse_change_form()", 'button-execute.png')
+      render_function('Cambiar', 'Cambiar materia prima de almacen', "submit_warehouse_change_ingredient_form()", 'button-execute.png')
     )
     return menu
   end
 
+  def menu_for_warehouses_change_product
+    menu = content_tag(:p, 'Cambiar producto terminado de almacen')
+    menu += content_tag(:ul,
+      render_back(warehouse_type_path(params[:warehouse_type_id])) +
+      render_function('Cambiar', 'Cambiar producto terminado de almacen', "submit_warehouse_change_product_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_warehouses_fill
+    menu = content_tag(:p, 'Llenar almacen')
+    menu += content_tag(:ul,
+      render_back(warehouse_type_path(params[:warehouse_type_id])) +
+      render_function('Llenar', 'Llenar almacen', "submit_warehouse_fill_form()", 'button-execute.png')
+    )
+    return menu
+  end
 
   def menu_for_warehouses_adjust
     menu = content_tag(:p, 'Ajustar existencia en almacen')
@@ -1317,16 +1340,16 @@ module MenuHelper
   end
 
   def menu_for_warehouse_types_show
-    menu = content_tag(:p, "Almacenes de #{@warehouse_types.name}")
+    menu = content_tag(:p, "Almacenes de #{@warehouse_type.name}")
     menu += content_tag(:ul,
-      render_back(warehouse_type_path) +
-      render_action('Crear', 'Crear nuevo almacen', new_warehouse_type_warehouse_path(@warehouse_types), 'button-add.png')
+      render_back(warehouse_types_path) +
+      render_action('Crear', 'Crear nuevo almacen', new_warehouse_type_warehouse_path(@warehouse_type), 'button-add.png')
     )
     return menu
   end
 
   def menu_for_warehouse_types_new
-    menu = content_tag(:p, 'Nuevo almacen')
+    menu = content_tag(:p, "Nuevo almacen")
     menu += content_tag(:ul,
       render_back(warehouse_types_path) +
       render_function('Guardar', 'Guardar tipo de parámetro', "submit_warehouse_type_new_form()", 'button-execute.png')
