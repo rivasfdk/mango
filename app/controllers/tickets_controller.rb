@@ -112,11 +112,13 @@ class TicketsController < ApplicationController
     end
     @rorders = TicketOrder.where(order_type: true,closed: false)
     @tickets = Ticket.new
-    @transaction = Transaction.new
+    @transactions = Transaction.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
     @trucks = Truck.includes(:carrier).where(frequent: true)
     @lots = Lot.includes(:ingredient).where(active: true)
+    @warehouses = Warehouse.where(content_type: false)
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
   def edit

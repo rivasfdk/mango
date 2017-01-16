@@ -55,6 +55,7 @@ Mango::Application.routes.draw do
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
   match 'settings' => "settings#update", :via => :put
   match 'clients/all' => "clients#all", :via => :get
+  match 'clients/get_client' => "clients#get_client", :via => :get
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
@@ -66,8 +67,8 @@ Mango::Application.routes.draw do
 
   match 'ticket_orders/get_all_reception' => "ticket_orders#get_all_reception", :via => :get
   match 'ticket_orders/get_all_dispatch' => "ticket_orders#get_all_dispatch", :via => :get
-  match 'ticket_orders/get_order_data' => "ticket_orders#get_order_data", :via => :get
-  match 'tickets/:id/close' => "tickets#close", :via => :get, :as => "close_ticket"
+  match 'ticket_orders/get_order_client' => "ticket_orders#get_order_client", :via => :get
+  match 'ticket_orders/get_item_warehouse' => "ticket_orders#get_item_warehouse", :via => :get
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"

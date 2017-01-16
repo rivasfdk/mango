@@ -96,21 +96,39 @@ $ ->
   $("#ticket_ticket_type_id_2").change ticket_type_changed
 
 id_order_changed = ->
-  url = '/ticket_orders/get_order_data'
+  url = '/ticket_orders/get_order_client'
   client_order = $("#ticket_client_id")
   params = {}
   params["id_order"] = $("#ticket_id_order").val()
   $.getJSON url, params, (data) ->
     client = data
-    console.log client.name
-    console.log client.address
     client_order.empty()
     client_order.append new Option(client.name,client.id)
     client_order.trigger "chosen:updated"
     $("#ticket_address").val(client.address)
+  url = '/ticket_orders/get_item_warehouse'
+  warehouse = $("#ticket_warehouse_id")
+  $.getJSON url, params, (data) ->
+    wh = data
+    warehouse.empty()
+    $.each wh, (_, w) ->
+      warehouse.append new Option(w.to_collection_select, w.id)
+    warehouse.trigger "chosen:updated"
+
 
 $ ->
   $("#id_order").change id_order_changed
+
+id_client_changed = ->
+  url = '/clients/get_client'
+  params = {}
+  params["id_client"] = $("#ticket_client_id").val()
+  $.getJSON url, params, (data) ->
+    client = data
+    $("#ticket_address").val(client.address)
+
+$ ->
+  $("#id_client").change id_client_changed
 
 captura = true
 
@@ -130,7 +148,18 @@ capture_weight = ->
     captura = false
   else
     captura = true
+  $("#boton_capturar").toggleClass('capture_button')
 
 $ ->
   $("#boton_capturar").click capture_weight
+
+
+manual_weight = ->
+  if $("#ticket_manual_incoming").is(':checked')
+    $("#ticket_incoming_weight").prop('disabled', false)
+  else
+    $("#ticket_incoming_weight").prop('disabled', true)
+
+$ ->
+  $("#ticket_manual_incoming").change manual_weight
 
