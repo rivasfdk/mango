@@ -85,4 +85,10 @@ class ClientsController < ApplicationController
     end
     redirect_to :clients
   end
+
+  def get_client
+    @client = Client.find params["id_client"]
+    render json: @client, root: false
+  end
+
 end

@@ -18,6 +18,7 @@ class WarehousesController < ApplicationController
   def create
     @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
     @warehouse = @warehouse_types.warehouses.create params[:warehouse]
+    @warehouse.content_type = @warehouse_types.content_type
     if @warehouse.save
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to warehouse_type_path(@warehouse.warehouse_types_id)

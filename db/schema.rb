@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170115040412) do
+ActiveRecord::Schema.define(version: 20170115212459) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -660,6 +660,7 @@ ActiveRecord::Schema.define(version: 20170115040412) do
     t.string   "address"
     t.integer  "document_type_id"
     t.integer  "id_order"
+    t.integer  "warehouse_id"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -769,6 +770,7 @@ ActiveRecord::Schema.define(version: 20170115040412) do
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "content_type"
   end
 
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree

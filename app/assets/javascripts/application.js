@@ -57,7 +57,8 @@ $(function(){
     $('#report_ticket_content_type_2').trigger('change');
     $('#report_by_select_ingredients').trigger('change');
     $('#orden').trigger('change');
-    $("#ticket_incoming_weight").val('####');
+    $("#ticket_incoming_weight").val('######');
+    $("#ticket_incoming_weight").prop('disabled', true);
     hideProductLots();
 });
 
