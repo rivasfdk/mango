@@ -250,4 +250,9 @@ class TicketsController < ApplicationController
     redirect_to :tickets
   end
 
+  def get_server_romano_ip
+    server_romano_ip = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['server_romano_ip']
+    render json: server_romano_ip
+  end
+
 end

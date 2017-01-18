@@ -132,9 +132,31 @@ $ ->
 
 captura = true
 
+server_romano_ip = ""
+
+$ ->
+  if self.location.href.includes('/tickets/new')
+    url = '/tickets/get_server_romano_ip'
+    $.getJSON url, (data) ->
+      server_romano_ip = data.out
+  if self.location.href.includes('/tickets/edit')
+    url = '/tickets/get_server_romano_ip'
+    $.getJSON url, (data) ->
+      server_romano_ip = data.out
+
 update_weight = ->
-  if captura and self.location.href.includes('/tickets/new')
-    socket = new WebSocket('ws://192.168.1.106:2000')
+  if self.location.href.includes('/tickets/new')
+    on_page_weight = true
+    not_manual = not $("#ticket_manual_incoming").is(':checked')
+  else
+    if self.location.href.includes('/tickets/edit')
+      on_page_weight = true
+      not_manual = not $("#ticket_manual_outgoing").is(':checked')
+    else
+      on_page_weight = false
+      not_manual = false
+  if captura and on_page_weight and not_manual
+    socket = new WebSocket(server_romano_ip)
     socket.onopen = ()->
       console.log "conected!"
     socket.onmessage = (msg)->
