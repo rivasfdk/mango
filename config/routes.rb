@@ -69,6 +69,7 @@ Mango::Application.routes.draw do
   match 'ticket_orders/get_all_dispatch' => "ticket_orders#get_all_dispatch", :via => :get
   match 'ticket_orders/get_order_client' => "ticket_orders#get_order_client", :via => :get
   match 'ticket_orders/get_item_warehouse' => "ticket_orders#get_item_warehouse", :via => :get
+  match 'tickets/get_server_romano_ip' => "tickets#get_server_romano_ip", :via => :get
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
