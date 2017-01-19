@@ -15,7 +15,7 @@ class TicketOrder < ActiveRecord::Base
   end
 
   def self.import(files)
-    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+    sharepath = get_mango_field('share_path')
       orders = []
       files.each do |file|
         file = file.downcase
@@ -89,41 +89,110 @@ class TicketOrder < ActiveRecord::Base
       else
         content_type = (ProductLot.find_by code: order["content_code"]).id
       end
-      ticket_order_act = TicketOrder.where(code: order_code)
-      if TicketOrderItems.where(ticket_order_id: ticket_order_act[0].id, 
+      ticket_order_act = TicketOrder.find_by code: order_code
+      if TicketOrderItems.where(ticket_order_id: ticket_order_act.id, 
                                   position: order["position"]).empty?
-        TicketOrderItems.create ticket_order_id: ticket_order_act[0].id,
+        TicketOrderItems.create ticket_order_id: ticket_order_act.id,
                               position:order["position"],
                               content_type: content,
                               content_id: content_type,
                               sack:sack,
                               quantity:order["quantity"],
                               total_weight: order["total_weight"]
+        TicketOrder.update(ticket_order_act.id, :remaining => order["total_weight"])
       end
     end
   end
 
   def self.create_transactions(ticket_id)
-    order_id = (Ticket.find ticket_id).id_order
-    ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
-    transaction_type_id = ticket_order.order_type ? 4 : 5
-    if Transaction.where(ticket_id: ticket_id).empty?
-      ticket_order.ticket_orders_items.each do |item|
-        sack_weight = item.sack ? item.total_weight/item.quantity : 1
-        content_type = item.content_type ? 1 : 2
-        Transaction.create transaction_type_id: transaction_type_id,
-                           user_id: 1,
-                           amount: item.total_weight,
-                           client_id: ticket_order.client_id,
-                           ticket_id: ticket_id,
-                           sack: item.sack,
-                           sack_weight: sack_weight,
-                           sacks: item.quantity,
-                           document_number: ticket_order.document_number,
-                           content_id: item.content_id,
-                           content_type: content_type,
-                           notified: false
+    if not (Ticket.find ticket_id).id_order.nil?
+      order_id = (Ticket.find ticket_id).id_order
+      ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
+      transaction_type_id = ticket_order.order_type ? 4 : 5
+      if Transaction.where(ticket_id: ticket_id).empty?
+        ticket_order.ticket_orders_items.each do |item|
+          sack_weight = item.sack ? item.total_weight/item.quantity : 1
+          content_type = item.content_type ? 1 : 2
+          Transaction.create transaction_type_id: transaction_type_id,
+                             user_id: 1,
+                             amount: item.total_weight,
+                             client_id: ticket_order.client_id,
+                             ticket_id: ticket_id,
+                             sack: item.sack,
+                             sack_weight: sack_weight,
+                             sacks: item.quantity,
+                             document_number: ticket_order.document_number,
+                             content_id: item.content_id,
+                             content_type: content_type,
+                             notified: false
+        end
       end
+    end
+  end
+
+  def self.close(ticket)
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      if not ticket.id_order.nil?
+        order_id = ticket.id_order
+        ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
+        plate = (Truck.find ticket.truck_id).license_plate
+        driver = (Driver.find ticket.driver_id).ci
+        sharepath = get_mango_field('share_path')
+        tmp_dir = get_mango_field('tmp_dir')
+
+        if ticket_order.order_type
+          file = File.open(tmp_dir+"Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+
+          ticket.transactions.each do |t|
+            if t.content_type == 1
+              content_code = (Lot.find t.content_id).code
+            else
+              content_code = (ProductLot.find t.content_id).code
+            end
+            net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
+            item = TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id
+            position = item.position
+            wharehouse = Warehouse.find_by content_id: t.content_id, content_type: item.content_type
+            file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
+                      "#{content_code};#{ticket.incoming_weight};#{net_weight};"+
+                      "#{ticket.outgoing_weight};#{plate};#{driver};#{wharehouse.code}\r\n"
+            new_remaining = ticket_order.remaining - net_weight
+            if new_remaining <= 0
+              TicketOrder.update(ticket_order.id, :closed => true)
+              TicketOrder.update(ticket_order.id, :remaining => 0)
+            else
+              TicketOrder.update(ticket_order.id, :remaining => new_remaining)
+            end
+          end
+          file.close
+
+          files = Dir.entries(tmp_dir)
+          files.each do |f|
+            if f.downcase.include? "entrada_orden_compra"
+              begin
+                FileUtils.mv(tmp_dir+f, sharepath)
+              rescue
+                puts "++++++++++++++++++++"
+                puts "+++ error de red +++"
+                puts "++++++++++++++++++++"
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def self.remaining
+    orders = TicketOrder.where(closed: false)
+    orders.each do |order|
+      total_weight_order = 0
+      items = TicketOrderItems.where(ticket_order_id: order.id)
+      items.each do |item|
+        total_weight_order = total_weight_order + item.total_weight
+      end
+      TicketOrder.update(order.id, :remaining => total_weight_order)
     end
   end
 
