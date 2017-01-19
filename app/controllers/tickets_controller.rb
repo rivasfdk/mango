@@ -92,7 +92,7 @@ class TicketsController < ApplicationController
   end
 
   def new
-    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
+    sharepath = get_mango_field('share_path')
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
       files = []
@@ -107,10 +107,11 @@ class TicketsController < ApplicationController
         orders = TicketOrder.import(files)
         if not orders.empty?
           TicketOrder.create_orders(orders)
+          TicketOrder.remaining
         end
       end
+      @rorders = TicketOrder.where(order_type: true,closed: false)
     end
-    @rorders = TicketOrder.where(order_type: true,closed: false)
     @tickets = Ticket.new
     @transactions = Transaction.new
     @clients = Client.all
@@ -122,11 +123,17 @@ class TicketsController < ApplicationController
   end
 
   def edit
+    @ticket = Ticket.find params[:id], :include => :transactions
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
       TicketOrder.create_transactions(params[:id])
+      if not @ticket.id_order.nil?
+        @orders = TicketOrder.where(id: @ticket.id_order)
+        @label = @orders[0].order_type ? "Orden de Compra" : "Orden de Salida"
+      else
+        @orders = []
+      end
     end
-    @ticket = Ticket.find params[:id], :include => :transactions
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
@@ -137,6 +144,7 @@ class TicketsController < ApplicationController
     unless @ticket.truck.frequent
       @trucks << @ticket.truck
     end
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
   def update
@@ -159,51 +167,24 @@ class TicketsController < ApplicationController
     @ticket.open = false
     @ticket.outgoing_date = Time.now
 
-    order_id = @ticket.id_order
-    ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
-    plate = (Truck.find @ticket.truck_id).license_plate
-    driver = (Driver.find @ticket.driver_id).ci
-    sharepath = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['share_path']
-
-    if ticket_order.order_type
-      file = File.open("/home/mango/mangotmp/Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-
-      @ticket.transactions.each do |t|
-        if t.content_type == 1
-          content_code = (Lot.find t.content_id).code
-        else
-          content_code = (ProductLot.find t.content_id).code
+    if not @ticket.outgoing_weight.nil?
+      if @ticket.valid?
+        @ticket.transactions.each do |t|
+          t.update_transactions unless t.new_record? || !t.notified
         end
-        position = (TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id).position
-        file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
-                  "#{content_code};#{@ticket.incoming_weight};#{@ticket.outgoing_weight};"+
-                  "#{(@ticket.incoming_weight-@ticket.outgoing_weight).abs};#{plate};#{driver};002\r\n"
-      end
-      file.close
-
-      files = Dir.entries("/home/mango/mangotmp/")
-      files.each do |f|
-        if f.downcase.include? "entrada_orden_compra"
-          begin
-            FileUtils.mv("/home/mango/mangotmp/"+f, sharepath)
-          rescue
-            puts "++++++++++++++++++++"
-            puts "+++ error de red +++"
-            puts "++++++++++++++++++++"
+        mango_features = get_mango_features()
+          if mango_features.include?("sap_romano")
+            TicketOrder.close(@ticket)
           end
-        end
+        @ticket.save
+        flash[:notice] = 'Ticket cerrado con éxito'
+        redirect_to :tickets
+      else
+        edit
+        render :edit
       end
-    end
-
-    if @ticket.valid?
-      @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record? || !t.notified
-      end
-      @ticket.save
-      flash[:notice] = 'Ticket cerrado con éxito'
-      redirect_to :tickets
     else
-      edit
+      flash[:notice] = 'El peso de Salida no es valido'
       render :edit
     end
   end
@@ -251,7 +232,7 @@ class TicketsController < ApplicationController
   end
 
   def get_server_romano_ip
-    server_romano_ip = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['server_romano_ip']
+    server_romano_ip = get_mango_field('server_romano_ip')
     render json: server_romano_ip
   end
 

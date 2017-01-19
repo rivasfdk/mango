@@ -138,32 +138,32 @@ $ ->
   if self.location.href.includes('/tickets/new')
     url = '/tickets/get_server_romano_ip'
     $.getJSON url, (data) ->
-      server_romano_ip = data.out
-  if self.location.href.includes('/tickets/edit')
+      server_romano_ip = data.in
+  if (self.location.href.includes('/tickets') and self.location.href.includes('/edit'))
     url = '/tickets/get_server_romano_ip'
     $.getJSON url, (data) ->
       server_romano_ip = data.out
 
 update_weight = ->
   if self.location.href.includes('/tickets/new')
-    on_page_weight = true
     not_manual = not $("#ticket_manual_incoming").is(':checked')
   else
-    if self.location.href.includes('/tickets/edit')
-      on_page_weight = true
-      not_manual = not $("#ticket_manual_outgoing").is(':checked')
-    else
-      on_page_weight = false
-      not_manual = false
-  if captura and on_page_weight and not_manual
+    not_manual = not $("#ticket_manual_outgoing").is(':checked')
+  if captura and not_manual
     socket = new WebSocket(server_romano_ip)
     socket.onopen = ()->
       console.log "conected!"
     socket.onmessage = (msg)->
-      $("#ticket_incoming_weight").val(msg.data)
+      if self.location.href.includes('/tickets/new')
+        $("#ticket_incoming_weight").val(msg.data)
+        console.log $("#ticket_incoming_weight").val()
+      else
+        $("#ticket_outgoing_weight").val(msg.data)
+        console.log $("#ticket_outgoing_weight").val()
 
 $ ->
-  setInterval(update_weight, 1000)
+  if self.location.href.includes('/tickets/new') or (self.location.href.includes('/tickets') and self.location.href.includes('/edit'))
+    setInterval(update_weight, 1000)
 
 capture_weight = ->
   if captura
@@ -175,13 +175,34 @@ capture_weight = ->
 $ ->
   $("#boton_capturar").click capture_weight
 
-
-manual_weight = ->
+mouse_over_incoming = ->
   if $("#ticket_manual_incoming").is(':checked')
     $("#ticket_incoming_weight").prop('disabled', false)
   else
     $("#ticket_incoming_weight").prop('disabled', true)
 
 $ ->
-  $("#ticket_manual_incoming").change manual_weight
+  $("#ticket_incoming_weight").mouseover mouse_over_incoming
+
+mouse_out_incoming = ->
+    $("#ticket_incoming_weight").prop('disabled', false)
+
+$ ->
+  $("#ticket_incoming_weight").mouseout mouse_out_incoming
+
+mouse_over_outgoing = ->
+  if $("#ticket_manual_outgoing").is(':checked')
+    $("#ticket_outgoing_weight").prop('disabled', false)
+  else
+    $("#ticket_outgoing_weight").prop('disabled', true)
+
+$ ->
+  $("#ticket_outgoing_weight").mouseover mouse_over_outgoing
+
+mouse_out_outgoing = ->
+    $("#ticket_outgoing_weight").prop('disabled', false)
+
+$ ->
+  $("#ticket_outgoing_weight").mouseout mouse_out_outgoing
+
 
