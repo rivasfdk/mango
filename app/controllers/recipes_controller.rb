@@ -10,6 +10,7 @@ class RecipesController < ApplicationController
   def show
     @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'ingredients.code asc'
     @types = Recipe::TYPES
+    @data = EasyModel.recipe_details(@recipe.code)
     @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
@@ -157,4 +158,25 @@ class RecipesController < ApplicationController
       end
     end
   end
+
+  def print
+    @recipe = Recipe.find params[:id]
+    @data = EasyModel.recipe_details(@recipe.code)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
+    else
+      respond_to do |format|
+        format.html
+        format.pdf { 
+          report = ThinReports::Report.new layout: File.join(Rails.root, 'app', 'views', 'recipes', 'recipe_details.tlf')
+          send_data report.generate, filename: "detalle_receta_#{@recipe.code}.pdf", 
+                                     type: 'application/pdf', 
+                                     disposition: 'inline'
+        } 
+      end
+    end
+  end
+
 end
