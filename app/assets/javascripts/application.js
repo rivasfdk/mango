@@ -58,6 +58,9 @@ $(function(){
     $('#report_by_select_ingredients').trigger('change');
     $('#orden').trigger('change');
     $("#ticket_incoming_weight").val('######');
+    $("#ticket_incoming_weight").prop('readOnly', true);
+    $("#ticket_outgoing_weight").val('######');
+    $("#ticket_outgoing_weight").prop('readOnly', true);
     hideProductLots();
 });
 
