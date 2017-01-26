@@ -175,34 +175,22 @@ capture_weight = ->
 $ ->
   $("#boton_capturar").click capture_weight
 
-mouse_over_incoming = ->
+manual_in_weight = ->
   if $("#ticket_manual_incoming").is(':checked')
-    $("#ticket_incoming_weight").prop('disabled', false)
+    $("#ticket_incoming_weight").prop('readOnly', false)
   else
-    $("#ticket_incoming_weight").prop('disabled', true)
+    $("#ticket_incoming_weight").prop('readOnly', true)
 
 $ ->
-  $("#ticket_incoming_weight").mouseover mouse_over_incoming
+  $("#ticket_manual_incoming").change manual_in_weight
 
-mouse_out_incoming = ->
-    $("#ticket_incoming_weight").prop('disabled', false)
-
-$ ->
-  $("#ticket_incoming_weight").mouseout mouse_out_incoming
-
-mouse_over_outgoing = ->
+manual_out_weight = ->
   if $("#ticket_manual_outgoing").is(':checked')
-    $("#ticket_outgoing_weight").prop('disabled', false)
+    $("#ticket_outgoing_weight").prop('readOnly', false)
   else
-    $("#ticket_outgoing_weight").prop('disabled', true)
+    $("#ticket_outgoing_weight").prop('readOnly', true)
 
 $ ->
-  $("#ticket_outgoing_weight").mouseover mouse_over_outgoing
-
-mouse_out_outgoing = ->
-    $("#ticket_outgoing_weight").prop('disabled', false)
-
-$ ->
-  $("#ticket_outgoing_weight").mouseout mouse_out_outgoing
+  $("#ticket_manual_outgoing").change manual_out_weight
 
 

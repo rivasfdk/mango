@@ -118,7 +118,7 @@ class TicketsController < ApplicationController
     @drivers = Driver.where(frequent: true)
     @trucks = Truck.includes(:carrier).where(frequent: true)
     @lots = Lot.includes(:ingredient).where(active: true)
-    @warehouses = Warehouse.where(content_type: false)
+    @warehouses = Warehouse.where(content_type: true)
     @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
