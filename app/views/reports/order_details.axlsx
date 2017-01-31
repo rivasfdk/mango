@@ -1,4 +1,0 @@
-wb = xlsx_package.workbook
-wb.add_worksheet(:name => @data['title']) do |sheet|
-  # TODO
-end

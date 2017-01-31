@@ -95,8 +95,12 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      format = params[:report][:format] || 'pdf'
-      render format.to_sym => "order_details", :filename => "#{@data['title']}.#{format}" 
+      if params[:report][:format] == "xlsx"
+        render :xlsx => 'order_details', :filename => "#{@data['title']}.xlsx"
+      else
+        format = params[:report][:format] || 'pdf'
+        render format.to_sym => "order_details", :filename => "#{@data['title']}.#{format}" 
+      end
     end
   end
 
