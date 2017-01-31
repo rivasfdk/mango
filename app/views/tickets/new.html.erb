@@ -26,9 +26,6 @@
 <label for="truck_id" class="small">Camión:</label>
 <div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 
-<label for="warehouse_id" class="small">Almacen:</label>
-<div class="field"><%= f.collection_select :warehouse_id, @warehouses, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
-
 <label for="incoming_weight" class="small">Peso de entrada:</label>
 <div id = "inweight" class="field"><%= f.text_field :incoming_weight, :size=>'20', class: 'chzn-field-big'%><span>*</span>
 <%= submit_tag "Capturar", {:type => "button", :id => "boton_capturar"} %><br/>
@@ -39,11 +36,10 @@
 <% end %>
 </div>
 
-<label for="comment" class="small">Comentario;</label>
+<label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
-
 
 <% end %>
 

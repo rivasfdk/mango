@@ -139,7 +139,7 @@ $ ->
     url = '/tickets/get_server_romano_ip'
     $.getJSON url, (data) ->
       server_romano_ip = data.in
-  if (self.location.href.includes('/tickets') and self.location.href.includes('/edit'))
+  if (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
     url = '/tickets/get_server_romano_ip'
     $.getJSON url, (data) ->
       server_romano_ip = data.out
@@ -175,22 +175,22 @@ capture_weight = ->
 $ ->
   $("#boton_capturar").click capture_weight
 
-manual_in_weight = ->
+manual_incoming = ->
   if $("#ticket_manual_incoming").is(':checked')
     $("#ticket_incoming_weight").prop('readOnly', false)
   else
     $("#ticket_incoming_weight").prop('readOnly', true)
 
 $ ->
-  $("#ticket_manual_incoming").change manual_in_weight
+  $("#ticket_manual_incoming").change manual_incoming
 
-manual_out_weight = ->
+manual_outgoing = ->
   if $("#ticket_manual_outgoing").is(':checked')
     $("#ticket_outgoing_weight").prop('readOnly', false)
   else
     $("#ticket_outgoing_weight").prop('readOnly', true)
 
 $ ->
-  $("#ticket_manual_outgoing").change manual_out_weight
+  $("#ticket_manual_outgoing").change manual_outgoing
 
 

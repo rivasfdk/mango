@@ -10,13 +10,14 @@ class Ticket < ActiveRecord::Base
   belongs_to :client
   belongs_to :document_type
 
-  has_many :transactions
+  has_many :transactions, :dependent => :destroy
+
   accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }
 
   attr_accessor :index_transactions
 
   validates_presence_of :client_id, :truck_id, :driver_id, :ticket_type_id, :address, 
-                        :incoming_weight, :warehouse_id
+                        :incoming_weight
   validates_numericality_of :incoming_weight, greater_than: 0
   validates_numericality_of :outgoing_weight, allow_nil: true, greater_than: 0
   validates_numericality_of :provider_weight, allow_nil: true

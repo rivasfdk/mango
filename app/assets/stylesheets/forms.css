@@ -17,8 +17,9 @@ form label {
 }
 
 form label.small {
-  width: 100px;
+  width: 150px;
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 form input[type='text'], form input[type='password'] {

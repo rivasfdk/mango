@@ -83,8 +83,11 @@ class TicketsController < ApplicationController
     @ticket.incoming_date = Time.now
     @ticket.user_id = (User.find session[:user_id]).id
     if @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
-      redirect_to :tickets
+      flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
+      #redirect_to :tickets
+      params[:id] = @ticket.id
+      edit
+      redirect_to edit_ticket_path(@ticket.id)
     else
       new
       render :new
@@ -113,27 +116,29 @@ class TicketsController < ApplicationController
       @rorders = TicketOrder.where(order_type: true,closed: false)
     end
     @tickets = Ticket.new
-    @transactions = Transaction.new
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
     @trucks = Truck.includes(:carrier).where(frequent: true)
-    @lots = Lot.includes(:ingredient).where(active: true)
-    @warehouses = Warehouse.where(content_type: true)
+    #@lots = Lot.includes(:ingredient).where(active: true)
     @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
   def edit
     @ticket = Ticket.find params[:id], :include => :transactions
+
+    ticket_type = @ticket.ticket_type_id == 1 ? true : false
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
       TicketOrder.create_transactions(params[:id])
-      if not @ticket.id_order.nil?
-        @orders = TicketOrder.where(id: @ticket.id_order)
-        @label = @orders[0].order_type ? "Orden de Compra" : "Orden de Salida"
+      if !@ticket.id_order.nil?
+        @orders = TicketOrder.where(order_type: ticket_type,closed: false)
+        @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
       else
         @orders = []
       end
     end
+    @lots_warehouses = Warehouse.where(content_type: true)
+    @product_lots_warehouses = Warehouse.where(content_type: false)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
@@ -144,7 +149,6 @@ class TicketsController < ApplicationController
     unless @ticket.truck.frequent
       @trucks << @ticket.truck
     end
-    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
   def update
@@ -164,10 +168,69 @@ class TicketsController < ApplicationController
       end
       t.amount = t.amount_was if t.marked_for_destruction?
     end
+    @ticket.outgoing_date = Time.now
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record? || !t.notified
+      end
+      @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+    else
+      edit
+      render :edit
+    end
+  end
+
+  def close
+    @ticket = Ticket.find params[:id], :include => :transactions
+    ticket_type = @ticket.ticket_type_id == 1 ? true : false
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      if !@ticket.id_order.nil?
+        @order = TicketOrder.find(@ticket.id_order)
+        @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
+      end
+    end
+    @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
+    end
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+  end
+
+  def do_close
+    @ticket = Ticket.find params[:id]
+    redirect_to :tickets unless @ticket.open
+    @ticket.update_attributes(params[:ticket])
+    @ticket.user_id = session[:user_id]
+    @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
+      t.comment = @ticket.comment
+      t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
+    end
     @ticket.open = false
     @ticket.outgoing_date = Time.now
 
-    if not @ticket.outgoing_weight.nil?
+    if @ticket.outgoing_weight.nil?
+      flash[:type] = 'error'
+      flash[:notice] = 'El peso de Salida no es valido'
+      edit
+      render :edit
+    else
       if @ticket.valid?
         @ticket.transactions.each do |t|
           t.update_transactions unless t.new_record? || !t.notified
@@ -183,9 +246,6 @@ class TicketsController < ApplicationController
         edit
         render :edit
       end
-    else
-      flash[:notice] = 'El peso de Salida no es valido'
-      render :edit
     end
   end
 

@@ -28,4 +28,8 @@ module ApplicationHelper
     end
     link_to_function(name, raw("window.add_fields(this, \"#{association}\", \"#{escape_javascript(fields)}\")"))
   end
+
+  def add_item_to_ticket(name, f, association)
+  end
+
 end

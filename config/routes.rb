@@ -71,6 +71,9 @@ Mango::Application.routes.draw do
   match 'ticket_orders/get_item_warehouse' => "ticket_orders#get_item_warehouse", :via => :get
   match 'tickets/get_server_romano_ip' => "tickets#get_server_romano_ip", :via => :get
 
+  match 'tickets/:id/close' => "tickets#close", :via => :get, :as => "close_ticket"
+  match 'tickets/:id/do_close' => "tickets#do_close", :via => :post, :as => "do_close_ticket"
+
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
   match 'reports/recipes' => "reports#recipes", :via => :post, :as => "recipes_report"
