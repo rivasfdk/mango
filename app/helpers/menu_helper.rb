@@ -197,6 +197,10 @@ module MenuHelper
       menu = menu_for_tickets_new
     elsif c == 'tickets' and (a == 'edit' or a == 'update')
       menu = menu_for_tickets_edit
+
+    elsif c == 'tickets' and (a == 'close' or a == 'do_close')
+      menu = menu_for_tickets_close
+
     elsif c == 'tickets' and (a == 'repair' or a == 'do_repair')
       menu = menu_for_tickets_repair
     elsif c == 'alarm_types' and a == 'index'
@@ -1113,10 +1117,19 @@ module MenuHelper
   end
 
   def menu_for_tickets_edit
+    menu = content_tag(:p, 'Editar ticket')
+    menu += content_tag(:ul,
+      render_back(tickets_path) +
+      render_function('Guardar', 'Guardar ticket', "submit_ticket_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_close
     menu = content_tag(:p, 'Cerrar ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Cerrar', 'Cerrar ticket', "submit_ticket_edit_form()", 'button-execute.png')
+      render_function('Cerrar', 'Cerrar ticket', "submit_ticket_close_form()", 'button-execute.png')
     )
     return menu
   end

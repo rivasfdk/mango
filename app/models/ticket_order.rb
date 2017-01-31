@@ -133,7 +133,7 @@ class TicketOrder < ActiveRecord::Base
   def self.close(ticket)
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
-      if not ticket.id_order.nil?
+      if !ticket.id_order.nil?
         order_id = ticket.id_order
         ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
         plate = (Truck.find ticket.truck_id).license_plate
@@ -156,7 +156,7 @@ class TicketOrder < ActiveRecord::Base
             wharehouse = Warehouse.find_by content_id: t.content_id, content_type: item.content_type
             file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
                       "#{content_code};#{ticket.incoming_weight};#{net_weight};"+
-                      "#{ticket.outgoing_weight};#{plate};#{driver};#{wharehouse.code}\r\n"
+                      "#{ticket.outgoing_weight};#{plate};#{driver};001\r\n"#{wharehouse.code}
             new_remaining = ticket_order.remaining - net_weight
             if new_remaining <= 0
               TicketOrder.update(ticket_order.id, :closed => true)

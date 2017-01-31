@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118153346) do
+ActiveRecord::Schema.define(version: 20170130003820) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -566,7 +566,6 @@ ActiveRecord::Schema.define(version: 20170118153346) do
     t.string   "address"
     t.integer  "document_type_id"
     t.integer  "id_order"
-    t.integer  "warehouse_id"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -574,6 +573,19 @@ ActiveRecord::Schema.define(version: 20170118153346) do
   add_index "tickets", ["driver_id"], name: "index_tickets_on_driver_id", using: :btree
   add_index "tickets", ["truck_id"], name: "fk_tickets_truck_id", using: :btree
   add_index "tickets", ["user_id"], name: "fk_tickets_user_id", using: :btree
+
+  create_table "tickets_items", force: true do |t|
+    t.integer  "ticket_id"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "sack_quantity"
+    t.float    "total_weight"
+    t.integer  "warehouse_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "sack_weight"
+  end
 
   create_table "tickets_numbers", force: true do |t|
     t.string   "number",     default: "0000000001"
@@ -603,6 +615,7 @@ ActiveRecord::Schema.define(version: 20170118153346) do
     t.float    "total_weight"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "remaining"
   end
 
   create_table "tickets_types", force: true do |t|
@@ -639,6 +652,7 @@ ActiveRecord::Schema.define(version: 20170118153346) do
     t.integer  "content_type",                                                 null: false
     t.integer  "order_id"
     t.boolean  "notified",                                     default: true
+    t.integer  "warehouse_id"
   end
 
   add_index "transactions", ["content_id"], name: "index_transactions_on_content_id", using: :btree

@@ -114,6 +114,11 @@ module ActionsHelper
     return link_to image + " Cancelar", '#!', class: 'action action-cancel'
   end
 
+  def render_action_edit_ticket(url)
+    image = image_tag('action-edit.png', alt: 'Modificar')
+    return link_to image + " Modificar", url, class: 'action action-modify'
+  end
+
   def render_action_close_ticket(url)
     image = image_tag('action-reset.png', alt: 'Cerrar')
     return link_to image + " Cerrar", url, class: 'action'
