@@ -195,6 +195,13 @@ module MenuHelper
       menu = menu_for_tickets_index
     elsif c == 'tickets' and (a == 'new' or a == 'create')
       menu = menu_for_tickets_new
+
+    elsif c == 'tickets' and (a == 'items' or a == 'update_items')
+      menu = menu_for_tickets_items
+
+    elsif c == 'tickets' and (a == 'entry' or a == 'update_entry')
+      menu = menu_for_tickets_entry
+
     elsif c == 'tickets' and (a == 'edit' or a == 'update')
       menu = menu_for_tickets_edit
 
@@ -1111,7 +1118,25 @@ module MenuHelper
     menu = content_tag(:p, 'Nuevo ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Guardar', 'Guardar ticket', "submit_ticket_new_form()", 'button-execute.png')
+      render_function('Siguiente', 'Siguiente', "submit_ticket_new_form()", 'button-next.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_items
+    menu = content_tag(:p, 'Items ticket')
+    menu += content_tag(:ul,
+      render_back(tickets_path) +
+      render_function('Siguiente', 'Siguiente', "submit_ticket_items_form()", 'button-next.png')
+    )
+    return menu
+  end
+
+  def menu_for_tickets_entry
+    menu = content_tag(:p, 'Entrada ticket')
+    menu += content_tag(:ul,
+      render_back(tickets_path) +
+      render_function('Guardar', 'Guardar Peso', "submit_ticket_entry_form()", 'button-execute.png')
     )
     return menu
   end

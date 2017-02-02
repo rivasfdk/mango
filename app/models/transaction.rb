@@ -6,6 +6,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :client
   belongs_to :ticket
   belongs_to :order
+  belongs_to :wharehouse
 
   validates :transaction_type_id, :amount, :user_id, :content_type, :content_id, presence: true
   validates :amount, numericality: true
@@ -54,6 +55,10 @@ class Transaction < ActiveRecord::Base
     else
       ProductLot.find self.content_id
     end
+  end
+
+  def get_warehouse
+      Warehouse.find self.warehouse_id
   end
 
   def get_content

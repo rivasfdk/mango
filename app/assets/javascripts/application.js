@@ -296,6 +296,14 @@ function submit_ticket_new_form() {
     $('#ticket_new_form').submit();
 }
 
+function submit_ticket_items_form() {
+    $('#ticket_items_form').submit();
+}
+
+function submit_ticket_entry_form() {
+    $('#ticket_entry_form').submit();
+}
+
 function submit_ticket_edit_form() {
     $('#ticket_edit_form').submit();
 }

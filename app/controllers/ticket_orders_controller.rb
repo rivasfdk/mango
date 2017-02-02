@@ -20,15 +20,7 @@ class TicketOrdersController < ApplicationController
   end
 
   def get_item_warehouse
-    @items = TicketOrderItems.where(ticket_order_id: params["id_order"])
-    @items.each do |item|
-      if item.content_type
-        content_id = (Lot.find_by id: item.content_id).ingredient_id
-      else
-        content_id = (ProductLot.find_by id: item.content_id).product_id
-      end
-      @warehouse = Warehouse.where(content_id: content_id, content_type: item.content_type)
-    end
+    @warehouse = Warehouse.where(content_id: params["lot_id"], content_type: params["content_type"])
     render json: @warehouse, methods: [:to_collection_select], root: false
   end
 

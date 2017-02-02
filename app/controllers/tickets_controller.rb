@@ -84,10 +84,15 @@ class TicketsController < ApplicationController
     @ticket.user_id = (User.find session[:user_id]).id
     if @ticket.save
       flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
-      #redirect_to :tickets
       params[:id] = @ticket.id
-      edit
-      redirect_to edit_ticket_path(@ticket.id)
+      #edit
+      #redirect_to edit_ticket_path(@ticket.id)
+      mango_features = get_mango_features()
+      if mango_features.include?("sap_romano")
+        TicketOrder.create_transactions(@ticket.id)
+      end
+      items
+      redirect_to items_ticket_path(@ticket.id)
     else
       new
       render :new
@@ -289,6 +294,108 @@ class TicketsController < ApplicationController
       flash[:notice] = "El ticket no se ha podido eliminar"
     end
     redirect_to :tickets
+  end
+
+  def items
+    @ticket = Ticket.find params[:id], :include => :transactions
+    @lots_warehouses = Warehouse.where(content_type: true)
+    @product_lots_warehouses = Warehouse.where(content_type: false)
+    @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
+    end
+  end
+
+  def entry
+    @ticket = Ticket.find params[:id], :include => :transactions
+    ticket_type = @ticket.ticket_type_id == 1 ? true : false
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_romano")
+      if !@ticket.id_order.nil?
+        @order = TicketOrder.find(@ticket.id_order)
+        @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
+      end
+    end
+    @lots = Lot.includes(:ingredient).where(active: true)
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    unless @ticket.driver.frequent
+      @drivers << @ticket.driver
+    end
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    unless @ticket.truck.frequent
+      @trucks << @ticket.truck
+    end
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+  end
+
+  def update_items
+    @ticket = Ticket.find params[:id]
+    redirect_to :tickets unless @ticket.open
+    @ticket.update_attributes(params[:ticket])
+    @ticket.user_id = session[:user_id]
+    @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
+      t.comment = @ticket.comment
+      t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
+    end
+    @ticket.outgoing_date = Time.now
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record? || !t.notified
+      end
+      @ticket.save
+      flash[:notice] = 'Items guardados con éxito'
+      entry
+      redirect_to entry_ticket_path(@ticket.id)
+    else
+      edit
+      render :edit
+    end
+  end
+
+  def update_entry
+    @ticket = Ticket.find params[:id]
+    redirect_to :tickets unless @ticket.open
+    @ticket.update_attributes(params[:ticket])
+    @ticket.user_id = session[:user_id]
+    @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
+      t.comment = @ticket.comment
+      t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
+    end
+    @ticket.outgoing_date = Time.now
+    if @ticket.valid?
+      @ticket.transactions.each do |t|
+        t.update_transactions unless t.new_record? || !t.notified
+      end
+      @ticket.save
+      flash[:notice] = 'Ticket guardado con éxito'
+      redirect_to :tickets
+    else
+      edit
+      render :edit
+    end
   end
 
   def get_server_romano_ip
