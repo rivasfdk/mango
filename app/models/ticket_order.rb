@@ -99,8 +99,8 @@ class TicketOrder < ActiveRecord::Base
                               content_id: content_type,
                               sack:sack,
                               quantity:order["quantity"],
-                              total_weight: order["total_weight"]
-        TicketOrder.update(ticket_order_act.id, :remaining => order["total_weight"])
+                              total_weight: order["total_weight"],
+                              remaining: order["total_weight"]
       end
     end
   end

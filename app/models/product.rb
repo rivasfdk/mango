@@ -27,7 +27,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.search(params)
-    @products = Product.order("code asc")
+    @products = Product.where(empty: nil).order("code asc")
     @products = @products.where(["code LIKE ? OR name LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"]) if params[:search].present?
     @products.paginate page: params[:page], per_page: params[:per_page]
   end
