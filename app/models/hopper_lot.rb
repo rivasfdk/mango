@@ -12,7 +12,7 @@ class HopperLot < ActiveRecord::Base
 
   accepts_nested_attributes_for :hoppers_factory_lots
 
-  validates :hopper, :lot, presence: true
+  validates :hopper, :lot_id, presence: true
 
   before_save :update_active, if: :new_record?, unless: :factory
   after_create :update_main_hopper, :set_factory_lots, unless: :factory

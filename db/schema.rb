@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130003820) do
+ActiveRecord::Schema.define(version: 20170202204656) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -203,6 +203,7 @@ ActiveRecord::Schema.define(version: 20170130003820) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
+    t.boolean  "empty"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -261,6 +262,7 @@ ActiveRecord::Schema.define(version: 20170130003820) do
     t.decimal  "stock",         precision: 15, scale: 4, default: 0.0,  null: false
     t.float    "density",                                default: 1.0,  null: false
     t.string   "comment"
+    t.boolean  "empty"
   end
 
   add_index "lots", ["ingredient_id"], name: "fk_lots_ingredient_id", using: :btree
@@ -436,6 +438,7 @@ ActiveRecord::Schema.define(version: 20170130003820) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "base_unit_id"
+    t.boolean  "empty"
   end
 
   create_table "products_lots", force: true do |t|
@@ -448,6 +451,7 @@ ActiveRecord::Schema.define(version: 20170130003820) do
     t.decimal  "stock",      precision: 15, scale: 4, default: 0.0,  null: false
     t.string   "comment"
     t.boolean  "in_use",                              default: true
+    t.boolean  "empty"
   end
 
   add_index "products_lots", ["product_id"], name: "fk_products_lots_product_id", using: :btree
