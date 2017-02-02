@@ -31,6 +31,7 @@ class TicketOrder < ActiveRecord::Base
             order = keys.zip(values).to_h
             orders.push(order)
           end
+          File.delete(sharepath+file)
         end
       end
       return orders
@@ -153,10 +154,10 @@ class TicketOrder < ActiveRecord::Base
             net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
             item = TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id
             position = item.position
-            wharehouse = Warehouse.find_by content_id: t.content_id, content_type: item.content_type
+            wharehouse = Warehouse.find(t.warehouse_id)
             file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
                       "#{content_code};#{ticket.incoming_weight};#{net_weight};"+
-                      "#{ticket.outgoing_weight};#{plate};#{driver};001\r\n"#{wharehouse.code}
+                      "#{ticket.outgoing_weight};#{plate};#{driver};{wharehouse.code}\r\n"
             new_remaining = ticket_order.remaining - net_weight
             if new_remaining <= 0
               TicketOrder.update(ticket_order.id, :closed => true)
