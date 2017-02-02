@@ -1,7 +1,11 @@
 window.remove_fields = (link) ->
   $(link).prev("input[type=hidden]").val "1"
   $(link).closest("tr").hide()
+
+content_type = 1
+
 window.add_fields = (link, association, content) ->
+  content_type = 1
   new_id = new Date().getTime()
   regexp = new RegExp("new_" + association, "g")
   $("#tabledata tbody").append content.replace(regexp, new_id)
@@ -10,6 +14,7 @@ window.add_fields = (link, association, content) ->
   last_row.addClass (if row_count % 2 is 0 then "alternate" else "blank")
   $(".chosen-select").chosen chosen_params
   $(".content_type_checkbox").change update_transaction_lots
+  $(".chosen-select").change update_transaction_warehouse
   sack_checkbox = $(".sack_checkbox")
   sack_checkbox.change show_sack_fields
   sack_checkbox.trigger "change"
@@ -19,13 +24,32 @@ window.add_fields = (link, association, content) ->
 update_transaction_lots = ->
   lot_selected = $(this).val() is '1'
   path = (if lot_selected then "/lots/get_all" else "/product_lots/get_all")
-  select = $(this).parent().children("select")
+  content_type = (if lot_selected then 1 else 0)
+  objlot = $(this).parent().children("select")[0].id
+  select = $("#"+"#{objlot}")
   $.getJSON path, (data) ->
     lots = data
     select.empty()
+    select.append new Option("")
     $.each lots, (_, lot) ->
       select.append new Option(lot.to_collection_select, lot.id)
     select.trigger "chosen:updated"
+
+update_transaction_warehouse = ->
+  params = {}
+  objlot = $(this)[0].id
+  params["lot_id"] = $("#"+"#{objlot}").val()
+  params["content_type"] = content_type
+  url = '/ticket_orders/get_item_warehouse'
+  objwh = $(this).parent().children("select")[1].id
+  warehouse = $("#"+"#{objwh}")
+  $.getJSON url, params, (data) ->
+    wh = data
+    warehouse.empty()
+    $.each wh, (_, w) ->
+      warehouse.append new Option(w.to_collection_select, w.id)
+    warehouse.trigger "chosen:updated"
+    console.log wh
 
 show_sack_fields = ->
   sack_selected = $(this).is(":checked")
@@ -90,6 +114,7 @@ ticket_type_changed = ->
     $.each orders, (_, order) ->
       select.append new Option(order.to_collection_select, order.id)
     select.trigger "chosen:updated"
+  $("#onlyreception").toggle($("#ticket_ticket_type_id_1").is(':checked'))
 
 $ ->
   $("#ticket_ticket_type_id_1").change ticket_type_changed
@@ -135,17 +160,16 @@ captura = true
 server_romano_ip = ""
 
 $ ->
-  if self.location.href.includes('/tickets/new')
-    url = '/tickets/get_server_romano_ip'
+  url = '/tickets/get_server_romano_ip'
+  if (self.location.href.includes('/tickets') and self.location.href.includes('/entry'))
     $.getJSON url, (data) ->
       server_romano_ip = data.in
   if (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
-    url = '/tickets/get_server_romano_ip'
     $.getJSON url, (data) ->
       server_romano_ip = data.out
 
 update_weight = ->
-  if self.location.href.includes('/tickets/new')
+  if self.location.href.includes('/entry')
     not_manual = not $("#ticket_manual_incoming").is(':checked')
   else
     not_manual = not $("#ticket_manual_outgoing").is(':checked')
@@ -154,7 +178,7 @@ update_weight = ->
     socket.onopen = ()->
       console.log "conected!"
     socket.onmessage = (msg)->
-      if self.location.href.includes('/tickets/new')
+      if self.location.href.includes('/entry')
         $("#ticket_incoming_weight").val(msg.data)
         console.log $("#ticket_incoming_weight").val()
       else
@@ -162,7 +186,7 @@ update_weight = ->
         console.log $("#ticket_outgoing_weight").val()
 
 $ ->
-  if self.location.href.includes('/tickets/new') or (self.location.href.includes('/tickets') and self.location.href.includes('/edit'))
+  if (self.location.href.includes('/tickets') and self.location.href.includes('/entry')) or (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
     setInterval(update_weight, 1000)
 
 capture_weight = ->

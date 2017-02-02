@@ -5,6 +5,8 @@ class Warehouse < ActiveRecord::Base
   belongs_to :product
   belongs_to :warehouse_types
 
+  has_many :transactions
+
   validates :name, :code, :content_id, presence: true
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}

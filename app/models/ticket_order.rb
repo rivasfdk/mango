@@ -105,7 +105,7 @@ class TicketOrder < ActiveRecord::Base
   end
 
   def self.create_transactions(ticket_id)
-    if not (Ticket.find ticket_id).id_order.nil?
+    if !(Ticket.find ticket_id).id_order.nil?
       order_id = (Ticket.find ticket_id).id_order
       ticket_order = TicketOrder.find order_id, :include => :ticket_orders_items
       transaction_type_id = ticket_order.order_type ? 4 : 5
