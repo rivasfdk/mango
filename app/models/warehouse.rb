@@ -6,8 +6,12 @@ class Warehouse < ActiveRecord::Base
   belongs_to :warehouse_types
 
   has_many :transactions
+  has_many :warehouses_contents, :dependent => :destroy
 
-  validates :name, :code, :content_id, presence: true
+  accepts_nested_attributes_for :warehouses_contents, allow_destroy: true, reject_if: lambda { |a| a[:content_id].blank? }
+
+  validates :name, :code, presence: true
+  validates :content_id, presence: true, unless: :sacks
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}
   validates :stock, numericality: {greater_than_or_equal_to: 0}

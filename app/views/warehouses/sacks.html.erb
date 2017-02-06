@@ -1,0 +1,63 @@
+<% title "Rubros en #{@warehouse.name} " %>
+<%= form_for @warehouse, :url=>warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:method=>:put, :id=>'warehouse_edit_form'} do |f| %> 
+<%= render_error_messages(f.error_messages) %>
+
+
+<label for="code" class="small">Código:</label>
+<div class="field"><%= @warehouse.code %></div>
+<br />
+<label for="name" class="small">Nombre:</label>
+<div class="field"><%= @warehouse.name %></div>
+<br />
+<label for="size" class="small">Capacidad (m3):</label>
+<div class="field"><%= @warehouse.size %> </div>
+<div class="clearfix"></div>
+
+
+<h5>En almacen:</h5>
+<% i = 0 %>
+<div id="lot_sacks_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+      <% if @warehouse.content_type %>
+        <th>Ingrediente<span class="order_arrow"></span></th>
+      <% else %>
+        <th>Producto Terminado<span class="order_arrow"></span></th>
+      <% end %>
+        <th>Existencia<span class="order_arrow"></span></th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :warehouses_contents do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <% t = builder.object %>
+        <tr class="<%= class_row %>">
+          <td>
+          <% if t.new_record? %>
+            <%= builder.hidden_field :content_type, :value => @warehouse.content_type %>
+            <%= builder.collection_select :content_id, @warehouse.content_type ? @lots : @product_lots, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %><br />
+          <% else %>
+            <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
+          <% end %>
+          </td>
+          <td class="center"><%= builder.text_field :stock, size: 10, class: 'amount_field' %></td>
+          <td class="center">
+            <%= builder.hidden_field :_destroy %>
+            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td class="center">
+        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :warehouses_contents %>
+      </td>
+    </tfoot>
+  </table>
+</div>
+<br/>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170202204656) do
+ActiveRecord::Schema.define(version: 20170203153117) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -696,9 +696,19 @@ ActiveRecord::Schema.define(version: 20170202204656) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "content_type"
+    t.boolean  "sacks"
   end
 
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
+
+  create_table "warehouses_contents", force: true do |t|
+    t.integer  "warehouse_id"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.float    "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "warehouses_types", force: true do |t|
     t.string   "name",         null: false

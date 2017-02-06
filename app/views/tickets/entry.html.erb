@@ -70,18 +70,14 @@
         <% t = builder.object %>
         <tr class="<%= class_row %>">
           <td>
-            <% if t.new_record? %>
-              <%= builder.radio_button :content_type, "1" %> Materia Prima <%= builder.radio_button :content_type, "2" %> Producto terminado
-              <br />
-              <%= builder.collection_select :content_id, t.content_type == 1 ? @lots : @product_lots, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
-            <% else %>
-              <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %>
-            <% end %>
+            <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
+            <label>Almacen:</label>
+            <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
           </td>
-          <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox' %></td>
-          <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field' %></td>
-          <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field' %></td>
-          <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field' %></td>
+          <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox', disabled: true %></td>
+          <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field', disabled: true %></td>
+          <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field', disabled: true %></td>
+          <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field', disabled: true %></td>
           <td class="center">
             <%= builder.hidden_field :_destroy %>
             <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
@@ -95,9 +91,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td class="center">
-        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :transactions %>
-      </td>
+      <td></td>
     </tfoot>
   </table>
 </div>

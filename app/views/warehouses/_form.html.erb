@@ -14,7 +14,9 @@
 <% end %>
 <br /><br />
 <label for="size" class="small">Capacidad (m3):</label>
-<div class="field"><%= f.text_field :size, :size=>'20' %> </div>
+<div class="field"><%= f.text_field :size, :size=>'20' %> </div><br />
+<label for="sacks" class="small">Almacen de Sacos: </label>
+<div class="field"><%= f.check_box :sacks, :checked=>false %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
 

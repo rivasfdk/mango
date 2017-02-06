@@ -255,7 +255,11 @@ module MenuHelper
     elsif c == 'warehouses' and a == 'change_ingredient' or a == 'do_change_ingredient'
       menu = menu_for_warehouses_change_ingredient 
     elsif c == 'warehouses' and a == 'change_product' or a == 'do_change_product'
-      menu = menu_for_warehouses_change_product   
+      menu = menu_for_warehouses_change_product
+
+    elsif c == 'warehouses' and a == 'sacks'
+      menu = menu_for_warehouses_sacks
+
     elsif c == 'warehouse_types' and a == 'index'
       menu = menu_for_warehouse_types_index
     elsif c == 'warehouse_types' and a == 'show'
@@ -1367,6 +1371,13 @@ module MenuHelper
     return menu
   end
 
+  def menu_for_warehouses_sacks
+    menu = content_tag(:p, "#{@warehouse.name}")
+    menu += content_tag(:ul,
+      render_back(warehouse_type_path(params[:warehouse_type_id])) +
+      render_function('Guardar', 'Guardar', "submit_warehouse_edit_form()", 'button-execute.png')
+    )
+  end
 
   def menu_for_warehouse_types_index
     menu = content_tag(:p, 'Almacenes')

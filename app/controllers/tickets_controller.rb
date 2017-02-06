@@ -11,7 +11,7 @@ class TicketsController < ApplicationController
         @carriers = Carrier.where(frequent: true)
         @ticket_types = TicketType.all
         @ingredients = Ingredient.actives
-        @tickets = Ticket.search(params)
+        @tickets = Ticket.search(params) 
         @factories = Client.where(factory: true) << Client.new(code: "-1", name: session[:company]['name'])
         render html: @tickets
       end
@@ -197,6 +197,8 @@ class TicketsController < ApplicationController
         @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
       end
     end
+    @lots_warehouses = Warehouse.where(content_type: true)
+    @product_lots_warehouses = Warehouse.where(content_type: false)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
@@ -312,6 +314,50 @@ class TicketsController < ApplicationController
     end
   end
 
+  def update_items
+    @ticket = Ticket.find params[:id]
+    redirect_to :tickets unless @ticket.open
+    @ticket.update_attributes(params[:ticket])
+    @ticket.user_id = session[:user_id]
+    error = nil
+    @ticket.transactions.each do |t|
+      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+      t.user_id = @ticket.user_id
+      t.client_id = @ticket.client_id
+      t.comment = @ticket.comment
+      t.notified = @ticket.notified
+      unless t.sack
+        t.sacks = nil
+        t.sack_weight = nil
+      end
+      t.amount = t.amount_was if t.marked_for_destruction?
+    end
+    @ticket.transactions.each do |t|
+      if t.content_id.nil?
+        error = "Debe selecionar un lote"
+      elsif t.warehouse_id.nil?
+        error = "El lote #{t.get_lot.to_collection_select} no esta asignado a ningún almacen"
+      else
+        t.update_transactions unless t.new_record? || !t.notified
+      end
+    end
+    if error.nil?
+      @ticket.save
+      flash[:notice] = 'Items guardados con éxito'
+      if @ticket.incoming_weight.nil?
+        entry
+        redirect_to entry_ticket_path(@ticket.id)
+      else
+        redirect_to action: 'index'
+      end
+    else
+      flash[:type] = 'error'
+      flash[:notice] = error
+      items
+      render :items
+    end
+  end
+
   def entry
     @ticket = Ticket.find params[:id], :include => :transactions
     ticket_type = @ticket.ticket_type_id == 1 ? true : false
@@ -333,38 +379,6 @@ class TicketsController < ApplicationController
       @trucks << @ticket.truck
     end
     @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
-  end
-
-  def update_items
-    @ticket = Ticket.find params[:id]
-    redirect_to :tickets unless @ticket.open
-    @ticket.update_attributes(params[:ticket])
-    @ticket.user_id = session[:user_id]
-    @ticket.transactions.each do |t|
-      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-      t.user_id = @ticket.user_id
-      t.client_id = @ticket.client_id
-      t.comment = @ticket.comment
-      t.notified = @ticket.notified
-      unless t.sack
-        t.sacks = nil
-        t.sack_weight = nil
-      end
-      t.amount = t.amount_was if t.marked_for_destruction?
-    end
-    @ticket.outgoing_date = Time.now
-    if @ticket.valid?
-      @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record? || !t.notified
-      end
-      @ticket.save
-      flash[:notice] = 'Items guardados con éxito'
-      entry
-      redirect_to entry_ticket_path(@ticket.id)
-    else
-      edit
-      render :edit
-    end
   end
 
   def update_entry
@@ -393,8 +407,8 @@ class TicketsController < ApplicationController
       flash[:notice] = 'Ticket guardado con éxito'
       redirect_to :tickets
     else
-      edit
-      render :edit
+      entry
+      render :entry
     end
   end
 
