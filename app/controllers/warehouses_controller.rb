@@ -137,6 +137,13 @@ class WarehousesController < ApplicationController
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
+  def sacks
+    @warehouse = Warehouse.find params[:id], :include => :warehouses_contents
+    @lots = Lot.includes(:ingredient).where(active: true, empty: nil)
+    @product_lots = ProductLot.includes(:product).where(empty: nil)
+  end
+
+
   private
 
   def fill_new
@@ -148,4 +155,5 @@ class WarehousesController < ApplicationController
     @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
     @warehouse = @warehouse_types.warehouses.find params[:id]
   end
+
 end

@@ -23,19 +23,30 @@
       <tr class="<%= class_row %>">
         <td class="center"><%=h w[:code] %></td>
           <td><%= h w[:name] %></td>
-          <% if @warehouses.first.warehouse_types.content_type == true %>
-            <td><%= h Ingredient.find(w.content_id).name %></td> 
+          <% if !w.sacks %>
+            <% if @warehouses.first.warehouse_types.content_type == true %>
+              <td><%= h Ingredient.find(w.content_id).name %></td> 
+            <% else %>
+              <td><%= h Product.find(w.content_id).name %></td>
+            <% end %>
+            <td><%= h w[:stock] %></td>
+            <td><%= h w[:size] %></td>
           <% else %>
-            <td><%= h Product.find(w.content_id).name %></td>
+            <td>Almacen de Sacos</td>
+            <td> - </td>
+            <td><%= h w[:size] %></td>
           <% end %>
-          <td><%= h w[:stock] %></td>
-          <td><%= h w[:size] %></td>
+          
                  
         <td class="left">
-          <% if @warehouses.first.warehouse_types.content_type == true %>
-          <%= render_action_change_warehouse_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+          <% if !w.sacks %>
+            <% if @warehouses.first.warehouse_types.content_type == true %>
+              <%= render_action_change_warehouse_ingredient(change_ingredient_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+            <% else %>
+              <%= render_action_change_warehouse_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+            <% end %>
           <% else %>
-          <%= render_action_change_warehouse_product(change_product_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
+            <%= render_action_view_warehouse_sacks(sacks_warehouse_path(w.warehouse_types_id, w[:id])) %><br />
           <% end %>
           <%= render_action_fill_warehouse(fill_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %>
           <%= render_action_adjust(adjust_warehouse_type_warehouse_path(w.warehouse_types_id, w[:id])) %> <br />
