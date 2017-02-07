@@ -5,18 +5,24 @@
 <label for="name" class="small">Nombre:</label>
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
 <br /><br />
+
+<label for="sacks" class="small">Almacen de Sacos: </label>
+<div class="field"><%= f.check_box :sacks, :checked=>false %></div><br />
+
+<div id="warehousecontent">
 <% if @warehouse_types.content_type == true %>
   <label for="ingredient" class="small">Materia Prima:</label>
-  <div class="field"><%= f.collection_select :content_id, Ingredient.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <div class="field"><%= f.collection_select :content_id, Ingredient.all, :id, :to_collection_select, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% else %>
   <label for="product" class="small">Producto:</label>
-  <div class="field"><%= f.collection_select :content_id, Product.all, :id, :to_collection_select, {include_blank: "Ninguno" }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <div class="field"><%= f.collection_select :content_id, Product.all, :id, :to_collection_select, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% end %>
 <br /><br />
+</div>
+
 <label for="size" class="small">Capacidad (m3):</label>
 <div class="field"><%= f.text_field :size, :size=>'20' %> </div><br />
-<label for="sacks" class="small">Almacen de Sacos: </label>
-<div class="field"><%= f.check_box :sacks, :checked=>false %></div>
+
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
 
