@@ -58,7 +58,9 @@ class Transaction < ActiveRecord::Base
   end
 
   def get_warehouse
+    if !self.warehouse_id.nil?
       Warehouse.find self.warehouse_id
+    end
   end
 
   def get_content

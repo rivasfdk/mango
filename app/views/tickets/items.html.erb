@@ -31,7 +31,9 @@
             <% else %>
               <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
               <label>Almacen:</label>
-              <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+              <% if !t.get_warehouse.nil? %>
+                <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+              <% end %>
             <% end %>
           </td>
           <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox' %></td>
