@@ -227,6 +227,14 @@ module MenuHelper
       menu = menu_for_scales_new
     elsif c == 'scales' and (a == 'edit' or a == 'update')
       menu = menu_for_scales_edit
+    elsif c == 'warehouses' and a == 'index'
+      menu = menu_for_warehouses_index
+    elsif c == 'warehouses' and a == 'show'
+      menu = menu_for_warehouses_show
+    elsif c == 'warehouses' and (a == 'new' or a == 'create')
+      menu = menu_for_warehouses_new
+    elsif c == 'warehouses' and (a == 'edit' or a == 'update')
+      menu = menu_for_warehouses_edit  
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -1234,6 +1242,43 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(scales_path) +
       render_function('Actualizar', 'Actualizar balanza', "submit_scale_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+
+  def menu_for_warehouses_index
+    menu = content_tag(:p, 'Alamacenes')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Nuevo Alamacen', new_warehouse_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_warehouses_show
+    menu = content_tag(:p, "Alamacen de #{@warehouses.name}")
+    menu += content_tag(:ul,
+      render_back(warehouses_path) +
+      render_action('Crear', 'Crear nuevo almacen', new_warehouse_path(@warehouses), 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_warehouses_new
+    menu = content_tag(:p, 'Nuevo alamacen')
+    menu += content_tag(:ul,
+      render_back(warehouses_path) +
+      render_function('Guardar', 'Guardar tipo de parámetro', "submit_warehouse_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_warehouses_edit
+    menu = content_tag(:p, 'Editar almacen')
+    menu += content_tag(:ul,
+      render_back(warehouses_path) +
+      render_function('Actualizar', 'Actualizar almacen', "submit_warehouse_edit_form()", 'button-execute.png')
     )
     return menu
   end
