@@ -1,0 +1,42 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: @data['title']) do |sheet|
+  #Styles
+  bold_center = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :center}, wrap_text: true)
+  bold = wb.styles.add_style(:b => true)
+  center = wb.styles.add_style(:alignment=>{:horizontal => :center})
+  right_bold = wb.styles.add_style(:b => true, :alignment=>{:horizontal => :right})
+  fmt_num = wb.styles.add_style(:num_fmt => 2)
+  fmt_num_bold = wb.styles.add_style(:b => true, :num_fmt => 2)
+  #Image
+  sheet.add_image(:image_src => @data['company_logo']) do |image|
+    image.width = 70
+    image.height = 70
+    image.start_at 0,0
+  end
+  #Rows
+  sheet.add_row [nil, @data['company_name'], nil, nil, nil, nil, nil, "Desde: #{@data['start_date']}"],
+   :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
+  sheet.add_row [nil, @data['company_rif'], nil, nil, nil, nil, nil, "Hasta: #{@data['end_date']}"],
+   :widths=>[nil, :ignore, nil, nil, nil, nil, nil, :ignore], :style => bold
+  sheet.add_row [nil, @data['company_address']], :widths=>[nil, :ignore], :style => bold
+  sheet.add_row
+  sheet.add_row [nil, nil, nil, nil, @data['title']], :widths=>[nil, nil, nil, nil, :ignore], :style => bold_center
+  sheet.add_row
+  sheet.add_row ["Código", "Materia Prima", "Lote", "Estándar (Kg)", "Real (Kg)", "Var (Kg)",
+    "Var (%)", "Tolva"], :style => bold_center
+  @data['results'].each do |result|
+    sheet.add_row [
+      result['code'], result['ingredient'], result['lot'], result['std_kg'],
+      result['real_kg'], result['var_kg'], result['var_perc'], result['hopper']
+    ], :style => [center, center, center, fmt_num, fmt_num, fmt_num, fmt_num, center],
+    :widths=>[:ignore, :auto, :ignore, :ignore, :ignore, :ignore, :ignore, :ignore]
+  end
+  results_count = @data['results'].count
+  sheet.add_row [
+    nil, nil, "Total:",
+    "=SUM(D8:D#{results_count + 7})",
+    "=SUM(E8:E#{results_count + 7})",
+    "=E#{results_count + 8}-D#{results_count +8}",
+    "=F#{results_count + 8}/D#{results_count + 8}*100", nil
+    ], :style => [nil, nil, right_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, fmt_num_bold, nil]
+end
