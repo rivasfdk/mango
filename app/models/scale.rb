@@ -14,7 +14,7 @@ class Scale < ActiveRecord::Base
   end
 
   def self.get_all
-    scales = Scale.order('not_weighed')
+    scales = Scale.order('id')
     hoppers_below_minimum = Hopper
       .select("scale_id,
                SUM(stock_below_minimum) AS below_minimum_count")

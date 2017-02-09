@@ -4,6 +4,7 @@
 *= require chosen
 */
 
+
 h5 {
     background-color: #434343;
     color: #fff;
@@ -24,7 +25,7 @@ h5 {
 
 #header {
     margin: 0 auto;
-    background: #f0f0f0; /* #434343;*/
+    background: #ffffff; /* #434343;*/
     height: 80px;
     width: 900px;
     margin-bottom: 5px;
