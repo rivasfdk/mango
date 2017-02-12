@@ -157,4 +157,18 @@ class RecipesController < ApplicationController
       end
     end
   end
+
+  def print
+    @recipe = Recipe.find params[:id]
+    @data = EasyModel.recipe_details(@recipe.code)
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to action: 'index'
+    else
+      rendered = render_to_string formats: [:pdf], template: 'recipes/recipe_details'
+      send_data rendered, filename: "detalle_orden_rectea.pdf", type: "application/pdf", disposition: 'inline'
+    end
+  end
+    
 end
