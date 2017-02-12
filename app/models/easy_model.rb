@@ -1296,6 +1296,71 @@ class EasyModel
     return data
   end
 
+  def self.recipe_details(recipe_code)
+    @recipe = Recipe.where(code: recipe_code).first
+    return nil if @recipe.nil?
+    @types = Recipe::TYPES
+
+    data = self.initialize_data('Detalle de Receta')
+
+    data['recipe_code'] = recipe_code
+    data['recipe_name'] = @recipe.name
+    data['version'] = @recipe.version
+    data['comment'] = @recipe.comment
+    data['product'] = @recipe.product.nil? ? "" : "#{@recipe.product.name}"
+    data['type_id'] = @types[@recipe.type_id]
+    data['total'] = @recipe.get_total
+    data['in_use'] = @recipe.in_use ? "Sí" : "No"
+    data['active'] = @recipe.active ? "Sí" : "No"
+    data['results'] = []
+
+    ingredients = {}
+    @recipe.ingredient_recipe.each do |ir|
+      ingredients[ir.ingredient.code] = ir.amount
+    end
+
+    details = {}
+    @recipe.ingredient_recipe.each do |ir|
+      key = ir.ingredient.code
+      unless details.has_key?(key)
+        details[key] = {
+          'ingredient_id' => ir.ingredient_id,
+          'ingredient_name' => ir.ingredient.name,
+          'amount' => ir.amount.round(2),
+          'priority' => ir.priority,
+          'percentage' => ir.get_percentage.round(2)
+        }
+      end
+    end
+
+    #Add recipe ingredients without any consumption
+    ingredients.each do |key, value|
+      unless details.has_key?(key)
+        ingredient = Ingredient.where(code: key).first
+        details[key] = {
+          'ingredient_name' => ingredient.name,
+          'ingredient_id' => ingredient.id,
+          'amount' => ingredient.ingredient_recipe.amount,
+          'percentage' => 100,
+        }
+      end
+    end
+
+    total = 0
+
+    details.each do |key, value|
+      total += value['amount']
+    end
+
+    total = total.round(2)
+
+    details.sort_by {|k,v| k}.map do |key, value|
+      element = {'code' => key}
+      data['results'] << element.merge(value)
+    end
+    return data
+  end
+
   def self.batch_details(order_code, batch_number)
     order = Order.where(code: order_code).first
     return nil if order.nil?

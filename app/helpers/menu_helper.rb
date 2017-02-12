@@ -327,7 +327,8 @@ module MenuHelper
   def menu_for_recipes_show
     menu = content_tag(:p, 'Detalle de receta')
     menu += content_tag(:ul,
-      render_back('javascript:history.back()')
+      render_back('javascript:history.back()') +
+      render_action('Generar Reporte', 'Generar Reporte de Receta', print_recipe_path, 'button-print.png')
     )
     return menu
   end
