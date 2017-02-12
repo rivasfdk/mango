@@ -1,0 +1,44 @@
+report.set_layout tlf: 'recipes/recipe_details'
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values footer: @data['footer']
+  page.values title: @data['title']
+
+  page.item(:date_hide).visible(true)
+
+  table = report.list(:results)
+
+  table.header do |header|
+    header.item(:recipe_code).value(@data['recipe_code'])
+    header.item(:name).value(@data['recipe_name'])
+    header.item(:version).value(@data['version'])
+    header.item(:product).value(@data['product'])
+    header.item(:type_id).value(@data['type_id'])
+    header.item(:total).value(@data['total'])
+    header.item(:in_use).value(@data['in_use'])
+    header.item(:active).value(@data['active'])
+
+  end
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total).value(@data['total'].round(2).to_s + ' Kg')
+    footer.item(:comment).value(@data['comment'])
+  end
+
+  @data['results'].each do |result|
+    table.add_row ingredient_code: result['code'],
+                  ingredient_name: result['ingredient_name'],
+                  amount: result['amount'],
+                  priority: result['priority'],
+                  percentage: result['percentage']
+  end
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
+end
