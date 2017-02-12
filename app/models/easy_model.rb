@@ -1296,14 +1296,14 @@ class EasyModel
     return data
   end
 
-  def self.recipe_details(recipe_code)
-    @recipe = Recipe.where(code: recipe_code).first
+  def self.recipe_details(recipe_id)
+    @recipe = Recipe.find recipe_id
     return nil if @recipe.nil?
     @types = Recipe::TYPES
 
     data = self.initialize_data('Detalle de Receta')
 
-    data['recipe_code'] = recipe_code
+    data['recipe_code'] = @recipe.code
     data['recipe_name'] = @recipe.name
     data['version'] = @recipe.version
     data['comment'] = @recipe.comment

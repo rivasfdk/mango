@@ -8,8 +8,6 @@ report.start_new_page do |page|
   page.values footer: @data['footer']
   page.values title: @data['title']
 
-  page.item(:date_hide).visible(true)
-
   table = report.list(:results)
 
   table.header do |header|
@@ -19,8 +17,6 @@ report.start_new_page do |page|
     header.item(:product).value(@data['product'])
     header.item(:type_id).value(@data['type_id'])
     header.item(:total).value(@data['total'])
-    header.item(:in_use).value(@data['in_use'])
-    header.item(:active).value(@data['active'])
 
   end
 

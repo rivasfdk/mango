@@ -10,7 +10,6 @@ class RecipesController < ApplicationController
   def show
     @recipe = Recipe.find params[:id], include: {ingredient_recipe: {ingredient: {}}}, order: 'ingredients.code asc'
     @types = Recipe::TYPES
-    @data = EasyModel.recipe_details(@recipe.code)
     @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameter_list = ParameterList.find_by_recipe(@recipe.code)
@@ -161,13 +160,13 @@ class RecipesController < ApplicationController
 
   def print
     @recipe = Recipe.find params[:id]
-    @data = EasyModel.recipe_details(@recipe.code)
+    @data = EasyModel.recipe_details(@recipe.id)
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to action: 'index'
     else
-      rendered = render_to_string formats: [:pdf], template: 'recipes/recipe_details'
+      rendered = render_to_string formats: [:pdf], template: 'recipes/recipe_details', target: "_blank"
       send_data rendered, filename: "detalle_orden_rectea.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
