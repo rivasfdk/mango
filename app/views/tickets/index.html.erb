@@ -19,7 +19,12 @@
     </thead>
     <tbody>
     <% @tickets.each do |t| %>
-    <% sin_t = (Transaction.where(ticket_id: t[:ticket_id])).empty? %>
+    <% tt = Transaction.find_by(ticket_id: t[:ticket_id]) %>
+    <% if tt.nil? or tt.warehouse_id.nil? %>
+      <% sin_t = true %>
+    <% else %>
+      <% sin_t = false %>
+    <% end %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h t[:ticket_number] %></td>

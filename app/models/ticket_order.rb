@@ -114,11 +114,12 @@ class TicketOrder < ActiveRecord::Base
 
       if Transaction.where(ticket_id: ticket_id).empty?
         ticket_order.ticket_orders_items.each do |item|
-          binding.pry
           warehouse = Warehouse.find_by(content_id: item.content_id, content_type: item.content_type)
           if warehouse.nil?
-            warehouse_id = (WarehouseContents.find_by(content_id: t.content_id, content_type: content_type)).warehouse_id
-            warehouse = Warehouse.find(warehouse_id)
+            warehouse_content = WarehouseContents.find_by(content_id: item.content_id, content_type: item.content_type)
+            if !warehouse_content.nil?
+              warehouse = Warehouse.find(warehouse_content.warehouse_id)
+            end
           end
 
           sack_weight = item.sack ? item.total_weight/item.quantity : 1
@@ -132,6 +133,7 @@ class TicketOrder < ActiveRecord::Base
                              sack_weight: sack_weight,
                              sacks: item.quantity,
                              document_number: ticket_order.document_number,
+                             stock_after: item.remaining,
                              content_id: item.content_id,
                              content_type: content_type,
                              notified: false,
