@@ -83,10 +83,7 @@
           <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field', disabled: true %></td>
           <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field', disabled: true %></td>
           <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field', disabled: true %></td>
-          <td class="center">
-            <%= builder.hidden_field :_destroy %>
-            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
-          </td>
+          <td></td>
         </tr>
       <% end %>
     </tbody>
@@ -96,9 +93,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td class="center">
-        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :transactions %>
-      </td>
+      <td></td>
     </tfoot>
   </table>
 </div>

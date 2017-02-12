@@ -72,16 +72,15 @@
           <td>
             <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
             <label>Almacen:</label>
-            <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+            <% if !t.get_warehouse.nil? %>
+                <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+            <% end %>
           </td>
           <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox', disabled: true %></td>
           <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field', disabled: true %></td>
           <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field', disabled: true %></td>
           <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field', disabled: true %></td>
-          <td class="center">
-            <%= builder.hidden_field :_destroy %>
-            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
-          </td>
+          <td></td>
         </tr>
       <% end %>
     </tbody>

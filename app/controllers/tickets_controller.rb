@@ -84,7 +84,6 @@ class TicketsController < ApplicationController
     @ticket.user_id = (User.find session[:user_id]).id
     if @ticket.save
       flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
-      items
       redirect_to items_ticket_path(@ticket.id)
     else
       new
@@ -231,8 +230,10 @@ class TicketsController < ApplicationController
       if t.warehouse_id.nil?
         warehouse = Warehouse.find_by(content_id: t.content_id, content_type: content_type)
         if warehouse.nil?
-          warehouse_id = (WarehouseContents.find_by(content_id: t.content_id, content_type: content_type)).warehouse_id
-          warehouse = Warehouse.find(warehouse_id)
+          warehouse_content = WarehouseContents.find_by(content_id: t.content_id, content_type: content_type)
+          if !warehouse_content.nil?
+            warehouse = Warehouse.find(warehouse_content.warehouse_id)
+          end
         end
         t.warehouse_id = warehouse.nil? ? nil : warehouse.id
       end
@@ -400,14 +401,15 @@ class TicketsController < ApplicationController
       close
       render :close
     else
-      net_weight = (@ticket.incoming_weight - @ticket.outgoing_weight).abs
-      
+
       if @ticket.ticket_type_id == 1
+        net_weight = @ticket.incoming_weight - @ticket.outgoing_weight
         dif_min = (Settings.find 1).ticket_reception_diff
         dif = (@ticket.provider_weight - net_weight).abs
         porcent_dif = (dif / @ticket.provider_weight) * 100
         dif_validation = porcent_dif <= dif_min ? true : false
       else
+        net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
         dif_min = (Settings.find 1).ticket_dispatch_diff
         total_transaction = 0
         @ticket.transactions.each do |t|
@@ -441,7 +443,7 @@ class TicketsController < ApplicationController
         if @ticket.valid?
           @ticket.save
           flash[:notice] = 'Ticket cerrado con éxito'
-          redirect_to :tickets
+          redirect_to :tickets, :action => "print"
         else
           flash[:type] = 'error'
           flash[:notice] = "El peso de Salida no es valido"
