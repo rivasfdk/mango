@@ -579,30 +579,6 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.datetime "updated_at"
   end
 
-  create_table "tickets_order", force: true do |t|
-    t.string   "code"
-    t.boolean  "order_type"
-    t.integer  "client_id"
-    t.integer  "document_type_id"
-    t.string   "document_number"
-    t.boolean  "closed"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "tickets_order_items", force: true do |t|
-    t.integer  "ticket_order_id"
-    t.integer  "position"
-    t.boolean  "content_type"
-    t.integer  "content_id"
-    t.boolean  "sack"
-    t.integer  "quantity"
-    t.float    "total_weight"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "remaining"
-  end
-
   create_table "tickets_types", force: true do |t|
     t.string   "code",        null: false
     t.string   "description", null: false
@@ -664,37 +640,6 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "role_id"
-  end
-
-  create_table "warehouses", force: true do |t|
-    t.integer  "warehouse_types_id"
-    t.integer  "content_id"
-    t.string   "code",                             null: false
-    t.string   "name",                             null: false
-    t.float    "stock",              default: 0.0
-    t.float    "size"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "content_type"
-    t.boolean  "sacks"
-  end
-
-  add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
-
-  create_table "warehouses_contents", force: true do |t|
-    t.integer  "warehouse_id"
-    t.boolean  "content_type"
-    t.integer  "content_id"
-    t.float    "stock"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "warehouses_types", force: true do |t|
-    t.string   "name",         null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "content_type"
   end
 
 end
