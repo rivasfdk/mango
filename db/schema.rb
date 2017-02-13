@@ -578,18 +578,6 @@ ActiveRecord::Schema.define(version: 20170203153117) do
   add_index "tickets", ["truck_id"], name: "fk_tickets_truck_id", using: :btree
   add_index "tickets", ["user_id"], name: "fk_tickets_user_id", using: :btree
 
-  create_table "tickets_items", force: true do |t|
-    t.integer  "ticket_id"
-    t.boolean  "content_type"
-    t.integer  "content_id"
-    t.boolean  "sack"
-    t.integer  "sack_quantity"
-    t.float    "total_weight"
-    t.integer  "warehouse_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "sack_weight"
-  end
 
   create_table "tickets_numbers", force: true do |t|
     t.string   "number",     default: "0000000001"
