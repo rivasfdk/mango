@@ -225,7 +225,7 @@ class Recipe < ActiveRecord::Base
   end
 
   def self.search(params)
-    @recipes = Recipe.order("created_at asc")
+    @recipes = Recipe.order("name asc")
     @recipes = @recipes.where(active: true)
     @recipes = @recipes.where(code: params[:code]) if params[:code].present?
     @recipes.paginate page: params[:page], per_page: params[:per_page]

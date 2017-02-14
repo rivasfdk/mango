@@ -2,9 +2,10 @@
 <% i = 0 %>
 <div id="searchform">
 <%= form_tag recipes_path, :method => 'get' do %>
-  <label for="code">Código de receta:</label>
-  <%= text_field_tag :code, params[:code]%>
+  <label for="code">Receta:</label>
+  <%= select_tag(:code, options_from_collection_for_select(@recipes, :code, :to_collection_select_code, params[:code]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
   <%= submit_tag "Filtrar", :name => nil %>
+  <%= link_to "Limpiar", recipes_path %>
 <% end %>
 </div>
 <% if @recipes.any? %>
@@ -17,9 +18,10 @@
         <th>Código<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Versión<span class="order_arrow"></span></th>
+        <th>Comentario<span class="order_arrow"></span></th>
         <th>Total Kg.<span class="order_arrow"></span></th>
         <th>En uso<span class="order_arrow"></span></th>
-        <th class="actions">Acciones</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -29,11 +31,12 @@
         <td class="center"><%=h r.code %></td>
         <td><%=h r.name %></td>
         <td class="center"><%=h r.version %></td>
+        <td class="center"><%=h r.comment[0..10] %></td>
         <td class="right"><%=h r.get_total %></td>
         <td class="center"><%= r.in_use ? "Sí" : "No" %></td>
         <td class="center">
-          <%= render_action_show(recipe_path(r)) %>
-          <%= render_action_clone(clone_recipe_path(r), "Desea clonar la receta '#{r.name}'?") %>
+          <%= render_action_show(recipe_path(r)) %><br />
+          <%= render_action_clone(clone_recipe_path(r), "Desea clonar la receta '#{r.name}'?") %><br />
           <%= render_action_edit(edit_recipe_path(r)) %><br />
           <% unless r.order.any? %>
           <%= render_action_delete(recipe_path(r), "Desea borrar la receta '#{r.name}'?") %>
