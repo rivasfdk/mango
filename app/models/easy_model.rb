@@ -924,6 +924,9 @@ class EasyModel
     data[:driver_name] = Driver.where(id: params[:driver_id]).first.name if by_driver
 
     data[:transactions] = transactions.map do |t|
+      if t[:provider_weight].nil?
+        t[:provider_weight] = t[:transaction_amount]
+      end
       {
         ticket_number: "#{t[:ticket_number]}\n#{t[:ticket_type]}",
         outgoing_date: t[:ticket_outgoing_date],
@@ -1644,7 +1647,7 @@ class EasyModel
     "Income code found: " + income_type.code
     return nil if income_type.nil?
 
-    incomes = Transaction.find.where({:transaction_type_id => income_type, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
+    incomes = Transaction.where({:transaction_type_id => income_type, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
     return nil if incomes.empty?
 
     data = self.initialize_data('Entradas de Materia Prima')
