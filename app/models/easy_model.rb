@@ -801,7 +801,7 @@ class EasyModel
 
     data = self.initialize_data("Ticket #{@ticket.number} - #{@ticket.ticket_type.code}")
     data['short_title'] = "Ticket de #{@ticket.ticket_type.code} Romana"
-
+    data['title'] = "Ticket #{@ticket.number} - #{@ticket.ticket_type.code}"
     data['number'] = @ticket.number
     data['incoming_date'] = @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S")
     data['outgoing_date'] = @ticket.outgoing_date.strftime("%d/%m/%Y %H:%M:%S")
@@ -843,7 +843,7 @@ class EasyModel
       data['dif'] = ""
     end
 
-    # I fucking hate easyreport
+    #easyreport
     data['comment'] = @ticket.comment
     comments = @ticket.comment.split(/\n/)
     comments.each_with_index do |comment, index|
