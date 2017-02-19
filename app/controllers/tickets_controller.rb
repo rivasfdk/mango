@@ -120,20 +120,15 @@ class TicketsController < ApplicationController
   end
 
   def print
+    @ticket = Ticket.find params[:id]
     @data = EasyModel.ticket params[:id]
     if @data.nil?
       flash[:notice] = 'El ticket se encuentra abierto'
       flash[:type] = 'warn'
       redirect_to action: 'index'
     else
-      ticket_template = get_mango_field('ticket_template')
-      if ticket_template
-        @data[:ticket_template] = ticket_template
-        rendered = render_to_string formats: [:pdf]
-      else
-        rendered = EasyReport::Report.new(@data, 'ticket.yml').render
-      end
-      send_data rendered, filename: "ticket_#{@data['number']}.pdf", type: "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'tickets/print_ticket', target: "_blank"
+      send_data rendered, filename: "ticket_#{@data['number']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
