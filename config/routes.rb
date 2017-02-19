@@ -16,7 +16,7 @@ Mango::Application.routes.draw do
   match 'product_parameter_type_ranges/:id/create' => "product_parameter_type_ranges#create", :via => :post, :as => 'create_product_parameter_type_range'
   match 'laboratory' => "laboratory#index", :via => :get, :as => 'laboratory'
   match 'recipes/:id/deactivate' => "recipes#deactivate", :via => :get, :as => 'deactivate_recipe'
-  match 'recipes/:id/print' => "recipes#print", :via => :get, :as => 'print_recipe'
+  match 'recipes/:id/print_recipe' => "recipes#print_recipe", :via => :get, :as => 'print_recipe'
   match 'roles/:id/clone' => "roles#clone", :via => :get, :as => 'clone_role'
   match 'tickets/:id/print' => "tickets#print", :via => :get, :as => 'print_ticket'
   match 'tickets/:id/notify' => "tickets#notify", :via => :get#, :as => 'notify_ticket'

@@ -94,6 +94,8 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'notify' and Permission.is_notify?(action)
         valid = true
+      elsif pm.permission.action == 'print_recipe' and Permission.is_print_recipe?(action)
+        valid = true
       elsif pm.permission.action == action
         valid = true
       end

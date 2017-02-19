@@ -78,6 +78,10 @@ class Permission < ActiveRecord::Base
     return (action == 'notify' or action == 'do_notify')
   end
 
+  def self.is_print_recipe?(action)
+    return (action == 'print_recipe')
+  end
+
   def self.get_all
     find :all, :order => 'module ASC, name ASC'
   end

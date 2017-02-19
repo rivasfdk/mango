@@ -158,7 +158,7 @@ class RecipesController < ApplicationController
     end
   end
 
-  def print
+  def print_recipe
     @recipe = Recipe.find params[:id]
     @data = EasyModel.recipe_details(@recipe.id)
     if @data.nil?
