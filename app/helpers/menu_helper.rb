@@ -1152,7 +1152,7 @@ module MenuHelper
   def menu_for_lot_parameter_types_index
     menu = content_tag(:p, 'Tipos de características de lote de materia prima')
     menu += content_tag(:ul,
-      render_back(root_path) +
+      render_back(laboratory_path) +
       render_action('Crear', 'Crear nuevo tipo de característica', new_lot_parameter_type_path, 'button-add.png')
     )
     return menu
@@ -1179,7 +1179,7 @@ module MenuHelper
   def menu_for_product_lot_parameter_types_index
     menu = content_tag(:p, 'Tipos de características de lote de producto terminado')
     menu += content_tag(:ul,
-      render_back(root_path) +
+      render_back(laboratory_path) +
       render_action('Crear', 'Crear nuevo tipo de característica', new_product_lot_parameter_type_path, 'button-add.png')
     )
     return menu
