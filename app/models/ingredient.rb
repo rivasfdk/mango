@@ -3,7 +3,7 @@ class Ingredient < ActiveRecord::Base
 
   has_many :ingredient_recipe
   has_many :ingredient_medicament_recipe
-  has_many :lots
+  has_many :lots, dependent: :destroy
   belongs_to :base_unit
   has_many :ingredient_parameter_type_ranges
 

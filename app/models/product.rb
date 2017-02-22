@@ -1,7 +1,7 @@
 class Product < ActiveRecord::Base
   attr_protected :id
 
-  has_many :product_lot
+  has_many :product_lot, dependent: :destroy
   has_many :recipes
   belongs_to :base_unit
   has_many :product_parameter_type_ranges

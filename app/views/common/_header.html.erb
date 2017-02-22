@@ -6,9 +6,8 @@
     <p>RIF: <%= session[:company]['rif'] %></p>
   </div>
   <div id="user-stats">
-    <p><strong><%= session[:user_name] %></strong> | </p>
-    <span><%= link_to 'cerrar sesión', session_url(session[:user_id]), :method => :delete %></span>
-    <div class="separator clearfix"></div>
+    <p><strong><%= session[:user_name] %></strong></p></br>
+    <span><%= link_to 'cerrar sesión', session_url(session[:user_id]), :method => :delete %></span></br>
     <div id="mango-logo">
       <%= image_tag('mango-logo.png', :alt=>'mango-logo', :width=>'22', :height=>'22') %>
       <p class="branding">Mango 2.0</p>
