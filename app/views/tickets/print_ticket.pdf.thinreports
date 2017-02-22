@@ -5,7 +5,6 @@ report.start_new_page do |page|
   page.values company_address: @data['company_address']
   page.values company_rif: @data['company_rif']
   page.values company_logo: @data['company_logo']
-  page.values footer: @data['footer']
   page.values title: @data['title']
   page.values client_title: @data['client_title']
   page.values client_name: @data['client_name'].upcase
