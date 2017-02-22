@@ -184,8 +184,8 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 345,
-      "y": 80,
+      "x": 460.4,
+      "y": 65,
       "width": 96.8,
       "height": 10,
       "style": {
@@ -194,7 +194,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "left",
+        "text-align": "right",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -216,8 +216,8 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 345,
-      "y": 95.8,
+      "x": 325,
+      "y": 80.8,
       "width": 232.2,
       "height": 10,
       "style": {
@@ -226,7 +226,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "left",
+        "text-align": "right",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -1531,8 +1531,8 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 240,
-      "y": 80.8,
+      "x": 460.4,
+      "y": 49.8,
       "width": 96.8,
       "height": 10,
       "style": {
@@ -1549,6 +1549,38 @@
         "font-style": [
           "bold"
         ],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
+    },
+    {
+      "id": "client_address",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 325,
+      "y": 95,
+      "width": 232.2,
+      "height": 10,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
         "overflow": "truncate",
         "word-wrap": "break-word"
       },

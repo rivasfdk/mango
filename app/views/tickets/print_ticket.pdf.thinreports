@@ -10,6 +10,7 @@ report.start_new_page do |page|
   page.values client_title: @data['client_title']
   page.values client_name: @data['client_name'].upcase
   page.values client_rif: @data['client_rif'].upcase
+  page.values client_rif: @data['client_address'].upcase
 
   table = report.list(:transactions)
 
