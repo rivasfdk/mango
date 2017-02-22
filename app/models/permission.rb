@@ -12,7 +12,7 @@ class Permission < ActiveRecord::Base
     'product_lots', 'ingredients', 'ingredients_recipes', 'products', 'clients', 'factories', 'transaction_types',
     'schedules', 'users', 'roles', 'permissions', 'reports', 'configuration', 'medicament_recipes', 'drivers', 'carriers',
     'trucks', 'tickets', 'alarm_types', 'parameters', 'parameter_types', 'parameter_lists', 'scales',
-    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings']
+    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings', 'product_lot_parameters', 'product_lot_parameter_types', 'product_lot_parameter_lists']
   # Permission actions
   ACTIONS = ['consult', 'modify', 'delete']
   MODES = ['global', 'module']
