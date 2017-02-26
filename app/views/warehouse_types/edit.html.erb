@@ -1,0 +1,8 @@
+<% title "Editar almacen" %>
+<%= form_for :warehouse_types, :url=>warehouse_type_path(@warehouse_types), :html=>{:method=>:put, :id=>'warehouse_type_edit_form'} do |f| %>
+  <%= render_error_messages(f.error_messages) %>
+  <label for="name" class="small">Nombre:</label>
+  <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
+  <div class="clearfix"></div>
+  <br/><span class="required">* Campos obligatorios</span>
+<% end %>

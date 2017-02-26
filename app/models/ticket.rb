@@ -1,3 +1,5 @@
+include MangoModule
+
 class Ticket < ActiveRecord::Base
   attr_protected :id
 
@@ -8,15 +10,19 @@ class Ticket < ActiveRecord::Base
   belongs_to :client
   belongs_to :document_type
 
-  has_many :transactions
+  has_many :transactions, :dependent => :destroy
+
   accepts_nested_attributes_for :transactions, allow_destroy: true, reject_if: lambda { |t| t[:content_id].blank? }
 
   attr_accessor :index_transactions
 
-  validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight
-  validates_numericality_of :incoming_weight, greater_than: 0
+  validates_presence_of :client_id, :truck_id, :driver_id, :ticket_type_id, :address
+
+  validates_presence_of :provider_document_number, :provider_weight, :if => :ticket_type_id?
+
+  validates_numericality_of :incoming_weight, allow_nil: true, greater_than: 0
   validates_numericality_of :outgoing_weight, allow_nil: true, greater_than: 0
-  validates_numericality_of :provider_weight, allow_nil: true
+  validates_numericality_of :provider_weight, allow_nil: true, greater_than: 0
   before_create :generate_number
   before_create :set_notified
 
@@ -25,6 +31,14 @@ class Ticket < ActiveRecord::Base
     1 => {name: 'Por notificar', condition: 'tickets.open = FALSE AND tickets.notified = FALSE'},
     2 => {name: 'Notificados', condition: 'tickets.open = FALSE AND tickets.notified = TRUE'},
   }
+
+  def ticket_type_id?
+    if self.ticket_type_id == 1
+      true
+    else
+      false
+    end
+  end
 
   def self.get_states
     STATES.collect { |k, v| [v[:name], k] }

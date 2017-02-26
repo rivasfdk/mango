@@ -1,0 +1,63 @@
+<% title "Items ticket" %>
+<%= form_for @ticket, :url=>update_items_ticket_path(@ticket), :html=>{:method=>:put, :id=>'ticket_items_form'} do |f| %> 
+<%= render_error_messages(f.error_messages) %>
+
+<h5>Items</h5>
+<% i = 0 %>
+<div id="lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Lote<span class="order_arrow"></span></th>
+        <th>Sacos<span class="order_arrow"></span></th>
+        <th>Num. Sacos<span class="order_arrow"></span></th>
+        <th>Kg/Saco<span class="order_arrow"></span></th>
+        <th>Cantidad<span class="order_arrow"></span></th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :transactions do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <% t = builder.object %>
+        <tr class="<%= class_row %>">
+          <td>
+            <% if t.new_record? %>
+              <%= builder.radio_button :content_type, "1" %> Materia Prima <%= builder.radio_button :content_type, "2" %> Producto terminado
+              <br />
+              <%= builder.collection_select :content_id, t.content_type == 1 ? @lots : @product_lots, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %><br />
+              <label>Almacen:</label>
+              <%= builder.collection_select :warehouse_id, t.content_type == 1 ? @lots_warehouses : @product_lots_warehouses, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %>
+            <% else %>
+              <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
+              <label>Almacen:</label>
+              <% if !t.get_warehouse.nil? %>
+                <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+              <% end %>
+            <% end %>
+          </td>
+          <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox' %></td>
+          <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field' %></td>
+          <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field' %></td>
+          <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field' %></td>
+          <td class="center">
+            <%= builder.hidden_field :_destroy %>
+            <%= link_to_function image_tag('action-delete.png', :alt=>'Eliminar') + " Eliminar", "remove_fields(this)" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="center">
+        <%= link_to_add_fields image_tag('action-new.png', :alt=>' Agregar') +" Agregar", f, :transactions %>
+      </td>
+    </tfoot>
+  </table>
+</div>
+<br/>
+<% end %>

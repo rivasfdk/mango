@@ -4,6 +4,7 @@
 //= require jquery-ui/datepicker-es
 //= require chosen.jquery
 //= require_tree .
+//= require websocket_rails/main
 //= stub dynamic_clients
 //= stub jquery.flot.axislabels
 
@@ -55,6 +56,11 @@ $(function(){
     $('#report_ticket_content_type_1').trigger('change');
     $('#report_ticket_content_type_2').trigger('change');
     $('#report_by_select_ingredients').trigger('change');
+    $('#orden').trigger('change');
+    $("#ticket_incoming_weight").val('######');
+    $("#ticket_incoming_weight").prop('readOnly', true);
+    $("#ticket_outgoing_weight").val('######');
+    $("#ticket_outgoing_weight").prop('readOnly', true);
     hideProductLots();
 });
 
@@ -290,6 +296,22 @@ function submit_ticket_new_form() {
     $('#ticket_new_form').submit();
 }
 
+function submit_ticket_items_form() {
+    $('#ticket_items_form').submit();
+}
+
+function submit_ticket_entry_form() {
+    $('#ticket_entry_form').submit();
+}
+
+function submit_ticket_edit_form() {
+    $('#ticket_edit_form').submit();
+}
+
+function submit_ticket_close_form() {
+    $('#ticket_close_form').submit();
+}
+
 function submit_ticket_repair_form() {
     $('#ticket_repair_form').submit();
 }
@@ -332,6 +354,38 @@ function submit_scale_new_form() {
 
 function submit_scale_edit_form() {
     $('#scale_edit_form').submit();
+}
+
+function submit_warehouse_new_form() {
+    $('#warehouse_new_form').submit();
+}
+
+function submit_warehouse_edit_form() {
+    $('#warehouse_edit_form').submit();
+}
+
+function submit_warehouse_change_ingredient_form() {
+    $('#warehouse_change_ingredient_form').submit();
+}
+
+function submit_warehouse_change_product_form() {
+    $('#warehouse_change_product_form').submit();
+}
+
+function submit_warehouse_fill_form() {
+    $('#warehouse_fill_form').submit();
+}
+
+function submit_warehouse_adjust_form() {
+    $('#warehouse_adjust_form').submit();
+}
+
+function submit_warehouse_type_new_form() {
+    $('#warehouse_type_new_form').submit();
+}
+
+function submit_warehouse_type_edit_form() {
+    $('#warehouse_type_edit_form').submit();
 }
 
 function toggle_report_details(id) {

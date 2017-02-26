@@ -189,4 +189,30 @@ class OrdersController < ApplicationController
     order = Order.where(code: params[:order_code]).first
     render xml: order.validate, root: 'order_validation'
   end
+
+  def import
+    sharepath = get_mango_field('share_path')
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      files = []
+      begin
+        files = Dir.entries(sharepath)
+      rescue
+        puts "++++++++++++++++++++"
+        puts "+++ error de red +++"
+        puts "++++++++++++++++++++"
+      end
+      if files.any?
+        orders = Order.import(files)
+        if orders > 0
+          flash[:notice] = "Se importaron #{orders} ordenes con exito"
+        else
+          flash[:type] = 'warn'
+          flash[:notice] = 'No se encontraron ordenes para importar'
+        end
+      end
+    end
+    redirect_to action: 'index'
+  end
+
 end

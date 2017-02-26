@@ -12,7 +12,7 @@ class Hopper < ActiveRecord::Base
   def check_stock
     hopper_lot = current_hopper_lot
     level = ((hopper_lot.stock / hopper_lot.lot.density) / self.capacity * 100).round(2)
-    self.stock_below_minimum = self.scale.not_weighed ? false : level < Settings.first.hopper_minimum_level
+    self.stock_below_minimum = (self.scale.not_weighed or hopper_lot.lot.empty) ? false : level < Settings.first.hopper_minimum_level
     true
   end
 

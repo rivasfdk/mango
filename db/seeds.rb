@@ -313,3 +313,9 @@ TransactionType.create("code"=>"SA-AJU", "description"=>"Salida por ajuste", "si
 TransactionType.create("code"=>"EN-COM", "description"=>"Entrada por compra", "sign"=>"+")
 TransactionType.create("code"=>"SA-DES", "description"=>"Salida por despacho", "sign"=>"-")
 TransactionType.create("code"=>"EN-PRO", "description"=>"Entrada por produccion", "sign"=>"+")
+
+Ingredient.create("code"=>"000", "name"=>"VACIO","minimum_stock"=>0.0,"empty"=>1)
+Product.create("code"=>"000", "name"=>"VACIO","empty"=>1)
+
+Lot.create("code"=>"000", "ingredient_id"=>1, "density"=>1, "empty"=>1)
+ProductLot.create("code"=>"000", "product_id"=>1,"empty"=>1)

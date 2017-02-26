@@ -71,7 +71,7 @@ module ActionsHelper
 
   def render_action_print(url)
     image = image_tag('action-print.png', alt: 'Imprimir')
-    return link_to image + " Imprimir", url, class: 'action'
+    return link_to image + " Imprimir", url, class: 'action', :target => '_blank'
   end
 
   def render_action_change_hopper_lot(url)
@@ -113,4 +113,45 @@ module ActionsHelper
     image = image_tag('action-cancel.png', alt: 'Cancelar')
     return link_to image + " Cancelar", '#!', class: 'action action-cancel'
   end
+
+  def render_action_edit_ticket(url)
+    image = image_tag('action-edit.png', alt: 'Modificar')
+    return link_to image + " Modificar", url, class: 'action'
+  end
+
+  def render_action_close_ticket(url)
+    image = image_tag('arrow-up.png', alt: 'Salida')
+    return link_to image + " Salida", url, class: 'action'
+  end
+
+  def render_action_items_ticket(url)
+    image = image_tag('action-new.png', alt: 'Items')
+    return link_to image + " Items", url, class: 'action'
+  end
+
+  def render_action_entry_ticket(url)
+    image = image_tag('arrow-down.png', alt: 'Entrada')
+    return link_to image + " Entrada", url, class: 'action'
+  end
+
+  def render_action_change_warehouse_ingredient(url)
+    image = image_tag('action-edit.png', alt: 'Cambiar materia prima')
+    return link_to image + " Cambiar materia prima", url, class: 'action'
+  end
+
+  def render_action_change_warehouse_product(url)
+    image = image_tag('action-edit.png', alt: 'Cambiar producto terminado')
+    return link_to image + " Cambiar producto terminado", url, class: 'action'
+  end
+
+  def render_action_fill_warehouse(url)
+    image = image_tag('action-edit.png', alt: 'Llenar')
+    return link_to image + " Llenar", url, class: 'action'
+  end
+
+  def render_action_view_warehouse_sacks(url)
+    image = image_tag('action-show.png', alt: 'Ver')
+    return link_to image + " Ver", url, class: 'action'
+  end
+
 end
