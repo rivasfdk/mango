@@ -332,6 +332,52 @@ class Order < ActiveRecord::Base
        user_id: user_id}) unless production < 0.01
   end
 
+  def nofify_sap(path)
+    batch_consumption = []
+    consumptions = {}
+    order_transactions = self.transactions
+    batches = Batch
+      .includes({batch_hopper_lot: {hopper_lot: {}}})
+      .where(order_id: self.id)
+    production = 0
+    batches.each do |b|
+      batch = []
+      b.batch_hopper_lot.each do |bhl|
+        key = bhl.hopper_lot.lot_id
+        amount = bhl.amount
+        hopper_id = bhl.hopper_lot.hopper_id
+        batch = batch.push([key,amount,hopper_id])
+        production += amount
+        if consumptions.has_key? key
+          consumptions[key] += amount
+        else
+          consumptions[key] = amount
+        end
+      end
+      batch_consumption = batch_consumption.push(batch)
+    end
+    bnum = 0
+    batch_consumption.each do |consump|
+      total = 0
+      bnum += 1
+      file = File.open(path+"Orden_#{self.code}_#{bnum}.txt",'w')
+      consump.each do |lot|
+        amount = lot[1]
+        total = total + amount
+      end
+      file << "#{self.code};#{total}\r\n"
+      consump.each do |lot|
+        code = (Lot.find_by(id: lot[0])).code
+        amount = lot[1]
+        hopper = Hopper.find(lot[2])
+        scale = Scale.find(hopper.scale_id)
+        file << "#{scale.name};#{code};#{amount};#{hopper.name}\r\n"
+      end
+      file.close
+    end
+
+  end
+
   def close(user_id)
     unless self.completed
       self.create_product_lot if self.auto_product_lot

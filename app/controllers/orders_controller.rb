@@ -128,10 +128,16 @@ class OrdersController < ApplicationController
 
   def do_notify
     @order = Order.find params[:id]
-    redirect_to :orders unless (@order.completed && !@order.notified)
-    @order.generate_transactions(session[:user_id])
-    @order.update_column(:notified, true)
-    flash[:notice] = "Orden notificada exitosamente"
+    if (@order.completed && !@order.notified)
+      @order.generate_transactions(session[:user_id])
+      @order.update_column(:notified, true)
+      sharepath = get_mango_field('share_path')
+      mango_features = get_mango_features()
+      if mango_features.include?("sap_production_order")
+        @order.nofify_sap(sharepath)
+      end
+      flash[:notice] = "Orden notificada exitosamente"
+    end
     redirect_to :orders
   end
 
@@ -176,8 +182,8 @@ class OrdersController < ApplicationController
       flash[:type] = 'warn'
       redirect_to action: 'index'
     else
-      rendered = render_to_string formats: [:pdf], template: 'reports/order_details'
-      send_data rendered, filename: "detalle_orden_produccion.pdf", type: "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/order_details', target: "_blank"
+      send_data rendered, filename: "detalle_orden_produccion.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

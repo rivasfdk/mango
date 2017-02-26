@@ -368,8 +368,7 @@ module MenuHelper
   def menu_for_recipes_show
     menu = content_tag(:p, 'Detalle de receta')
     menu += content_tag(:ul,
-      render_back('javascript:history.back()') +
-      render_action('Generar Reporte', 'Generar Reporte de Receta', print_recipe_path, 'button-print.png')
+      render_back('javascript:history.back()')
     )
     return menu
   end
@@ -592,8 +591,7 @@ module MenuHelper
   def menu_for_orders_show
     menu = content_tag(:p, 'Detalle de orden')
     menu += content_tag(:ul,
-      render_back(orders_path) +
-      render_action('Generar Reporte', 'Generar Reporte de Orden de Producción', print_order_path, 'button-print.png')
+      render_back(orders_path)
     )
     return menu
   end

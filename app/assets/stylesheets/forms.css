@@ -22,6 +22,10 @@ form label.small {
   font-weight: bold;
 }
 
+form label.print {
+  float: right;
+}
+
 form input[type='text'], form input[type='password'] {
   border: 1px solid #999;
   background-color: #fff;

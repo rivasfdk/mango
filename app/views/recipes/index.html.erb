@@ -31,7 +31,7 @@
         <td class="center"><%=h r.code %></td>
         <td><%=h r.name %></td>
         <td class="center"><%=h r.version %></td>
-        <td class="center"><%=h r.comment[0..10] %></td>
+        <td class="center"><%=h r.comment.nil? ? "" : r.comment[0..10] %></td>
         <td class="right"><%=h r.get_total %></td>
         <td class="center"><%= r.in_use ? "Sí" : "No" %></td>
         <td class="center">
