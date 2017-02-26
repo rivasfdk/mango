@@ -582,7 +582,8 @@ module MenuHelper
     menu = content_tag(:p, 'Órdenes de producción')
     menu += content_tag(:ul,
       render_back(root_path) +
-      render_action('Crear', 'Crear nueva orden de producción', new_order_path, 'button-add.png')
+      render_action('Crear', 'Crear nueva orden de producción', new_order_path, 'button-add.png') +
+      render_action('Importar', 'Importar ordenes de producción', import_order_path, 'button-import.png')
     )
     return menu
   end
@@ -1113,7 +1114,8 @@ module MenuHelper
     menu = content_tag(:p, 'Tickets')
     menu += content_tag(:ul,
       render_back(root_path) + 
-      render_action('Crear', 'Crear nuevo ticket', new_ticket_path, 'button-add.png')
+      render_action('Crear', 'Crear nuevo ticket', new_ticket_path, 'button-add.png') +
+      render_action('Importar', 'Importar ordenes', import_ticket_path, 'button-import.png')
     )
     return menu
   end

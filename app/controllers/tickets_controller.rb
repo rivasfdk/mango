@@ -92,9 +92,19 @@ class TicketsController < ApplicationController
   end
 
   def new
+    @rorders = TicketOrder.where(order_type: true,closed: false)
+    @tickets = Ticket.new
+    @clients = Client.all
+    @drivers = Driver.where(frequent: true)
+    @trucks = Truck.includes(:carrier).where(frequent: true)
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+  end
+
+  def import
     sharepath = get_mango_field('share_path')
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
+      order_count = 0
       files = []
       begin
         files = Dir.entries(sharepath)
@@ -106,16 +116,17 @@ class TicketsController < ApplicationController
       if files.any?
         orders = TicketOrder.import(files)
         if not orders.empty?
-          TicketOrder.create_orders(orders)
+          order_count = TicketOrder.create_orders(orders)
         end
       end
-      @rorders = TicketOrder.where(order_type: true,closed: false)
+      if order_count > 0
+        flash[:notice] = "Se importaron #{order_count} ordenes con exito"
+      else
+        flash[:type] = 'warn'
+        flash[:notice] = 'No se encontraron ordenes para importar'
+      end
     end
-    @tickets = Ticket.new
-    @clients = Client.all
-    @drivers = Driver.where(frequent: true)
-    @trucks = Truck.includes(:carrier).where(frequent: true)
-    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+    redirect_to action: 'index'
   end
 
   def edit
@@ -123,7 +134,6 @@ class TicketsController < ApplicationController
     ticket_type = @ticket.ticket_type_id == 1 ? true : false
     mango_features = get_mango_features()
     if mango_features.include?("sap_romano")
-      TicketOrder.create_transactions(params[:id])
       if !@ticket.id_order.nil?
         @orders = TicketOrder.where(order_type: ticket_type,closed: false)
         @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"

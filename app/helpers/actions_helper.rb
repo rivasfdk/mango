@@ -71,7 +71,7 @@ module ActionsHelper
 
   def render_action_print(url)
     image = image_tag('action-print.png', alt: 'Imprimir')
-    return link_to image + " Imprimir", url, class: 'action'
+    return link_to image + " Imprimir", url, class: 'action', :target => '_blank'
   end
 
   def render_action_change_hopper_lot(url)

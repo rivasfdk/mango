@@ -16,6 +16,7 @@ class Order < ActiveRecord::Base
   has_many :areas
 
   #attr_protected :completed
+  validates :code, uniqueness: true
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
@@ -55,7 +56,9 @@ class Order < ActiveRecord::Base
 
   def create_code
     order_number = OrderNumber.first
-    self.code = order_number.code.succ
+    if self.code.nil?
+      self.code = order_number.code.succ
+    end
     order_number.code = self.code
     order_number.save
     self.product_lot_id = nil if self.auto_product_lot
@@ -560,7 +563,7 @@ class Order < ActiveRecord::Base
     orders = orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     orders = orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
     orders = orders.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
-    orders = orders.order('orders.created_at DESC')
+    orders = orders.order('orders.created_at DESC', 'orders.code DESC')
     orders.paginate page: params[:page], per_page: params[:per_page]
   end
 
@@ -573,4 +576,83 @@ class Order < ActiveRecord::Base
         {code: order[0], client_name: order[1], recipe_name: order[2], recipe_code: order[3], prog_batches: order[4]}
       end
   end
+
+  def self.import(files)
+    sharepath = get_mango_field('share_path')
+    order_count = 0
+    files.each do |file|
+      file = file.downcase
+      if file.include? "orden_produccion"
+        orderfile = File.open(sharepath+file).readline
+        keys = ["order_code", "recipe_code", "recipe_name", "recipe_version", "product_code",
+                  "product_name","client_code", "client_name", "client_rif", "client_address",
+                  "client_phone", "batch_prog"]
+        orderfile = orderfile.chomp
+        values = orderfile.split(';')
+        order = keys.zip(values).to_h
+        orderfile = File.open(sharepath+file).readlines
+        orderfile.delete_at(0)
+        items = []
+        orderfile.each do |line|
+          keys = ["ingredient_code", "ingredient_name", "amount"]
+          line = line.chomp
+          values = line.split(';')
+          item = keys.zip(values).to_h
+          items.push(item)
+        end
+        if Product.where(code: order["product_code"]).empty?
+          Product.create code: order["product_code"],
+                         name: order["product_name"]
+          product = Product.find_by(code: order["product_code"])
+          ProductLot.create code: order["product_code"],
+                            product_id: product.id
+        end
+        product = Product.find_by(code: order["product_code"])
+        if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
+          Recipe.create code: order["recipe_code"],
+                        name: order["recipe_name"],
+                        version: order["recipe_version"],
+                        product_id: product.id
+          recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
+          items.each do |ing|
+            if Ingredient.where(code: ing["ingredient_code"]).empty?
+              Ingredient.create code: ing["ingredient_code"],
+                                name: ing["ingredient_name"]
+              ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+              Lot.create code: ing["ingredient_code"],
+                         ingredient_id: ingredient.id,
+                         density: 1
+            end
+            ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+            IngredientRecipe.create ingredient_id: ingredient.id,
+                                    recipe_id: recipe.id,
+                                    amount: ing["amount"]
+          end
+        end
+        if Client.where(code: order["client_code"]).empty?
+          Client.create code: order["client_code"],
+                        name: order["client_name"],
+                        ci_rif: order["client_rif"],
+                        address: order["client_address"],
+                        tel1: order["client_phone"]
+        end
+        recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
+        client = Client.find_by(code: order["client_code"])
+        product_lot = ProductLot.find_by(code: order["product_code"])
+        if Order.where(code: order["order_code"]).empty?
+          Order.create code: order["order_code"],
+                       recipe_id: recipe.id,
+                       client_id: client.id,
+                       user_id: 1,
+                       product_lot_id: product_lot.id,
+                       prog_batches: order["batch_prog"]
+          order_count += 1
+        end
+        #File.delete(sharepath+file)
+      end
+    end
+    return order_count
+  end
+
+
 end

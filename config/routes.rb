@@ -35,6 +35,7 @@ Mango::Application.routes.draw do
   match 'orders/:id/notify' => "orders#do_notify", :via => :post, :as => 'notify_order'
   match 'orders/open' => "orders#open", :via => :get, :as => 'open_orders'
   match 'orders/validate' => "orders#validate", :via => :get, :as => 'validate_order'
+  match 'orders/import' => "orders#import", :via => :get, :as => 'import_order'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get#, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
@@ -73,6 +74,7 @@ Mango::Application.routes.draw do
   match 'ticket_orders/get_order_client' => "ticket_orders#get_order_client", :via => :get
   match 'ticket_orders/get_item_warehouse' => "ticket_orders#get_item_warehouse", :via => :get
   match 'tickets/get_server_romano_ip' => "tickets#get_server_romano_ip", :via => :get
+  match 'tickets/import' => "tickets#import", :via => :get, :as => "import_ticket"
 
   match 'tickets/:id/close' => "tickets#close", :via => :get, :as => "close_ticket"
   match 'tickets/:id/do_close' => "tickets#do_close", :via => :post, :as => "do_close_ticket"

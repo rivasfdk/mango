@@ -38,6 +38,7 @@ class TicketOrder < ActiveRecord::Base
   end
 
   def self.create_orders(orders)
+    count = 0
     orders.each do |order|
       order_type = order["order_type"].downcase == 'r' ? true : false
       if order_type
@@ -84,6 +85,7 @@ class TicketOrder < ActiveRecord::Base
                          document_type_id: document[0].id,
                          document_number: order["doc_number"],
                          closed: false
+        count += 1
       end
       if content
         content_type = (Lot.find_by code: order["content_code"]).id
@@ -103,6 +105,7 @@ class TicketOrder < ActiveRecord::Base
                               remaining: order["total_weight"]
       end
     end
+    return count
   end
 
   def self.create_transactions(ticket_id)
