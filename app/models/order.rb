@@ -631,7 +631,7 @@ class Order < ActiveRecord::Base
       if file.include? "orden_produccion"
         orderfile = File.open(sharepath+file).readline
         keys = ["order_code", "recipe_code", "recipe_name", "recipe_version", "product_code",
-                  "product_name","client_code", "client_name", "client_rif", "client_address",
+                  "product_name","lot_code", "client_code", "client_name", "client_rif", "client_address",
                   "client_phone", "batch_prog"]
         orderfile = orderfile.chomp
         values = orderfile.split(';')
@@ -649,11 +649,12 @@ class Order < ActiveRecord::Base
         if Product.where(code: order["product_code"]).empty?
           Product.create code: order["product_code"],
                          name: order["product_name"]
-          product = Product.find_by(code: order["product_code"])
-          ProductLot.create code: order["product_code"],
-                            product_id: product.id
         end
         product = Product.find_by(code: order["product_code"])
+        if ProductLot.where(code: order["lot_code"]).empty?
+          ProductLot.create code: order["lot_code"],
+                            product_id: product.id
+        end
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
           Recipe.create code: order["recipe_code"],
                         name: order["recipe_name"],
@@ -684,7 +685,7 @@ class Order < ActiveRecord::Base
         end
         recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
         client = Client.find_by(code: order["client_code"])
-        product_lot = ProductLot.find_by(code: order["product_code"])
+        product_lot = ProductLot.find_by(code: order["lot_code"])
         if Order.where(code: order["order_code"]).empty?
           Order.create code: order["order_code"],
                        recipe_id: recipe.id,
@@ -692,7 +693,9 @@ class Order < ActiveRecord::Base
                        user_id: 1,
                        product_lot_id: product_lot.id,
                        prog_batches: order["batch_prog"]
-          order_count += 1
+          if !(Order.find_by(code: order["order_code"])).nil?
+            order_count += 1
+          end
         end
         #File.delete(sharepath+file)
       end

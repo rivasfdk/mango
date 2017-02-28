@@ -12,7 +12,7 @@
           <th>Producto terminado<span class="order_arrow"></span></th>
         <% end %>
         <th>Existencia<span class="order_arrow"></span></th>
-        <th>Capacidad<span class="order_arrow"></span></th>
+        <th>Principal<span class="order_arrow"></span></th>
         <th class="actions_small">Acciones</th>
       </tr>
     </thead>
@@ -30,11 +30,17 @@
               <td><%= h Product.find(w.content_id).name %></td>
             <% end %>
             <td><%= h w[:stock] %></td>
-            <td><%= h w[:size] %></td>
+            <td class="center">
+            <%= check_box_tag :main,
+                            set_as_main_warehouse_path(@warehouse_type, w[:id]),
+                            w[:main],
+                            :disabled => w[:main],
+                            :onclick => "window.location = this.value;"%>
+            </td>
           <% else %>
             <td>Almacen de Sacos</td>
             <td> - </td>
-            <td><%= h w[:size] %></td>
+            <td> - </td>
           <% end %>
           
                  

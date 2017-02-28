@@ -20,6 +20,7 @@ class WarehousesController < ApplicationController
     @warehouse = @warehouse_types.warehouses.create params[:warehouse]
     @warehouse.content_type = @warehouse_types.content_type
     if @warehouse.save
+      @warehouse.set_main_warehouse
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
@@ -72,6 +73,7 @@ class WarehousesController < ApplicationController
       flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar la materia prima del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
     end
+    @warehouse.set_main_warehouse
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
@@ -89,6 +91,7 @@ class WarehousesController < ApplicationController
       flash[:type] = 'error'
       flash[:notice] = "No se pudo cambiar el producto terminado del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
     end
+    @warehouse.set_main_warehouse
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
@@ -143,6 +146,11 @@ class WarehousesController < ApplicationController
     @product_lots = ProductLot.includes(:product).where(empty: nil)
   end
 
+  def set_as_main_warehouse
+    @warehouse = Warehouse.find params[:id]
+    @warehouse.set_as_main_warehouse()
+    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+  end
 
   private
 

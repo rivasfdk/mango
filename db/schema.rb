@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203153117) do
+ActiveRecord::Schema.define(version: 20170228142350) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -578,7 +578,6 @@ ActiveRecord::Schema.define(version: 20170203153117) do
   add_index "tickets", ["truck_id"], name: "fk_tickets_truck_id", using: :btree
   add_index "tickets", ["user_id"], name: "fk_tickets_user_id", using: :btree
 
-
   create_table "tickets_numbers", force: true do |t|
     t.string   "number",     default: "0000000001"
     t.datetime "created_at"
@@ -685,6 +684,7 @@ ActiveRecord::Schema.define(version: 20170203153117) do
     t.datetime "updated_at"
     t.boolean  "content_type"
     t.boolean  "sacks"
+    t.boolean  "main"
   end
 
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree

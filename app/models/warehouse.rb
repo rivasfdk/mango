@@ -72,7 +72,6 @@ class Warehouse < ActiveRecord::Base
     end
   end
 
-
   def eliminate
     begin
       self.destroy
@@ -84,6 +83,20 @@ class Warehouse < ActiveRecord::Base
     end
   end
 
+  def set_as_main_warehouse
+    warehouses = Warehouse.where(content_id: self.content_id, content_type: self.content_type)
+    unless warehouses.empty?
+      Warehouse.update_all('main = false', :id => warehouses.map {|wh| wh.id})
+    end
+    self.update_attributes(main: true)
+  end
+
+  def set_main_warehouse
+    warehouses = Warehouse.where(content_id: self.content_id, content_type: self.content_type)
+    if warehouses.length == 1
+      self.update_attributes(main: true)
+    end
+  end
   
   def to_collection_select
     "#{self.warehouse_types.name} - #{self.code} - #{self.name}"

@@ -66,6 +66,7 @@ Mango::Application.routes.draw do
   match 'warehouse_types/:warehouse_type_id/warehouses/:id/change_ingredient' => "warehouses#do_change_ingredient", :via => :post
   match 'warehouse_types/:warehouse_type_id/warehouses/:id/change_product' => "warehouses#do_change_product", :via => :post
   match 'warehouse_types/:warehouse_type_id/warehouses/:id/adjust' => "warehouses#do_adjust", :via => :post
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/set_as_main_warehouse' => "warehouses#set_as_main_warehouse", :via => :get, :as => "set_as_main_warehouse"
   
   match 'warehouse_types/:warehouse_type_id/warehouses/:id/sacks' => "warehouses#sacks", :via => :get, :as => "sacks_warehouse"
   match 'warehouse_types/:warehouse_type_id/warehouses/:id/update_sacks' => "warehouses#update_sacks", :via => :post, :as => "update_sacks_warehouse"
