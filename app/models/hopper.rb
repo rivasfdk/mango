@@ -3,11 +3,22 @@ class Hopper < ActiveRecord::Base
 
   belongs_to :scale
   has_many :hopper_lot
-  validates :number, :name, :scale, :capacity, presence: true
-  validates :name, uniqueness: true
-  validates :number, uniqueness: {scope: :scale_id}, numericality: {only_integer: true, greater_than: 0}
+  validates :name, :scale, :code, :capacity, presence: true
+  validates :name, :code, uniqueness: true
+  validates :number, uniqueness: {scope: :scale_id}
   validates :capacity, numericality: {greater_than: 0}
   before_save :check_stock, unless: :new_record?
+  before_create :set_number
+  
+
+  def set_number
+    hopper = Hopper.where(scale_id: self.scale_id)
+    if hopper.empty?
+      self.number = 1
+    else
+      self.number = hopper.last.number += 1
+    end
+  end
 
   def check_stock
     hopper_lot = current_hopper_lot
@@ -170,7 +181,8 @@ class Hopper < ActiveRecord::Base
         :name => hl.hopper.name,
         :main => hl.hopper.main,
         :stock_string => stock_string,
-        :stock_below_minimum => hl.hopper.stock_below_minimum
+        :stock_below_minimum => hl.hopper.stock_below_minimum,
+        :code => hl.hopper.code
       }
     end
     actives

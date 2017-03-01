@@ -332,7 +332,9 @@ class Order < ActiveRecord::Base
        user_id: user_id}) unless production < 0.01
   end
 
-  def nofify_sap(path)
+  def nofify_sap
+    sharepath = get_mango_field('share_path')
+    tmp_dir = get_mango_field('tmp_dir')
     batch_consumption = []
     consumptions = {}
     order_transactions = self.transactions
@@ -356,26 +358,35 @@ class Order < ActiveRecord::Base
       end
       batch_consumption = batch_consumption.push(batch)
     end
-    bnum = 0
+    file = File.open(tmp_dir+"notificacion_orden_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
     batch_consumption.each do |consump|
       total = 0
-      bnum += 1
-      file = File.open(path+"Orden_#{self.code}_#{bnum}.txt",'w')
       consump.each do |lot|
         amount = lot[1]
         total = total + amount
       end
-      file << "#{self.code};#{total}\r\n"
+      file << "#{self.code};#{total};\r\n"
       consump.each do |lot|
         code = (Lot.find_by(id: lot[0])).code
         amount = lot[1]
         hopper = Hopper.find(lot[2])
         scale = Scale.find(hopper.scale_id)
-        file << "#{scale.name};#{code};#{amount};#{hopper.name}\r\n"
+        file << ";;#{code};#{amount};#{hopper.name}\r\n"
       end
-      file.close
     end
-
+    file.close
+    files = Dir.entries(tmp_dir)
+    files.each do |f|
+      if f.downcase.include? "notificacion_orden"
+        begin
+          FileUtils.mv(tmp_dir+f, sharepath)
+        rescue
+          puts "++++++++++++++++++++"
+          puts "+++ error de red +++"
+          puts "++++++++++++++++++++"
+        end
+      end
+    end
   end
 
   def close(user_id)

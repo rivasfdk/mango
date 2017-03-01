@@ -131,10 +131,9 @@ class OrdersController < ApplicationController
     if (@order.completed && !@order.notified)
       @order.generate_transactions(session[:user_id])
       @order.update_column(:notified, true)
-      sharepath = get_mango_field('share_path')
       mango_features = get_mango_features()
       if mango_features.include?("sap_production_order")
-        @order.nofify_sap(sharepath)
+        @order.nofify_sap
       end
       flash[:notice] = "Orden notificada exitosamente"
     end
@@ -177,6 +176,12 @@ class OrdersController < ApplicationController
   def print
     @order = Order.find params[:id]
     @data = EasyModel.order_details(@order.code)
+
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      @order.nofify_sap
+    end
+
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
