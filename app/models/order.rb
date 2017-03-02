@@ -365,13 +365,13 @@ class Order < ActiveRecord::Base
         amount = lot[1]
         total = total + amount
       end
-      file << "#{self.code};#{total};\r\n"
+      file << "#{self.code};#{total};0008\r\n"
       consump.each do |lot|
         code = (Lot.find_by(id: lot[0])).code
         amount = lot[1]
         hopper = Hopper.find(lot[2])
         scale = Scale.find(hopper.scale_id)
-        file << ";;#{code};#{amount};#{hopper.name}\r\n"
+        file << "#{code};#{amount};#{hopper.name}\r\n"
       end
     end
     file.close
@@ -706,9 +706,9 @@ class Order < ActiveRecord::Base
                        prog_batches: order["batch_prog"]
           if !(Order.find_by(code: order["order_code"])).nil?
             order_count += 1
+            #File.delete(sharepath+file)
           end
         end
-        #File.delete(sharepath+file)
       end
     end
     return order_count
