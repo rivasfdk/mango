@@ -1,8 +1,8 @@
 class Warehouse < ActiveRecord::Base
   attr_protected :id
 
-  belongs_to :ingredient
-  belongs_to :product
+  belongs_to :lot
+  belongs_to :product_lot
   belongs_to :warehouse_types
 
   has_many :transactions
@@ -11,7 +11,6 @@ class Warehouse < ActiveRecord::Base
   accepts_nested_attributes_for :warehouses_contents, allow_destroy: true, reject_if: lambda { |a| a[:content_id].blank? }
 
   validates :name, :code, presence: true
-  validates :content_id, presence: true, unless: :sacks
   validates :code, uniqueness: true
   validates :code, :name, length: {within: 3..40}
   validates :stock, numericality: {greater_than_or_equal_to: 0}
@@ -84,7 +83,11 @@ class Warehouse < ActiveRecord::Base
   end
 
   def set_as_main_warehouse
-    warehouses = Warehouse.where(content_id: self.content_id, content_type: self.content_type)
+    if self.warehouse_types.content_type
+      warehouses = Warehouse.where(lot_id: self.lot_id)
+    else
+      warehouses = Warehouse.where(product_lot_id: self.product_lot_id)
+    end
     unless warehouses.empty?
       Warehouse.update_all('main = false', :id => warehouses.map {|wh| wh.id})
     end
@@ -92,7 +95,12 @@ class Warehouse < ActiveRecord::Base
   end
 
   def set_main_warehouse
-    warehouses = Warehouse.where(content_id: self.content_id, content_type: self.content_type)
+    self.update_attributes(main: false)
+    if self.warehouse_types.content_type
+      warehouses = Warehouse.where(lot_id: self.lot_id)
+    else
+      warehouses = Warehouse.where(product_lot_id: self.product_lot_id)
+    end
     if warehouses.length == 1
       self.update_attributes(main: true)
     end

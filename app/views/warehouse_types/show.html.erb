@@ -25,9 +25,9 @@
           <td><%= h w[:name] %></td>
           <% if !w.sacks %>
             <% if @warehouses.first.warehouse_types.content_type == true %>
-              <td><%= h Ingredient.find(w.content_id).name %></td> 
+              <td><%= h "#{w.lot.ingredient.code} - #{w.lot.ingredient.name} (L: #{w.lot.code})" %></td> 
             <% else %>
-              <td><%= h Product.find(w.content_id).name %></td>
+              <td><%= h "#{w.product_lot.product.code} - #{w.product_lot.product.name} (L: #{w.product_lot.code})" %></td>
             <% end %>
             <td><%= h w[:stock] %></td>
             <td class="center">

@@ -20,10 +20,14 @@ class TicketOrdersController < ApplicationController
   end
 
   def get_item_warehouse
-    @warehouse = Warehouse.where(content_id: params["lot_id"], content_type: params["content_type"])
+    if params["content_type"] == '1'
+      @warehouse = Warehouse.where(lot_id: params["lot_id"], main: true)
+    else
+      @warehouse = Warehouse.where(product_lot_id: params["lot_id"], main: true)
+    end
     if @warehouse.empty?
-      warehouse_id = (WarehouseContents.find_by(content_id: params["lot_id"], content_type: params["content_type"])).warehouse_id
-      @warehouse = Warehouse.where(id: warehouse_id)
+      sacks = WarehouseContents.find_by(content_id: params["lot_id"], content_type: params["content_type"])
+      @warehouse = sacks.nil? ? [] : Warehouse.where(id: sacks.warehouse_id)
     end
     render json: @warehouse, methods: [:to_collection_select], root: false
   end

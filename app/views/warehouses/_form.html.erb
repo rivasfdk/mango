@@ -11,11 +11,11 @@
 
 <div id="warehousecontent">
 <% if @warehouse_types.content_type == true %>
-  <label for="ingredient" class="small">Materia Prima:</label>
-  <div class="field"><%= f.collection_select :content_id, Ingredient.all, :id, :to_collection_select, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="ingredient" class="small">lote Materia Prima:</label>
+  <div class="field"><%= f.collection_select :lot_id, @lots, :id, :to_collection_select, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% else %>
-  <label for="product" class="small">Producto:</label>
-  <div class="field"><%= f.collection_select :content_id, Product.all, :id, :to_collection_select, {include_blank: true }, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="product" class="small">Lote Producto:</label>
+  <div class="field"><%= f.collection_select :product_lot_id, @product_lots, :id, :to_collection_select, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% end %>
 <br /><br />
 </div>

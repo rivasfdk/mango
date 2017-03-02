@@ -3,8 +3,8 @@
 <label for="warehouse" class="small">Almacen:</label>
 <div class="field"><%=h "#{@warehouse.code} - #{@warehouse.name}" %></div>
 <br /><br />
-  <label for="ingredient" class="small">Materia Prima:</label>
-  <div class="field"><%= f.collection_select :new_ingredient_id, Ingredient.all, :id, :to_collection_select, {:include_blank => "Ninguno"}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="ingredient" class="small">Lote Materia Prima:</label>
+  <div class="field"><%= f.collection_select :new_lot_id, @lots, :id, :to_collection_select, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
   <label for="stock" class="small">Existencia (kg):</label>
   <div class="field"><%= f.text_field :stock, :size=>'10' %><span>*</span></div>
   <div class="clearfix"></div>
