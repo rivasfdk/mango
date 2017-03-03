@@ -20,11 +20,9 @@ class Order < ActiveRecord::Base
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
-  validates :prog_batches,
-            numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
-  validates :real_production,
-            numericality: {greater_than: 0, allow_nil: true}
+  validates :real_production, numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
 
@@ -637,6 +635,7 @@ class Order < ActiveRecord::Base
   def self.import(files)
     sharepath = get_mango_field('share_path')
     order_count = 0
+    message = ""
     files.each do |file|
       file = file.downcase
       if file.include? "orden_produccion"
@@ -646,6 +645,10 @@ class Order < ActiveRecord::Base
                   "client_phone", "batch_prog"]
         orderfile = orderfile.chomp
         values = orderfile.split(';')
+        if values.length != 13
+          message = "Error en el archivo a importar"
+          break
+        end
         order = keys.zip(values).to_h
         orderfile = File.open(sharepath+file).readlines
         orderfile.delete_at(0)
@@ -654,8 +657,14 @@ class Order < ActiveRecord::Base
           keys = ["ingredient_code", "ingredient_name", "amount"]
           line = line.chomp
           values = line.split(';')
-          item = keys.zip(values).to_h
-          items.push(item)
+          if values.length != 3
+            message = "Error en el archivo a importar"
+            break
+          end
+          unless line.empty?
+            item = keys.zip(values).to_h
+            items.push(item)
+          end
         end
         if Product.where(code: order["product_code"]).empty?
           Product.create code: order["product_code"],
@@ -666,6 +675,17 @@ class Order < ActiveRecord::Base
           ProductLot.create code: order["lot_code"],
                             product_id: product.id
         end
+        items.each do |ing|
+          if Ingredient.where(code: ing["ingredient_code"]).empty?
+            Ingredient.create code: ing["ingredient_code"],
+                              name: ing["ingredient_name"],
+                              minimum_stock: 0.0
+            ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+            Lot.create code: ing["ingredient_code"],
+                       ingredient_id: ingredient.id,
+                       density: 1
+          end
+        end
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
           Recipe.create code: order["recipe_code"],
                         name: order["recipe_name"],
@@ -673,14 +693,6 @@ class Order < ActiveRecord::Base
                         product_id: product.id
           recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
           items.each do |ing|
-            if Ingredient.where(code: ing["ingredient_code"]).empty?
-              Ingredient.create code: ing["ingredient_code"],
-                                name: ing["ingredient_name"]
-              ingredient = Ingredient.find_by(code: ing["ingredient_code"])
-              Lot.create code: ing["ingredient_code"],
-                         ingredient_id: ingredient.id,
-                         density: 1
-            end
             ingredient = Ingredient.find_by(code: ing["ingredient_code"])
             IngredientRecipe.create ingredient_id: ingredient.id,
                                     recipe_id: recipe.id,
@@ -710,6 +722,7 @@ class Order < ActiveRecord::Base
           end
         end
       end
+      puts message
     end
     return order_count
   end
