@@ -375,7 +375,7 @@ class Order < ActiveRecord::Base
     file.close
     files = Dir.entries(tmp_dir)
     files.each do |f|
-      if f.downcase.include? "notificacion_orden"
+      if f.downcase.include? "notificacion"
         begin
           FileUtils.mv(tmp_dir+f, sharepath)
         rescue
