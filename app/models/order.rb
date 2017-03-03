@@ -356,7 +356,7 @@ class Order < ActiveRecord::Base
       end
       batch_consumption = batch_consumption.push(batch)
     end
-    file = File.open(tmp_dir+"notificacion_orden_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+    file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
     batch_consumption.each do |consump|
       total = 0
       consump.each do |lot|
