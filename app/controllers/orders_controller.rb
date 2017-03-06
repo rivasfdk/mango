@@ -128,14 +128,19 @@ class OrdersController < ApplicationController
 
   def do_notify
     @order = Order.find params[:id]
-    if (@order.completed && !@order.notified)
-      @order.generate_transactions(session[:user_id])
-      @order.update_column(:notified, true)
-      mango_features = get_mango_features()
-      if mango_features.include?("sap_production_order")
-        @order.nofify_sap
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      warning = @order.nofify_sap
+    end
+    if warning.empty?
+      if (@order.completed && !@order.notified)
+        @order.generate_transactions(session[:user_id])
+        @order.update_column(:notified, true)
+        flash[:notice] = "Orden notificada exitosamente"
       end
-      flash[:notice] = "Orden notificada exitosamente"
+    else
+      flash[:type] = "error"
+      flash[:notice] = warning
     end
     redirect_to :orders
   end
@@ -176,6 +181,12 @@ class OrdersController < ApplicationController
   def print
     @order = Order.find params[:id]
     @data = EasyModel.order_details(@order.code)
+
+mango_features = get_mango_features()
+if mango_features.include?("sap_production_order")
+  @order.nofify_sap
+end
+
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

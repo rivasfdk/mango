@@ -331,6 +331,7 @@ class Order < ActiveRecord::Base
   end
 
   def nofify_sap
+    message = ""
     sharepath = get_mango_field('share_path')
     tmp_dir = get_mango_field('tmp_dir')
     batch_consumption = []
@@ -356,35 +357,45 @@ class Order < ActiveRecord::Base
       end
       batch_consumption = batch_consumption.push(batch)
     end
-    file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-    batch_consumption.each do |consump|
-      total = 0
-      consump.each do |lot|
-        amount = lot[1]
-        total = total + amount
-      end
-      file << "#{self.code};#{total};0008\r\n"
-      consump.each do |lot|
-        code = (Lot.find_by(id: lot[0])).code
-        amount = lot[1]
-        hopper = Hopper.find(lot[2])
-        scale = Scale.find(hopper.scale_id)
-        file << "#{code};#{amount};#{hopper.code}\r\n"
-      end
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+    if warehouse.nil?
+      sacks = WarehouseContents.find_by(content_id: self.product_lot_id, content_type: false)
+      warehouse = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
     end
-    file.close
-    files = Dir.entries(tmp_dir)
-    files.each do |f|
-      if f.downcase.include? "notificacion"
-        begin
-          FileUtils.mv(tmp_dir+f, sharepath)
-        rescue
-          puts "++++++++++++++++++++"
-          puts "+++ error de red +++"
-          puts "++++++++++++++++++++"
+    if warehouse.nil?
+      message = "No se notificó la orden: Lote sin almacen asignado"
+    else
+      file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+      batch_consumption.each do |consump|
+        total = 0
+        consump.each do |lot|
+          amount = lot[1]
+          total = total + amount
+        end
+        file << "#{self.code};#{total};#{warehouse.code}\r\n"
+        consump.each do |lot|
+          code = (Lot.find_by(id: lot[0])).code
+          amount = lot[1]
+          hopper = Hopper.find(lot[2])
+          scale = Scale.find(hopper.scale_id)
+          file << "#{code};#{amount};#{hopper.code}\r\n"
+        end
+      end
+      file.close
+      files = Dir.entries(tmp_dir)
+      files.each do |f|
+        if f.downcase.include? "notificacion"
+          begin
+            FileUtils.mv(tmp_dir+f, sharepath)
+          rescue
+            puts "++++++++++++++++++++"
+            puts "+++ error de red +++"
+            puts "++++++++++++++++++++"
+          end
         end
       end
     end
+    return message
   end
 
   def close(user_id)

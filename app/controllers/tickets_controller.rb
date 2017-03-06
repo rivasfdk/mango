@@ -141,8 +141,8 @@ class TicketsController < ApplicationController
         @orders = []
       end
     end
-    @lots_warehouses = Warehouse.where(content_type: true)
-    @product_lots_warehouses = Warehouse.where(content_type: false)
+    @lots_warehouses = Warehouse.where(product_lot_id: nil)
+    @product_lots_warehouses = Warehouse.where(lot_id: nil)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
