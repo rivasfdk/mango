@@ -328,6 +328,22 @@ class Order < ActiveRecord::Base
        content_id: self.product_lot_id,
        processed_in_stock: 1,
        user_id: user_id}) unless production < 0.01
+
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+    if warehouse.nil?
+      sacks = WarehouseContents.find_by(content_id: self.product_lot_id, content_type: false)
+      warehouse = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
+    end
+    actual_stock = warehouse.stock
+    new_stock = actual_stock + production
+    warehouse.update_attributes(stock: new_stock)
+    WarehouseTransactions.create transaction_type_id: 6,
+                                 warehouse_id: warehouse.id,
+                                 amount: production,
+                                 stock_after: new_stock,
+                                 lot_id: self.product_lot_id,
+                                 content_type: false,
+                                 user_id: self.user_id
   end
 
   def nofify_sap

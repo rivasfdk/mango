@@ -181,12 +181,6 @@ class OrdersController < ApplicationController
   def print
     @order = Order.find params[:id]
     @data = EasyModel.order_details(@order.code)
-
-mango_features = get_mango_features()
-if mango_features.include?("sap_production_order")
-  @order.nofify_sap
-end
-
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'

@@ -167,10 +167,10 @@ class TicketOrder < ActiveRecord::Base
           net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
           item = TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id
           position = item.position
-          wharehouse = Warehouse.find(t.warehouse_id)
+          warehouse = Warehouse.find(t.warehouse_id)
           file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
                     "#{content_code};#{ticket.incoming_weight};#{net_weight};"+
-                    "#{ticket.outgoing_weight};#{plate};#{driver};#{wharehouse.code}\r\n"
+                    "#{ticket.outgoing_weight};#{plate};#{driver};#{warehouse.code}\r\n"
           new_remaining = item.remaining - net_weight
           if new_remaining <= 0
             TicketOrderItems.update(item.id, :remaining => 0)
@@ -197,6 +197,38 @@ class TicketOrder < ActiveRecord::Base
             end
           end
         end
+      end
+    end
+    if WarehouseTransactions.find_by(ticket_id: ticket.id).nil?
+      ticket.transactions.each do |t|
+        if t.content_type == 1
+          content_code = (Lot.find t.content_id).code
+        else
+          content_code = (ProductLot.find t.content_id).code
+        end
+        net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
+        warehouse = Warehouse.find(t.warehouse_id)
+        actual_stock = warehouse.sacks ? warehouse.warehouse_contents.stock : warehouse.stock
+        if actual_stock < 0
+          actual_stock = 0
+        end
+        if ticket.ticket_type_id == 1
+          stock_after = actual_stock + net_weight
+        else
+          stock_after = actual_stock - net_weight
+        end
+        if stock_after < 0
+          stock_after = 0
+        end
+        warehouse.update_attributes(stock: stock_after)
+        WarehouseTransactions.create transaction_type_id: ticket.ticket_type_id == 1 ? 4 : 5,
+                                     warehouse_id: t.warehouse_id,
+                                     amount: net_weight,
+                                     stock_after: stock_after,
+                                     lot_id: t.content_id,
+                                     content_type: t.content_type,
+                                     user_id: ticket.user_id,
+                                     ticket_id: ticket.id
       end
     end
   end

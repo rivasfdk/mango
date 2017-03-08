@@ -135,6 +135,13 @@ class WarehousesController < ApplicationController
 
   def do_adjust
     @warehouse = Warehouse.find params[:id]
+    WarehouseTransactions.create transaction_type_id: @warehouse.stock < params[:stock].to_f ? 2 : 3,
+                                 warehouse_id: @warehouse.id,
+                                 amount: params[:stock].to_f,
+                                 stock_after: params[:stock].to_f,
+                                 lot_id: @warehouse.lot_id.nil? ? @warehouse.product_lot_id : @warehouse.lot_id,
+                                 content_type: @warehouse.warehouse_types.content_type,
+                                 user_id: session[:user_id]
     @warehouse.update_attributes(stock: params[:stock])
     if @warehouse.save
       flash[:notice] = "Almacen ajustado exitosamente"

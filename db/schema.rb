@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301190216) do
+ActiveRecord::Schema.define(version: 20170308000321) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -697,6 +697,19 @@ ActiveRecord::Schema.define(version: 20170301190216) do
     t.float    "stock"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "warehouses_transactions", force: true do |t|
+    t.integer  "transaction_type_id"
+    t.integer  "warehouse_id"
+    t.float    "amount"
+    t.float    "stock_after"
+    t.integer  "lot_id"
+    t.boolean  "content_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ticket_id"
   end
 
   create_table "warehouses_types", force: true do |t|
