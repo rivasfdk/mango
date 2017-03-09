@@ -117,7 +117,11 @@ class TicketOrder < ActiveRecord::Base
 
       if Transaction.where(ticket_id: ticket_id).empty?
         ticket_order.ticket_orders_items.each do |item|
-          warehouse = Warehouse.find_by(content_id: item.content_id, content_type: item.content_type)
+          if item.content_type
+            warehouse = Warehouse.find_by(lot_id: item.content_id)
+          else
+            warehouse = Warehouse.find_by(product_lot_id: item.content_id)
+          end
           if warehouse.nil?
             warehouse_content = WarehouseContents.find_by(content_id: item.content_id, content_type: item.content_type)
             if !warehouse_content.nil?

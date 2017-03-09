@@ -239,7 +239,11 @@ class TicketsController < ApplicationController
     @ticket.transactions.each do |t|
       content_type = (t.content_type == 1) ? true : false
       if t.warehouse_id.nil?
-        warehouse = Warehouse.find_by(content_id: t.content_id, content_type: content_type)
+        if content_type
+          warehouse = Warehouse.find_by(lot_id: t.content_id)
+        else
+          warehouse = Warehouse.find_by(product_lot_id: t.content_id)
+        end
         if warehouse.nil?
           warehouse_content = WarehouseContents.find_by(content_id: t.content_id, content_type: content_type)
           if !warehouse_content.nil?
