@@ -1311,7 +1311,7 @@
   "state": {
     "layout-guides": []
   },
-  "title": "Produccion Diaria",
+  "title": "Duración de Orden de Producción",
   "report": {
     "paper-type": "A4",
     "orientation": "landscape",
