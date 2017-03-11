@@ -1,4 +1,4 @@
-  report.set_layout tlf: 'reports/thinreports_layouts/daily_production_details'
+report.set_layout tlf: 'reports/thinreports_layouts/daily_production_details'
 
 total_for = {std: 0, real: 0, var_kg: 0, var_perc: 0}
 

@@ -42,8 +42,8 @@ class ReportsController < ApplicationController
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new @data, 'daily_production.yml'
-      send_data report.render, :filename => "#{@data['title']}.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/daily_production'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -75,16 +75,16 @@ class ReportsController < ApplicationController
   end
 
   def order_duration
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.order_duration(start_date, end_date)
-    if data.nil?
+    #start_date = EasyModel.param_to_date(params[:report], 'start')
+    #end_date = EasyModel.param_to_date(params[:report], 'end')
+    @data = EasyModel.order_duration(params[:report])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'order_duration.yml'
-      send_data report.render, :filename => "duracion_de_orden_produccion.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/order_duration'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

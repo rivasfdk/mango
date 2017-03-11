@@ -49,18 +49,12 @@ GEM
     concurrent-ruby (1.0.2)
     daemons (1.2.4)
     dynamic_form (1.1.4)
-    em-synchrony (1.0.5)
-      eventmachine (>= 1.0.0.beta.1)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
     execjs (2.7.0)
-    faye-websocket (0.10.4)
-      eventmachine (>= 0.12.0)
-      websocket-driver (>= 0.5.1)
     flot-rails (0.0.7)
       jquery-rails
     gnuplot (2.6.2)
-    hiredis (0.6.1)
     htmlentities (4.3.4)
     i18n (0.7.0)
     jquery-rails (3.1.4)
@@ -115,9 +109,6 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.3.0)
-    redis (3.3.1)
-    redis-objects (1.2.1)
-      redis (>= 3.0.2)
     ruby-units (2.0.1)
     rubyzip (1.0.0)
     sass (3.4.22)
@@ -152,18 +143,6 @@ GEM
     tzinfo (0.3.51)
     uglifier (3.0.2)
       execjs (>= 0.3.0, < 3)
-    websocket-driver (0.6.4)
-      websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.2)
-    websocket-rails (0.7.0)
-      em-synchrony
-      faye-websocket
-      hiredis
-      rack
-      rails
-      redis
-      redis-objects
-      thin
     will_paginate (3.1.5)
 
 PLATFORMS
@@ -194,8 +173,7 @@ DEPENDENCIES
   thinreports
   thinreports-rails
   uglifier
-  websocket-rails
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   1.13.1
+   1.14.5

@@ -4,7 +4,6 @@
 //= require jquery-ui/datepicker-es
 //= require chosen.jquery
 //= require_tree .
-//= require websocket_rails/main
 //= stub dynamic_clients
 //= stub jquery.flot.axislabels
 
