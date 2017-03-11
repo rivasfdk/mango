@@ -439,16 +439,14 @@ class ReportsController < ApplicationController
   end
 
   def stats
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.stats(start_date, end_date)
-    if data.nil?
+    @data = EasyModel.stats(params[:report])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'stats.yml'
-      send_data report.render, :filename => 'estadisticas.pdf', :type => 'application/pdf'
+      rendered = render_to_string formats: [:pdf], template: 'reports/stats'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
