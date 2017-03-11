@@ -75,8 +75,6 @@ class ReportsController < ApplicationController
   end
 
   def order_duration
-    #start_date = EasyModel.param_to_date(params[:report], 'start')
-    #end_date = EasyModel.param_to_date(params[:report], 'end')
     @data = EasyModel.order_duration(params[:report])
     if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
