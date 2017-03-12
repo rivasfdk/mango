@@ -1,4 +1,6 @@
-  class LocationsController < ApplicationController
+# Maintenance Module  
+
+class LocationsController < ApplicationController
 
   def index
     @locations = Location.search(params)
