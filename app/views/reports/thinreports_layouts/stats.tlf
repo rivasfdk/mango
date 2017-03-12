@@ -7,15 +7,15 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 116.1,
-      "width": 533.4,
-      "height": 449.1,
+      "y": 110,
+      "width": 781.8,
+      "height": 449.8,
       "header": {
         "enabled": true,
-        "height": 56.9,
+        "height": 25,
         "translate": {
-          "x": 10,
-          "y": 44.1
+          "x": 20,
+          "y": 38
         },
         "items": [
           {
@@ -23,10 +23,10 @@
             "type": "rect",
             "display": true,
             "description": "",
-            "x": 20,
-            "y": 108.9,
-            "width": 533.4,
-            "height": 13,
+            "x": 10,
+            "y": 76.6,
+            "width": 781.8,
+            "height": 16.1,
             "style": {
               "border-color": "none",
               "border-width": 1,
@@ -40,10 +40,10 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 20,
-            "y": 105.9,
-            "width": 66.1,
-            "height": 20,
+            "x": 10,
+            "y": 72,
+            "width": 36.4,
+            "height": 25,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -60,7 +60,7 @@
               ]
             },
             "texts": [
-              "Código"
+              "Orden"
             ]
           },
           {
@@ -68,10 +68,122 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 90,
-            "y": 105.9,
-            "width": 279.4,
-            "height": 20,
+            "x": 535,
+            "y": 72,
+            "width": 86,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Batches/hora mezc."
+            ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 620,
+            "y": 72,
+            "width": 64.8,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "center",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Tmp.Mol.1"
+            ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 685,
+            "y": 72,
+            "width": 46.5,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Tmp.Mol.2"
+            ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 740,
+            "y": 72,
+            "width": 46.5,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Tmp.Mol.3"
+            ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 55,
+            "y": 72,
+            "width": 105.2,
+            "height": 25,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -88,7 +200,7 @@
               ]
             },
             "texts": [
-              "Materia Prima"
+              "Receta"
             ]
           },
           {
@@ -96,17 +208,17 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 370,
-            "y": 105.9,
-            "width": 85,
-            "height": 20,
+            "x": 340,
+            "y": 72.5,
+            "width": 95.5,
+            "height": 24,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 9,
               "color": "#000000",
-              "text-align": "right",
+              "text-align": "left",
               "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
@@ -116,7 +228,7 @@
               ]
             },
             "texts": [
-              "Dosis Fórmula (Kg)"
+              "Tmp.Batch.Bal.Macro"
             ]
           },
           {
@@ -124,46 +236,18 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 455,
-            "y": 105.9,
-            "width": 95.2,
-            "height": 20,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "middle",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [
-                "bold"
-              ]
-            },
-            "texts": [
-              "Total (Kg)"
-            ]
-          },
-          {
-            "id": "",
-            "type": "text",
-            "display": true,
-            "description": "",
-            "x": 20,
+            "x": 439,
             "y": 73,
-            "width": 45,
-            "height": 10,
+            "width": 91,
+            "height": 22.3,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 9,
               "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
+              "text-align": "left",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -172,58 +256,26 @@
               ]
             },
             "texts": [
-              "Fórmula:"
+              "Tmp.Desc.Bal.Macro"
             ]
-          },
-          {
-            "id": "recipe_desc",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 70,
-            "y": 74.8,
-            "width": 327.4,
-            "height": 9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "left",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [],
-              "overflow": "truncate",
-              "word-wrap": "break-word"
-            },
-            "reference-id": "",
-            "value": "",
-            "multiple-line": false,
-            "format": {
-              "base": "",
-              "type": ""
-            }
           },
           {
             "id": "",
             "type": "text",
             "display": true,
             "description": "",
-            "x": 10,
-            "y": 85.9,
-            "width": 55,
-            "height": 10,
+            "x": 295,
+            "y": 77,
+            "width": 41.4,
+            "height": 16,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 9,
               "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
+              "text-align": "center",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -232,119 +284,27 @@
               ]
             },
             "texts": [
-              "Versión:"
+              "Batches"
             ]
-          },
-          {
-            "id": "version",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 70.5,
-            "y": 86.8,
-            "width": 114.9,
-            "height": 9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "left",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [],
-              "overflow": "truncate",
-              "word-wrap": "break-word"
-            },
-            "reference-id": "",
-            "value": "",
-            "multiple-line": false,
-            "format": {
-              "base": "",
-              "type": ""
-            }
-          },
-          {
-            "id": "",
-            "type": "text",
-            "display": true,
-            "description": "",
-            "x": 435,
-            "y": 73.1,
-            "width": 58,
-            "height": 10,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [
-                "bold"
-              ]
-            },
-            "texts": [
-              "Batch:"
-            ]
-          },
-          {
-            "id": "n_batch",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 499.7,
-            "y": 73.9,
-            "width": 55.5,
-            "height": 9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "left",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [],
-              "overflow": "truncate",
-              "word-wrap": "break-word"
-            },
-            "reference-id": "",
-            "value": "",
-            "multiple-line": false,
-            "format": {
-              "base": "",
-              "type": ""
-            }
           }
         ]
       },
       "detail": {
-        "height": 13,
+        "height": 17,
         "translate": {
-          "x": 10,
-          "y": 21.8
+          "x": 20,
+          "y": -16.2
         },
         "items": [
           {
-            "id": "code",
+            "id": "order",
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 20,
-            "y": 151.2,
-            "width": 67,
-            "height": 9,
+            "x": 10,
+            "y": 154.2,
+            "width": 39.4,
+            "height": 14,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -352,7 +312,7 @@
               "font-size": 9,
               "color": "#000000",
               "text-align": "center",
-              "vertical-align": "top",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -362,7 +322,7 @@
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": false,
+            "multiple-line": true,
             "format": {
               "base": "",
               "type": "padding",
@@ -374,14 +334,14 @@
             }
           },
           {
-            "id": "name",
+            "id": "recipe_name",
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 88,
-            "y": 151.2,
-            "width": 281.4,
-            "height": 9,
+            "x": 51.4,
+            "y": 154.2,
+            "width": 243,
+            "height": 14,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -389,7 +349,7 @@
               "font-size": 9,
               "color": "#000000",
               "text-align": "left",
-              "vertical-align": "top",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -399,7 +359,7 @@
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": false,
+            "multiple-line": true,
             "format": {
               "base": "",
               "type": "padding",
@@ -411,22 +371,22 @@
             }
           },
           {
-            "id": "amount",
+            "id": "batches_hora_mezc",
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 370,
-            "y": 151.2,
-            "width": 80,
-            "height": 9,
+            "x": 545,
+            "y": 154.2,
+            "width": 81.4,
+            "height": 14,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 9,
               "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
+              "text-align": "center",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -436,33 +396,33 @@
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": false,
+            "multiple-line": true,
             "format": {
               "base": "",
               "type": "number",
               "number": {
                 "delimiter": "",
-                "precision": 0
+                "precision": 2
               }
             }
           },
           {
-            "id": "total_amount",
+            "id": "tmp_mol_1",
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 455,
-            "y": 151.2,
-            "width": 96.4,
-            "height": 9,
+            "x": 630,
+            "y": 154.2,
+            "width": 57.4,
+            "height": 14,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 9,
               "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
+              "text-align": "center",
+              "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
@@ -472,15 +432,183 @@
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": false,
+            "multiple-line": true,
             "format": {
               "base": "",
-              "type": "padding",
-              "padding": {
-                "length": 0,
-                "char": "0",
-                "direction": "L"
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
               }
+            }
+          },
+          {
+            "id": "tmp_mol_2",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 689,
+            "y": 154.2,
+            "width": 52,
+            "height": 14,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "center",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
+          },
+          {
+            "id": "tmp_mol_3",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 745,
+            "y": 154.2,
+            "width": 41.9,
+            "height": 14,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "center",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
+          },
+          {
+            "id": "real_batches",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 295,
+            "y": 154.2,
+            "width": 28.6,
+            "height": 14,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {}
+            }
+          },
+          {
+            "id": "tmp_desc_bal_macro",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 435,
+            "y": 154.2,
+            "width": 105.4,
+            "height": 14,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "center",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": ""
+            }
+          },
+          {
+            "id": "tmp_batch_bal_macro",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 330,
+            "y": 154.2,
+            "width": 105.4,
+            "height": 14,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "center",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": ""
             }
           }
         ]
@@ -489,17 +617,17 @@
         "enabled": false,
         "height": 0,
         "translate": {
-          "x": 10,
-          "y": -44.4
+          "x": 20,
+          "y": -78.4
         },
         "items": []
       },
       "footer": {
         "enabled": true,
-        "height": 69.3,
+        "height": 19.9,
         "translate": {
-          "x": 10,
-          "y": -103.8
+          "x": 20,
+          "y": -137.8
         },
         "items": [
           {
@@ -507,8 +635,8 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 250,
-            "y": 296.1,
+            "x": 160,
+            "y": 294.8,
             "width": 107.7,
             "height": 10,
             "style": {
@@ -531,83 +659,6 @@
             ]
           },
           {
-            "id": "total_recipe",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 370,
-            "y": 296.1,
-            "width": 80,
-            "height": 9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [
-                "bold"
-              ],
-              "overflow": "truncate",
-              "word-wrap": "break-word"
-            },
-            "reference-id": "",
-            "value": "",
-            "multiple-line": false,
-            "format": {
-              "base": "",
-              "type": "number",
-              "number": {
-                "delimiter": "",
-                "precision": 0
-              }
-            }
-          },
-          {
-            "id": "total_production",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 455,
-            "y": 296.1,
-            "width": 96,
-            "height": 9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [
-                "bold"
-              ],
-              "overflow": "truncate",
-              "word-wrap": "break-word"
-            },
-            "reference-id": "",
-            "value": "",
-            "multiple-line": false,
-            "format": {
-              "base": "",
-              "type": "padding",
-              "padding": {
-                "length": 0,
-                "char": "0",
-                "direction": "L"
-              }
-            }
-          },
-          {
             "id": "",
             "type": "line",
             "display": true,
@@ -617,20 +668,20 @@
               "border-width": 1,
               "border-style": "solid"
             },
-            "x1": 20,
+            "x1": 10,
             "y1": 289.8,
-            "x2": 553.4,
+            "x2": 791.8,
             "y2": 289.8
           },
           {
-            "id": "",
-            "type": "text",
+            "id": "total_batches",
+            "type": "text-block",
             "display": true,
             "description": "",
-            "x": 20,
-            "y": 326.1,
-            "width": 57.3,
-            "height": 10,
+            "x": 280,
+            "y": 295.1,
+            "width": 45.4,
+            "height": 9,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -638,45 +689,19 @@
               "font-size": 9,
               "color": "#000000",
               "text-align": "right",
-              "vertical-align": "middle",
+              "vertical-align": "top",
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
               "font-style": [
                 "bold"
-              ]
-            },
-            "texts": [
-              "Comentario:"
-            ]
-          },
-          {
-            "id": "comment",
-            "type": "text-block",
-            "display": true,
-            "description": "",
-            "x": 84.6,
-            "y": 328.9,
-            "width": 448.2,
-            "height": 30.2,
-            "style": {
-              "font-family": [
-                "Helvetica"
               ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "left",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [],
               "overflow": "truncate",
               "word-wrap": "break-word"
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": true,
+            "multiple-line": false,
             "format": {
               "base": "",
               "type": "number",
@@ -688,7 +713,7 @@
           }
         ]
       },
-      "content-height": 392.20000000000005,
+      "content-height": 424.8,
       "auto-page-break": true
     },
     {
@@ -698,7 +723,7 @@
       "description": "",
       "x": 30,
       "y": 91,
-      "width": 535.2,
+      "width": 781.8,
       "height": 14,
       "style": {
         "font-family": [
@@ -868,14 +893,14 @@
       }
     },
     {
-      "id": "date",
-      "type": "text-block",
+      "id": "",
+      "type": "text",
       "display": true,
       "description": "",
-      "x": 455,
-      "y": 52,
-      "width": 77.4,
-      "height": 9,
+      "x": 635,
+      "y": 55,
+      "width": 91,
+      "height": 14,
       "style": {
         "font-family": [
           "Helvetica"
@@ -883,6 +908,62 @@
         "font-size": 9,
         "color": "#000000",
         "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [
+          "bold"
+        ]
+      },
+      "texts": [
+        "Desde:"
+      ]
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 635,
+      "y": 70,
+      "width": 91,
+      "height": 14,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [
+          "bold"
+        ]
+      },
+      "texts": [
+        "Hasta:"
+      ]
+    },
+    {
+      "id": "since",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 728.8,
+      "y": 55,
+      "width": 82,
+      "height": 9,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "center",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -900,40 +981,44 @@
       }
     },
     {
-      "id": "",
-      "type": "text",
+      "id": "until",
+      "type": "text-block",
       "display": true,
       "description": "",
-      "x": 440,
-      "y": 30,
-      "width": 26,
-      "height": 12,
+      "x": 728.8,
+      "y": 70,
+      "width": 82,
+      "height": 9,
       "style": {
         "font-family": [
           "Helvetica"
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "right",
+        "text-align": "center",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
         "letter-spacing": "",
-        "font-style": [
-          "bold"
-        ]
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
       },
-      "texts": [
-        "Pág.:"
-      ]
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
     },
     {
       "id": "page",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 469,
-      "y": 30,
+      "x": 729,
+      "y": 35,
       "width": 30,
       "height": 9,
       "style": {
@@ -964,8 +1049,8 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 499,
-      "y": 30,
+      "x": 759,
+      "y": 35,
       "width": 20.2,
       "height": 12,
       "style": {
@@ -990,8 +1075,8 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 520.8,
-      "y": 30,
+      "x": 780.8,
+      "y": 35,
       "width": 30,
       "height": 9,
       "style": {
@@ -1016,15 +1101,43 @@
         "base": "",
         "type": ""
       }
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 635,
+      "y": 35,
+      "width": 91,
+      "height": 14,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [
+          "bold"
+        ]
+      },
+      "texts": [
+        "Pág.:"
+      ]
     }
   ],
   "state": {
     "layout-guides": []
   },
-  "title": "Nota de Producción",
+  "title": "Estadísticas de Producción",
   "report": {
     "paper-type": "A4",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "margin": [
       30,
       30,
