@@ -1,0 +1,9 @@
+<% title "Llenar horas de uso" %>
+<%= form_for :do_fill_hours, :url=>fill_hours_location_machine_path(@machine.location_id, @machine.id), :html=>{:id=>'machine_fill_hours_form'} do |f| %>
+  <label for="hours" class="small">Horas totales:</label>
+  <div class="field"><%=h @machine.hours %></div>
+  <label for="hours" class="small">Horas a añadir:</label>
+  <div class="field"><%= f.text_field :hours, :size=>'10' %><span>*</span></div>
+  <div class="clearfix"></div>
+  <br/><span class="required">* Campos obligatorios</span>
+<% end %>

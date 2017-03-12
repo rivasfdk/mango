@@ -388,6 +388,26 @@ function submit_warehouse_type_edit_form() {
     $('#warehouse_type_edit_form').submit();
 }
 
+function submit_machine_new_form() {
+    $('#machine_new_form').submit();
+}
+
+function submit_machine_edit_form() {
+    $('#machine_edit_form').submit();
+}
+
+function submit_machine_fill_hours_form() {
+    $('#machine_fill_hours_form').submit();
+}
+
+function submit_location_new_form() {
+    $('#location_new_form').submit();
+}
+
+function submit_location_edit_form() {
+    $('#location_edit_form').submit();
+}
+
 function toggle_report_details(id) {
     $('.report-details').hide();
     $(id).toggle();

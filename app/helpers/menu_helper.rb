@@ -268,6 +268,20 @@ module MenuHelper
       menu = menu_for_warehouse_types_new
     elsif c == 'warehouse_types' and (a == 'edit' or a == 'update')
       menu = menu_for_warehouse_types_edit
+    elsif c == 'machines' and (a == 'new' or a == 'create')
+      menu = menu_for_machines_new
+    elsif c == 'machines' and (a == 'edit' or a == 'update')
+      menu = menu_for_machines_edit
+    elsif c == 'machines' and a == 'fill_hours'
+      menu = menu_for_machines_fill_hours
+    elsif c == 'locations' and a == 'index'
+      menu = menu_for_locations_index
+    elsif c == 'locations' and a == 'show'
+      menu = menu_for_locations_show
+    elsif c == 'locations' and (a == 'new' or a == 'create')
+      menu = menu_for_locations_new
+    elsif c == 'locations' and (a == 'edit' or a == 'update')
+      menu = menu_for_locations_edit
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -1412,6 +1426,70 @@ module MenuHelper
     menu += content_tag(:ul,
       render_back(warehouse_types_path) +
       render_function('Actualizar', 'Actualizar almacen', "submit_warehouse_type_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_machines_new
+    menu = content_tag(:p, "Nueva máquina con ubicación #{@locations.name}")
+    menu += content_tag(:ul,
+      render_back(locations_path(params[:locations_id])) +
+      render_function('Guardar', 'Guardar máquina', "submit_machine_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_machines_edit
+    menu = content_tag(:p, 'Editar máquina')
+    menu += content_tag(:ul,
+      render_back(locations_path(params[:locations_id])) +
+      render_function('Actualizar', 'Actualizar máquina', "submit_machine_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_machines_fill_hours
+    menu = content_tag(:p, 'Llenar horas')
+    menu += content_tag(:ul,
+      render_back(locations_path(params[:locations_id])) +
+      render_function('Llenar', 'Llenar horas', "submit_machine_fill_hours_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+
+  def menu_for_locations_index
+    menu = content_tag(:p, 'Ubicaciones')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Nueva ubicación', new_location_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_show
+    menu = content_tag(:p, "Máquinas con ubicación #{@locations.name}")
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_action('Crear', 'Crear nueva máquina', new_location_machine_path(@machines), 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_new
+    menu = content_tag(:p, "Nueva ubicación")
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_function('Guardar', 'Guardar ubicación', "submit_location_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_edit
+    menu = content_tag(:p, 'Editar ubicación')
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_function('Actualizar', 'Actualizar ubicación', "submit_location_edit_form()", 'button-execute.png')
     )
     return menu
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170228142350) do
+ActiveRecord::Schema.define(version: 20170309192634) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -250,6 +250,13 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.integer  "imported_recipes", default: 0
   end
 
+  create_table "locations", force: true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lots", force: true do |t|
     t.string   "code"
     t.string   "location"
@@ -294,6 +301,17 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.string   "code",                          null: false
     t.boolean  "is_string",     default: false
   end
+
+  create_table "machines", force: true do |t|
+    t.integer  "location_id"
+    t.string   "code",                      null: false
+    t.string   "name",                      null: false
+    t.float    "hours",       default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "machines", ["location_id"], name: "index_machines_on_location_id", using: :btree
 
   create_table "medicaments_recipes", force: true do |t|
     t.string   "code",                      null: false
@@ -593,7 +611,6 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.boolean  "closed"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "remaining"
   end
 
   create_table "tickets_order_items", force: true do |t|

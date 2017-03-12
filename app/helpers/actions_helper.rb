@@ -154,4 +154,9 @@ module ActionsHelper
     return link_to image + " Ver", url, class: 'action'
   end
 
+  def render_action_fill_hours_machine(url)
+    image = image_tag('action-edit.png', alt: 'Llenar')
+    return link_to image + " Llenar", url, class: 'action'
+  end
+
 end

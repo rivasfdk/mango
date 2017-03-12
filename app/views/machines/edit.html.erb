@@ -1,0 +1,5 @@
+<% title "Editar máquina" %>
+<%= form_for :machine, :url=>location_machine_path(@machine.location_id, @machine.id), :html=>{:method=>:put, :id=>'machine_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f, :edit => true} %>
+  <br/>
+<% end %>

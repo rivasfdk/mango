@@ -133,6 +133,16 @@
     </div>
   </div>
 
+  <!-- Maintenance -->
+ 
+  <div class="module yui3-u-1-2">
+    <%= link_to image_tag('warehouses-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), locations_path %>
+    <div class="module-content">
+      <h2><%= link_to 'Matenimiento', locations_path %></h2>
+      <p>Registro de Máquinas por ubicación</p>
+    </div>
+  </div>
+
 
   <!-- Transactions -->
   <% if session[:permissions].include?('transactions') %>
