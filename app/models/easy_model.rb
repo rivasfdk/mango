@@ -1270,7 +1270,7 @@ class EasyModel
     total_var = total_real - total_std
     total_var_perc = total_var * 100 / total_std
 
-    data = self.initialize_data('Detalle de Orden de Produccion')
+    data = self.initialize_data('Detalle de Orden de Producción')
     data['id'] = @order.id
     data['order'] = @order.code
     data['client'] = "#{@order.client.code} - #{@order.client.name}"
