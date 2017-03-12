@@ -1433,7 +1433,7 @@ module MenuHelper
   def menu_for_machines_new
     menu = content_tag(:p, "Nueva máquina con ubicación #{@locations.name}")
     menu += content_tag(:ul,
-      render_back(locations_path(params[:locations_id])) +
+      render_back(locations_path(params[:location_id])) +
       render_function('Guardar', 'Guardar máquina', "submit_machine_new_form()", 'button-execute.png')
     )
     return menu
@@ -1442,7 +1442,7 @@ module MenuHelper
   def menu_for_machines_edit
     menu = content_tag(:p, 'Editar máquina')
     menu += content_tag(:ul,
-      render_back(locations_path(params[:locations_id])) +
+      render_back(locations_path(params[:location_id])) +
       render_function('Actualizar', 'Actualizar máquina', "submit_machine_edit_form()", 'button-execute.png')
     )
     return menu
@@ -1451,7 +1451,7 @@ module MenuHelper
   def menu_for_machines_fill_hours
     menu = content_tag(:p, 'Llenar horas')
     menu += content_tag(:ul,
-      render_back(locations_path(params[:locations_id])) +
+      render_back(locations_path(params[:location_id])) +
       render_function('Llenar', 'Llenar horas', "submit_machine_fill_hours_form()", 'button-execute.png')
     )
     return menu
