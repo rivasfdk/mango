@@ -89,7 +89,6 @@ class WarehousesController < ApplicationController
     @warehouse = Warehouse.find params[:id]
     new_product = params[:change_product][:new_product_lot_id]  # Gets new product chosen by user
     new_stock = params[:change_product][:stock]
-    binding.pry
     if (@warehouse.stock == 0) && (@warehouse.update_attributes(product_lot_id: new_product, stock: new_stock)) 
       flash[:notice] = "Cambio de producto terminado realizado con éxito"
     else
