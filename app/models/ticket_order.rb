@@ -23,7 +23,7 @@ class TicketOrder < ActiveRecord::Base
           ticketordersap = File.open(sharepath+file).readlines
           ticketordersap.each do |line|
             keys = ["order_type","order_code","position","content_type","content_code",
-                    "content_name","sack","quantity","total_weight","client_code",
+                    "content_name","lot_code","sack","quantity","total_weight","client_code",
                     "client_name","client_rif","client_address","client_phone",
                     "doc_type","doc_number"]
             line = line.chomp
@@ -60,8 +60,10 @@ class TicketOrder < ActiveRecord::Base
         if Product.where(code: order["content_code"]).empty?
           Product.create code: order["content_code"],
                          name: order["content_name"]
-          product = Product.where(code: order["content_code"])
-          ProductLot.create code: order["content_code"],
+        end
+        product = Product.where(code: order["content_code"])
+        if ProductLot.where(code: order["lot_code"]).empty?
+          ProductLot.create code: order["lot_code"],
                             product_id: product[0].id
         end
       end
@@ -90,7 +92,7 @@ class TicketOrder < ActiveRecord::Base
       if content
         content_type = (Lot.find_by code: order["content_code"]).id
       else
-        content_type = (ProductLot.find_by code: order["content_code"]).id
+        content_type = (ProductLot.find_by code: order["lot_code"]).id
       end
       ticket_order_act = TicketOrder.find_by code: order_code
       if TicketOrderItems.where(ticket_order_id: ticket_order_act.id, 
