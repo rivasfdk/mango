@@ -390,11 +390,14 @@ class Order < ActiveRecord::Base
         end
         file << "#{self.code};#{total};#{warehouse.code}\r\n"
         consump.each do |lot|
-          code = (Lot.find_by(id: lot[0])).code
+          content_lot = Lot.find_by(id: lot[0])
           amount = lot[1]
-          hopper = Hopper.find(lot[2])
-          scale = Scale.find(hopper.scale_id)
-          file << "#{code};#{amount};#{hopper.code}\r\n"
+          warehouse_lot = Warehouse.find_by(lot_id: content_lot.id, main: true)
+          if warehouse_lot.nil?
+            sacks = WarehouseContents.find_by(content_id: content_lot.id, content_type: true)
+            warehouse_lot = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
+          end
+          file << "#{content_lot.code};#{amount};#{warehouse_lot.code}\r\n"
         end
       end
       file.close

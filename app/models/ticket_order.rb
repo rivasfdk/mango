@@ -188,10 +188,28 @@ class TicketOrder < ActiveRecord::Base
           TicketOrder.update(ticket_order.id, :closed => true)
         end
         file.close
-
-        files = Dir.entries(tmp_dir)
+      else
+        file = File.open(tmp_dir+"traslado_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+        ticket.transactions.each do |t|
+          if t.content_type == 1
+            lot = Lot.find t.content_id.code
+            content = Ingredient.find lot.ingredient_id
+          else
+            lot = ProductLot.find t.content_id
+            content = Product.find lot.product_id
+          end
+          net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
+          warehouse = Warehouse.find(t.warehouse_id)
+          file.puts "#{ticket_order.code[2..ticket_order.code.length]};"+
+                    "#{content.code};#{net_weight};"+
+                    "#{warehouse.code};#{lot.code}\r\n"
+        end
+        TicketOrder.update(ticket_order.id, :closed => true)
+        file.close
+      end
+      files = Dir.entries(tmp_dir)
         files.each do |f|
-          if f.downcase.include? "entrada_orden_compra"
+          if f.downcase.include? "entrada_orden_compra" or "traslado"
             begin
               FileUtils.mv(tmp_dir+f, sharepath)
             rescue
@@ -201,7 +219,6 @@ class TicketOrder < ActiveRecord::Base
             end
           end
         end
-      end
     end
     if WarehouseTransactions.find_by(ticket_id: ticket.id).nil?
       ticket.transactions.each do |t|
