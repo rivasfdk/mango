@@ -761,11 +761,11 @@ class EasyModel
     data = self.initialize_data("Reporte de alarmas")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
-    data['table'] = []
+    data['results'] = []
 
     @alarms.each do |alarm|
       date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
-      data['table'] << {
+      data['results'] << {
           'order_code' => alarm.order.code,
           'date' => date,
           'description' => alarm.description,
