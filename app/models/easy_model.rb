@@ -1417,10 +1417,10 @@ class EasyModel
       data['results'] << {
         'code' => bhl.hopper_lot.lot.ingredient.code,
         'ingredient' => bhl.hopper_lot.lot.ingredient.name,
-        'real_kg' => real_kg,
-        'std_kg' => std_kg,
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
+        'real_kg' => real_kg.round(2),
+        'std_kg' => std_kg.round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
         'hopper' => hopper_name,
         'lot' => bhl.hopper_lot.lot.code,
       }
