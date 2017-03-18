@@ -426,14 +426,14 @@ class ReportsController < ApplicationController
     else
       alarm_type_id = 0
     end
-    data = EasyModel.alarms_per_order(params[:report][:order], alarm_type_id)
-    if data.nil?
+    @data = EasyModel.alarms_per_order(params[:report][:order], alarm_type_id)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'alarms_per_order.yml'
-      send_data report.render, :filename => 'alarmas_por_orden.pdf', :type => 'application/pdf'
+      rendered = render_to_string formats: [:pdf], template: 'reports/alarms_per_order'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

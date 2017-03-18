@@ -786,11 +786,11 @@ class EasyModel
     return nil if alarms.empty?
 
     data = self.initialize_data("Alarmas de Orden #{order_code}")
-    data['table'] = []
+    data['results'] = []
 
     alarms.each do |alarm|
       date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
-      data['table'] << {
+      data['results'] << {
           'date' => date,
           'description' => alarm.description,
         }
