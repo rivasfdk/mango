@@ -9,7 +9,7 @@
       "x": 40,
       "y": 105,
       "width": 771.8,
-      "height": 445,
+      "height": 460.2,
       "header": {
         "enabled": true,
         "height": 25,
@@ -248,7 +248,7 @@
         },
         "items": []
       },
-      "content-height": 420,
+      "content-height": 435.2,
       "auto-page-break": true
     },
     {
@@ -401,7 +401,7 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 555,
+      "y": 570,
       "width": 781.8,
       "height": 10,
       "style": {
@@ -669,7 +669,7 @@
   "state": {
     "layout-guides": []
   },
-  "title": "Detalle de Batch",
+  "title": "Alarmas",
   "report": {
     "paper-type": "A4",
     "orientation": "landscape",

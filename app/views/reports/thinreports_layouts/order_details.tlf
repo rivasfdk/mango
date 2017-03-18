@@ -267,7 +267,7 @@
             "x": 20,
             "y": 73,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -327,7 +327,7 @@
             "x": 20,
             "y": 87,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -387,7 +387,7 @@
             "x": 20,
             "y": 100.2,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -447,7 +447,7 @@
             "x": 285,
             "y": 110.9,
             "width": 55,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -507,7 +507,7 @@
             "x": 35,
             "y": 113.5,
             "width": 30,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -567,7 +567,7 @@
             "x": 40,
             "y": 128.5,
             "width": 26,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -627,7 +627,7 @@
             "x": 575,
             "y": 72.9,
             "width": 85,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -691,7 +691,7 @@
             "x": 575,
             "y": 87,
             "width": 85,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -751,7 +751,7 @@
             "x": 577.3,
             "y": 101,
             "width": 83,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -811,7 +811,7 @@
             "x": 295,
             "y": 72,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -828,7 +828,7 @@
               ]
             },
             "texts": [
-              "Fórmula:"
+              "Receta:"
             ]
           },
           {
@@ -995,7 +995,7 @@
             "x": 290,
             "y": 85.9,
             "width": 58.4,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -1023,7 +1023,7 @@
             "x": 295,
             "y": 95.9,
             "width": 58.4,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -1783,15 +1783,15 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 797.8,
-      "width": 535.2,
-      "height": 12,
+      "y": 570,
+      "width": 781.8,
+      "height": 10,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 10,
-        "color": "#000000",
+        "font-size": 9,
+        "color": "#262626",
         "text-align": "center",
         "vertical-align": "top",
         "line-height": "",
