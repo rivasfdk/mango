@@ -52,9 +52,11 @@ class EasyModel
     end
 
     clients = Client
-      .includes(:order)
-      .where(orders: {created_at: (start_date .. end_date)})
+      .includes({tickets: {transactions:{}}})
+      .where(transactions: {content_type: 2})
+      .where(tickets: {created_at: (start_date .. end_date), ticket_type_id: 2})
       .order(:factory)
+
     clients = clients.where(id: params[:clients_ids]) if params[:by_clients] == '1'
     return nil if clients.empty?
 
@@ -141,12 +143,26 @@ class EasyModel
       row[:columns] = []
       row[:total] = 0
       columns.each_with_index do |column, index|
-        amount = BatchHopperLot
-          .joins(batch: {order: {recipe: {}}})
-          .where(orders: {created_at: start_date .. end_date + 1.day})
-          .where(orders: {client_id: client.id})
-          .where(column[:condition])
-          .sum(:amount) / 1000
+        recipes = Recipe.where(type_id: column[:condition][:recipes][:type_id]).order(:product_id)
+        client_transactions = Transaction
+          .where(transaction_type_id: 5, content_type: 2)
+          .where(created_at: start_date .. end_date + 1.day)
+          .where(client_id: client.id)
+        sum = 0
+        last_product_column = 0
+        recipes.each do |r|
+          product_column = r.product_id
+          if product_column != last_product_column
+            last_product_column = product_column
+            client_transactions.each do |pt|
+              product_transaction = (ProductLot.find pt.content_id).product_id
+              if product_column == product_transaction
+                sum += pt.amount
+              end
+            end
+          end
+        end
+        amount = sum / 1000
         row[:columns] << amount
         row[:total] += amount
         columns[index][:total] += amount
@@ -940,7 +956,7 @@ class EasyModel
         client_name: t[:client_name],
         address: t[:ticket_address],
         license_plate: t[:license_plate],
-        sack: t[:transaction_sack] == 1 ? "S" : "G"
+        sack: t[:transaction_sack] == 1 ? "SACO" : "GRANEL"
       }
     end
     data
