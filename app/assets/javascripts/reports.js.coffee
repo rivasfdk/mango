@@ -111,6 +111,16 @@ ticket_content_type_1_changed = ->
 select_ingredients_changed = ->
   $('#report_ingredients_ids_2_chosen').toggle($('#report_by_select_ingredients').is(':checked'))
 
+select_content_type = ->
+  $("#stocka_content_form").toggle($('#report_by_type_content').is(':checked'))
+
+select_by_content = ->
+  $("#stocka_content_box").toggle($('#report_by_content2').is(':checked'))
+
+select_content = ->
+  $('#stocka_ingredients_box').toggle($('#report_content_type2_1').is(':checked'))
+  $('#stocka_products_box').toggle($('#report_content_type2_2').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -148,4 +158,8 @@ $ ->
   $('#report_ticket_content_type_1').change ticket_content_type_1_changed
   $('#report_ticket_content_type_2').change ticket_content_type_1_changed
   $('#report_by_select_ingredients').change select_ingredients_changed
+  $('#report_by_type_content').change select_content_type
+  $('#report_by_content2').change select_by_content
+  $('#report_content_type2_1').change select_content
+  $('#report_content_type2_2').change select_content
   return
