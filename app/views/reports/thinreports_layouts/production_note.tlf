@@ -8,8 +8,8 @@
       "description": "",
       "x": 30,
       "y": 116.1,
-      "width": 533.4,
-      "height": 449.1,
+      "width": 535.2,
+      "height": 695.7,
       "header": {
         "enabled": true,
         "height": 56.9,
@@ -688,7 +688,7 @@
           }
         ]
       },
-      "content-height": 392.20000000000005,
+      "content-height": 638.8000000000001,
       "auto-page-break": true
     },
     {
@@ -841,15 +841,15 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 797.8,
+      "y": 815,
       "width": 535.2,
-      "height": 12,
+      "height": 10,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 10,
-        "color": "#000000",
+        "font-size": 9,
+        "color": "#262626",
         "text-align": "center",
         "vertical-align": "top",
         "line-height": "",

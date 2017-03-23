@@ -115,15 +115,14 @@ class ReportsController < ApplicationController
   end
 
   def batch_details
-    data = EasyModel.batch_details(params[:report][:order], params[:report][:batch])
-    puts data.inspect
-    if data.nil?
+    @data = EasyModel.batch_details(params[:report][:order], params[:report][:batch])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'batch_details.yml'
-      send_data report.render, :filename => "detalle_batch.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/batch_details'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -408,15 +407,15 @@ class ReportsController < ApplicationController
       alarm_type_id = 0
     end
 
-    data = EasyModel.alarms(start_date, end_date, alarm_type_id)
+    @data = EasyModel.alarms(start_date, end_date, alarm_type_id)
 
-    if data.nil?
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'alarms.yml'
-      send_data report.render, :filename => 'alarmas.pdf', :type => 'application/pdf'
+      rendered = render_to_string formats: [:pdf], template: 'reports/alarms'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -427,14 +426,14 @@ class ReportsController < ApplicationController
     else
       alarm_type_id = 0
     end
-    data = EasyModel.alarms_per_order(params[:report][:order], alarm_type_id)
-    if data.nil?
+    @data = EasyModel.alarms_per_order(params[:report][:order], alarm_type_id)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'alarms_per_order.yml'
-      send_data report.render, :filename => 'alarmas_por_orden.pdf', :type => 'application/pdf'
+      rendered = render_to_string formats: [:pdf], template: 'reports/alarms_per_order'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

@@ -31,7 +31,7 @@
               "border-color": "none",
               "border-width": 1,
               "border-style": "solid",
-              "fill-color": "#eeece1"
+              "fill-color": "#d8d8d8"
             },
             "border-radius": 0
           },
@@ -297,7 +297,7 @@
             "x": 20,
             "y": 73,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -357,7 +357,7 @@
             "x": 20,
             "y": 84.9,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -374,7 +374,7 @@
               ]
             },
             "texts": [
-              "Fabrica:"
+              "Fábrica:"
             ]
           },
           {
@@ -417,7 +417,7 @@
             "x": 234.2,
             "y": 72.9,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -444,7 +444,7 @@
             "description": "",
             "x": 284.2,
             "y": 72,
-            "width": 154.2,
+            "width": 177.2,
             "height": 9,
             "style": {
               "font-family": [
@@ -477,7 +477,7 @@
             "x": 234.2,
             "y": 84.9,
             "width": 45,
-            "height": 9,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -536,7 +536,7 @@
             "description": "",
             "x": 716.1,
             "y": 99,
-            "width": 85.7,
+            "width": 73.9,
             "height": 25,
             "style": {
               "font-family": [
@@ -564,8 +564,8 @@
             "description": "",
             "x": 470,
             "y": 72.9,
-            "width": 68,
-            "height": 9,
+            "width": 69.5,
+            "height": 10,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -592,7 +592,7 @@
             "description": "",
             "x": 545,
             "y": 72,
-            "width": 154.2,
+            "width": 256.8,
             "height": 9,
             "style": {
               "font-family": [
@@ -1211,7 +1211,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 289.4,
+            "x": 295,
             "y": 291.8,
             "width": 65.1,
             "height": 11.1,
@@ -1231,7 +1231,7 @@
               ]
             },
             "texts": [
-              "Total"
+              "Total:"
             ]
           },
           {
@@ -1239,7 +1239,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 345,
+            "x": 355,
             "y": 292.9,
             "width": 59.5,
             "height": 10,
@@ -1254,7 +1254,9 @@
               "line-height": "",
               "line-height-ratio": "",
               "letter-spacing": "",
-              "font-style": [],
+              "font-style": [
+                "bold"
+              ],
               "overflow": "truncate",
               "word-wrap": "break-word"
             },
@@ -1265,6 +1267,21 @@
               "base": "",
               "type": ""
             }
+          },
+          {
+            "id": "",
+            "type": "line",
+            "display": true,
+            "description": "",
+            "style": {
+              "border-color": "#000000",
+              "border-width": 1,
+              "border-style": "solid"
+            },
+            "x1": 20,
+            "y1": 289.8,
+            "x2": 801.8,
+            "y2": 289.8
           }
         ]
       },
@@ -1306,130 +1323,20 @@
       }
     },
     {
-      "id": "company_logo",
-      "type": "image-block",
-      "display": true,
-      "description": "",
-      "x": 30,
-      "y": 30,
-      "width": 51,
-      "height": 51,
-      "style": {
-        "position-x": "left",
-        "position-y": "top"
-      }
-    },
-    {
-      "id": "company_name",
-      "type": "text-block",
-      "display": true,
-      "description": "",
-      "x": 85,
-      "y": 35,
-      "width": 144.1,
-      "height": 14,
-      "style": {
-        "font-family": [
-          "Helvetica"
-        ],
-        "font-size": 12,
-        "color": "#000000",
-        "text-align": "left",
-        "vertical-align": "top",
-        "line-height": "",
-        "line-height-ratio": "",
-        "letter-spacing": "",
-        "font-style": [],
-        "overflow": "truncate",
-        "word-wrap": "break-word"
-      },
-      "reference-id": "",
-      "value": "",
-      "multiple-line": false,
-      "format": {
-        "base": "",
-        "type": ""
-      }
-    },
-    {
-      "id": "company_rif",
-      "type": "text-block",
-      "display": true,
-      "description": "",
-      "x": 87.8,
-      "y": 50,
-      "width": 144.1,
-      "height": 14,
-      "style": {
-        "font-family": [
-          "Helvetica"
-        ],
-        "font-size": 12,
-        "color": "#000000",
-        "text-align": "left",
-        "vertical-align": "top",
-        "line-height": "",
-        "line-height-ratio": "",
-        "letter-spacing": "",
-        "font-style": [],
-        "overflow": "truncate",
-        "word-wrap": "break-word"
-      },
-      "reference-id": "",
-      "value": "",
-      "multiple-line": false,
-      "format": {
-        "base": "",
-        "type": ""
-      }
-    },
-    {
-      "id": "company_address",
-      "type": "text-block",
-      "display": true,
-      "description": "",
-      "x": 87.8,
-      "y": 65,
-      "width": 144.1,
-      "height": 14,
-      "style": {
-        "font-family": [
-          "Helvetica"
-        ],
-        "font-size": 12,
-        "color": "#000000",
-        "text-align": "left",
-        "vertical-align": "top",
-        "line-height": "",
-        "line-height-ratio": "",
-        "letter-spacing": "",
-        "font-style": [],
-        "overflow": "truncate",
-        "word-wrap": "break-word"
-      },
-      "reference-id": "",
-      "value": "",
-      "multiple-line": false,
-      "format": {
-        "base": "",
-        "type": ""
-      }
-    },
-    {
       "id": "footer",
       "type": "text-block",
       "display": true,
       "description": "",
       "x": 30,
-      "y": 797.8,
-      "width": 535.2,
-      "height": 12,
+      "y": 570,
+      "width": 781.8,
+      "height": 10,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 10,
-        "color": "#000000",
+        "font-size": 9,
+        "color": "#262626",
         "text-align": "center",
         "vertical-align": "top",
         "line-height": "",
@@ -1574,7 +1481,7 @@
       "description": "",
       "x": 701,
       "y": 30,
-      "width": 26,
+      "width": 26.1,
       "height": 12,
       "style": {
         "font-family": [
@@ -1684,12 +1591,122 @@
         "base": "",
         "type": ""
       }
+    },
+    {
+      "id": "company_logo",
+      "type": "image-block",
+      "display": true,
+      "description": "",
+      "x": 40,
+      "y": 30,
+      "width": 51,
+      "height": 51,
+      "style": {
+        "position-x": "left",
+        "position-y": "top"
+      }
+    },
+    {
+      "id": "company_name",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 97.8,
+      "y": 35,
+      "width": 144.1,
+      "height": 10,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 10,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
+    },
+    {
+      "id": "company_rif",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 97.8,
+      "y": 50,
+      "width": 144.1,
+      "height": 10,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 10,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
+    },
+    {
+      "id": "company_address",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 97.8,
+      "y": 65,
+      "width": 144.1,
+      "height": 10,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 10,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
     }
   ],
   "state": {
     "layout-guides": []
   },
-  "title": "Movimientos por Lote",
+  "title": "Movimientos de Romana",
   "report": {
     "paper-type": "A4",
     "orientation": "landscape",

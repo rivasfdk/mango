@@ -761,11 +761,11 @@ class EasyModel
     data = self.initialize_data("Reporte de alarmas")
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
-    data['table'] = []
+    data['results'] = []
 
     @alarms.each do |alarm|
       date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
-      data['table'] << {
+      data['results'] << {
           'order_code' => alarm.order.code,
           'date' => date,
           'description' => alarm.description,
@@ -786,11 +786,11 @@ class EasyModel
     return nil if alarms.empty?
 
     data = self.initialize_data("Alarmas de Orden #{order_code}")
-    data['table'] = []
+    data['results'] = []
 
     alarms.each do |alarm|
       date = alarm.date.strftime("%d/%m/%Y %H:%M:%S") rescue "???"
-      data['table'] << {
+      data['results'] << {
           'date' => date,
           'description' => alarm.description,
         }
@@ -1417,10 +1417,10 @@ class EasyModel
       data['results'] << {
         'code' => bhl.hopper_lot.lot.ingredient.code,
         'ingredient' => bhl.hopper_lot.lot.ingredient.name,
-        'real_kg' => real_kg,
-        'std_kg' => std_kg,
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
+        'real_kg' => real_kg.round(2),
+        'std_kg' => std_kg.round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
         'hopper' => hopper_name,
         'lot' => bhl.hopper_lot.lot.code,
       }
