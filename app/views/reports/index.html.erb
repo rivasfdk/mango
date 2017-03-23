@@ -461,6 +461,23 @@
       <%= form_for(:report, :url=>stock_adjustments_report_path, html: {target: "_blank"}) do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+
+        <%= f.check_box :by_type_content, checked: false %> &nbsp; <label for="group">Filtrar por tipo de rubro</label>
+        <br /><br />
+        <div id="stocka_content_form">
+          <%= f.radio_button :content_type2, 1, checked: true %> Materia prima
+          <%= f.radio_button :content_type2, 2 %> Producto terminado <br/><br/>
+        <%= f.check_box :by_content2, :checked=>false %> &nbsp; <label for="by_content">Filtrar por rubros</label><br/><br/>
+        <div id="stocka_content_box">
+        <div id="stocka_ingredients_box">
+        <%= f.collection_select :ingredients_ids, @ingredients, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        <div id="stocka_products_box">
+        <%= f.collection_select :products_ids, @products, :id, :to_collection_select, {selected: []}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
+        </div>
+        </div>
+        </div>
+
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>

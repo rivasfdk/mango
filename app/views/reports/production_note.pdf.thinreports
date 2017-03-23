@@ -20,7 +20,7 @@ report.start_new_page do |page|
   table.on_footer_insert do |footer| 
     footer.item(:total_recipe).value(@data[:total_recipe].round(2).to_s + ' Kg')
     footer.item(:total_production).value(@data[:total_production].round(2).to_s + ' Kg')
-    footer.item(:comment).value(@data['comment'])
+    footer.item(:comment).value(@data[:comment])
   end
 
   @data[:results].each do |result|

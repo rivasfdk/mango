@@ -1604,7 +1604,7 @@ class EasyModel
     return data
   end
 
-  def self.stock_adjustments(start_date, end_date)
+  def self.stock_adjustments(params, start_date, end_date)
     transaction_types = TransactionType.all
     adjustment_type_ids = []
     transaction_types.each do |ttype|
@@ -1614,8 +1614,52 @@ class EasyModel
       end
     end
     return nil if adjustment_type_ids.empty?
+adjustments = []
 
-    adjustments = Transaction.where({:transaction_type_id => adjustment_type_ids, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
+    if params[:by_type_content] == '1'
+      if params[:content_type2] == '1'
+        if params[:by_content2] == '1'
+          adjustment = Transaction.where({:transaction_type_id => adjustment_type_ids,
+                                          :created_at => (start_date)..((end_date) + 1.day),
+                                          :content_type => 1},
+                                          :order=>['created_at DESC'])
+          adjustment.each do |adj|
+            params[:ingredients_ids].each do |iid|
+              if iid.to_i == (Lot.find adj.content_id).ingredient_id
+                adjustments << adj
+              end
+            end
+          end
+        else
+          adjustments = Transaction.where({:transaction_type_id => adjustment_type_ids,
+                                           :created_at => (start_date)..((end_date) + 1.day),
+                                           :content_type => 1},
+                                           :order=>['created_at DESC'])
+        end
+      else
+        if params[:by_content2] == '1'
+          adjustment = Transaction.where({:transaction_type_id => adjustment_type_ids,
+                                           :created_at => (start_date)..((end_date) + 1.day),
+                                           :content_type => 2},
+                                           :order=>['created_at DESC'])
+          adjustment.each do |adj|
+            params[:products_ids].each do |pid|
+              if pid.to_i == (ProductLot.find adj.content_id).product_id
+                adjustments << adj
+              end
+            end
+          end
+        else
+          adjustments = Transaction.where({:transaction_type_id => adjustment_type_ids,
+                                           :created_at => (start_date)..((end_date) + 1.day),
+                                           :content_type => 2},
+                                           :order=>['created_at DESC'])
+        end
+      end
+    else
+      adjustments = Transaction.where({:transaction_type_id => adjustment_type_ids, :created_at => (start_date)..((end_date) + 1.day)}, :order=>['created_at DESC'])
+    end
+
     return nil if adjustments.empty?
 
     data = self.initialize_data('Ajustes de Existencias')
