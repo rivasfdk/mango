@@ -83,6 +83,15 @@ class Ticket < ActiveRecord::Base
 
   end
 
+  def generate_txt
+    data = EasyModel.ticket self.id
+    #binding.pry
+    file = File.open("Ticket_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+    file << "#{data['title']},#{data['number']},#{data['provider_document_number']}"+
+            "#{data['client_code']},#{data['carrier']},#{data['license_plate']}"
+    file.close
+  end
+
   def self.search(params)
     transactions = Ticket.base_search
     transactions = transactions.where('tickets.number = ?', params[:number]) if params[:number].present?
@@ -159,4 +168,7 @@ class Ticket < ActiveRecord::Base
     transactions = transactions.where('tickets.id = ?', ticket_id) unless ticket_id.nil?
     transactions
   end
+
+  
+
 end
