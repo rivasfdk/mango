@@ -1,4 +1,4 @@
-report.set_layout tlf: "reports/thinreports_layouts/#{@data[:ticket_template]}_#{@data[:transactions_count]}"
+report.set_layout tlf: "reports/thinreports_layouts/q3_ticket_#{@data[:transactions_count]}"
 
 #report.layout.config.list(:transactions) do
 #  use_stores total_amount: '', net_weight: '', provider_weight: '', dif: '', comment: '', incoming_weight: '', outgoing_weight: ''

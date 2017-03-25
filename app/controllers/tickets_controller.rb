@@ -186,7 +186,6 @@ class TicketsController < ApplicationController
     end
   end
 
-
   def print
     @ticket = Ticket.find params[:id]
     @data = EasyModel.ticket params[:id]
@@ -196,11 +195,14 @@ class TicketsController < ApplicationController
       redirect_to action: 'index'
     else
       ticket_template = get_mango_field('ticket_template')
-      if ticket_template
-        @data[:ticket_template] = ticket_template
+      case ticket_template
+      when 1
         rendered = render_to_string formats: [:pdf]
+      when 2
+        @data[:ticket_template] = '2'
+        rendered = render_to_string formats: [:pdf], template: 'tickets/custom_ticket'
       else
-        rendered = render_to_string formats: [:pdf], template: 'tickets/print_ticket', target: "_blank"
+        rendered = render_to_string formats: [:pdf], template: 'tickets/default_ticket'
       end
       send_data rendered, filename: "ticket_#{@data['number']}.pdf", type: "application/pdf", disposition: 'inline'
     end
