@@ -1,0 +1,5 @@
+<% title "Nueva Ubicación" %>
+<%= form_for :location, :url=>locations_path, :html=>{:id=>'location_new_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>
