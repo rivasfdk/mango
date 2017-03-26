@@ -1534,7 +1534,7 @@ class EasyModel
       var_kg = bhl[:total_real] - bhl[:total_std]
       var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100.0) / bhl[:total_real]
       data['results'] << {
         'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
