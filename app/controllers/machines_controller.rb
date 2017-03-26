@@ -17,7 +17,7 @@ class MachinesController < ApplicationController
     @machine = @location.machines.create(params[:machine])
     if @machine.save
       flash[:notice] = 'Máquina guardada con éxito'
-      redirect_to locations_path(@location)
+      redirect_to location_path(@machine.location_id)
     else
       render :new
     end
