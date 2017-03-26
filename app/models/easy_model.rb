@@ -1538,13 +1538,13 @@ class EasyModel
       data['results'] << {
         'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'real_kg' => bhl[:total_real],
-        'std_kg' => bhl[:total_std],
-        'real_real_kg' => bhl[:total_real_real].to_s,
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'real_kg' => bhl[:total_real].round(2),
+        'std_kg' => bhl[:total_std].round(2),
+        'real_real_kg' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }
     end
 
