@@ -268,6 +268,20 @@ module MenuHelper
       menu = menu_for_warehouse_types_new
     elsif c == 'warehouse_types' and (a == 'edit' or a == 'update')
       menu = menu_for_warehouse_types_edit
+    elsif c == 'machines' and (a == 'new' or a == 'create')
+      menu = menu_for_machines_new
+    elsif c == 'machines' and (a == 'edit' or a == 'update')
+      menu = menu_for_machines_edit
+    elsif c == 'machines' and a == 'fill_hours'
+      menu = menu_for_machines_fill_hours
+    elsif c == 'locations' and a == 'index'
+      menu = menu_for_locations_index
+    elsif c == 'locations' and a == 'show'
+      menu = menu_for_locations_show
+    elsif c == 'locations' and (a == 'new' or a == 'create')
+      menu = menu_for_locations_new
+    elsif c == 'locations' and (a == 'edit' or a == 'update')
+      menu = menu_for_locations_edit
     end
     return content_tag(:div, menu, :id => 'menu')
   end
@@ -1415,4 +1429,68 @@ module MenuHelper
     )
     return menu
   end
+
+  def menu_for_machines_new
+    menu = content_tag(:p, "Nueva máquina de #{@location.name}")
+    menu += content_tag(:ul,
+      render_back(location_path(params[:location_id])) +
+      render_function('Guardar', 'Guardar máquina', "submit_machine_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_machines_edit
+    menu = content_tag(:p, 'Editar máquina')
+    menu += content_tag(:ul,
+      render_back(location_path(params[:location_id])) +
+      render_function('Actualizar', 'Actualizar máquina', "submit_machine_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_machines_fill_hours
+    menu = content_tag(:p, 'Incrementar horas de uso')
+    menu += content_tag(:ul,
+      render_back(location_path(params[:location_id])) +
+      render_function('Llenar', 'Actualizar horas', "submit_machine_fill_hours_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_index
+    menu = content_tag(:p, 'Ubicaciones')
+    menu += content_tag(:ul,
+      render_back(root_path) +
+      render_action('Crear', 'Nueva ubicación', new_location_path, 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_show
+    menu = content_tag(:p, "#{@locations.name}")
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_action('Crear', 'Crear nueva máquina', new_location_machine_path(@locations), 'button-add.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_new
+    menu = content_tag(:p, "Nueva ubicación")
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_function('Guardar', 'Guardar ubicación', "submit_location_new_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
+  def menu_for_locations_edit
+    menu = content_tag(:p, 'Editar ubicación')
+    menu += content_tag(:ul,
+      render_back(locations_path) +
+      render_function('Actualizar', 'Actualizar ubicación', "submit_location_edit_form()", 'button-execute.png')
+    )
+    return menu
+  end
+
 end

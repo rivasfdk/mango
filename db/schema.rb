@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308000321) do
+ActiveRecord::Schema.define(version: 20170309192634) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -251,6 +251,13 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.integer  "imported_recipes", default: 0
   end
 
+  create_table "locations", force: true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lots", force: true do |t|
     t.string   "code"
     t.string   "location"
@@ -295,6 +302,17 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.string   "code",                          null: false
     t.boolean  "is_string",     default: false
   end
+
+  create_table "machines", force: true do |t|
+    t.integer  "location_id"
+    t.string   "code",                      null: false
+    t.string   "name",                      null: false
+    t.float    "hours",       default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "machines", ["location_id"], name: "index_machines_on_location_id", using: :btree
 
   create_table "medicaments_recipes", force: true do |t|
     t.string   "code",                      null: false
@@ -402,6 +420,58 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.float    "default_value", null: false
   end
 
+  create_table "pedidos_compras1", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.float    "can_pedido"
+    t.string   "pre_material"
+    t.integer  "can_sacos"
+    t.string   "cod_proveedor"
+    t.string   "nom_proveedor"
+    t.string   "rif_proveedor"
+    t.string   "dir_proveedor"
+    t.string   "tel_proveedor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_compras2", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.float    "can_bruto"
+    t.float    "can_neto"
+    t.float    "can_tara"
+    t.string   "pla_camion"
+    t.string   "ced_chofer"
+    t.string   "num_almacen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_ventas", force: true do |t|
+    t.string   "tip_pedido"
+    t.string   "num_pedido"
+    t.integer  "pos_pedido"
+    t.string   "tip_material"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.integer  "can_sacos"
+    t.string   "pre_material"
+    t.float    "pes_neto"
+    t.string   "cod_cliente"
+    t.string   "nom_cliente"
+    t.string   "dir_cliente"
+    t.string   "rif_cliente"
+    t.string   "tel_cliente"
+    t.string   "tip_documento"
+    t.string   "num_documento"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permission_roles", force: true do |t|
     t.integer  "permission_id"
     t.integer  "role_id"
@@ -497,6 +567,25 @@ ActiveRecord::Schema.define(version: 20170308000321) do
   add_index "products_parameters_types_ranges", ["product_id"], name: "fk_product_id", using: :btree
   add_index "products_parameters_types_ranges", ["product_lot_parameter_type_id"], name: "fk_product_lot_parameter_type_id", using: :btree
 
+  create_table "purchases_order", force: true do |t|
+    t.string   "code"
+    t.integer  "id_client"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchases_order_items", force: true do |t|
+    t.integer  "id_purchase_order"
+    t.integer  "id_ingredient"
+    t.integer  "position"
+    t.integer  "quantity"
+    t.boolean  "sack"
+    t.float    "total_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "recipes", force: true do |t|
     t.string   "code"
     t.string   "name",                                 null: false
@@ -518,6 +607,29 @@ ActiveRecord::Schema.define(version: 20170308000321) do
   create_table "roles", force: true do |t|
     t.string   "name",        null: false
     t.string   "description", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order", force: true do |t|
+    t.string   "code"
+    t.string   "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order_items", force: true do |t|
+    t.integer  "sale_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_wheight"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -571,6 +683,7 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.string   "address"
     t.integer  "document_type_id"
     t.integer  "id_order"
+    t.string   "barcode"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -594,7 +707,6 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.boolean  "closed"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "remaining"
   end
 
   create_table "tickets_order_items", force: true do |t|
