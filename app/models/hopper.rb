@@ -102,6 +102,15 @@ class Hopper < ActiveRecord::Base
       if amount <= 0 or hopper_lot.stock + amount > capacity_in_kg
         return false
       end
+      warehouse = Warehouse.find params[:warehouse_id]
+      warehouse.update_attributes(stock: warehouse.stock - amount)
+      WarehouseTransactions.create transaction_type_id: 1,
+                                     warehouse_id: warehouse.id,
+                                     amount: amount,
+                                     stock_after: warehouse.stock,
+                                     lot_id: hopper_lot.lot_id,
+                                     content_type: 1,
+                                     user_id: user_id
       hlt = hopper_lot.hopper_lot_transactions.new
       hlt.hopper_lot_transaction_type_id = 1
       hlt.user_id = user_id

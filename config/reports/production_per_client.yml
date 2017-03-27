@@ -123,7 +123,7 @@ report:
             recipe_name:
               label: Nombre Receta
               align: left
-              width: 40
+              width: 60
           4:
             real_batches:
               label: Batches

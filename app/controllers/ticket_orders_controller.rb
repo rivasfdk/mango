@@ -26,10 +26,6 @@ class TicketOrdersController < ApplicationController
     else
       @warehouse = Warehouse.where(product_lot_id: params["lot_id"], main: true)
     end
-    if @warehouse.empty?
-      sacks = WarehouseContents.find_by(content_id: params["lot_id"], content_type: type)
-      @warehouse = sacks.nil? ? [] : Warehouse.where(id: sacks.warehouse_id)
-    end
     render json: @warehouse, methods: [:to_collection_select], root: false
   end
 

@@ -6,9 +6,6 @@ class Warehouse < ActiveRecord::Base
   belongs_to :warehouse_types
 
   has_many :transactions
-  has_many :warehouses_contents, :dependent => :destroy
-
-  accepts_nested_attributes_for :warehouses_contents, allow_destroy: true, reject_if: lambda { |a| a[:content_id].blank? }
 
   validates :name, :code, presence: true
   validates :code, uniqueness: true
@@ -107,7 +104,7 @@ class Warehouse < ActiveRecord::Base
   end
   
   def to_collection_select
-    "#{self.warehouse_types.name} - #{self.code} - #{self.name}"
+    "#{self.warehouse_types.name} - #{self.code} - #{self.name} - #{self.stock} Kg"
   end
 
 

@@ -98,6 +98,11 @@ class HoppersController < ApplicationController
   def adjust
     @hopper = Hopper.find params[:id]
     @current_hopper_lot = @hopper.current_hopper_lot
+    if @current_hopper_lot.lot_id == 1
+      flash[:type] = 'error'
+      flash[:notice] = "No hay asignado ningún ingrediente en la tolva"
+      redirect_to scale_path(@hopper.scale_id)
+    end
   end
 
   def do_adjust
@@ -119,15 +124,54 @@ class HoppersController < ApplicationController
       flash[:notice] = "La tolva tiene existencia negativa, realice un ajuste primero"
       redirect_to scale_path(@hopper.scale_id)
     end
+    if @current_hopper_lot.lot_id == 1
+      flash[:type] = 'error'
+      flash[:notice] = "No hay asignado ningún ingrediente en la tolva"
+      redirect_to scale_path(@hopper.scale_id)
+    end
+    @warehouses = Warehouse.where(lot_id: @current_hopper_lot.lot_id)
+    if @warehouses.empty?
+      flash[:type] = 'error'
+      flash[:notice] = "El lote actual no esta asignado a ningún almacen"
+      redirect_to scale_path(@hopper.scale_id)
+    end
   end
 
   def do_fill
     @hopper = Hopper.find params[:id]
-    if @hopper.fill(params[:fill], session[:user_id])
-      flash[:notice] = "Llenado realizado con éxito"
+    warehouse = Warehouse.find params[:fill][:warehouse_id]
+    amount = params[:fill][:amount].to_f
+    if warehouse.stock >= amount
+      if @hopper.fill(params[:fill], session[:user_id])
+        mango_features = get_mango_features()
+        if mango_features.include?("sap_warehouse")
+          sharepath = get_mango_field('share_path')
+          tmp_dir = get_mango_field('tmp_dir')
+          ing_code = @hopper.current_hopper_lot.lot.ingredient.code
+          file = File.open(tmp_dir+"almacen_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+          file << "#{ing_code};#{warehouse.code};#{@hopper.code};#{amount}"
+          file.close
+          files = Dir.entries(tmp_dir)
+          files.each do |f|
+            if f.downcase.include? "almacen"
+              begin
+                FileUtils.mv(tmp_dir+f, sharepath)
+              rescue
+                puts "++++++++++++++++++++"
+                puts "+++ error de red +++"
+                puts "++++++++++++++++++++"
+              end
+            end
+          end
+        end
+        flash[:notice] = "Llenado realizado con éxito"
+      else
+        flash[:type] = 'error'
+        flash[:notice] = "No se pudo realizar el llenado de la tolva"
+      end
     else
       flash[:type] = 'error'
-      flash[:notice] = "No se pudo realizar el llenado de la tolva"
+      flash[:notice] = "La cantidad de llenado supera a la disponible en el almacen seleccionado"
     end
     respond_to do |format|
       format.html do

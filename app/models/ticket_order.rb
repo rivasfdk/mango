@@ -54,7 +54,7 @@ class TicketOrder < ActiveRecord::Base
           ingredient = Ingredient.where(code: order["content_code"])
           Lot.create code: order["content_code"],
                      ingredient_id: ingredient[0].id,
-                     density: 1
+                     density: 1000
         end
       else
         if Product.where(code: order["content_code"]).empty?
@@ -123,12 +123,6 @@ class TicketOrder < ActiveRecord::Base
             warehouse = Warehouse.find_by(lot_id: item.content_id)
           else
             warehouse = Warehouse.find_by(product_lot_id: item.content_id)
-          end
-          if warehouse.nil?
-            warehouse_content = WarehouseContents.find_by(content_id: item.content_id, content_type: item.content_type)
-            if !warehouse_content.nil?
-              warehouse = Warehouse.find(warehouse_content.warehouse_id)
-            end
           end
 
           sack_weight = item.sack ? item.total_weight/item.quantity : 1
@@ -202,9 +196,14 @@ class TicketOrder < ActiveRecord::Base
           end
           net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
           warehouse = Warehouse.find(t.warehouse_id)
+          if warehouse.warehouse_types.sack?
+            wh_code = warehouse.warehouse_types.code
+          else
+            wh_code = warehouse.code
+          end
           file.puts "#{ticket_order.code[2..ticket_order.code.length]};"+
                     "#{content.code};#{net_weight};"+
-                    "#{warehouse.code};#{lot.code}\r\n"
+                    "#{wh_code};#{lot.code}\r\n"
         end
         TicketOrder.update(ticket_order.id, :closed => true)
         file.close
@@ -224,14 +223,16 @@ class TicketOrder < ActiveRecord::Base
     end
     if WarehouseTransactions.find_by(ticket_id: ticket.id).nil?
       ticket.transactions.each do |t|
-        if t.content_type == 1
+        content_type = t.content_type == 1 ? true : false
+        if content_type
           content_code = (Lot.find t.content_id).code
         else
           content_code = (ProductLot.find t.content_id).code
         end
         net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
         warehouse = Warehouse.find(t.warehouse_id)
-        actual_stock = warehouse.sacks ? warehouse.warehouse_contents.stock : warehouse.stock
+
+        actual_stock = warehouse.stock
         if actual_stock < 0
           actual_stock = 0
         end
@@ -243,6 +244,7 @@ class TicketOrder < ActiveRecord::Base
         if stock_after < 0
           stock_after = 0
         end
+
         warehouse.update_attributes(stock: stock_after)
         WarehouseTransactions.create transaction_type_id: ticket.ticket_type_id == 1 ? 4 : 5,
                                      warehouse_id: t.warehouse_id,
