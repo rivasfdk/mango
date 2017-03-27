@@ -228,6 +228,8 @@ es:
       user: "El usuario"
       parameter_type: "El tipo de parámetro"
       scale: "La balanza"
+      location: "La ubicación"
+      machine: "La máquina"
   attributes:
     << : *common
     description: "La descripción"
@@ -257,6 +259,7 @@ es:
     amount: "La cantidad"
     ticket_reception_diff: "La diferencia de peso máxima para recepción"
     ticket_dispatch_diff: "La diferencia de peso máxima para despacho"
+    hours: "El número de horas"
 
   will_paginate:
     previous_label: "&#8592; Anterior"
