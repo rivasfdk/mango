@@ -713,7 +713,7 @@ class Order < ActiveRecord::Base
             ingredient = Ingredient.find_by(code: ing["ingredient_code"])
             Lot.create code: ing["ingredient_code"],
                        ingredient_id: ingredient.id,
-                       density: 1
+                       density: 1000
           end
         end
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?

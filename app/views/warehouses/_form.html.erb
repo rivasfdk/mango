@@ -6,9 +6,6 @@
 <div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
 <br /><br />
 
-<label for="sacks" class="small">Almacen de Sacos: </label>
-<div class="field"><%= f.check_box :sacks, :checked=>false %></div><br />
-
 <div id="warehousecontent">
 <% if @warehouse_types.content_type == true %>
   <label for="ingredient" class="small">lote Materia Prima:</label>

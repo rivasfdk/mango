@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308000321) do
+ActiveRecord::Schema.define(version: 20170326224321) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -682,7 +682,6 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "sacks"
     t.boolean  "main"
     t.integer  "lot_id"
     t.integer  "product_lot_id"
@@ -717,6 +716,8 @@ ActiveRecord::Schema.define(version: 20170308000321) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "content_type"
+    t.string   "code"
+    t.boolean  "sack"
   end
 
 end
