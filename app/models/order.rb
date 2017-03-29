@@ -387,7 +387,8 @@ class Order < ActiveRecord::Base
           amount = lot[1]
           hopper = Hopper.find(lot[2])
           scale = Scale.find(hopper.scale_id)
-          file << "#{code};#{amount};#{hopper.code}\r\n"
+          h_code = scale.not_weighed ? '1014' : hopper.code
+          file << "#{code};#{amount};#{h_code}\r\n"
         end
       end
       file.close
