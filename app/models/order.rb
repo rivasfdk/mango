@@ -381,7 +381,7 @@ class Order < ActiveRecord::Base
           amount = lot[1]
           total = total + amount
         end
-        file << "#{self.code};#{total};#{warehouse.code}\r\n"
+        file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
         consump.each do |lot|
           content_lot = Lot.find_by(id: lot[0])
           i_code = content_lot.ingredient.code
