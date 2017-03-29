@@ -384,11 +384,12 @@ class Order < ActiveRecord::Base
         file << "#{self.code};#{total};#{warehouse.code}\r\n"
         consump.each do |lot|
           content_lot = Lot.find_by(id: lot[0])
+          i_code = content_lot.ingredient.code
           amount = lot[1]
           hopper = Hopper.find(lot[2])
           scale = Scale.find(hopper.scale_id)
           h_code = scale.not_weighed ? '1014' : hopper.code
-          file << "#{code};#{amount};#{h_code}\r\n"
+          file << "#{i_code};#{amount};#{h_code}\r\n"
         end
       end
       file.close
