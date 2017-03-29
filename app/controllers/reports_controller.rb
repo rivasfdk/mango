@@ -247,9 +247,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_client_real.yml' : 'consumption_per_client.yml'
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
+          'consumption_per_client_real' : 'consumption_per_client'
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end

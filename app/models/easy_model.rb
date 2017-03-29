@@ -1576,19 +1576,19 @@ class EasyModel
 
     batch_hopper_lots.each do |bhl|
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : (var_kg * 100) / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       data['results'] << {
         'ingredient_code' => bhl[:ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'real_kg' => bhl[:total_real],
-        'std_kg' => bhl[:total_std],
-        'real_real_kg' => bhl[:total_real_real],
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'real_kg' => bhl[:total_real].round(2),
+        'std_kg' => bhl[:total_std].round(2),
+        'real_real_kg' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }
     end
 
