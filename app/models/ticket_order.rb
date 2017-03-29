@@ -51,7 +51,9 @@ class TicketOrder < ActiveRecord::Base
         if Ingredient.where(code: order["content_code"]).empty?
           Ingredient.create code: order["content_code"],
                             name: order["content_name"]
-          ingredient = Ingredient.where(code: order["content_code"])
+        end
+        ingredient = Ingredient.where(code: order["content_code"])
+        if Lot.where(code: order["content_code"])
           Lot.create code: order["content_code"],
                      ingredient_id: ingredient[0].id,
                      density: 1000

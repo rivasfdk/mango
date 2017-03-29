@@ -330,10 +330,7 @@ class Order < ActiveRecord::Base
        user_id: user_id}) unless production < 0.01
 
     warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
-    if warehouse.nil?
-      sacks = WarehouseContents.find_by(content_id: self.product_lot_id, content_type: false)
-      warehouse = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
-    end
+
     actual_stock = warehouse.stock
     new_stock = actual_stock + production
     warehouse.update_attributes(stock: new_stock)
@@ -375,10 +372,6 @@ class Order < ActiveRecord::Base
     end
     warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
     if warehouse.nil?
-      sacks = WarehouseContents.find_by(content_id: self.product_lot_id, content_type: false)
-      warehouse = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
-    end
-    if warehouse.nil?
       message = "No se notificó la orden: Lote sin almacen asignado"
     else
       file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
@@ -392,12 +385,9 @@ class Order < ActiveRecord::Base
         consump.each do |lot|
           content_lot = Lot.find_by(id: lot[0])
           amount = lot[1]
-          warehouse_lot = Warehouse.find_by(lot_id: content_lot.id, main: true)
-          if warehouse_lot.nil?
-            sacks = WarehouseContents.find_by(content_id: content_lot.id, content_type: true)
-            warehouse_lot = sacks.nil? ? sacks : Warehouse.where(id: sacks.warehouse_id)
-          end
-          file << "#{content_lot.code};#{amount};#{warehouse_lot.code}\r\n"
+          hopper = Hopper.find(lot[2])
+          scale = Scale.find(hopper.scale_id)
+          file << "#{code};#{amount};#{hopper.code}\r\n"
         end
       end
       file.close
@@ -710,7 +700,9 @@ class Order < ActiveRecord::Base
             Ingredient.create code: ing["ingredient_code"],
                               name: ing["ingredient_name"],
                               minimum_stock: 0.0
-            ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+          end
+          ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+          if Lot.where(code: ing["ingredient_code"]).empty?
             Lot.create code: ing["ingredient_code"],
                        ingredient_id: ingredient.id,
                        density: 1000
@@ -748,7 +740,7 @@ class Order < ActiveRecord::Base
                        prog_batches: order["batch_prog"]
           if !(Order.find_by(code: order["order_code"])).nil?
             order_count += 1
-            #File.delete(sharepath+file)
+            File.delete(sharepath+file)
           end
         end
       end
