@@ -1066,7 +1066,7 @@ class EasyModel
               lots: {ingredient_id: ingredient.id}})
       .group('batches.order_id')
 
-    data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
+    data = self.initialize_data('Consumo por ingrediente por órdenes de producción')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
@@ -1075,9 +1075,9 @@ class EasyModel
     batch_hopper_lots.each do |bhl|
       bhl[:total_std] *= bhl[:prog_batches]
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : (var_kg * 100) / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       data['results'] << {
         'order' => bhl[:order_code],
         'date' => bhl[:start_date].strftime("%Y-%m-%d"),
@@ -1085,14 +1085,14 @@ class EasyModel
         'recipe_name' => bhl[:recipe_name],
         'recipe_version' => bhl[:recipe_version],
         'prog_batches' => bhl[:prog_batches],
-        'real_batches' => "#{bhl[:real_batches].to_s}/#{bhl[:prog_batches]}",
-        'total_standard' => bhl[:total_std].to_s,
-        'total_real' => bhl[:total_real].to_s,
-        'total_real_real' => bhl[:total_real_real].to_s,
-        'var_kg' => var_kg.to_s,
-        'var_perc' => var_perc.to_s,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'real_batches' => "#{bhl[:real_batches]}/#{bhl[:prog_batches]}",
+        'total_standard' => bhl[:total_std].round(2),
+        'total_real' => bhl[:total_real].round(2),
+        'total_real_real' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }# unless bhl[:real_batches] == bhl[:prog_batches]
     end
 

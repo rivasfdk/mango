@@ -186,13 +186,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-          #rendered = render_to_string formats: [:pdf], template: 'reports/consumption_per_selected_ingredients'
-          #send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
         'consumption_per_selected_ingredients_real' : 'consumption_per_selected_ingredients'
         rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
         send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
-        #report = EasyReport::Report.new @data, template_name
-        #send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
       end
     end
   end
@@ -214,9 +210,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
+        'consumption_per_ingredient_per_orders_real' : 'consumption_per_ingredient_per_orders'
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end
