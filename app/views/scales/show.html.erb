@@ -7,7 +7,7 @@
         <th>Codigo<span class="order_arrow"></span></th>
         <th>Nombre<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
-        <% if @hoppers_transactions_enabled and not @scale.not_weighed %>
+        <% if @hoppers_transactions_enabled %>
           <th>Existencia<span class="order_arrow"></span></th>
         <% end %>
         <th>Principal</th>
@@ -23,7 +23,7 @@
         <td class="center"><%=h obj[:code].nil? ? "-" : obj[:code] %></td>
         <td class="center"><%=h obj[:name] %></td>
         <td><%=h ingredient %></td>
-        <% if @hoppers_transactions_enabled and not @scale.not_weighed %>
+        <% if @hoppers_transactions_enabled %>
           <td class="right"><%=h obj[:stock_string] %></td>
         <% end %>
         <td class="center">
