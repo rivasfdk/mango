@@ -10,17 +10,19 @@ class Permission < ActiveRecord::Base
 
   MODULES = ['batches', 'orders', 'recipes', 'hoppers', 'batches_hopper_lot', 'transactions', 'lots',
     'product_lots', 'ingredients', 'ingredients_recipes', 'products', 'clients', 'factories', 'transaction_types',
-    'schedules', 'users', 'roles', 'permissions', 'reports', 'configuration', 'medicament_recipes', 'drivers', 'carriers',
+    'schedules', 'users', 'roles', 'permissions', 'reports', 'medicament_recipes', 'drivers', 'carriers',
     'trucks', 'tickets', 'alarm_types', 'parameters', 'parameter_types', 'parameter_lists', 'scales',
-    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings', 'product_lot_parameters', 'product_lot_parameter_types', 'product_lot_parameter_lists']
+    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings', 'product_lot_parameters',
+    'product_lot_parameter_types', 'product_lot_parameter_lists', 'warehouse_types', 'warehouses', 'locations', 'machines']
   # Permission actions
-  ACTIONS = ['consult', 'modify', 'delete']
+  ACTIONS = ['consult', 'modify', 'delete', 'create']
   MODES = ['global', 'module']
 
   # Rails actions
   CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all']
-  MODIFY = ['new', 'edit', 'create', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
+  MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
   DELETE = ['destroy']
+  CREATE = ['new', 'create']
 
   def self.get_modules
     MODULES
@@ -44,6 +46,10 @@ class Permission < ActiveRecord::Base
 
   def self.is_delete?(action)
     DELETE.include?(action)
+  end
+
+  def self.is_create?(action)
+    CREATE.include?(action)
   end
 
   def self.is_recalculate?(action)

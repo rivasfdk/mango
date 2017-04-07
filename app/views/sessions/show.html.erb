@@ -124,7 +124,7 @@
 
 
   <!-- Warehouse Types -->
- 
+  <% if session[:permissions].include?('warehouse_types') %>
   <div class="module yui3-u-1-2">
     <%= link_to image_tag('warehouses-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), warehouse_types_path %>
     <div class="module-content">
@@ -132,9 +132,10 @@
       <p>Registro de Almacenes</p>
     </div>
   </div>
+  <% end %>
 
   <!-- Locations (maintenance module) -->
- 
+  <% if session[:permissions].include?('locations') %>
   <div class="module yui3-u-1-2">
     <%= link_to image_tag('maintenance-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), locations_path %>
     <div class="module-content">
@@ -142,6 +143,7 @@
       <p>Registro de Máquinas según ubicación</p>
     </div>
   </div>
+  <% end %>
 
 
   <!-- Transactions -->

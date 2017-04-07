@@ -27,6 +27,7 @@ class TicketsController < ApplicationController
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
+    @lots_warehouses = Warehouse.where(product_lot_id: nil)
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
     end

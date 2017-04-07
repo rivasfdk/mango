@@ -82,6 +82,8 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'delete' and Permission.is_delete?(action)
         valid = true
+      elsif pm.permission.action == 'create' and Permission.is_create?(action)
+        valid = true
       elsif pm.permission.action == 'import' and Permission.is_import?(action)
         valid = true
       elsif pm.permission.action == 'repair' and Permission.is_repair?(action)
