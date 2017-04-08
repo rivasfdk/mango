@@ -312,15 +312,14 @@ class ReportsController < ApplicationController
     by_factory = params[:report][:by_factory_2] == '1'
     factory_id = params[:report][:factory_id_2]
     factory_id = nil unless factory_id.present?
-    data = EasyModel.simple_stock_projection(by_factory, factory_id, days)
-    if data.nil?
+    @data = EasyModel.simple_stock_projection(by_factory, factory_id, days)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      filename = "proyeccion_materia_prima.pdf"
-      report = EasyReport::Report.new data, 'simple_stock_projection.yml'
-      send_data report.render, :filename => filename, :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: "reports/simple_stock_projection"
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

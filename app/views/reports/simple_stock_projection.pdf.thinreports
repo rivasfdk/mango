@@ -1,0 +1,34 @@
+report.set_layout tlf: 'reports/thinreports_layouts/simple_stock_projection'
+
+total_for = {stock: 0}
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values footer: @data['footer']
+  page.values title: @data['title']
+  page.values date: @data['date']
+  page.values days: @data['days']
+
+  table = report.list(:results)
+
+  @data['results'].each do |result|
+    table.add_row code: result['code'],
+                  name: result['name'],
+                  stock: result['stock'],
+                  projection: result['projection']
+    total_for[:stock] += result['stock']
+  end
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total_stock).value(total_for[:stock])
+  end
+
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
+end

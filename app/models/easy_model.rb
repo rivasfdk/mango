@@ -1791,7 +1791,7 @@ class EasyModel
     days = days.to_i
     return nil if days <= 0
 
-    data = self.initialize_data("Proyeccion de Materia Prima")
+    data = self.initialize_data("Proyección de Materia Prima")
     data['date'] = self.print_range_date(Date.today)
     data['days'] = days.to_s
 
@@ -1827,7 +1827,7 @@ class EasyModel
         results << {
           'code' => bhl[:ingredient_code],
           'name' => bhl[:ingredient_name],
-          'stock' => stock,
+          'stock' => stock.round(2),
           'projection' => projection < 0 ? 0 : projection
         }
       end
