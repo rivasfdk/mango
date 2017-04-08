@@ -1127,7 +1127,7 @@
   "state": {
     "layout-guides": []
   },
-  "title": "Consumo por Ingrediente",
+  "title": "Consumo por Cliente",
   "report": {
     "paper-type": "A4",
     "orientation": "portrait",
