@@ -341,14 +341,14 @@ class ReportsController < ApplicationController
   def production_per_recipe
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe_code_2])
-    if data.nil?
+    @data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe_code_2])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'production_per_recipe.yml'
-      send_data report.render, :filename => "produccion_por_receta.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/production_per_recipe'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 

@@ -1897,8 +1897,8 @@ class EasyModel
         'client_code' => bhl[:client_code],
         'client_name' => bhl[:client_name],
         'real_batches' => bhl[:num_batches],
-        'std_kg' => bhl[:total_std].to_s,
-        'real_kg' => bhl[:total_real].to_s,
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
       }
     end
 
