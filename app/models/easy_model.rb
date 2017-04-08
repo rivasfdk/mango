@@ -1600,7 +1600,7 @@ class EasyModel
     adjustment_type_ids = []
     transaction_types.each do |ttype|
       unless ttype.code.match(/(?i)AJU/).nil?
-        puts "Adjusment code found: " + ttype.code
+        puts "Adjustment code found: " + ttype.code
         adjustment_type_ids << ttype.id
       end
     end
@@ -1638,7 +1638,7 @@ class EasyModel
         'lot_code' => lot_code,
         'content_code' => content_code,
         'content_name' => content_name,
-        'amount' => amount.to_s,
+        'amount' => amount.round(2),
         'user_name' => a.user.login,
         'comment' => a.comment,
         'date' => self.print_range_date(a.created_at),
@@ -1722,7 +1722,7 @@ class EasyModel
         data['results'] << {
           'code' => lot.code,
           'name' => lot.get_content.name,
-          'stock' => transaction.stock_after
+          'stock' => transaction.stock_after.round(2)
         }
       else
         data['results'] << {
@@ -1770,7 +1770,7 @@ class EasyModel
           results[key] = {
             'code' => key,
             'name' => l.get_content.name,
-            'stock' => transaction.stock_after
+            'stock' => transaction.stock_after.round(2)
           }
         end
       else
@@ -1935,8 +1935,8 @@ class EasyModel
         'recipe_code' => bhl[:recipe_code],
         'recipe_name' => bhl[:recipe_name],
         'real_batches' => bhl[:num_batches],
-        'std_kg' => bhl[:total_std],
-        'real_kg' => bhl[:total_real],
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
       }
     end
 
