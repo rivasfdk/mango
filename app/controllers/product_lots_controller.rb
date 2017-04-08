@@ -52,14 +52,14 @@ class ProductLotsController < ApplicationController
   end
 
   def new
-    @products = Product.order('code ASC')
+    @products = Product.where(empty: nil).order('code ASC')
     @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end
 
   def edit
     @lot = ProductLot.find params[:id]
-    @products = Product.order('code ASC')
+    @products = Product.where(empty: nil).order('code ASC')
     @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? product_lots_path : request.referer
   end

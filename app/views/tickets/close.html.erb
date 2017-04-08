@@ -1,0 +1,101 @@
+<% title "Cerrar ticket" %>
+<%= form_for @ticket, :url=>do_close_ticket_path(@ticket), :html=>{:method=>:post, :id=>'ticket_close_form'} do |f| %> 
+<%= render_error_messages(f.error_messages) %>
+
+<label for="ticket_type_id" class="small">Tipo de ticket:</label>
+<div class="field"><%=h @ticket.ticket_type.description %></div>
+
+<% if is_mango_feature_available("sap_romano")%>
+  <div id= "orders">
+  <% if !@ticket.id_order.nil?%>
+    <label id = "order_type" class="small"><%=@label%>:</label>
+    <div class="field"><%=h @order.code %></div>
+  <% end %>
+  </div>
+<% end %>
+
+<label for="client_id" class="small">Cliente/Maquila:</label>
+<div class="field"><%=h @ticket.client.name %></div>
+
+
+<label for="address" class="small">Direccion:</label>
+<div class="field"><%=h @ticket.address %></div>
+
+<label for="driver_id" class="small">Chofer:</label>
+<div class="field"><%=h @ticket.driver.name%> - CI: <%=@ticket.driver.ci%></div>
+
+<label for="truck_id" class="small">Camión:</label>
+<div class="field"><%=h @ticket.truck.license_plate%> - <%=@ticket.truck.carrier.name%></div>
+
+<label for="incoming_date" class="small">Fecha entrada:</label>
+<div class="field"><%=h @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S") %></div>
+<label for="incoming_weight" class="small">Peso de entrada:</label>
+<div class="field"><%=h @ticket.incoming_weight %></div>
+
+<% if @ticket.ticket_type_id == 1 %>
+  <label for="provider_weight" class="small">Peso Proveedor:</label>
+  <div class="field"><%=h @ticket.provider_weight %></div>
+  <label for="provider_document_number" class="small">N# documento:</label>
+  <div class="field"><%=h @ticket.provider_document_number %></div>
+<% end %>
+
+<label for="comment" class="small">Comentario:</label>
+<div class="field"><%=h @ticket.comment %></div>
+
+<label for="outgoing_weight" class="small">Peso de salida:</label>
+<div id = "outweight" class="field"><%= f.text_field :outgoing_weight, :size=>'20', class: 'chzn-field-big'%><span>*</span>
+<%= submit_tag "Capturar", {:type => "button", :id => "boton_capturar"} %><br/>
+
+<% if @granted_manual %>
+  <%= f.check_box :manual_outgoing, :checked=>false %> &nbsp;
+  <label for="group">Pesaje Manual</label>
+<% end %>
+</div>
+
+<div class="clearfix"></div>
+<br/><span class="required">* Campos obligatorios</span>
+
+<h5>Transacciones</h5>
+<% i = 0 %>
+<div id="lot_parameters_grid">
+  <table id="tabledata">
+    <thead>
+      <tr>
+        <th>Lote<span class="order_arrow"></span></th>
+        <th>Sacos<span class="order_arrow"></span></th>
+        <th>Num. Sacos<span class="order_arrow"></span></th>
+        <th>Kg/Saco<span class="order_arrow"></span></th>
+        <th>Cantidad<span class="order_arrow"></span></th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :transactions do |builder| %>
+        <% class_row, i = alternate_row_class(i) %>
+        <% t = builder.object %>
+        <tr class="<%= class_row %>">
+          <td>
+            <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
+            <label>Almacen:</label>
+            <%= builder.hidden_field :warehouse_id %><%= t.get_warehouse.to_collection_select %>
+          </td>
+          <td class="center"><%= builder.check_box :sack, class: 'sack_checkbox', disabled: true %></td>
+          <td class="center"><%= builder.text_field :sacks, size: 5, class: 'sacks_field', disabled: true %></td>
+          <td class="center"><%= builder.text_field :sack_weight, size: 5, class: 'sack_weight_field', disabled: true %></td>
+          <td class="center"><%= builder.text_field :amount, size: 10, class: 'amount_field', disabled: true %></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tfoot>
+  </table>
+</div>
+<br/>
+<% end %>

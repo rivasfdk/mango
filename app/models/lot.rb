@@ -18,7 +18,7 @@ class Lot < ActiveRecord::Base
   validates :code, presence: true,
                    uniqueness: true,
                    length: {within: 3..20}
-  validates :ingredient, presence: true
+  validates :ingredient_id, presence: true
   validates :density, numericality: {greater_than: 0}
   validate :factory
 
@@ -89,7 +89,7 @@ class Lot < ActiveRecord::Base
   end
 
   def self.search(params)
-    lots = Lot.includes(:ingredient).where(active: true)
+    lots = Lot.includes(:ingredient).where(active: true, empty: nil)
     lots = lots.where(ingredient_id: params[:ingredient_id]) if params[:ingredient_id].present?
     lots = lots.where(client_id: params[:client_id].to_i > 0 ? params[:client_id] : nil) if params[:client_id].present?
     lots = lots.order('id desc')

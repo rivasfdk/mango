@@ -6,6 +6,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :client
   belongs_to :ticket
   belongs_to :order
+  belongs_to :wharehouse
 
   validates :transaction_type_id, :amount, :user_id, :content_type, :content_id, presence: true
   validates :amount, numericality: true
@@ -17,7 +18,6 @@ class Transaction < ActiveRecord::Base
   def update_transactions
     old_stock_after = self.stock_after
     new_stock_after = 0
-
     previous_transaction = Transaction.where(['id < ? and content_type = ? and content_id = ?',
       self.id, self.content_type, self.content_id]).order('id desc').first
 
@@ -54,6 +54,12 @@ class Transaction < ActiveRecord::Base
       Lot.find self.content_id
     else
       ProductLot.find self.content_id
+    end
+  end
+
+  def get_warehouse
+    if !self.warehouse_id.nil?
+      Warehouse.find self.warehouse_id
     end
   end
 
