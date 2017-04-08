@@ -1433,7 +1433,7 @@ class EasyModel
     start_date = EasyModel.param_to_date(params, 'start_date')
     end_date = EasyModel.param_to_date(params, 'end_date')
     recipe_code = params[:recipe_code]
-    ingredient_inclusion = params[:ingredient_inclusion] == '1'
+    #ingredient_inclusion = params[:ingredient_inclusion] == '1'
     by_lots = params[:by_lots_recipe] == '1'
 
     recipe = Recipe.where(code: recipe_code).first
@@ -1466,27 +1466,27 @@ class EasyModel
 
     batch_hopper_lots.each do |bhl|
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       total_real += bhl[:total_real]
       total_std += bhl[:total_std]
       data['results'] << {
         'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'std_kg' => bhl[:total_std],
-        'real_kg' => bhl[:total_real],
-        'real_real_kg' => bhl[:total_real_real],
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
+        'real_real_kg' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }
     end
 
     data['results'].each do |result|
-      result['std_incl'] = result['std_kg'] / total_std * 100
-      result['real_incl'] = result['real_kg'] / total_real * 100
+      result['std_incl'] = (result['std_kg'] / total_std * 100).round(2)
+      result['real_incl'] = (result['real_kg'] / total_real * 100).round(2)
     end
 
     return data

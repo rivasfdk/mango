@@ -160,14 +160,14 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         if include_real
-          template_name = 'consumption_per_recipe_real.yml'
+          template_name = 'consumption_per_recipe_real'
         elsif ingredient_inclusion
-          template_name = 'consumption_per_recipe_with_inclusion.yml'
+          template_name = 'consumption_per_recipe_with_inclusion'
         else
-          template_name = 'consumption_per_recipe.yml'
+          template_name = 'consumption_per_recipe'
         end
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end
