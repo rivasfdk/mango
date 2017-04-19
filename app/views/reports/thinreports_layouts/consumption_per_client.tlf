@@ -7,15 +7,15 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 105,
+      "y": 130,
       "width": 535.2,
-      "height": 706.8,
+      "height": 681.8,
       "header": {
         "enabled": true,
         "height": 25,
         "translate": {
           "x": 10,
-          "y": 33
+          "y": 58
         },
         "items": [
           {
@@ -24,9 +24,9 @@
             "display": true,
             "description": "",
             "x": 20,
-            "y": 77,
+            "y": 75,
             "width": 535.2,
-            "height": 16.1,
+            "height": 18.1,
             "style": {
               "border-color": "none",
               "border-width": 1,
@@ -88,7 +88,7 @@
               ]
             },
             "texts": [
-              "Cant. Estándar (Kg)"
+              "Total Estándar (Kg)"
             ]
           },
           {
@@ -116,7 +116,7 @@
               ]
             },
             "texts": [
-              "Cant. Real (Kg)"
+              "Total Real (Kg)"
             ]
           },
           {
@@ -209,7 +209,7 @@
         "height": 15,
         "translate": {
           "x": 10,
-          "y": -21.2
+          "y": 3.8
         },
         "items": [
           {
@@ -437,7 +437,7 @@
         "height": 0,
         "translate": {
           "x": 10,
-          "y": -85.4
+          "y": -60.4
         },
         "items": []
       },
@@ -446,7 +446,7 @@
         "height": 19.9,
         "translate": {
           "x": 10,
-          "y": -144.8
+          "y": -119.8
         },
         "items": [
           {
@@ -646,7 +646,7 @@
           }
         ]
       },
-      "content-height": 681.8,
+      "content-height": 656.8,
       "auto-page-break": true
     },
     {
@@ -655,7 +655,7 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 91,
+      "y": 115,
       "width": 535.2,
       "height": 14,
       "style": {
@@ -830,7 +830,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 390,
+      "x": 290,
       "y": 55,
       "width": 91,
       "height": 14,
@@ -858,7 +858,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 390,
+      "x": 290,
       "y": 70,
       "width": 91,
       "height": 14,
@@ -886,7 +886,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 483.8,
+      "x": 385,
       "y": 55,
       "width": 82,
       "height": 9,
@@ -896,7 +896,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "center",
+        "text-align": "left",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -918,7 +918,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 483.8,
+      "x": 385,
       "y": 70,
       "width": 82,
       "height": 9,
@@ -928,7 +928,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "center",
+        "text-align": "left",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -1062,12 +1062,72 @@
       "texts": [
         "Pág.:"
       ]
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 290,
+      "y": 85,
+      "width": 91,
+      "height": 14,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [
+          "bold"
+        ]
+      },
+      "texts": [
+        "Cliente:"
+      ]
+    },
+    {
+      "id": "client",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 385,
+      "y": 85,
+      "width": 181.4,
+      "height": 9,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": false,
+      "format": {
+        "base": "",
+        "type": ""
+      }
     }
   ],
   "state": {
     "layout-guides": []
   },
-  "title": "Consumo por Ingrediente",
+  "title": "Consumo por Cliente",
   "report": {
     "paper-type": "A4",
     "orientation": "portrait",

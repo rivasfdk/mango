@@ -7,15 +7,15 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 105,
-      "width": 535.2,
-      "height": 706.8,
+      "y": 130,
+      "width": 781.8,
+      "height": 435.2,
       "header": {
         "enabled": true,
         "height": 25,
         "translate": {
           "x": 10,
-          "y": 33
+          "y": 58
         },
         "items": [
           {
@@ -24,9 +24,9 @@
             "display": true,
             "description": "",
             "x": 20,
-            "y": 77,
-            "width": 535.2,
-            "height": 16.1,
+            "y": 76,
+            "width": 781.8,
+            "height": 18,
             "style": {
               "border-color": "none",
               "border-width": 1,
@@ -40,9 +40,9 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 30,
+            "x": 25,
             "y": 72,
-            "width": 67,
+            "width": 47.1,
             "height": 25,
             "style": {
               "font-family": [
@@ -68,7 +68,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 300,
+            "x": 325,
             "y": 72,
             "width": 86,
             "height": 25,
@@ -96,7 +96,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 395,
+            "x": 420,
             "y": 72,
             "width": 66.5,
             "height": 25,
@@ -124,7 +124,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 475,
+            "x": 500,
             "y": 72,
             "width": 38.4,
             "height": 25,
@@ -152,7 +152,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 515,
+            "x": 550,
             "y": 72,
             "width": 36.4,
             "height": 25,
@@ -202,14 +202,70 @@
             "texts": [
               "Ingrediente"
             ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 605,
+            "y": 72,
+            "width": 99,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Inclusión Estándar (%)"
+            ]
+          },
+          {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": 715,
+            "y": 72,
+            "width": 79.5,
+            "height": 25,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ]
+            },
+            "texts": [
+              "Inclusión Real (%)"
+            ]
           }
         ]
       },
       "detail": {
-        "height": 15,
+        "height": 14,
         "translate": {
           "x": 10,
-          "y": -21.2
+          "y": 3.8
         },
         "items": [
           {
@@ -218,7 +274,7 @@
             "display": true,
             "description": "",
             "x": 20,
-            "y": 154.2,
+            "y": 151.2,
             "width": 58.1,
             "height": 12,
             "style": {
@@ -255,8 +311,8 @@
             "display": true,
             "description": "",
             "x": 80.1,
-            "y": 154.2,
-            "width": 227,
+            "y": 151.2,
+            "width": 242.3,
             "height": 12,
             "style": {
               "font-family": [
@@ -291,8 +347,8 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 300,
-            "y": 154.2,
+            "x": 325,
+            "y": 151.2,
             "width": 81.4,
             "height": 12,
             "style": {
@@ -327,8 +383,8 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 385,
-            "y": 154.2,
+            "x": 410,
+            "y": 151.2,
             "width": 74.1,
             "height": 12,
             "style": {
@@ -363,8 +419,8 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 460,
-            "y": 153.2,
+            "x": 485,
+            "y": 151.2,
             "width": 52,
             "height": 12,
             "style": {
@@ -399,9 +455,81 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 520,
-            "y": 154.2,
+            "x": 555,
+            "y": 151.2,
             "width": 30.1,
+            "height": 12,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
+          },
+          {
+            "id": "std_incl",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 635.4,
+            "y": 151.2,
+            "width": 66,
+            "height": 12,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "middle",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
+          },
+          {
+            "id": "real_incl",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 736.4,
+            "y": 151.2,
+            "width": 57.7,
             "height": 12,
             "style": {
               "font-family": [
@@ -437,16 +565,16 @@
         "height": 0,
         "translate": {
           "x": 10,
-          "y": -85.4
+          "y": -61.4
         },
         "items": []
       },
       "footer": {
         "enabled": true,
-        "height": 19.9,
+        "height": 18,
         "translate": {
           "x": 10,
-          "y": -144.8
+          "y": -120.8
         },
         "items": [
           {
@@ -454,7 +582,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 185,
+            "x": 210,
             "y": 293.8,
             "width": 107.7,
             "height": 10,
@@ -482,7 +610,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 295,
+            "x": 320,
             "y": 294.1,
             "width": 87.1,
             "height": 9,
@@ -520,7 +648,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 385,
+            "x": 410,
             "y": 294.1,
             "width": 74.1,
             "height": 9,
@@ -558,7 +686,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 459,
+            "x": 484,
             "y": 293.1,
             "width": 55.1,
             "height": 9,
@@ -596,7 +724,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 520,
+            "x": 555,
             "y": 295.1,
             "width": 30,
             "height": 9,
@@ -641,12 +769,88 @@
             },
             "x1": 20,
             "y1": 289.8,
-            "x2": 550.4,
+            "x2": 801.8,
             "y2": 289.8
+          },
+          {
+            "id": "total_std_incl",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 636.4,
+            "y": 294.1,
+            "width": 65.7,
+            "height": 9,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "top",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": false,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
+          },
+          {
+            "id": "total_real_incl",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 735.4,
+            "y": 294.1,
+            "width": 58.7,
+            "height": 9,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "top",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [
+                "bold"
+              ],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": false,
+            "format": {
+              "base": "",
+              "type": "number",
+              "number": {
+                "delimiter": "",
+                "precision": 2
+              }
+            }
           }
         ]
       },
-      "content-height": 681.8,
+      "content-height": 410.2,
       "auto-page-break": true
     },
     {
@@ -655,8 +859,8 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 91,
-      "width": 535.2,
+      "y": 115,
+      "width": 781.8,
       "height": 14,
       "style": {
         "font-family": [
@@ -799,8 +1003,8 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 815,
-      "width": 535.2,
+      "y": 570,
+      "width": 781.8,
       "height": 10,
       "style": {
         "font-family": [
@@ -830,7 +1034,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 390,
+      "x": 535,
       "y": 55,
       "width": 91,
       "height": 14,
@@ -858,7 +1062,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 390,
+      "x": 535,
       "y": 70,
       "width": 91,
       "height": 14,
@@ -886,7 +1090,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 483.8,
+      "x": 628.8,
       "y": 55,
       "width": 82,
       "height": 9,
@@ -896,7 +1100,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "center",
+        "text-align": "left",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -918,7 +1122,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 483.8,
+      "x": 628.8,
       "y": 70,
       "width": 82,
       "height": 9,
@@ -928,7 +1132,7 @@
         ],
         "font-size": 9,
         "color": "#000000",
-        "text-align": "center",
+        "text-align": "left",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -950,7 +1154,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 484,
+      "x": 629,
       "y": 35,
       "width": 30,
       "height": 9,
@@ -982,7 +1186,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 514,
+      "x": 659,
       "y": 35,
       "width": 20.2,
       "height": 12,
@@ -1008,7 +1212,7 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 535.8,
+      "x": 680.8,
       "y": 35,
       "width": 30,
       "height": 9,
@@ -1040,7 +1244,7 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 390,
+      "x": 535,
       "y": 35,
       "width": 91,
       "height": 14,
@@ -1062,15 +1266,75 @@
       "texts": [
         "Pág.:"
       ]
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 535,
+      "y": 85,
+      "width": 91,
+      "height": 14,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [
+          "bold"
+        ]
+      },
+      "texts": [
+        "Receta:"
+      ]
+    },
+    {
+      "id": "recipe",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 628.8,
+      "y": 85,
+      "width": 181.4,
+      "height": 22,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 9,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": [],
+        "overflow": "truncate",
+        "word-wrap": "break-word"
+      },
+      "reference-id": "",
+      "value": "",
+      "multiple-line": true,
+      "format": {
+        "base": "",
+        "type": ""
+      }
     }
   ],
   "state": {
     "layout-guides": []
   },
-  "title": "Consumo por Ingrediente",
+  "title": "Consumo por Receta",
   "report": {
     "paper-type": "A4",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "margin": [
       30,
       30,

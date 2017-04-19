@@ -1066,7 +1066,7 @@ class EasyModel
               lots: {ingredient_id: ingredient.id}})
       .group('batches.order_id')
 
-    data = self.initialize_data('Consumo por ingrediente por Ordenes de Produccion')
+    data = self.initialize_data('Consumo por ingrediente por órdenes de producción')
     data['since'] = self.print_range_date(start_date)
     data['until'] = self.print_range_date(end_date)
     data['results'] = []
@@ -1075,9 +1075,9 @@ class EasyModel
     batch_hopper_lots.each do |bhl|
       bhl[:total_std] *= bhl[:prog_batches]
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : (var_kg * 100) / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       data['results'] << {
         'order' => bhl[:order_code],
         'date' => bhl[:start_date].strftime("%Y-%m-%d"),
@@ -1085,14 +1085,14 @@ class EasyModel
         'recipe_name' => bhl[:recipe_name],
         'recipe_version' => bhl[:recipe_version],
         'prog_batches' => bhl[:prog_batches],
-        'real_batches' => "#{bhl[:real_batches].to_s}/#{bhl[:prog_batches]}",
-        'total_standard' => bhl[:total_std].to_s,
-        'total_real' => bhl[:total_real].to_s,
-        'total_real_real' => bhl[:total_real_real].to_s,
-        'var_kg' => var_kg.to_s,
-        'var_perc' => var_perc.to_s,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'real_batches' => "#{bhl[:real_batches]}/#{bhl[:prog_batches]}",
+        'total_standard' => bhl[:total_std].round(2),
+        'total_real' => bhl[:total_real].round(2),
+        'total_real_real' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }# unless bhl[:real_batches] == bhl[:prog_batches]
     end
 
@@ -1433,7 +1433,7 @@ class EasyModel
     start_date = EasyModel.param_to_date(params, 'start_date')
     end_date = EasyModel.param_to_date(params, 'end_date')
     recipe_code = params[:recipe_code]
-    ingredient_inclusion = params[:ingredient_inclusion] == '1'
+    #ingredient_inclusion = params[:ingredient_inclusion] == '1'
     by_lots = params[:by_lots_recipe] == '1'
 
     recipe = Recipe.where(code: recipe_code).first
@@ -1466,27 +1466,27 @@ class EasyModel
 
     batch_hopper_lots.each do |bhl|
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       total_real += bhl[:total_real]
       total_std += bhl[:total_std]
       data['results'] << {
         'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'std_kg' => bhl[:total_std],
-        'real_kg' => bhl[:total_real],
-        'real_real_kg' => bhl[:total_real_real],
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
+        'real_real_kg' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }
     end
 
     data['results'].each do |result|
-      result['std_incl'] = result['std_kg'] / total_std * 100
-      result['real_incl'] = result['real_kg'] / total_real * 100
+      result['std_incl'] = (result['std_kg'] / total_std * 100).round(2)
+      result['real_incl'] = (result['real_kg'] / total_real * 100).round(2)
     end
 
     return data
@@ -1534,7 +1534,7 @@ class EasyModel
       var_kg = bhl[:total_real] - bhl[:total_std]
       var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100.0) / bhl[:total_real]
       data['results'] << {
         'ingredient_code' => bhl[by_lots ? :lot_code : :ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
@@ -1576,19 +1576,19 @@ class EasyModel
 
     batch_hopper_lots.each do |bhl|
       var_kg = bhl[:total_real] - bhl[:total_std]
-      var_perc = bhl[:total_std] == 0 ? 100 : var_kg * 100 / bhl[:total_std]
+      var_perc = bhl[:total_std] == 0 ? 100 : (var_kg * 100) / bhl[:total_std]
       loss = bhl[:total_real_real] - bhl[:total_real]
-      loss_perc = (loss * 100.0) / bhl[:total_real]
+      loss_perc = bhl[:total_real] == 0 ? 100 : (loss * 100) / bhl[:total_real]
       data['results'] << {
         'ingredient_code' => bhl[:ingredient_code],
         'ingredient_name' => bhl[:ingredient_name],
-        'real_kg' => bhl[:total_real],
-        'std_kg' => bhl[:total_std],
-        'real_real_kg' => bhl[:total_real_real],
-        'var_kg' => var_kg,
-        'var_perc' => var_perc,
-        'loss' => loss,
-        'loss_perc' => loss_perc
+        'real_kg' => bhl[:total_real].round(2),
+        'std_kg' => bhl[:total_std].round(2),
+        'real_real_kg' => bhl[:total_real_real].round(2),
+        'var_kg' => var_kg.round(2),
+        'var_perc' => var_perc.round(2),
+        'loss' => loss.round(2),
+        'loss_perc' => loss_perc.round(2)
       }
     end
 
@@ -1600,7 +1600,7 @@ class EasyModel
     adjustment_type_ids = []
     transaction_types.each do |ttype|
       unless ttype.code.match(/(?i)AJU/).nil?
-        puts "Adjusment code found: " + ttype.code
+        puts "Adjustment code found: " + ttype.code
         adjustment_type_ids << ttype.id
       end
     end
@@ -1638,7 +1638,7 @@ class EasyModel
         'lot_code' => lot_code,
         'content_code' => content_code,
         'content_name' => content_name,
-        'amount' => amount.to_s,
+        'amount' => amount.round(2),
         'user_name' => a.user.login,
         'comment' => a.comment,
         'date' => self.print_range_date(a.created_at),
@@ -1722,7 +1722,7 @@ class EasyModel
         data['results'] << {
           'code' => lot.code,
           'name' => lot.get_content.name,
-          'stock' => transaction.stock_after
+          'stock' => transaction.stock_after.round(2)
         }
       else
         data['results'] << {
@@ -1770,7 +1770,7 @@ class EasyModel
           results[key] = {
             'code' => key,
             'name' => l.get_content.name,
-            'stock' => transaction.stock_after
+            'stock' => transaction.stock_after.round(2)
           }
         end
       else
@@ -1791,7 +1791,7 @@ class EasyModel
     days = days.to_i
     return nil if days <= 0
 
-    data = self.initialize_data("Proyeccion de Materia Prima")
+    data = self.initialize_data("Proyección de Materia Prima")
     data['date'] = self.print_range_date(Date.today)
     data['days'] = days.to_s
 
@@ -1827,7 +1827,7 @@ class EasyModel
         results << {
           'code' => bhl[:ingredient_code],
           'name' => bhl[:ingredient_name],
-          'stock' => stock,
+          'stock' => stock.round(2),
           'projection' => projection < 0 ? 0 : projection
         }
       end
@@ -1897,8 +1897,8 @@ class EasyModel
         'client_code' => bhl[:client_code],
         'client_name' => bhl[:client_name],
         'real_batches' => bhl[:num_batches],
-        'std_kg' => bhl[:total_std].to_s,
-        'real_kg' => bhl[:total_real].to_s,
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
       }
     end
 
@@ -1935,8 +1935,8 @@ class EasyModel
         'recipe_code' => bhl[:recipe_code],
         'recipe_name' => bhl[:recipe_name],
         'real_batches' => bhl[:num_batches],
-        'std_kg' => bhl[:total_std],
-        'real_kg' => bhl[:total_real],
+        'std_kg' => bhl[:total_std].round(2),
+        'real_kg' => bhl[:total_real].round(2),
       }
     end
 

@@ -160,14 +160,14 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         if include_real
-          template_name = 'consumption_per_recipe_real.yml'
+          template_name = 'consumption_per_recipe_real'
         elsif ingredient_inclusion
-          template_name = 'consumption_per_recipe_with_inclusion.yml'
+          template_name = 'consumption_per_recipe_with_inclusion'
         else
-          template_name = 'consumption_per_recipe.yml'
+          template_name = 'consumption_per_recipe'
         end
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_receta.pdf", :type => "application/pdf"
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end
@@ -186,13 +186,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-          #rendered = render_to_string formats: [:pdf], template: 'reports/consumption_per_selected_ingredients'
-          #send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
         'consumption_per_selected_ingredients_real' : 'consumption_per_selected_ingredients'
         rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
         send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
-        #report = EasyReport::Report.new @data, template_name
-        #send_data report.render, :filename => "consumo_por_ingredientes.pdf", :type => "application/pdf"
       end
     end
   end
@@ -214,9 +210,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-        'consumption_per_ingredient_per_orders_real.yml' : 'consumption_per_ingredient_per_orders.yml'
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_ingrediente_por_ordenes.pdf", :type => "application/pdf"
+        'consumption_per_ingredient_per_orders_real' : 'consumption_per_ingredient_per_orders'
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end
@@ -251,9 +247,9 @@ class ReportsController < ApplicationController
         render :xlsx => template_name, :filename => "#{@data['title']}.xlsx"
       else
         template_name = params[:report][:include_real] == "1" ?
-          'consumption_per_client_real.yml' : 'consumption_per_client.yml'
-        report = EasyReport::Report.new @data, template_name
-        send_data report.render, :filename => "consumo_por_cliente.pdf", :type => "application/pdf"
+          'consumption_per_client_real' : 'consumption_per_client'
+        rendered = render_to_string formats: [:pdf], template: "reports/#{template_name}"
+        send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
       end
     end
   end
@@ -262,14 +258,14 @@ class ReportsController < ApplicationController
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
 
-    data = EasyModel.stock_adjustments(start_date, end_date)
-    if data.nil?
+    @data = EasyModel.stock_adjustments(start_date, end_date)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'stock_adjustments.yml'
-      send_data report.render, :filename => "ajustes_de_inventario.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: "reports/stock_adjustments"
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -297,18 +293,17 @@ class ReportsController < ApplicationController
     factory_id = params[:report][:factory_id_1]
     factory_id = nil unless factory_id.present?
     if params[:report][:group] == '1'
-      data = EasyModel.simple_stock(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
+      @data = EasyModel.simple_stock(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     else
-      data = EasyModel.simple_stock_per_lot(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
+      @data = EasyModel.simple_stock_per_lot(content_type, by_factory, factory_id, date, by_content, ingredients_id, products_id)
     end
-    if data.nil?
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      filename = (content_type == 1) ? "inventario_materia_prima.pdf" : "inventario_producto_terminado.pdf"
-      report = EasyReport::Report.new data, 'simple_stock.yml'
-      send_data report.render, :filename => filename, :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: "reports/simple_stock"
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -317,15 +312,14 @@ class ReportsController < ApplicationController
     by_factory = params[:report][:by_factory_2] == '1'
     factory_id = params[:report][:factory_id_2]
     factory_id = nil unless factory_id.present?
-    data = EasyModel.simple_stock_projection(by_factory, factory_id, days)
-    if data.nil?
+    @data = EasyModel.simple_stock_projection(by_factory, factory_id, days)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      filename = "proyeccion_materia_prima.pdf"
-      report = EasyReport::Report.new data, 'simple_stock_projection.yml'
-      send_data report.render, :filename => filename, :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: "reports/simple_stock_projection"
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -346,28 +340,26 @@ class ReportsController < ApplicationController
   def production_per_recipe
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe_code_2])
-    if data.nil?
+    @data = EasyModel.production_per_recipe(start_date, end_date, params[:report][:recipe_code_2])
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'production_per_recipe.yml'
-      send_data report.render, :filename => "produccion_por_receta.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/production_per_recipe'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
   def production_per_client
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
-    data = EasyModel.production_per_client(params)
-    if data.nil?
+    @data = EasyModel.production_per_client(params)
+    if @data.nil?
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'
     else
-      report = EasyReport::Report.new data, 'production_per_client.yml'
-      send_data report.render, :filename => "produccion_por_cliente.pdf", :type => "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/production_per_client'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -484,6 +476,9 @@ class ReportsController < ApplicationController
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to action: 'index'
+    else
+      rendered = render_to_string formats: [:pdf], template: "reports/lot_transactions"
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
