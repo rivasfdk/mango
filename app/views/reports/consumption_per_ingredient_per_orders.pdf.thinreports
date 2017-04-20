@@ -1,0 +1,45 @@
+report.set_layout tlf: 'reports/thinreports_layouts/consumption_per_ingredient_per_orders'
+
+total_for = {std: 0, real: 0, var_kg: 0}
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values footer: @data['footer']
+  page.values title: @data['title']
+  page.values since: @data['since']
+  page.values until: @data['until']
+  page.values ingredient: @data['ingredient']
+
+  table = report.list(:results)
+
+  @data['results'].each do |result|
+    table.add_row order: result['order'],
+                  date: result['date'],
+                  recipe_code: result['recipe_code'],
+                  recipe_name: result['recipe_name'],
+                  recipe_version: result['recipe_version'],
+                  real_batches: result['real_batches'],
+                  std_kg: result['total_standard'],
+                  real_kg: result['total_real'],
+                  var_kg: result['var_kg'],
+                  var_perc: result['var_perc']
+    total_for[:std] += result['total_standard']
+    total_for[:real] += result['total_real']
+    total_for[:var_kg] += result['var_kg']
+  end
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total_std).value(total_for[:std])
+    footer.item(:total_real).value(total_for[:real])
+    footer.item(:total_var_kg).value(total_for[:var_kg])
+    footer.item(:total_var_perc).value(total_for[:var_kg] *100 / total_for[:std].to_f)
+  end
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
+end
