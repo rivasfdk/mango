@@ -1,0 +1,18 @@
+<% title "Ubicaciones" %>
+<% if @locations.any? %>
+<div id="locations-content" class="yui3-g">
+  <% @locations.each do |t| %>
+  <div class="module yui3-u-1-2">
+      <%= link_to image_tag('ingredients-icon.png', :alt=>'icon', :class=>'icon', :width=>'64', :height=>'64'), location_path(t) %>
+      <div class="module-content">
+        <h2><%= link_to t.name, location_path(t) %></h2>
+        <p><%= render_action_edit(edit_location_path(t)) %></p>
+        <p><%= render_action_delete(location_path(t), "Desea borrar la ubicación '#{t.name}'?") %></p>
+      </div>
+  </div>
+  <% end %>
+</div>  
+<% else %>
+  <p>No se han creado ubicaciones</p>
+<% end %>
+

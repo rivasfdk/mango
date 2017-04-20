@@ -11,7 +11,7 @@ class Client < ActiveRecord::Base
 
   accepts_nested_attributes_for :addresses, allow_destroy: true, reject_if: lambda { |a| a[:address].blank? }
 
-  validates :ci_rif, uniqueness: true
+  #validates :ci_rif, uniqueness: true
   validates :code, uniqueness: {scope: :factory}
   validates :name, :code, :ci_rif, :address, :tel1, presence: true
   validates :ci_rif, length: {within: 3..15}

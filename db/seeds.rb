@@ -317,5 +317,5 @@ TransactionType.create("code"=>"EN-PRO", "description"=>"Entrada por produccion"
 Ingredient.create("code"=>"000", "name"=>"VACIO","minimum_stock"=>0.0,"empty"=>1)
 Product.create("code"=>"000", "name"=>"VACIO","empty"=>1)
 
-Lot.create("code"=>"000", "ingredient_id"=>1, "density"=>1, "empty"=>1)
+Lot.create("code"=>"000", "ingredient_id"=>1, "density"=>0, "empty"=>1)
 ProductLot.create("code"=>"000", "product_id"=>1,"empty"=>1)

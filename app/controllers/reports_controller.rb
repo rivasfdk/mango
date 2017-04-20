@@ -260,6 +260,7 @@ class ReportsController < ApplicationController
 
     @data = EasyModel.stock_adjustments(start_date, end_date)
     if @data.nil?
+
       flash[:notice] = 'No hay registros para generar el reporte'
       flash[:type] = 'warn'
       redirect_to :action => 'index'

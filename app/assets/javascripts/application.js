@@ -60,6 +60,10 @@ $(function(){
     $("#ticket_incoming_weight").prop('readOnly', true);
     $("#ticket_outgoing_weight").val('######');
     $("#ticket_outgoing_weight").prop('readOnly', true);
+    $('#report_by_type_content').trigger('change');
+    $('#report_by_content2').trigger('change');
+    $('#report_content_type2_1').trigger('change');
+    $('#report_content_type2_2').trigger('change');
     hideProductLots();
 });
 
@@ -385,6 +389,26 @@ function submit_warehouse_type_new_form() {
 
 function submit_warehouse_type_edit_form() {
     $('#warehouse_type_edit_form').submit();
+}
+
+function submit_machine_new_form() {
+    $('#machine_new_form').submit();
+}
+
+function submit_machine_edit_form() {
+    $('#machine_edit_form').submit();
+}
+
+function submit_machine_fill_hours_form() {
+    $('#machine_fill_hours_form').submit();
+}
+
+function submit_location_new_form() {
+    $('#location_new_form').submit();
+}
+
+function submit_location_edit_form() {
+    $('#location_edit_form').submit();
 }
 
 function toggle_report_details(id) {

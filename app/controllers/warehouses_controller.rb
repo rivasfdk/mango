@@ -18,12 +18,12 @@ class WarehousesController < ApplicationController
   def create
     @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
     @warehouse = @warehouse_types.warehouses.create params[:warehouse]
-    @warehouse.content_type = @warehouse_types.content_type
     if @warehouse.save
       @warehouse.set_main_warehouse
       flash[:notice] = 'Almacen guardado con éxito'
       redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     else
+      fill_new
       render :new
     end
   end
@@ -61,13 +61,15 @@ class WarehousesController < ApplicationController
 
   def change_ingredient
     @warehouse = Warehouse.find params[:id]
+    @lots = Lot.includes(:ingredient)
+      .where({:active => true, :in_use => true})
   end
 
   def do_change_ingredient
     @warehouse = Warehouse.find params[:id]
-    new_ingredient = params[:change_ingredient][:new_ingredient_id]
+    new_ingredient = params[:change_ingredient][:new_lot_id]
     new_stock = params[:change_ingredient][:stock]
-    if (@warehouse.stock == 0) && (@warehouse.update_attributes(content_id: new_ingredient, stock: new_stock))
+    if (@warehouse.stock == 0) && (@warehouse.update_attributes(lot_id: new_ingredient, stock: new_stock))
       flash[:notice] = "Cambio de materia prima realizado con éxito"
     else
       flash[:type] = 'error'
@@ -79,13 +81,15 @@ class WarehousesController < ApplicationController
 
   def change_product
     @warehouse = Warehouse.find params[:id]
+    @product_lots = ProductLot.includes(:product)
+      .where({:active => true, :in_use => true})
   end
 
   def do_change_product
     @warehouse = Warehouse.find params[:id]
-    new_product = params[:change_product][:new_product_id]  # Gets new product chosen by user
+    new_product = params[:change_product][:new_product_lot_id]  # Gets new product chosen by user
     new_stock = params[:change_product][:stock]
-    if (@warehouse.stock == 0) && (@warehouse.update_attributes(content_id: new_product, stock: new_stock)) 
+    if (@warehouse.stock == 0) && (@warehouse.update_attributes(product_lot_id: new_product, stock: new_stock)) 
       flash[:notice] = "Cambio de producto terminado realizado con éxito"
     else
       flash[:type] = 'error'
@@ -130,6 +134,13 @@ class WarehousesController < ApplicationController
 
   def do_adjust
     @warehouse = Warehouse.find params[:id]
+    WarehouseTransactions.create transaction_type_id: @warehouse.stock < params[:stock].to_f ? 2 : 3,
+                                 warehouse_id: @warehouse.id,
+                                 amount: params[:stock].to_f,
+                                 stock_after: params[:stock].to_f,
+                                 lot_id: @warehouse.lot_id.nil? ? @warehouse.product_lot_id : @warehouse.lot_id,
+                                 content_type: @warehouse.warehouse_types.content_type,
+                                 user_id: session[:user_id]
     @warehouse.update_attributes(stock: params[:stock])
     if @warehouse.save
       flash[:notice] = "Almacen ajustado exitosamente"
@@ -138,12 +149,6 @@ class WarehousesController < ApplicationController
       flash[:notice] = "No se pudo realizar el ajuste"
     end
     redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
-  end
-
-  def sacks
-    @warehouse = Warehouse.find params[:id], :include => :warehouses_contents
-    @lots = Lot.includes(:ingredient).where(active: true, empty: nil)
-    @product_lots = ProductLot.includes(:product).where(empty: nil)
   end
 
   def set_as_main_warehouse
@@ -157,11 +162,19 @@ class WarehousesController < ApplicationController
   def fill_new
     @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
     @warehouse = @warehouse_types.warehouses.build
+    @lots = Lot.includes(:ingredient)
+      .where({:active => true, :in_use => true})
+    @product_lots = ProductLot.includes(:product)
+      .where({:active => true, :in_use => true})
   end
 
   def fill_edit
     @warehouse_types = WarehouseTypes.find params[:warehouse_type_id]
     @warehouse = @warehouse_types.warehouses.find params[:id]
+    @lots = Lot.includes(:ingredient)
+      .where({:active => true, :in_use => true})
+    @product_lots = ProductLot.includes(:product)
+      .where({:active => true, :in_use => true})
   end
 
 end

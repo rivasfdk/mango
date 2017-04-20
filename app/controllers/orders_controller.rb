@@ -128,15 +128,19 @@ class OrdersController < ApplicationController
 
   def do_notify
     @order = Order.find params[:id]
-    if (@order.completed && !@order.notified)
-      @order.generate_transactions(session[:user_id])
-      @order.update_column(:notified, true)
-      sharepath = get_mango_field('share_path')
-      mango_features = get_mango_features()
-      if mango_features.include?("sap_production_order")
-        @order.nofify_sap(sharepath)
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      warning = @order.nofify_sap
+    end
+    if warning.empty?
+      if (@order.completed && !@order.notified)
+        @order.generate_transactions(session[:user_id])
+        @order.update_column(:notified, true)
+        flash[:notice] = "Orden notificada exitosamente"
       end
-      flash[:notice] = "Orden notificada exitosamente"
+    else
+      flash[:type] = "error"
+      flash[:notice] = warning
     end
     redirect_to :orders
   end

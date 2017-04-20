@@ -18,9 +18,11 @@ report.start_new_page do |page|
   end
 
   table.on_footer_insert do |footer| 
+
     footer.item(:total_recipe).value(@data[:total_recipe].round(2))
     footer.item(:total_production).value(@data[:total_production].round(2))
     footer.item(:comment).value(@data['comment'])
+
   end
 
   @data[:results].each do |result|

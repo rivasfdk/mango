@@ -27,6 +27,7 @@ class TicketsController < ApplicationController
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
+    @lots_warehouses = Warehouse.where(product_lot_id: nil)
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
     end
@@ -141,8 +142,8 @@ class TicketsController < ApplicationController
         @orders = []
       end
     end
-    @lots_warehouses = Warehouse.where(content_type: true)
-    @product_lots_warehouses = Warehouse.where(content_type: false)
+    @lots_warehouses = Warehouse.where(product_lot_id: nil)
+    @product_lots_warehouses = Warehouse.where(lot_id: nil)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
@@ -186,7 +187,6 @@ class TicketsController < ApplicationController
     end
   end
 
-
   def print
     @ticket = Ticket.find params[:id]
     @data = EasyModel.ticket params[:id]
@@ -196,11 +196,14 @@ class TicketsController < ApplicationController
       redirect_to action: 'index'
     else
       ticket_template = get_mango_field('ticket_template')
-      if ticket_template
-        @data[:ticket_template] = ticket_template
+      case ticket_template
+      when 1
         rendered = render_to_string formats: [:pdf]
+      when 2
+        @data[:ticket_template] = '2'
+        rendered = render_to_string formats: [:pdf], template: 'tickets/custom_ticket'
       else
-        rendered = render_to_string formats: [:pdf], template: 'tickets/print_ticket', target: "_blank"
+        rendered = render_to_string formats: [:pdf], template: 'tickets/default_ticket'
       end
       send_data rendered, filename: "ticket_#{@data['number']}.pdf", type: "application/pdf", disposition: 'inline'
     end
@@ -239,7 +242,11 @@ class TicketsController < ApplicationController
     @ticket.transactions.each do |t|
       content_type = (t.content_type == 1) ? true : false
       if t.warehouse_id.nil?
-        warehouse = Warehouse.find_by(content_id: t.content_id, content_type: content_type)
+        if content_type
+          warehouse = Warehouse.find_by(lot_id: t.content_id)
+        else
+          warehouse = Warehouse.find_by(product_lot_id: t.content_id)
+        end
         if warehouse.nil?
           warehouse_content = WarehouseContents.find_by(content_id: t.content_id, content_type: content_type)
           if !warehouse_content.nil?

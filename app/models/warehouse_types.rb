@@ -3,7 +3,7 @@ class WarehouseTypes < ActiveRecord::Base
 
   has_many :warehouses
 
-  validates :name, presence: true
+  validates :name, :code, presence: true
   validates :name, length: {within: 3..40}
   validates :content_type, inclusion: [true, false]
 

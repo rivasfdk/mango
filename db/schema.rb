@@ -11,7 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170228142350) do
+
+ActiveRecord::Schema.define(version: 20170326224321) do
+
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -138,6 +140,7 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.boolean  "main",                default: false
     t.float    "capacity",            default: 1000.0, null: false
     t.boolean  "stock_below_minimum", default: false
+    t.string   "code"
   end
 
   add_index "hoppers", ["scale_id"], name: "fk_hoppers_scale_id", using: :btree
@@ -250,6 +253,13 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.integer  "imported_recipes", default: 0
   end
 
+  create_table "locations", force: true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lots", force: true do |t|
     t.string   "code"
     t.string   "location"
@@ -294,6 +304,17 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.string   "code",                          null: false
     t.boolean  "is_string",     default: false
   end
+
+  create_table "machines", force: true do |t|
+    t.integer  "location_id"
+    t.string   "code",                      null: false
+    t.string   "name",                      null: false
+    t.float    "hours",       default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "machines", ["location_id"], name: "index_machines_on_location_id", using: :btree
 
   create_table "medicaments_recipes", force: true do |t|
     t.string   "code",                      null: false
@@ -769,16 +790,15 @@ ActiveRecord::Schema.define(version: 20170228142350) do
 
   create_table "warehouses", force: true do |t|
     t.integer  "warehouse_types_id"
-    t.integer  "content_id"
     t.string   "code",                             null: false
     t.string   "name",                             null: false
     t.float    "stock",              default: 0.0
     t.float    "size"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "content_type"
-    t.boolean  "sacks"
     t.boolean  "main"
+    t.integer  "lot_id"
+    t.integer  "product_lot_id"
   end
 
   add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
@@ -792,11 +812,26 @@ ActiveRecord::Schema.define(version: 20170228142350) do
     t.datetime "updated_at"
   end
 
+  create_table "warehouses_transactions", force: true do |t|
+    t.integer  "transaction_type_id"
+    t.integer  "warehouse_id"
+    t.float    "amount"
+    t.float    "stock_after"
+    t.integer  "lot_id"
+    t.boolean  "content_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ticket_id"
+  end
+
   create_table "warehouses_types", force: true do |t|
     t.string   "name",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "content_type"
+    t.string   "code"
+    t.boolean  "sack"
   end
 
 end

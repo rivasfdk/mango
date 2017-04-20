@@ -20,11 +20,9 @@ class Order < ActiveRecord::Base
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
-  validates :prog_batches,
-            numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
-  validates :real_production,
-            numericality: {greater_than: 0, allow_nil: true}
+  validates :real_production, numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
 
@@ -330,9 +328,25 @@ class Order < ActiveRecord::Base
        content_id: self.product_lot_id,
        processed_in_stock: 1,
        user_id: user_id}) unless production < 0.01
+
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+
+    actual_stock = warehouse.stock
+    new_stock = actual_stock + production
+    warehouse.update_attributes(stock: new_stock)
+    WarehouseTransactions.create transaction_type_id: 6,
+                                 warehouse_id: warehouse.id,
+                                 amount: production,
+                                 stock_after: new_stock,
+                                 lot_id: self.product_lot_id,
+                                 content_type: false,
+                                 user_id: self.user_id
   end
 
-  def nofify_sap(path)
+  def nofify_sap
+    message = ""
+    sharepath = get_mango_field('share_path')
+    tmp_dir = get_mango_field('tmp_dir')
     batch_consumption = []
     consumptions = {}
     order_transactions = self.transactions
@@ -356,26 +370,43 @@ class Order < ActiveRecord::Base
       end
       batch_consumption = batch_consumption.push(batch)
     end
-    bnum = 0
-    batch_consumption.each do |consump|
-      total = 0
-      bnum += 1
-      file = File.open(path+"Orden_#{self.code}_#{bnum}.txt",'w')
-      consump.each do |lot|
-        amount = lot[1]
-        total = total + amount
-      end
-      file << "#{self.code};#{total}\r\n"
-      consump.each do |lot|
-        code = (Lot.find_by(id: lot[0])).code
-        amount = lot[1]
-        hopper = Hopper.find(lot[2])
-        scale = Scale.find(hopper.scale_id)
-        file << "#{scale.name};#{code};#{amount};#{hopper.name}\r\n"
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+    if warehouse.nil?
+      message = "No se notificó la orden: Lote sin almacen asignado"
+    else
+      file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+      batch_consumption.each do |consump|
+        total = 0
+        consump.each do |lot|
+          amount = lot[1]
+          total = total + amount
+        end
+        file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
+        consump.each do |lot|
+          content_lot = Lot.find_by(id: lot[0])
+          i_code = content_lot.ingredient.code
+          amount = lot[1]
+          hopper = Hopper.find(lot[2])
+          scale = Scale.find(hopper.scale_id)
+          h_code = scale.not_weighed ? '1014' : hopper.code
+          file << "#{i_code};#{amount};#{h_code}\r\n"
+        end
       end
       file.close
+      files = Dir.entries(tmp_dir)
+      files.each do |f|
+        if f.downcase.include? "notificacion"
+          begin
+            FileUtils.mv(tmp_dir+f, sharepath)
+          rescue
+            puts "++++++++++++++++++++"
+            puts "+++ error de red +++"
+            puts "++++++++++++++++++++"
+          end
+        end
+      end
     end
-
+    return message
   end
 
   def close(user_id)
@@ -626,6 +657,7 @@ class Order < ActiveRecord::Base
   def self.import(files)
     sharepath = get_mango_field('share_path')
     order_count = 0
+    message = ""
     files.each do |file|
       file = file.downcase
       if file.include? "orden_produccion"
@@ -635,6 +667,10 @@ class Order < ActiveRecord::Base
                   "client_phone", "batch_prog"]
         orderfile = orderfile.chomp
         values = orderfile.split(';')
+        if values.length != 13
+          message = "Error en el archivo a importar"
+          break
+        end
         order = keys.zip(values).to_h
         orderfile = File.open(sharepath+file).readlines
         orderfile.delete_at(0)
@@ -643,8 +679,14 @@ class Order < ActiveRecord::Base
           keys = ["ingredient_code", "ingredient_name", "amount"]
           line = line.chomp
           values = line.split(';')
-          item = keys.zip(values).to_h
-          items.push(item)
+          if values.length != 3
+            message = "Error en el archivo a importar"
+            break
+          end
+          unless line.empty?
+            item = keys.zip(values).to_h
+            items.push(item)
+          end
         end
         if Product.where(code: order["product_code"]).empty?
           Product.create code: order["product_code"],
@@ -655,6 +697,19 @@ class Order < ActiveRecord::Base
           ProductLot.create code: order["lot_code"],
                             product_id: product.id
         end
+        items.each do |ing|
+          if Ingredient.where(code: ing["ingredient_code"]).empty?
+            Ingredient.create code: ing["ingredient_code"],
+                              name: ing["ingredient_name"],
+                              minimum_stock: 0.0
+          end
+          ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+          if Lot.where(code: ing["ingredient_code"]).empty?
+            Lot.create code: ing["ingredient_code"],
+                       ingredient_id: ingredient.id,
+                       density: 1000
+          end
+        end
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
           Recipe.create code: order["recipe_code"],
                         name: order["recipe_name"],
@@ -662,14 +717,6 @@ class Order < ActiveRecord::Base
                         product_id: product.id
           recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
           items.each do |ing|
-            if Ingredient.where(code: ing["ingredient_code"]).empty?
-              Ingredient.create code: ing["ingredient_code"],
-                                name: ing["ingredient_name"]
-              ingredient = Ingredient.find_by(code: ing["ingredient_code"])
-              Lot.create code: ing["ingredient_code"],
-                         ingredient_id: ingredient.id,
-                         density: 1
-            end
             ingredient = Ingredient.find_by(code: ing["ingredient_code"])
             IngredientRecipe.create ingredient_id: ingredient.id,
                                     recipe_id: recipe.id,
@@ -695,10 +742,11 @@ class Order < ActiveRecord::Base
                        prog_batches: order["batch_prog"]
           if !(Order.find_by(code: order["order_code"])).nil?
             order_count += 1
+            File.delete(sharepath+file)
           end
         end
-        #File.delete(sharepath+file)
       end
+      puts message
     end
     return order_count
   end

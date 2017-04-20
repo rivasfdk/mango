@@ -8,7 +8,11 @@ class WarehouseTypesController < ApplicationController
 
   def show
     @warehouse_type = WarehouseTypes.find params[:id]
-    @warehouses = @warehouse_type.warehouses
+    if @warehouse_type.content_type
+      @warehouses = @warehouse_type.warehouses :include => :lots
+    else
+      @warehouses = @warehouse_type.warehouses :include => :product_lots
+    end
   end
 
   def create

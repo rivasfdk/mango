@@ -3,11 +3,22 @@ class Hopper < ActiveRecord::Base
 
   belongs_to :scale
   has_many :hopper_lot
-  validates :number, :name, :scale, :capacity, presence: true
-  validates :name, uniqueness: true
-  validates :number, uniqueness: {scope: :scale_id}, numericality: {only_integer: true, greater_than: 0}
+  validates :name, :scale, :code, :capacity, presence: true
+  validates :name, :code, uniqueness: true
+  validates :number, uniqueness: {scope: :scale_id}
   validates :capacity, numericality: {greater_than: 0}
   before_save :check_stock, unless: :new_record?
+  before_create :set_number
+  
+
+  def set_number
+    hopper = Hopper.where(scale_id: self.scale_id)
+    if hopper.empty?
+      self.number = 1
+    else
+      self.number = hopper.last.number += 1
+    end
+  end
 
   def check_stock
     hopper_lot = current_hopper_lot
@@ -91,6 +102,15 @@ class Hopper < ActiveRecord::Base
       if amount <= 0 or hopper_lot.stock + amount > capacity_in_kg
         return false
       end
+      warehouse = Warehouse.find params[:warehouse_id]
+      warehouse.update_attributes(stock: warehouse.stock - amount)
+      WarehouseTransactions.create transaction_type_id: 1,
+                                     warehouse_id: warehouse.id,
+                                     amount: amount,
+                                     stock_after: warehouse.stock,
+                                     lot_id: hopper_lot.lot_id,
+                                     content_type: 1,
+                                     user_id: user_id
       hlt = hopper_lot.hopper_lot_transactions.new
       hlt.hopper_lot_transaction_type_id = 1
       hlt.user_id = user_id
@@ -170,7 +190,8 @@ class Hopper < ActiveRecord::Base
         :name => hl.hopper.name,
         :main => hl.hopper.main,
         :stock_string => stock_string,
-        :stock_below_minimum => hl.hopper.stock_below_minimum
+        :stock_below_minimum => hl.hopper.stock_below_minimum,
+        :code => hl.hopper.code
       }
     end
     actives

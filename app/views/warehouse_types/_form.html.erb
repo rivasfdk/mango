@@ -1,11 +1,15 @@
 <%= javascript_include_tag "warehouse_types" %>
 <%= render_error_messages(f.error_messages) %>
-<label for="name" class="small">Nombre:</label>
-<div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
-<br/><br/>
 <%= label_tag(:content_type, "Rubro:") %> 
 <%= f.radio_button :content_type, "1", checked: true, class: 'content_type_checkbox' %> Materia Prima
-<%= f.radio_button :content_type, "2", class: 'content_type_checkbox' %> Producto terminado 
+<%= f.radio_button :content_type, "2", class: 'content_type_checkbox' %> Producto terminado
+<br/><br/>
+<label for="code" class="small">Codigo:</label>
+<div class="field"><%= f.text_field :code, :size=>'20' %> <span>*</span></div>
+<label for="name" class="small">Nombre:</label>
+<div class="field"><%= f.text_field :name, :size=>'20' %> <span>*</span></div>
+<label for="sacks" class="small">Almacen de Sacos: </label>
+<div class="field"><%= f.check_box :sack, :checked=>false %></div><br />
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
 
