@@ -1,0 +1,46 @@
+report.set_layout tlf: "tickets/ticket_#{@data[:ticket_template]}"
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values title: @data['title']
+  page.values client_title: @data['client_title'].upcase
+  page.values client_name: @data['client_name'].upcase
+  page.values client_rif: @data['client_rif'].upcase
+  page.values client_address: @data['client_address'].upcase
+  page.values comment: @data['comment']
+  #page.values document_type: @data['document_type']
+
+  page.values provider_document_number: @data['provider_document_number']
+  page.values gross_weight: @data['gross_weight']
+  page.values incoming_date: @data['incoming_date']
+  page.values outgoing_date: @data['outgoing_date']
+  page.values license_plate: @data['license_plate'].upcase
+  page.values provider_weight: @data['provider_weight']
+  page.values tare_weight: @data['tare_weight']
+  page.values net_weight: @data['net_weight']
+  page.values dif_label: @data['dif_label']
+  page.values dif: @data['dif']
+  page.values carrier: @data['carrier']
+  page.values user_name: @data['user_name']
+  page.values driver_name: @data['driver_name']
+  page.values driver_id: @data['driver_id']
+
+  table = report.list(:transactions)
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total_amount).value(@data['total_amount'])
+    
+  end
+
+  @data['transactions'].each do |transaction|
+    table.add_row code: transaction['code'],
+                  name: transaction['name'],
+                  sacks: transaction['sacks'],
+                  sack_weight: transaction['sack_weight'],
+                  amount: "#{transaction['amount']} Kg"
+  end
+
+end

@@ -1,0 +1,5 @@
+<% title "Nuevo almacen" %>
+<%= form_for :warehouse_types, :url=>warehouse_types_path, :html=>{:id=>'warehouse_type_new_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

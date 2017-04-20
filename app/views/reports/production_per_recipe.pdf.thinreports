@@ -1,0 +1,41 @@
+report.set_layout tlf: 'reports/thinreports_layouts/production_per_recipe'
+
+total_for = {batches: 0, std: 0, real: 0}
+
+report.start_new_page do |page|
+  page.values company_name: @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif: @data['company_rif']
+  page.values company_logo: @data['company_logo']
+  page.values footer: @data['footer']
+  page.values title: @data['title']
+  page.values since: @data['since']
+  page.values until: @data['until']
+  page.values recipe: @data['recipe']
+  page.values version: @data['version']
+
+  table = report.list(:results)
+
+  @data['results'].each do |result|
+    table.add_row order: result['order'],
+                  client_code: result['client_code'],
+                  client_name: result['client_name'],
+                  real_batches: result['real_batches'],
+                  std_kg: result['std_kg'],
+                  real_kg: result['real_kg']
+    total_for[:batches] += result['real_batches']
+    total_for[:std] += result['std_kg']
+    total_for[:real] += result['real_kg']
+  end
+
+  table.on_footer_insert do |footer| 
+    footer.item(:total_real_batches).value(total_for[:batches])
+    footer.item(:total_std).value(total_for[:std])
+    footer.item(:total_real).value(total_for[:real])
+  end
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
+end

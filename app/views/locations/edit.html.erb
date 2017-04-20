@@ -1,0 +1,5 @@
+<% title "Editar Ubicación" %>
+<%= form_for :location, :url=>location_path(@location), :html=>{:method => :put, :id=>'location_edit_form'} do |f| %>
+  <%= render :partial=>'form', :locals =>{:f => f} %>
+  <br/>
+<% end %>

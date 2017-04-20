@@ -7,11 +7,16 @@ class Ingredient < ActiveRecord::Base
   belongs_to :base_unit
   has_many :ingredient_parameter_type_ranges
 
+  has_many :warehouses
+
+  has_many :purchase_order_items
+  has_many :sale_order_items
+
   accepts_nested_attributes_for :ingredient_parameter_type_ranges
 
   before_save :check_stock
 
-  scope :actives, -> { where(active: true) }
+  scope :actives, -> { where(active: true, empty: nil) }
 
   validates :name, :code, :minimum_stock, presence: true
   validates :code, uniqueness: true
@@ -37,7 +42,7 @@ class Ingredient < ActiveRecord::Base
   end
 
   def self.search(params)
-    @ingredients = Ingredient.actives.order("stock_below_minimum desc")
+    @ingredients = Ingredient.where(active: true, empty: nil).order("stock_below_minimum desc")
     @ingredients = @ingredients.where(["code LIKE ? OR name LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"]) if params[:search].present?
     @ingredients.paginate page: params[:page], per_page: params[:per_page]
   end

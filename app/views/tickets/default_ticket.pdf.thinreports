@@ -1,4 +1,4 @@
-report.set_layout tlf: 'tickets/print_ticket'
+report.set_layout tlf: "tickets/default_ticket"
 
 report.start_new_page do |page|
   page.values company_name: @data['company_name']
@@ -6,7 +6,7 @@ report.start_new_page do |page|
   page.values company_rif: @data['company_rif']
   page.values company_logo: @data['company_logo']
   page.values title: @data['title']
-  page.values client_title: @data['client_title']
+  page.values client_title: @data['client_title'].upcase
   page.values client_name: @data['client_name'].upcase
   page.values client_rif: @data['client_rif'].upcase
   page.values client_address: @data['client_address'].upcase

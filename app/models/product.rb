@@ -5,6 +5,8 @@ class Product < ActiveRecord::Base
   has_many :recipes
   belongs_to :base_unit
   has_many :product_parameter_type_ranges
+  has_many :warehouses
+  has_many :sale_order_items
 
   accepts_nested_attributes_for :product_parameter_type_ranges
 
@@ -25,7 +27,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.search(params)
-    @products = Product.order("code asc")
+    @products = Product.where(empty: nil).order("code asc")
     @products = @products.where(["code LIKE ? OR name LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"]) if params[:search].present?
     @products.paginate page: params[:page], per_page: params[:per_page]
   end

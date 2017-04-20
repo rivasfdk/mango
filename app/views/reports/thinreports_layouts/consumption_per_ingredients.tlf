@@ -9,7 +9,7 @@
       "x": 30,
       "y": 111,
       "width": 535.2,
-      "height": 682.3,
+      "height": 700.8,
       "header": {
         "enabled": true,
         "height": 25,
@@ -593,7 +593,7 @@
           }
         ]
       },
-      "content-height": 657.3,
+      "content-height": 675.8,
       "auto-page-break": true
     },
     {
@@ -866,7 +866,7 @@
       "display": true,
       "description": "",
       "x": 30,
-      "y": 797.8,
+      "y": 820,
       "width": 535.2,
       "height": 12,
       "style": {

@@ -128,10 +128,20 @@ class OrdersController < ApplicationController
 
   def do_notify
     @order = Order.find params[:id]
-    redirect_to :orders unless (@order.completed && !@order.notified)
-    @order.generate_transactions(session[:user_id])
-    @order.update_column(:notified, true)
-    flash[:notice] = "Orden notificada exitosamente"
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      warning = @order.nofify_sap
+    end
+    if warning.empty?
+      if (@order.completed && !@order.notified)
+        @order.generate_transactions(session[:user_id])
+        @order.update_column(:notified, true)
+        flash[:notice] = "Orden notificada exitosamente"
+      end
+    else
+      flash[:type] = "error"
+      flash[:notice] = warning
+    end
     redirect_to :orders
   end
 
@@ -176,8 +186,8 @@ class OrdersController < ApplicationController
       flash[:type] = 'warn'
       redirect_to action: 'index'
     else
-      rendered = render_to_string formats: [:pdf], template: 'reports/order_details'
-      send_data rendered, filename: "detalle_orden_produccion.pdf", type: "application/pdf"
+      rendered = render_to_string formats: [:pdf], template: 'reports/order_details', target: "_blank"
+      send_data rendered, filename: "detalle_orden_produccion.pdf", type: "application/pdf", disposition: 'inline'
     end
   end
 
@@ -189,4 +199,30 @@ class OrdersController < ApplicationController
     order = Order.where(code: params[:order_code]).first
     render xml: order.validate, root: 'order_validation'
   end
+
+  def import
+    sharepath = get_mango_field('share_path')
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_production_order")
+      files = []
+      begin
+        files = Dir.entries(sharepath)
+      rescue
+        puts "++++++++++++++++++++"
+        puts "+++ error de red +++"
+        puts "++++++++++++++++++++"
+      end
+      if files.any?
+        orders = Order.import(files)
+        if orders > 0
+          flash[:notice] = "Se importaron #{orders} ordenes con exito"
+        else
+          flash[:type] = 'warn'
+          flash[:notice] = 'No se encontraron ordenes para importar'
+        end
+      end
+    end
+    redirect_to action: 'index'
+  end
+
 end
