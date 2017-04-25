@@ -340,11 +340,7 @@ class Order < ActiveRecord::Base
   end
 
   def stop(user_id, b_brog)
-    unless self.completed
-      self.update_column(:prog_batches, b_prog)
-    else
-      false
-    end
+    self.update_column(:prog_batches, b_prog)
   end
 
   def create_product_lot
