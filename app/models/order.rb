@@ -339,7 +339,7 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def close(user_id, b_brog)
+  def stop(user_id, b_brog)
     unless self.completed
       self.update_column(:prog_batches, b_prog)
     else
