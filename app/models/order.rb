@@ -339,7 +339,7 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def stop(user_id, b_brog)
+  def stop(b_prog)
     self.update_column(:prog_batches, b_prog)
   end
 
