@@ -160,6 +160,11 @@ class OrdersController < ApplicationController
     render xml: {closed: @order.close(session[:user_id])}
   end
 
+  def stop
+    @order = Order.where(code: params[:order_code]).first
+    render xml: {stop: @order.stop(session[:user_id], params[:b_prog])}
+  end
+
   def create_order_stat
     render xml: Order.create_order_stat(params[:order_stat])
   end

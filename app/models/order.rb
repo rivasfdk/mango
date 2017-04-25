@@ -339,6 +339,14 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def close(user_id, b_brog)
+    unless self.completed
+      self.update_column(:prog_batches, b_prog)
+    else
+      false
+    end
+  end
+
   def create_product_lot
     product = self.recipe.product
     date_string = Date.today.strftime('%d%m%y')
