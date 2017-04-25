@@ -162,7 +162,7 @@ class OrdersController < ApplicationController
 
   def stop
     @order = Order.where(code: params[:order_code]).first
-    render xml: {stop: @order.stop(session[:user_id], params[:b_prog])}
+    render xml: {stop: @order.stop(session[:user_id], params[:batch_prog])}
   end
 
   def create_order_stat
