@@ -11,7 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150925214530) do
+
+ActiveRecord::Schema.define(version: 20170326224321) do
+
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -138,6 +140,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.boolean  "main",                default: false
     t.float    "capacity",            default: 1000.0, null: false
     t.boolean  "stock_below_minimum", default: false
+    t.string   "code"
   end
 
   add_index "hoppers", ["scale_id"], name: "fk_hoppers_scale_id", using: :btree
@@ -203,6 +206,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.boolean  "stock_below_minimum", default: false, null: false
     t.boolean  "active",              default: true,  null: false
     t.float    "loss",                default: 0.0,   null: false
+    t.boolean  "empty"
   end
 
   create_table "ingredients_medicaments_recipes", force: true do |t|
@@ -249,6 +253,13 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.integer  "imported_recipes", default: 0
   end
 
+  create_table "locations", force: true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lots", force: true do |t|
     t.string   "code"
     t.string   "location"
@@ -261,6 +272,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.decimal  "stock",         precision: 15, scale: 4, default: 0.0,  null: false
     t.float    "density",                                default: 1.0,  null: false
     t.string   "comment"
+    t.boolean  "empty"
   end
 
   add_index "lots", ["ingredient_id"], name: "fk_lots_ingredient_id", using: :btree
@@ -292,6 +304,17 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.string   "code",                          null: false
     t.boolean  "is_string",     default: false
   end
+
+  create_table "machines", force: true do |t|
+    t.integer  "location_id"
+    t.string   "code",                      null: false
+    t.string   "name",                      null: false
+    t.float    "hours",       default: 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "machines", ["location_id"], name: "index_machines_on_location_id", using: :btree
 
   create_table "medicaments_recipes", force: true do |t|
     t.string   "code",                      null: false
@@ -399,6 +422,58 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.float    "default_value", null: false
   end
 
+  create_table "pedidos_compras1", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.float    "can_pedido"
+    t.string   "pre_material"
+    t.integer  "can_sacos"
+    t.string   "cod_proveedor"
+    t.string   "nom_proveedor"
+    t.string   "rif_proveedor"
+    t.string   "dir_proveedor"
+    t.string   "tel_proveedor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_compras2", force: true do |t|
+    t.string   "num_orden"
+    t.integer  "num_posicion"
+    t.string   "cod_material"
+    t.float    "can_bruto"
+    t.float    "can_neto"
+    t.float    "can_tara"
+    t.string   "pla_camion"
+    t.string   "ced_chofer"
+    t.string   "num_almacen"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pedidos_ventas", force: true do |t|
+    t.string   "tip_pedido"
+    t.string   "num_pedido"
+    t.integer  "pos_pedido"
+    t.string   "tip_material"
+    t.string   "cod_material"
+    t.string   "nom_material"
+    t.integer  "can_sacos"
+    t.string   "pre_material"
+    t.float    "pes_neto"
+    t.string   "cod_cliente"
+    t.string   "nom_cliente"
+    t.string   "dir_cliente"
+    t.string   "rif_cliente"
+    t.string   "tel_cliente"
+    t.string   "tip_documento"
+    t.string   "num_documento"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permission_roles", force: true do |t|
     t.integer  "permission_id"
     t.integer  "role_id"
@@ -436,6 +511,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "base_unit_id"
+    t.boolean  "empty"
   end
 
   create_table "products_lots", force: true do |t|
@@ -448,6 +524,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.decimal  "stock",      precision: 15, scale: 4, default: 0.0,  null: false
     t.string   "comment"
     t.boolean  "in_use",                              default: true
+    t.boolean  "empty"
   end
 
   add_index "products_lots", ["product_id"], name: "fk_products_lots_product_id", using: :btree
@@ -492,6 +569,25 @@ ActiveRecord::Schema.define(version: 20150925214530) do
   add_index "products_parameters_types_ranges", ["product_id"], name: "fk_product_id", using: :btree
   add_index "products_parameters_types_ranges", ["product_lot_parameter_type_id"], name: "fk_product_lot_parameter_type_id", using: :btree
 
+  create_table "purchases_order", force: true do |t|
+    t.string   "code"
+    t.integer  "id_client"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchases_order_items", force: true do |t|
+    t.integer  "id_purchase_order"
+    t.integer  "id_ingredient"
+    t.integer  "position"
+    t.integer  "quantity"
+    t.boolean  "sack"
+    t.float    "total_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "recipes", force: true do |t|
     t.string   "code"
     t.string   "name",                                 null: false
@@ -513,6 +609,29 @@ ActiveRecord::Schema.define(version: 20150925214530) do
   create_table "roles", force: true do |t|
     t.string   "name",        null: false
     t.string   "description", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order", force: true do |t|
+    t.string   "code"
+    t.string   "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sales_order_items", force: true do |t|
+    t.integer  "sale_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_wheight"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -565,6 +684,8 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.boolean  "notified",                 default: true
     t.string   "address"
     t.integer  "document_type_id"
+    t.integer  "id_order"
+    t.string   "barcode"
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
@@ -577,6 +698,30 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.string   "number",     default: "0000000001"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "tickets_order", force: true do |t|
+    t.string   "code"
+    t.boolean  "order_type"
+    t.integer  "client_id"
+    t.integer  "document_type_id"
+    t.string   "document_number"
+    t.boolean  "closed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tickets_order_items", force: true do |t|
+    t.integer  "ticket_order_id"
+    t.integer  "position"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.boolean  "sack"
+    t.integer  "quantity"
+    t.float    "total_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "remaining"
   end
 
   create_table "tickets_types", force: true do |t|
@@ -613,6 +758,7 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.integer  "content_type",                                                 null: false
     t.integer  "order_id"
     t.boolean  "notified",                                     default: true
+    t.integer  "warehouse_id"
   end
 
   add_index "transactions", ["content_id"], name: "index_transactions_on_content_id", using: :btree
@@ -640,6 +786,52 @@ ActiveRecord::Schema.define(version: 20150925214530) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "role_id"
+  end
+
+  create_table "warehouses", force: true do |t|
+    t.integer  "warehouse_types_id"
+    t.string   "code",                             null: false
+    t.string   "name",                             null: false
+    t.float    "stock",              default: 0.0
+    t.float    "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "main"
+    t.integer  "lot_id"
+    t.integer  "product_lot_id"
+  end
+
+  add_index "warehouses", ["warehouse_types_id"], name: "index_warehouses_on_warehouse_types_id", using: :btree
+
+  create_table "warehouses_contents", force: true do |t|
+    t.integer  "warehouse_id"
+    t.boolean  "content_type"
+    t.integer  "content_id"
+    t.float    "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "warehouses_transactions", force: true do |t|
+    t.integer  "transaction_type_id"
+    t.integer  "warehouse_id"
+    t.float    "amount"
+    t.float    "stock_after"
+    t.integer  "lot_id"
+    t.boolean  "content_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ticket_id"
+  end
+
+  create_table "warehouses_types", force: true do |t|
+    t.string   "name",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "content_type"
+    t.string   "code"
+    t.boolean  "sack"
   end
 
 end

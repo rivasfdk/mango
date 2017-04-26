@@ -28,6 +28,7 @@
 <% end %>
 <label for="client" class="small">Reparada:</label>
 <div class="field"><%=h @data['repaired'] %></div>
+<label class="print"><%= render_action_print(print_order_path) %></label>
 <div class="clearfix"></div>
 <% end %>
 <h5>Consumos totales</h5>

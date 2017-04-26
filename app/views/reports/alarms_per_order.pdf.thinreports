@@ -1,0 +1,22 @@
+report.set_layout tlf: 'reports/thinreports_layouts/alarms_per_order'
+
+report.start_new_page do |page|
+  page.values company_name:    @data['company_name']
+  page.values company_address: @data['company_address']
+  page.values company_rif:     @data['company_rif']
+  page.values company_logo:    @data['company_logo']
+  page.values footer:          @data['footer']
+  page.values title:           @data['title']
+
+  table = report.list(:results)
+
+  @data['results'].each do |result|
+    table.add_row date:       result['date'],
+                  description: result['description']
+  end
+end
+
+report.pages.each do |page|
+  page.item(:page).value(page.no)
+  page.item(:page_total).value(report.page_count)
+end

@@ -12,7 +12,7 @@ class ProductLot < ActiveRecord::Base
   validates :code, presence: true,
                    uniqueness: true,
                    length: {within: 3..20}
-  validates :product, presence: true
+  validates :product_id, presence: true
 
   def content_id
     self.product_id
@@ -27,7 +27,7 @@ class ProductLot < ActiveRecord::Base
   end
 
   def self.search(params)
-    product_lots = ProductLot.includes(:product).where(active: true)
+    product_lots = ProductLot.includes(:product).where(active: true, empty: nil)
     product_lots = product_lots.where(product_id: params[:product_id]) if params[:product_id].present?
     product_lots = product_lots.where(client_id: params[:client_id].to_i > 0 ? params[:client_id] : nil) if params[:client_id].present?
     product_lots = product_lots.order('id desc')

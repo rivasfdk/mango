@@ -28,14 +28,14 @@ class LotsController < ApplicationController
   end
 
   def new
-    @ingredients = Ingredient.order('name ASC')
+    @ingredients = Ingredient.where(empty: nil).order('name ASC')
     @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? :lots : request.referer
   end
 
   def edit
     @lot = Lot.find params[:id]
-    @ingredients = Ingredient.order('name ASC')
+    @ingredients = Ingredient.where(empty: nil).order('name ASC')
     @factories = Client.where(factory: true)
     session[:return_to] = request.referer.nil? ? :lots : request.referer
   end

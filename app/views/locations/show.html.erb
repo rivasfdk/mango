@@ -1,0 +1,43 @@
+<% title "Ubicación #{@locations.name} " %>
+<% i = 0 %>
+<% if @machines.any? %>
+
+<table id="tabledata">
+    <thead>
+      <tr>
+        <th>Código<span class="order_arrow"></span></th>
+        <th>Nombre<span class="order_arrow"></span></th>
+        <th>Horas de uso<span class="order_arrow"></span></th>
+        <th class="actions_small">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <% @machines.each do |m| %>
+      <% class_row, i = alternate_row_class(i) %>
+      <tr class="<%= class_row %>">
+        <td class="center"><%=h m[:code] %></td>
+        <td class="center"><%= h m[:name] %></td>
+        <td class="center"><%= h m[:hours] %></td>
+           
+        <td class="left">
+          <%= render_action_fill_hours_machine(fill_hours_location_machine_path(m.location_id, m[:id])) %>
+          <%= render_action_edit(edit_location_machine_path(m.location_id, m[:id])) %>
+          <br />
+          <%= render_action_delete(location_machine_path(m.location_id, m[:id]), "Desea borrar la máquina '#{m[:name]}'?") %><br />
+        </td>
+
+      </tr>
+    <% end %>
+    </tbody>
+</table>
+<div id="tablefooter">
+  <div id="pagination">
+    <!-- = show_pagination @machines %-->
+  </div>
+</div>
+      
+
+<% else %>
+<p>No hay máquinas asociadas a esta ubicación</p>
+<% end %>

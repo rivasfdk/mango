@@ -1,5 +1,6 @@
 Mango::Application.routes.draw do
 
+
   match 'ingredients/search' => "ingredients#search", :via => :get, :as => 'ingredient_search'
   match 'ingredients/catalog' => "ingredients#catalog", :via => :get, :as => 'ingredient_catalog'
   match 'ingredients/select' => "ingredients#select", :via => :get, :as => 'ingredient_select'
@@ -36,6 +37,7 @@ Mango::Application.routes.draw do
   match 'orders/:id/notify' => "orders#do_notify", :via => :post, :as => 'notify_order'
   match 'orders/open' => "orders#open", :via => :get, :as => 'open_orders'
   match 'orders/validate' => "orders#validate", :via => :get, :as => 'validate_order'
+  match 'orders/import' => "orders#import", :via => :get, :as => 'import_order'
   match 'sessions/not_implemented' => "sessions#not_implemented", :via => :get, :as => "not_implemented"
   match 'lots/:id/adjust' => "lots#adjust", :via => :get#, :as => 'adjust_lot'
   match 'lots/:id/adjust' => "lots#do_adjust", :via => :put, :as => 'adjust_lot'
@@ -56,10 +58,35 @@ Mango::Application.routes.draw do
   match 'settings' => "settings#edit", :via => :get, :as => "settings"
   match 'settings' => "settings#update", :via => :put
   match 'clients/all' => "clients#all", :via => :get
+  match 'clients/get_client' => "clients#get_client", :via => :get
   match 'batches/:batch_id/batches_hopper_lot' => "batches_hopper_lot#create", :via => :post, :as => "batches_hopper_lot"
   match 'batches/:batch_id/batches_hopper_lot/:id' => "batches_hopper_lot#destroy", :via => :delete, :as => "batch_hopper_lot"
   match 'tickets/:id/repair' => "tickets#repair", :via => :get, :as => "repair_ticket"
   match 'tickets/:id/do_repair' => "tickets#do_repair", :via => :post, :as => "do_repair_ticket"
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/fill' => "warehouses#do_fill", :via => :post
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/change_ingredient' => "warehouses#do_change_ingredient", :via => :post
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/change_product' => "warehouses#do_change_product", :via => :post
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/adjust' => "warehouses#do_adjust", :via => :post
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/set_as_main_warehouse' => "warehouses#set_as_main_warehouse", :via => :get, :as => "set_as_main_warehouse"
+  
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/sacks' => "warehouses#sacks", :via => :get, :as => "sacks_warehouse"
+  match 'warehouse_types/:warehouse_type_id/warehouses/:id/update_sacks' => "warehouses#update_sacks", :via => :post, :as => "update_sacks_warehouse"
+
+  match 'ticket_orders/get_all_reception' => "ticket_orders#get_all_reception", :via => :get
+  match 'ticket_orders/get_all_dispatch' => "ticket_orders#get_all_dispatch", :via => :get
+  match 'ticket_orders/get_order_client' => "ticket_orders#get_order_client", :via => :get
+  match 'ticket_orders/get_item_warehouse' => "ticket_orders#get_item_warehouse", :via => :get
+  match 'tickets/get_server_romano_ip' => "tickets#get_server_romano_ip", :via => :get
+  match 'tickets/import' => "tickets#import", :via => :get, :as => "import_ticket"
+
+  match 'tickets/:id/close' => "tickets#close", :via => :get, :as => "close_ticket"
+  match 'tickets/:id/do_close' => "tickets#do_close", :via => :post, :as => "do_close_ticket"
+  match 'tickets/:id/items' => "tickets#items", :via => :get, :as => "items_ticket"
+  match 'tickets/:id/entry' => "tickets#entry", :via => :get, :as => "entry_ticket"
+  match 'tickets/:id/update_items' => "tickets#update_items", :via => :put, :as => "update_items_ticket"
+  match 'tickets/:id/update_entry' => "tickets#update_entry", :via => :put, :as => "update_entry_ticket"
+
+  match 'locations/:location_id/machines/:id/fill_hours' => "machines#do_fill_hours", :via => :post
 
   # Reports
   match 'reports' => "reports#index", :via => :get, :as => "reports"
@@ -101,11 +128,10 @@ Mango::Application.routes.draw do
   match 'reports/production_note' => 'reports#production_note', via: :post, as: 'production_note_report'
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
-    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges
+    :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges, :tickets
   resources :transactions, only: [:index, :new, :create]
   resources :alarms, only: [:create]
   resources :document_types, only: [:index]
-  resources :tickets, except: :new
 
   resources :recipes do
     resources :ingredients_recipes
@@ -142,6 +168,25 @@ Mango::Application.routes.draw do
     end
   end
 
+  resources :warehouse_types do
+    resources :warehouses do
+      member do
+        get 'adjust'
+        get 'change_ingredient'
+        get 'change_product'
+        get 'fill'
+      end
+    end
+  end
+
+  resources :locations do
+    resources :machines do
+      member do
+        get 'fill_hours'
+      end
+    end
+  end
+  
   root :to => "sessions#index"
 
   match "/sessions/show" => "sessions#show", via: :get, as: 'dashboard'

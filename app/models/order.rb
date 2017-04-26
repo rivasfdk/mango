@@ -16,14 +16,13 @@ class Order < ActiveRecord::Base
   has_many :areas
 
   #attr_protected :completed
+  validates :code, uniqueness: true
 
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
-  validates :prog_batches,
-            numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
   validates :real_batches, numericality: {allow_nil: true}
-  validates :real_production,
-            numericality: {greater_than: 0, allow_nil: true}
+  validates :real_production, numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
 
@@ -55,7 +54,9 @@ class Order < ActiveRecord::Base
 
   def create_code
     order_number = OrderNumber.first
-    self.code = order_number.code.succ
+    if self.code.nil?
+      self.code = order_number.code.succ
+    end
     order_number.code = self.code
     order_number.save
     self.product_lot_id = nil if self.auto_product_lot
@@ -327,6 +328,85 @@ class Order < ActiveRecord::Base
        content_id: self.product_lot_id,
        processed_in_stock: 1,
        user_id: user_id}) unless production < 0.01
+
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+
+    actual_stock = warehouse.stock
+    new_stock = actual_stock + production
+    warehouse.update_attributes(stock: new_stock)
+    WarehouseTransactions.create transaction_type_id: 6,
+                                 warehouse_id: warehouse.id,
+                                 amount: production,
+                                 stock_after: new_stock,
+                                 lot_id: self.product_lot_id,
+                                 content_type: false,
+                                 user_id: self.user_id
+  end
+
+  def nofify_sap
+    message = ""
+    sharepath = get_mango_field('share_path')
+    tmp_dir = get_mango_field('tmp_dir')
+    batch_consumption = []
+    consumptions = {}
+    order_transactions = self.transactions
+    batches = Batch
+      .includes({batch_hopper_lot: {hopper_lot: {}}})
+      .where(order_id: self.id)
+    production = 0
+    batches.each do |b|
+      batch = []
+      b.batch_hopper_lot.each do |bhl|
+        key = bhl.hopper_lot.lot_id
+        amount = bhl.amount
+        hopper_id = bhl.hopper_lot.hopper_id
+        batch = batch.push([key,amount,hopper_id])
+        production += amount
+        if consumptions.has_key? key
+          consumptions[key] += amount
+        else
+          consumptions[key] = amount
+        end
+      end
+      batch_consumption = batch_consumption.push(batch)
+    end
+    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+    if warehouse.nil?
+      message = "No se notificó la orden: Lote sin almacen asignado"
+    else
+      file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+      batch_consumption.each do |consump|
+        total = 0
+        consump.each do |lot|
+          amount = lot[1]
+          total = total + amount
+        end
+        file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
+        consump.each do |lot|
+          content_lot = Lot.find_by(id: lot[0])
+          i_code = content_lot.ingredient.code
+          amount = lot[1]
+          hopper = Hopper.find(lot[2])
+          scale = Scale.find(hopper.scale_id)
+          h_code = scale.not_weighed ? '1014' : hopper.code
+          file << "#{i_code};#{amount};#{h_code}\r\n"
+        end
+      end
+      file.close
+      files = Dir.entries(tmp_dir)
+      files.each do |f|
+        if f.downcase.include? "notificacion"
+          begin
+            FileUtils.mv(tmp_dir+f, sharepath)
+          rescue
+            puts "++++++++++++++++++++"
+            puts "+++ error de red +++"
+            puts "++++++++++++++++++++"
+          end
+        end
+      end
+    end
+    return message
   end
 
   def close(user_id)
@@ -564,7 +644,7 @@ class Order < ActiveRecord::Base
     orders = orders.where('orders.created_at >= ?', Date.parse(params[:start_date])) if params[:start_date].present?
     orders = orders.where('orders.created_at <= ?', Date.parse(params[:end_date]) + 1.day) if params[:end_date].present?
     orders = orders.where(STATES[params[:state_id].to_i][:condition]) if params[:state_id].present?
-    orders = orders.order('orders.created_at DESC')
+    orders = orders.order('orders.created_at DESC', 'orders.code DESC')
     orders.paginate page: params[:page], per_page: params[:per_page]
   end
 
@@ -577,4 +657,103 @@ class Order < ActiveRecord::Base
         {code: order[0], client_name: order[1], recipe_name: order[2], recipe_code: order[3], prog_batches: order[4]}
       end
   end
+
+  def self.import(files)
+    sharepath = get_mango_field('share_path')
+    order_count = 0
+    message = ""
+    files.each do |file|
+      file = file.downcase
+      if file.include? "orden_produccion"
+        orderfile = File.open(sharepath+file).readline
+        keys = ["order_code", "recipe_code", "recipe_name", "recipe_version", "product_code",
+                  "product_name","lot_code", "client_code", "client_name", "client_rif", "client_address",
+                  "client_phone", "batch_prog"]
+        orderfile = orderfile.chomp
+        values = orderfile.split(';')
+        if values.length != 13
+          message = "Error en el archivo a importar"
+          break
+        end
+        order = keys.zip(values).to_h
+        orderfile = File.open(sharepath+file).readlines
+        orderfile.delete_at(0)
+        items = []
+        orderfile.each do |line|
+          keys = ["ingredient_code", "ingredient_name", "amount"]
+          line = line.chomp
+          values = line.split(';')
+          if values.length != 3
+            message = "Error en el archivo a importar"
+            break
+          end
+          unless line.empty?
+            item = keys.zip(values).to_h
+            items.push(item)
+          end
+        end
+        if Product.where(code: order["product_code"]).empty?
+          Product.create code: order["product_code"],
+                         name: order["product_name"]
+        end
+        product = Product.find_by(code: order["product_code"])
+        if ProductLot.where(code: order["lot_code"]).empty?
+          ProductLot.create code: order["lot_code"],
+                            product_id: product.id
+        end
+        items.each do |ing|
+          if Ingredient.where(code: ing["ingredient_code"]).empty?
+            Ingredient.create code: ing["ingredient_code"],
+                              name: ing["ingredient_name"],
+                              minimum_stock: 0.0
+          end
+          ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+          if Lot.where(code: ing["ingredient_code"]).empty?
+            Lot.create code: ing["ingredient_code"],
+                       ingredient_id: ingredient.id,
+                       density: 1000
+          end
+        end
+        if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
+          Recipe.create code: order["recipe_code"],
+                        name: order["recipe_name"],
+                        version: order["recipe_version"],
+                        product_id: product.id
+          recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
+          items.each do |ing|
+            ingredient = Ingredient.find_by(code: ing["ingredient_code"])
+            IngredientRecipe.create ingredient_id: ingredient.id,
+                                    recipe_id: recipe.id,
+                                    amount: ing["amount"]
+          end
+        end
+        if Client.where(code: order["client_code"]).empty?
+          Client.create code: order["client_code"],
+                        name: order["client_name"],
+                        ci_rif: order["client_rif"],
+                        address: order["client_address"],
+                        tel1: order["client_phone"]
+        end
+        recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
+        client = Client.find_by(code: order["client_code"])
+        product_lot = ProductLot.find_by(code: order["lot_code"])
+        if Order.where(code: order["order_code"]).empty?
+          Order.create code: order["order_code"],
+                       recipe_id: recipe.id,
+                       client_id: client.id,
+                       user_id: 1,
+                       product_lot_id: product_lot.id,
+                       prog_batches: order["batch_prog"]
+          if !(Order.find_by(code: order["order_code"])).nil?
+            order_count += 1
+            File.delete(sharepath+file)
+          end
+        end
+      end
+      puts message
+    end
+    return order_count
+  end
+
+
 end
