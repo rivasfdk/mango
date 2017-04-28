@@ -329,24 +329,29 @@ class Order < ActiveRecord::Base
        processed_in_stock: 1,
        user_id: user_id}) unless production < 0.01
 
-    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+    mango_features = get_mango_features()
+    if mango_features.include?("warehouse_transactions")
 
-    actual_stock = warehouse.stock
-    new_stock = actual_stock + production
-    warehouse.update_attributes(stock: new_stock)
-    WarehouseTransactions.create transaction_type_id: 6,
-                                 warehouse_id: warehouse.id,
-                                 amount: production,
-                                 stock_after: new_stock,
-                                 lot_id: self.product_lot_id,
-                                 content_type: false,
-                                 user_id: self.user_id
+      warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+
+      actual_stock = warehouse.stock
+      new_stock = actual_stock + production
+      warehouse.update_attributes(stock: new_stock)
+      WarehouseTransactions.create transaction_type_id: 6,
+                                   warehouse_id: warehouse.id,
+                                   amount: production,
+                                   stock_after: new_stock,
+                                   lot_id: self.product_lot_id,
+                                   content_type: false,
+                                   user_id: self.user_id
+    end
   end
 
   def nofify_sap
     message = ""
     sharepath = get_mango_field('share_path')
     tmp_dir = get_mango_field('tmp_dir')
+    sap_file = get_mango_field('SAP_file')
     batch_consumption = []
     consumptions = {}
     order_transactions = self.transactions
@@ -370,43 +375,73 @@ class Order < ActiveRecord::Base
       end
       batch_consumption = batch_consumption.push(batch)
     end
-    warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
-    if warehouse.nil?
-      message = "No se notificó la orden: Lote sin almacen asignado"
-    else
-      file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-      batch_consumption.each do |consump|
-        total = 0
-        consump.each do |lot|
-          amount = lot[1]
-          total = total + amount
+
+    case sap_file
+    when 1
+    #++++++++++++++++SAP Lider Pollo++++++++++++++++++++++++++++++++++++++++++++++++++++
+      warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+      if warehouse.nil?
+        message = "No se notificó la orden: Lote sin almacen asignado"
+      else
+        file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+        batch_consumption.each do |consump|
+          total = 0
+          consump.each do |lot|
+            amount = lot[1]
+            total = total + amount
+          end
+          file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
+          consump.each do |lot|
+            content_lot = Lot.find_by(id: lot[0])
+            i_code = content_lot.ingredient.code
+            amount = lot[1]
+            hopper = Hopper.find(lot[2])
+            scale = Scale.find(hopper.scale_id)
+            h_code = scale.not_weighed ? '1014' : hopper.code
+            file << "#{i_code};#{amount};#{h_code}\r\n"
+          end
         end
-        file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
-        consump.each do |lot|
-          content_lot = Lot.find_by(id: lot[0])
-          i_code = content_lot.ingredient.code
-          amount = lot[1]
-          hopper = Hopper.find(lot[2])
-          scale = Scale.find(hopper.scale_id)
-          h_code = scale.not_weighed ? '1014' : hopper.code
-          file << "#{i_code};#{amount};#{h_code}\r\n"
-        end
-      end
-      file.close
-      files = Dir.entries(tmp_dir)
-      files.each do |f|
-        if f.downcase.include? "notificacion"
-          begin
-            FileUtils.mv(tmp_dir+f, sharepath)
-          rescue
-            puts "++++++++++++++++++++"
-            puts "+++ error de red +++"
-            puts "++++++++++++++++++++"
+        file.close
+        files = Dir.entries(tmp_dir)
+        files.each do |f|
+          if f.downcase.include? "notificacion"
+            begin
+              FileUtils.mv(tmp_dir+f, sharepath)
+            rescue
+              puts "++++++++++++++++++++"
+              puts "+++ error de red +++"
+              puts "++++++++++++++++++++"
+            end
           end
         end
       end
+    when 2
+    #++++++++++++++++SAP Convaca++++++++++++++++++++++++++++++++++++++++++++++++++++
+      file = File.open(tmp_dir+"Dosificador_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+      product_code = ProductLot.find(self.product_lot_id).product.code
+      client_code = self.client.code
+      cant_ing = batch_consumption[0].length - 1
+      for i in 0..cant_ing
+        total_amount = 0
+        lot_ing = 0
+        batch_consumption.each do |consump|
+          total_amount += consump[i][1]
+          lot_ing = consump[i][0]
+        end
+        content_lot = Lot.find_by(id: lot_ing)
+        i_code = content_lot.ingredient.code
+        amount = format_comma(total_amount)
+        file << "#{product_code}.#{client_code};#{i_code}.0;#{amount}\r\n"
+      end
+      file.close
+    else
+
     end
     return message
+  end
+
+  def format_comma(num)
+    ActionController::Base.helpers.number_to_currency(num, unit: "", separator: ",", delimiter: "")
   end
 
   def close(user_id)

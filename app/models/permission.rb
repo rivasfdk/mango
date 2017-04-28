@@ -22,7 +22,7 @@ class Permission < ActiveRecord::Base
   CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all']
   MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
   DELETE = ['destroy']
-  CREATE = ['new', 'create']
+  CREATE = ['new', 'create','import']
 
   def self.get_modules
     MODULES
