@@ -1473,6 +1473,38 @@
             "y1": 464.6,
             "x2": 565.2,
             "y2": 464.6
+          },
+          {
+            "id": "comment",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 35,
+            "y": 566.6,
+            "width": 471.1,
+            "height": 22,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "left",
+              "vertical-align": "top",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": true,
+            "format": {
+              "base": "",
+              "type": ""
+            }
           }
         ]
       },
