@@ -31,6 +31,7 @@ report.start_new_page do |page|
     footer.item(:user_name).value(@data['user_name'])
     footer.item(:driver_name).value(@data['driver_name'])
     footer.item(:driver_id).value(@data['driver_id'])
+    footer.item(:comment).value(@data['comment'])
   end
 
   @data['transactions'].each do |transaction|
