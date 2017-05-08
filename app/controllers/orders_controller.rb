@@ -127,6 +127,7 @@ class OrdersController < ApplicationController
   end
 
   def do_notify
+    warning = ""
     @order = Order.find params[:id]
     mango_features = get_mango_features()
     if mango_features.include?("sap_production_order")

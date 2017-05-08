@@ -98,7 +98,6 @@ class Ticket < ActiveRecord::Base
   end
 
   def generate_txt
-    require 'net/ftp'
     tmp_dir = get_mango_field('tmp_dir')
     data = EasyModel.ticket self.id
     transactions = data['transactions'].length

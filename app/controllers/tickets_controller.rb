@@ -78,7 +78,7 @@ class TicketsController < ApplicationController
     @ticket = Ticket.find params[:id]
     @ticket.notify unless @ticket.open
     mango_features = get_mango_features()
-    if mango_features.include?("sap_inveravica")
+    if mango_features.include?("ticket_txt")
       @ticket.generate_txt
     end
     flash[:notice] = 'Ticket notificado con éxito'

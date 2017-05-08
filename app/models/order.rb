@@ -348,6 +348,7 @@ class Order < ActiveRecord::Base
   end
 
   def nofify_sap
+    data = EasyModel.order_details(self.code)
     message = ""
     sharepath = get_mango_field('share_path')
     tmp_dir = get_mango_field('tmp_dir')
@@ -420,18 +421,19 @@ class Order < ActiveRecord::Base
       file = File.open(tmp_dir+"Dosificador_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
       product_code = ProductLot.find(self.product_lot_id).product.code
       client_code = self.client.code
-      cant_ing = batch_consumption[0].length - 1
-      for i in 0..cant_ing
-        total_amount = 0
-        lot_ing = 0
-        batch_consumption.each do |consump|
-          total_amount += consump[i][1]
-          lot_ing = consump[i][0]
-        end
-        content_lot = Lot.find_by(id: lot_ing)
-        i_code = content_lot.ingredient.code
-        amount = format_comma(total_amount)
-        file << "#{product_code}.#{client_code};#{i_code}.0;#{amount}\r\n"
+      results = data['results']
+      results.each do |result|
+        file << "#{product_code}.#{client_code};#{result['lot']}.0;#{result['real_kg'].round(2)},#{Time.now.strftime "%Y%m%d"}\r\n"
+      end
+      file.close
+    when 3
+    #++++++++++++++++SAP Inveravica++++++++++++++++++++++++++++++++++++++++++++++++++++
+      file = File.open(tmp_dir+"Produccion_#{self.code}.txt",'w')
+      results = data['results']
+      results.each do |result|
+        file << "#{data['end_date']},#{data['recipe']},#{result['lot']},#{result['ingredient']},"+
+                "#{result['std_kg']},#{result['real_kg'].round(2)},#{result['var_kg'].round(2)},"+
+                "#{result['var_perc'].round(2)}\r\n"
       end
       file.close
     else
