@@ -13,6 +13,8 @@ class TicketsController < ApplicationController
         @ingredients = Ingredient.actives
         @tickets = Ticket.search(params) 
         @factories = Client.where(factory: true) << Client.new(code: "-1", name: session[:company]['name'])
+        mango_features = get_mango_features()
+        @mango_romano =  mango_features.include?("mango_romano")
         render html: @tickets
       end
       format.json do
@@ -75,6 +77,10 @@ class TicketsController < ApplicationController
   def notify
     @ticket = Ticket.find params[:id]
     @ticket.notify unless @ticket.open
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_inveravica")
+      @ticket.generate_txt
+    end
     flash[:notice] = 'Ticket notificado con éxito'
     redirect_to :tickets
   end
@@ -93,12 +99,17 @@ class TicketsController < ApplicationController
   end
 
   def new
-    @rorders = TicketOrder.where(order_type: true,closed: false)
-    @tickets = Ticket.new
-    @clients = Client.all
-    @drivers = Driver.where(frequent: true)
-    @trucks = Truck.includes(:carrier).where(frequent: true)
-    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+    mango_features = get_mango_features()
+    if mango_features.include?("mango_romano")
+      @rorders = TicketOrder.where(order_type: true,closed: false)
+      @tickets = Ticket.new
+      @clients = Client.all
+      @drivers = Driver.where(frequent: true)
+      @trucks = Truck.includes(:carrier).where(frequent: true)
+      @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+    else
+      redirect_to action: 'index'
+    end
   end
 
   def import
