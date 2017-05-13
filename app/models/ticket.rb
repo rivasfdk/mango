@@ -102,7 +102,7 @@ class Ticket < ActiveRecord::Base
     data = EasyModel.ticket self.id
     transactions = data['transactions'].length
     
-    file = File.open(tmp_dir+"Ticket_#{data['number']}.txt",'w')
+    file = File.open(tmp_dir+"Ticket_#{Time.now.strftime "%Y%m%d"}.txt",'a')
     data['transactions'].each do |trans|
       file << "#{data['type']},#{data['number']},#{data['provider_document_number']},"+
               "#{data['client_code']},#{data['carrier']},#{data['license_plate']},"+

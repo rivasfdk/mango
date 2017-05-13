@@ -428,7 +428,7 @@ class Order < ActiveRecord::Base
       file.close
     when 3
     #++++++++++++++++SAP Inveravica++++++++++++++++++++++++++++++++++++++++++++++++++++
-      file = File.open(tmp_dir+"Produccion_#{self.code}.txt",'w')
+      file = File.open(tmp_dir+"Produccion_#{Time.now.strftime "%Y%m%d"}.txt",'a')
       results = data['results']
       results.each do |result|
         file << "#{data['end_date']},#{data['recipe']},#{result['lot']},#{result['ingredient']},"+
