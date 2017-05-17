@@ -98,11 +98,20 @@ class Ticket < ActiveRecord::Base
   end
 
   def generate_txt
+    tmp_dir = get_mango_field('tmp_dir')
     data = EasyModel.ticket self.id
-    #binding.pry
-    file = File.open("Ticket_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-    file << "#{data['title']},#{data['number']},#{data['provider_document_number']}"+
-            "#{data['client_code']},#{data['carrier']},#{data['license_plate']}"
+    transactions = data['transactions'].length
+    
+    file = File.open(tmp_dir+"Ticket_#{Time.now.strftime "%Y%m%d"}.txt",'a')
+    data['transactions'].each do |trans|
+      file << "#{data['type']},#{data['number']},#{data['provider_document_number']},"+
+              "#{data['client_code']},#{data['carrier']},#{data['license_plate']},"+
+              "#{data['incoming_date']},#{data['outgoing_date']},#{data['driver_name']},"+
+              "#{data['driver_id']},#{trans['name']},#{trans['code']},#{trans['sacks']},"+
+              "#{trans['amount']},#{data['total_amount']},#{data['provider_weight']},"+
+              "#{data['incoming_weight']},#{data['outgoing_weight']},#{data['net_weight']},"+
+              "#{data['perc_dif']},#{data['comment']}\r\n"
+    end
     file.close
   end
 

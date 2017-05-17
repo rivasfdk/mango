@@ -1,5 +1,15 @@
 <% title "Choferes" %>
 <% i = 0 %>
+
+<div id="searchform">
+<%= form_tag drivers_path, :method => 'get' do %>
+  <label for="name">Chofer:</label>
+  <%= select_tag(:ci, options_from_collection_for_select(@drivers_filter, :ci, :to_collection_select, params[:ci]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+  <%= submit_tag "Filtrar" %>
+  <%= link_to "Limpiar", drivers_path %>
+<% end %>
+</div>
+
 <% if @drivers.any? %>
 <table id="tabledata">
     <thead>

@@ -218,3 +218,5 @@ $ ->
   $("#ticket_manual_outgoing").change manual_outgoing
 
 
+
+
