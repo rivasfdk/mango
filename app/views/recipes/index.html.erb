@@ -3,7 +3,7 @@
 <div id="searchform">
 <%= form_tag recipes_path, :method => 'get' do %>
   <label for="code">Receta:</label>
-  <%= select_tag(:code, options_from_collection_for_select(@recipes, :code, :to_collection_select_code, params[:code]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
+  <%= select_tag(:code, options_from_collection_for_select(@all_recipes, :code, :to_collection_select_code, params[:code]), :include_blank => true, :class=>'chosen-select chzn-field-normal chzn-small') %>
   <%= submit_tag "Filtrar", :name => nil %>
   <%= link_to "Limpiar", recipes_path %>
 <% end %>

@@ -3,6 +3,7 @@ include MangoModule
 
 class RecipesController < ApplicationController
   def index
+    @all_recipes = Recipe.where(active: true)
     @recipes = Recipe.search(params)
     @last_imported_recipe = LastImportedRecipe.last
   end
