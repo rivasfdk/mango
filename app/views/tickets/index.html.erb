@@ -19,12 +19,6 @@
     </thead>
     <tbody>
     <% @tickets.each do |t| %>
-    <% tt = Transaction.find_by(ticket_id: t[:ticket_id]) %>
-    <% if tt.nil? or tt.warehouse_id.nil? %>
-      <% sin_t = true %>
-    <% else %>
-      <% sin_t = false %>
-    <% end %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
         <td class="center"><%=h t[:ticket_number] %></td>
@@ -34,18 +28,7 @@
         <td><%=h t[:client_name] %></td>
         <td>
           <% if t[:ticket_open] %>
-            <%= render_action_delete(ticket_path(t[:ticket_id]), "Desea borrar el ticket '#{t[:ticket_number]}'?") %><br />
-            <% if @mango_romano %>
-              <% if t[:ticket_incoming_weight].nil? %>
-                <%= render_action_entry_ticket(entry_ticket_path(t[:ticket_id])) %>
-                <%= render_action_items_ticket(items_ticket_path(t[:ticket_id])) %>
-              <% elsif sin_t %>
-                <%= render_action_items_ticket(items_ticket_path(t[:ticket_id])) %>
-              <% else %>
-                <%= render_action_edit_ticket(edit_ticket_path(t[:ticket_id])) %>
-                <%= render_action_close_ticket(close_ticket_path(t[:ticket_id])) %>
-              <% end %>
-            <% end %>
+            <%= render_action_delete(ticket_path(t[:ticket_id]), "Desea borrar el ticket '#{t[:ticket_number]}'?") %>
           <% else %>
             <%= render_action_repair(repair_ticket_path(t[:ticket_id])) %> <br />
             <% if !t[:ticket_notified] %>

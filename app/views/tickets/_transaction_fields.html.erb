@@ -3,9 +3,7 @@
     <%= f.radio_button :content_type, "1", checked: true, class: 'content_type_checkbox' %> Materia Prima
     <%= f.radio_button :content_type, "2", class: 'content_type_checkbox content_type_2' %> Producto terminado
     <br />
-    <%= f.collection_select :content_id, @lots, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %><br />
-    Almacen:<br />
-    <%= f.collection_select :warehouse_id, @lots_warehouses, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></td>
+    <%= f.collection_select :content_id, @lots, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></td>
   <td class="center"><%= f.check_box :sack, checked: true, class: 'sack_checkbox' %></td>
   <td class="center"><%= f.text_field :sacks, size: 5, class: 'sacks_field' %></td>
   <td class="center"><%= f.text_field :sack_weight, size: 5, class: 'sack_weight_field' %></td>

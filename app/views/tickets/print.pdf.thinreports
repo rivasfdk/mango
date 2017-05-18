@@ -1,4 +1,4 @@
-report.set_layout tlf: "reports/thinreports_layouts/q3_ticket_#{@data[:transactions_count]}"
+report.set_layout tlf: "reports/thinreports_layouts/#{@data[:ticket_template]}_#{@data[:transactions_count]}"
 
 #report.layout.config.list(:transactions) do
 #  use_stores total_amount: '', net_weight: '', provider_weight: '', dif: '', comment: '', incoming_weight: '', outgoing_weight: ''
@@ -13,8 +13,6 @@ report.set_layout tlf: "reports/thinreports_layouts/q3_ticket_#{@data[:transacti
 #    e.section.item(:outgoing_weight).value(e.store.outgoing_weight)
 #  end
 #end
-
-#total_for = {total_amount: 0, net_weight: 0, provider_weight: 0, dif: 0, comment: 0, incoming_weight: 0, outgoing_weight: 0}
 
 report.start_new_page do |page|
   page.values company_name: @data['company_name'].upcase
@@ -44,18 +42,7 @@ report.start_new_page do |page|
                   sack_weight: transaction['sack_weight'].upcase,
                   amount: "#{transaction['amount']} KG",
                   comment: "#{transaction['comment']}"
-
   end
-
-    table.on_footer_insert do |footer| 
-      footer.item(:total_amount).value(@data['total_amount'])
-      footer.item(:net_weight).value(@data['net_weight'])
-      footer.item(:provider_weight).value(@data['provider_weight'])
-      footer.item(:dif).value(@data['perc_dif'])
-      footer.item(:comment).value(@data['comment'])
-      footer.item(:incoming_weight).value(@data['incoming_weight'])
-      footer.item(:outgoing_weight).value(@data['outgoing_weight'])
-    end
 
 #  table.store.total_amount = @data['total_amount'].upcase
 #  table.store.net_weight = @data['net_weight'].upcase
