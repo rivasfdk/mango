@@ -44,6 +44,16 @@ report.start_new_page do |page|
                   comment: "#{transaction['comment']}"
   end
 
+  table.on_footer_insert do |footer| 
+      footer.item(:total_amount).value(@data['total_amount'])
+      footer.item(:net_weight).value(@data['net_weight'])
+      footer.item(:provider_weight).value(@data['provider_weight'])
+      footer.item(:dif).value(@data['perc_dif'])
+      footer.item(:comment).value(@data['comment'])
+      footer.item(:incoming_weight).value(@data['incoming_weight'])
+      footer.item(:outgoing_weight).value(@data['outgoing_weight'])
+  end
+
 #  table.store.total_amount = @data['total_amount'].upcase
 #  table.store.net_weight = @data['net_weight'].upcase
 #  table.store.provider_weight = @data['provider_weight'].upcase
