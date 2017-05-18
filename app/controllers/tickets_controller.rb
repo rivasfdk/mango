@@ -76,6 +76,15 @@ class TicketsController < ApplicationController
     @ticket.notify unless @ticket.open
     flash[:notice] = 'Ticket notificado con éxito'
     redirect_to :tickets
+    if @ticket.transactions.first.content_type == 1
+      if Lot.find(@ticket.transactions.first.content_id).client_id == 980190967
+        @ticket.generate_txt
+      end
+    else
+      if ProductLot.find(@ticket.transactions.first.content_id).client_id == 980190967
+        @ticket.generate_txt
+      end
+    end 
   end
 
   def create
