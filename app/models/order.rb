@@ -110,7 +110,7 @@ class Order < ActiveRecord::Base
 
     scale_amounts = []
     if valid
-      scale_amounts = Scale.where(not_weighed: false).map do |scale|
+      scale_amounts = Scale.all.map do |scale|
         hopper_amounts = HopperLot
           .includes(:lot, :hopper)
           .where(hoppers_lots: {active: true}, hoppers: {main: true, scale_id: scale.id}, lots: {ingredient_id: recipe_ingredients.keys})
