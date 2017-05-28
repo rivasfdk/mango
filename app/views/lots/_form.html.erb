@@ -2,7 +2,7 @@
 <label for="code" class="small">Código:</label>
 <div class="field"><%= f.text_field :code, :size=>'15' %> <span>*</span></div>
 <label for="ingredient_id" class="small">Materia Prima:</label>
-<div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div class="field"><%= f.collection_select :ingredient_id, @ingredients, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="code" class="small">Densidad (Kg/m³):</label>
 <div class="field"><%= f.text_field :density, :size=>'15' %></div>
 <label for="client_id" class="small">Fábrica:</label>

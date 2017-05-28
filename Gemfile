@@ -20,6 +20,8 @@ gem 'coffee-rails'
 gem 'coffee-script-source', '1.8.0'
 gem 'uglifier'
 
+gem 'tiny_tds', '~> 0.7.0'
+
 group :development do
   gem 'quiet_assets'
   gem 'pry-rails'

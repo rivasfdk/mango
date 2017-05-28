@@ -129,7 +129,28 @@ class OrdersController < ApplicationController
   def do_notify
     warning = ""
     @order = Order.find params[:id]
+
+
     mango_features = get_mango_features()
+    if mango_features.include?("sap_sqlserver")
+      for i in 1..@order.prog_batches
+        batch = EasyModel.batch_details(@order.code, i)
+        batch["results"].each do |ing|
+          client = connect_sqlserver
+          if !client.nil?
+            sql = "insert into dbo.batch "+
+                  "values (#{@order.code}, #{i}, #{ing["real_kg"]}, #{Time.now.strftime "'%Y-%m-%d %H:%M:%S'"}, "+
+                  "\"#{ing["code"]}\", \"#{@order.product_lot.code}\", #{ing["std_kg"]})"
+            puts sql
+            result = client.execute(sql)
+            result.insert
+            client.close
+          end
+        end
+      end
+    end
+
+
     if mango_features.include?("sap_production_order")
       warning = @order.nofify_sap
     end
