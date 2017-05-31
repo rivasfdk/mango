@@ -35,9 +35,9 @@
         <td class="center"><%=h o.completed ? "Si" : "No" %></td>
         <td class="center">
           <%= render_action_show(order_path(o)) %>
-          <% if o.batch.count < 1 %>
+          <%# if o.batch.count < 1 %>
             <%= render_action_edit(edit_order_path(o)) %> <br />
-          <% end %>
+          <%# end %>
           <% if !o.completed %>
             <%= render_action_repair(repair_order_path(o)) %>
           <% elsif !o.notified %>
