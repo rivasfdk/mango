@@ -422,10 +422,24 @@ class Order < ActiveRecord::Base
       product_code = ProductLot.find(self.product_lot_id).product.code
       client_code = self.client.code
       results = data['results']
+      binding.pry
+      file << "#{self.code}\r\n"
       results.each do |result|
-        file << "#{product_code}.#{client_code};#{result['lot']}.0;#{result['real_kg'].round(2)},#{Time.now.strftime "%Y%m%d"}\r\n"
+        file << "#{result['lot']};#{result['real_kg'].round(2)}\r\n"
       end
       file.close
+      files = Dir.entries(tmp_dir)
+      files.each do |f|
+        if f.downcase.include? "dosificador"
+          begin
+            FileUtils.mv(tmp_dir+f, sharepath)
+          rescue
+            puts "++++++++++++++++++++"
+            puts "+++ error de red +++"
+            puts "++++++++++++++++++++"
+          end
+        end
+      end
     when 3
     #++++++++++++++++SAP Inveravica++++++++++++++++++++++++++++++++++++++++++++++++++++
       file = File.open(tmp_dir+"Produccion_#{Time.now.strftime "%Y%m%d"}.txt",'a')
@@ -783,7 +797,7 @@ class Order < ActiveRecord::Base
                        prog_batches: order["batch_prog"]
           if !(Order.find_by(code: order["order_code"])).nil?
             order_count += 1
-            File.delete(sharepath+file)
+            #File.delete(sharepath+file)
           end
         end
       end
