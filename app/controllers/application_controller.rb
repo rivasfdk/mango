@@ -60,12 +60,11 @@ class ApplicationController < ActionController::Base
 
   def connect_sqlserver
     sqlserver = get_mango_field('sql_server')
-    begin
-      client = TinyTds::Client.new username: sqlserver["username"],
-                                   password: sqlserver["password"],
-                                   dataserver: sqlserver["dataserver"],
-                                   database: sqlserver["database"]
-    rescue
+    client = TinyTds::Client.new username: sqlserver["username"],
+                                 password: sqlserver["password"],
+                                 dataserver: sqlserver["dataserver"],
+                                 database: sqlserver["database"]
+    if client.closed?
       client = nil
     end
     return client
@@ -73,7 +72,7 @@ class ApplicationController < ActionController::Base
 
   def create_products(hash_array)
     hash_array.each do |ing|
-      content = ing[:tipo].downcase == 'm' ? true : false
+      content = ing[:tipo].downcase == 'mp' ? true : false
       if content
         if Ingredient.where(code: ing[:codigo]).empty?
           Ingredient.create code: ing[:codigo],
@@ -113,25 +112,45 @@ class ApplicationController < ActionController::Base
 
   def create_recipes(hash_array)
     hash_array.each do |recipe|
+      last_recipe = Recipe.where(code: recipe[:codigo]).last
       product = Product.find_by(code: recipe[:cod_producto])
-      if Recipe.where(code: recipe[:codigo], version: recipe[:version]).empty? & !product.nil?
-          Recipe.create code: recipe[:codigo],
-                        name: recipe[:nombre],
-                        version: recipe[:version],
-                        product_id: product.id,
-                        comment: recipe[:comentario]
+      if !recipe[:procesada] & !product.nil?
+        Recipe.create code: recipe[:codigo],
+                      name: recipe[:nombre],
+                      version: last_recipe.version.succ,
+                      product_id: product.id,
+                      comment: recipe[:comentario]
+        client = connect_sqlserver
+        if !client.nil?
+          sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
+          puts sql
+          result = client.execute(sql)
+          result.insert
+          client.close
+        end
       end
     end
   end
 
   def create_recipe_ingredients(hash_array)
     hash_array.each do |ing|
-      recipe = Recipe.find_by(code: ing[:cod_receta],version: ing[:version_receta])
+      recipe = Recipe.where(code: ing[:cod_receta]).last
       ingredient = Ingredient.find_by(code: ing[:cod_producto])
-      if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty? & !recipe.nil? & !ingredient.nil?
-        IngredientRecipe.create ingredient_id: ingredient.id,
-                                recipe_id: recipe.id,
-                                amount: ing[:cantidad_estandar]
+      if !recipe.nil? & !ingredient.nil?
+        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty? & !ing[:procesada]
+          IngredientRecipe.create ingredient_id: ingredient.id,
+                                  recipe_id: recipe.id,
+                                  amount: ing[:cantidad_estandar],
+                                  priority: ing[:prioridad]
+          client = connect_sqlserver
+          if !client.nil?
+            sql = "update dbo.detalle_receta set procesada = 1 where cod_receta = \"#{ing[:cod_receta]}\""
+            puts sql
+            result = client.execute(sql)
+            result.insert
+            client.close
+          end
+        end
       end
     end
   end

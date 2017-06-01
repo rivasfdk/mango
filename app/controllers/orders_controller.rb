@@ -133,13 +133,14 @@ class OrdersController < ApplicationController
 
     mango_features = get_mango_features()
     if mango_features.include?("sap_sqlserver")
+      date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
       for i in 1..@order.prog_batches
         batch = EasyModel.batch_details(@order.code, i)
         batch["results"].each do |ing|
           client = connect_sqlserver
           if !client.nil?
             sql = "insert into dbo.batch "+
-                  "values (#{@order.code}, #{i}, #{ing["real_kg"]}, #{Time.now.strftime "'%Y-%m-%d %H:%M:%S'"}, "+
+                  "values (#{@order.code}, #{i}, #{ing["real_kg"]}, #{date}, "+
                   "\"#{ing["code"]}\", \"#{@order.product_lot.code}\", #{ing["std_kg"]})"
             puts sql
             result = client.execute(sql)
@@ -147,6 +148,14 @@ class OrdersController < ApplicationController
             client.close
           end
         end
+      end
+      client = connect_sqlserver
+      if !client.nil?
+        sql = "update dbo.orden_produccion set cerrada = 1 where codigo = #{@order.code}"
+        puts sql
+        result = client.execute(sql)
+        result.insert
+        client.close
       end
     end
 
