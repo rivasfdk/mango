@@ -418,11 +418,10 @@ class Order < ActiveRecord::Base
       end
     when 2
     #++++++++++++++++SAP Convaca++++++++++++++++++++++++++++++++++++++++++++++++++++
-      file = File.open(tmp_dir+"Dosificador_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+      file = File.open(tmp_dir+"#{Time.now.strftime "%d%m%Y"}_#{self.code}.txt",'w')
       product_code = ProductLot.find(self.product_lot_id).product.code
       client_code = self.client.code
       results = data['results']
-      binding.pry
       file << "#{self.code}\r\n"
       results.each do |result|
         file << "#{result['lot']};#{result['real_kg'].round(2)}\r\n"
@@ -430,7 +429,7 @@ class Order < ActiveRecord::Base
       file.close
       files = Dir.entries(tmp_dir)
       files.each do |f|
-        if f.downcase.include? "dosificador"
+        if f.downcase.include? ".txt"
           begin
             FileUtils.mv(tmp_dir+f, sharepath)
           rescue
@@ -714,8 +713,7 @@ class Order < ActiveRecord::Base
     order_count = 0
     message = ""
     files.each do |file|
-      file = file.downcase
-      if file.include? "orden_produccion"
+      if file.downcase.include? "orden_produccion"
         orderfile = File.open(sharepath+file).readline
         keys = ["order_code", "recipe_code", "recipe_name", "recipe_version", "product_code",
                   "product_name","lot_code", "client_code", "client_name", "client_rif", "client_address",
