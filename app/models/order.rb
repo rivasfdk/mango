@@ -795,7 +795,7 @@ class Order < ActiveRecord::Base
                        prog_batches: order["batch_prog"]
           if !(Order.find_by(code: order["order_code"])).nil?
             order_count += 1
-            #File.delete(sharepath+file)
+            File.delete(sharepath+file)
           end
         end
       end

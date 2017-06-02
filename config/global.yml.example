@@ -1,0 +1,38 @@
+application:
+  name: Empresa de Prueba, C.A.
+  address: Venezuela
+  rif: J-64978603-0
+  logo: default-company-logo.png
+  footer: Reporte generado con Mango
+  
+reports:
+    style:
+      font_family: 'Helvetica'
+      font_size: 10
+      font_color: [0, 0, 0]
+
+special_features: [ticket_txt, sap_production_order, notifications,
+ transactions, romano, medicament_recipes, recipe_parameters,
+  factories, lot_parameters, real_production, ingredient_inclusion, multiple_addresses,
+   lot_parameter_lists, product_lot_parameter_lists, excel_reports]
+   #sap_romano, sap_production_order sap_sqlserver
+
+sql_server:
+  username: 'xxxx'
+  password: 'xxxx'
+  dataserver: 'x.x.x.x\XXXX'
+  database: 'xxxx'
+
+first_week_month: 1
+
+ticket_template: 1
+
+SAP_file: 1
+
+share_path: /home/mango/sharedir/
+
+tmp_dir: /home/mango/tmp/
+
+server_romano_ip: 
+    in: 'ws://x.x.x.x:2000'
+    out: 'ws://x.x.x.x:2020'
