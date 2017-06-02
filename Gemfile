@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.3.3'
-
 gem 'rails', '4.0.13'
 gem 'protected_attributes'
 gem 'color-tools', '>= 1.3.0'
