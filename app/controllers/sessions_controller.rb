@@ -7,33 +7,6 @@ class SessionsController < ApplicationController
   layout 'login'
 
   def index
-    mango_features = get_mango_features()
-    if mango_features.include?("sap_sqlserver")
-      client = connect_sqlserver
-      if !client.nil?
-        consult = client.execute("select * from dbo.productos")
-        result = consult.each(:symbolize_keys => true)
-        create_products(result)
-
-        consult = client.execute("select * from dbo.clientes")
-        result = consult.each(:symbolize_keys => true)
-        create_clients(result)
-
-        consult = client.execute("select * from dbo.recetas")
-        result = consult.each(:symbolize_keys => true)
-        create_recipes(result)
-
-        consult = client.execute("select * from dbo.detalle_receta")
-        result = consult.each(:symbolize_keys => true)
-        create_recipe_ingredients(result)
-
-        consult = client.execute("select * from dbo.orden_produccion")
-        result = consult.each(:symbolize_keys => true)
-        create_orders(result)
-        client.close
-
-      end
-    end
     redirect_to dashboard_path if session[:user_id]
   end
 

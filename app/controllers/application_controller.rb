@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
       if !recipe[:procesada] & !product.nil?
         Recipe.create code: recipe[:codigo],
                       name: recipe[:nombre],
-                      version: last_recipe.version.succ,
+                      version:  last_recipe.version.succ,
                       product_id: product.id,
                       comment: recipe[:comentario]
         client = connect_sqlserver
@@ -157,7 +157,7 @@ class ApplicationController < ActionController::Base
 
   def create_orders(hash_array)
     hash_array.each do |order|
-      recipe = Recipe.find_by(code: order[:cod_receta],version: order[:version_receta])
+      recipe = Recipe.where(code: order[:cod_receta]).last
       client = Client.find_by(code: order[:cod_cliente])
       product_lot = ProductLot.find_by(code: order[:cod_lote])
       if Order.where(code: order[:codigo]).empty? & !recipe.nil? & !client.nil? & !product_lot.nil?
