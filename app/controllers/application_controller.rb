@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
       if !recipe[:procesada] & !product.nil?
         Recipe.create code: recipe[:codigo],
                       name: recipe[:nombre],
-                      version:  last_recipe.version.succ,
+                      version: last_recipe.nil? ? 1 : last_recipe.version.succ,
                       product_id: product.id,
                       comment: recipe[:comentario]
         client = connect_sqlserver
