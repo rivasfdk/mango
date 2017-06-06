@@ -4,7 +4,7 @@ class DriversController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @drivers = Driver.where(frequent: true).order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
+        @drivers = Driver.search(params)
         @drivers_filter = Driver.where(frequent: true).order('name ASC')
         render :html => @drivers
       end

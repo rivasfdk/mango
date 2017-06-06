@@ -79,7 +79,15 @@ class TicketsController < ApplicationController
     @ticket.notify unless @ticket.open
     mango_features = get_mango_features()
     if mango_features.include?("ticket_txt")
-      @ticket.generate_txt
+      if @ticket.transactions.first.content_type == 1
+        if Lot.find(@ticket.transactions.first.content_id).client_id == 980190967
+          @ticket.generate_txt
+        end
+      else
+        if ProductLot.find(@ticket.transactions.first.content_id).client_id == 980190967
+          @ticket.generate_txt
+        end
+      end
     end
     flash[:notice] = 'Ticket notificado con éxito'
     redirect_to :tickets
