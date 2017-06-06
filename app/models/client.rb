@@ -37,7 +37,7 @@ class Client < ActiveRecord::Base
 
   def self.get_all()
     # Proporca
-    #Client.where(factory: true).unshift Client.where(id: 980190963).first
-    Client.all
+    Client.where(factory: true).unshift Client.where(id: 980190963).first
+    #Client.all
   end
 end
