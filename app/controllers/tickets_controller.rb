@@ -97,12 +97,21 @@ class TicketsController < ApplicationController
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
     @ticket.user_id = (User.find session[:user_id]).id
-    if @ticket.save
-      flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
-      redirect_to items_ticket_path(@ticket.id)
-    else
-      new
-      render :new
+
+    respond_to do |format|
+      format.json do
+        @ticket.save
+        render json: @ticket.errors
+      end
+      format.html do
+        if @ticket.save
+          flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
+          redirect_to items_ticket_path(@ticket.id)
+        else
+          new
+          render :new
+        end
+      end
     end
   end
 
@@ -176,33 +185,53 @@ class TicketsController < ApplicationController
   end
 
   def update
-    @ticket = Ticket.find params[:id]
-    redirect_to :tickets unless @ticket.open
-    @ticket.update_attributes(params[:ticket])
-    @ticket.user_id = session[:user_id]
-    @ticket.transactions.each do |t|
-      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-      t.user_id = @ticket.user_id
-      t.client_id = @ticket.client_id
-      t.comment = @ticket.comment
-      t.notified = @ticket.notified
-      unless t.sack
-        t.sacks = nil
-        t.sack_weight = nil
+    respond_to do |format|
+      format.html do
+        @ticket = Ticket.find params[:id]
+        redirect_to :tickets unless @ticket.open
+        @ticket.update_attributes(params[:ticket])
+        @ticket.user_id = session[:user_id]
+        @ticket.transactions.each do |t|
+          t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+          t.user_id = @ticket.user_id
+          t.client_id = @ticket.client_id
+          t.comment = @ticket.comment
+          t.notified = @ticket.notified
+          unless t.sack
+            t.sacks = nil
+            t.sack_weight = nil
+          end
+          t.amount = t.amount_was if t.marked_for_destruction?
+        end
+        @ticket.outgoing_date = Time.now
+        if @ticket.valid?
+          @ticket.transactions.each do |t|
+            t.update_transactions unless t.new_record? || !t.notified
+          end
+          @ticket.save
+          flash[:notice] = 'Ticket guardado con éxito'
+          redirect_to :tickets
+        else
+          edit
+          render :edit
+        end
       end
-      t.amount = t.amount_was if t.marked_for_destruction?
-    end
-    @ticket.outgoing_date = Time.now
-    if @ticket.valid?
-      @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record? || !t.notified
+      format.json do
+        @ticket = Ticket.find params[:id]
+        redirect_to :tickets unless @ticket.open
+        @ticket.update_attributes(params[:ticket])
+        @ticket.user_id = session[:user_id]
+        @ticket.transactions.each do |t|
+          t.user_id = @ticket.user_id
+          t.client_id = @ticket.client_id
+          t.comment = @ticket.comment
+          t.notified = @ticket.notified
+        end
+        @ticket.outgoing_date = Time.now
+        @ticket.open = false
+        @ticket.save
+        render json: @ticket.errors
       end
-      @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
-      redirect_to :tickets
-    else
-      edit
-      render :edit
     end
   end
 
