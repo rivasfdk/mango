@@ -33,6 +33,7 @@ class ReportsController < ApplicationController
     recipe_types = Recipe::TYPES
     recipe_types.delete(0)
     @recipe_types = recipe_types
+    @client_addresses = Address.all
   end
 
   def daily_production

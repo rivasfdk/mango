@@ -586,6 +586,14 @@
           <%= f.collection_select :client_id_4, @all_clients, :id, :name, {}, class: 'chosen-select chzn-field-normal' %>
           <br /><br />
         </div>
+
+        <%= f.check_box :by_address, checked: false %> &nbsp; <label for="group">Filtrar por Dirección</label>
+        <br /><br />
+        <div id="addresses">
+          <%= f.collection_select :client_address, @client_addresses, :address, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+
         <%= f.check_box :by_driver, checked: false %> &nbsp; <label for="group">Filtrar por chofer</label>
         <br /><br />
         <div id="driver_form">

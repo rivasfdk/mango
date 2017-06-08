@@ -508,9 +508,7 @@
             "description": "",
             "x": 470,
             "y": 72.9,
-
             "width": 69.5,
-
             "height": 10,
             "style": {
               "font-family": [
@@ -1213,9 +1211,7 @@
             "type": "text",
             "display": true,
             "description": "",
-
-            "x": 295,
-
+            "x": 520,
             "y": 291.8,
             "width": 65.1,
             "height": 11.1,
@@ -1243,9 +1239,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-
-            "x": 355,
-
+            "x": 580,
             "y": 292.9,
             "width": 59.5,
             "height": 10,

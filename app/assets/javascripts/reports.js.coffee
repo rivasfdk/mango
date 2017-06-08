@@ -104,6 +104,9 @@ content_type_1_changed = ->
 ticket_by_content_changed = ->
   $('#ticket_content_box').toggle($('#report_ticket_by_content').is(':checked'))
 
+ticket_by_address_changed = ->
+  $('#addresses').toggle($('#report_by_address').is(':checked'))
+
 ticket_content_type_1_changed = ->
   $('#ticket_ingredients_box').toggle($('#report_ticket_content_type_1').is(':checked'))
   $('#ticket_products_box').toggle($('#report_ticket_content_type_2').is(':checked'))
@@ -162,4 +165,5 @@ $ ->
   $('#report_by_content2').change select_by_content
   $('#report_content_type2_1').change select_content
   $('#report_content_type2_2').change select_content
+  $('#report_by_address').change ticket_by_address_changed
   return

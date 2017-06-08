@@ -64,6 +64,7 @@ $(function(){
     $('#report_by_content2').trigger('change');
     $('#report_content_type2_1').trigger('change');
     $('#report_content_type2_2').trigger('change');
+    $('#report_by_address').trigger('change');
     hideProductLots();
 });
 
