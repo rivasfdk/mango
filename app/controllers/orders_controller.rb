@@ -242,25 +242,21 @@ class OrdersController < ApplicationController
     if mango_features.include?("sap_sqlserver")
       client = connect_sqlserver
       if !client.nil?
-        consult = client.execute("select * from dbo.productos")
-        result = consult.each(:symbolize_keys => true)
-        create_products(result)
+        consult = client.execute("select * from dbo.productos  where procesada = 0")
+        products = consult.each(:symbolize_keys => true)
+        create_products(products)
 
-        consult = client.execute("select * from dbo.clientes")
-        result = consult.each(:symbolize_keys => true)
-        create_clients(result)
+        consult = client.execute("select * from dbo.clientes  where procesada = 0")
+        clients = consult.each(:symbolize_keys => true)
+        create_clients(clients)
 
-        consult = client.execute("select * from dbo.recetas")
-        result = consult.each(:symbolize_keys => true)
-        create_recipes(result)
+        consult = client.execute("select * from dbo.recetas where procesada = 0")
+        recipes = consult.each(:symbolize_keys => true)
+        create_recipes(recipes)
 
-        consult = client.execute("select * from dbo.detalle_receta")
-        result = consult.each(:symbolize_keys => true)
-        create_recipe_ingredients(result)
-
-        consult = client.execute("select * from dbo.orden_produccion")
-        result = consult.each(:symbolize_keys => true)
-        create_orders(result)
+        consult = client.execute("select * from dbo.orden_produccion where procesada = 0")
+        orders = consult.each(:symbolize_keys => true)
+        create_orders(orders)
         client.close
 
       end

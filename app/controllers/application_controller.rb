@@ -95,35 +95,51 @@ class ApplicationController < ActionController::Base
                             product_id: product.id
         end
       end
+      client = connect_sqlserver
+      if !client.nil?
+        sql = "update dbo.productos set procesada = 1 where codigo = \"#{ing[:codigo]}\""
+        result = client.execute(sql)
+        result.insert
+        client.close
+      end
     end
   end
 
   def create_clients(hash_array)
     hash_array.each do |client|
       if Client.where(code: client[:codigo]).empty?
-          Client.create code: client[:codigo],
-                        name: client[:nombre],
-                        ci_rif: client[:rif],
-                        address: client[:direccion],
-                        tel1: client[:telefono1]
+        Client.create code: client[:codigo],
+                      name: client[:nombre],
+                      ci_rif: client[:rif],
+                      address: client[:direccion],
+                      tel1: client[:telefono1]
+        clientsql = connect_sqlserver
+        if !clientsql.nil?
+          sql = "update dbo.clientes set procesada = 1 where codigo = \"#{client[:codigo]}\""
+          result = clientsql.execute(sql)
+          result.insert
+          clientsql.close
+        end
       end
     end
   end
 
   def create_recipes(hash_array)
     hash_array.each do |recipe|
-      last_recipe = Recipe.where(code: recipe[:codigo]).last
+      recipe_exist = Recipe.where(code: recipe[:codigo]).first
       product = Product.find_by(code: recipe[:cod_producto])
-      if !recipe[:procesada] & !product.nil?
+      if recipe_exist.nil? & !product.nil?
         Recipe.create code: recipe[:codigo],
                       name: recipe[:nombre],
-                      version: last_recipe.nil? ? 1 : last_recipe.version.succ,
+                      version: recipe[:version],
                       product_id: product.id,
                       comment: recipe[:comentario]
         client = connect_sqlserver
         if !client.nil?
+          consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
+          result = consult.each(:symbolize_keys => true)
+          create_recipe_ingredients(result)
           sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
-          puts sql
           result = client.execute(sql)
           result.insert
           client.close
@@ -133,23 +149,16 @@ class ApplicationController < ActionController::Base
   end
 
   def create_recipe_ingredients(hash_array)
+    #binding.pry
     hash_array.each do |ing|
-      recipe = Recipe.where(code: ing[:cod_receta]).last
+      recipe = Recipe.where(code: ing[:cod_receta]).first
       ingredient = Ingredient.find_by(code: ing[:cod_producto])
       if !recipe.nil? & !ingredient.nil?
-        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty? & !ing[:procesada]
+        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty?
           IngredientRecipe.create ingredient_id: ingredient.id,
                                   recipe_id: recipe.id,
                                   amount: ing[:cantidad_estandar],
                                   priority: ing[:prioridad]
-          client = connect_sqlserver
-          if !client.nil?
-            sql = "update dbo.detalle_receta set procesada = 1 where cod_receta = \"#{ing[:cod_receta]}\""
-            puts sql
-            result = client.execute(sql)
-            result.insert
-            client.close
-          end
         end
       end
     end
@@ -161,12 +170,19 @@ class ApplicationController < ActionController::Base
       client = Client.find_by(code: order[:cod_cliente])
       product_lot = ProductLot.find_by(code: order[:cod_lote])
       if Order.where(code: order[:codigo]).empty? & !recipe.nil? & !client.nil? & !product_lot.nil?
-          Order.create code: order[:codigo],
-                       recipe_id: recipe.id,
-                       client_id: client.id,
-                       user_id: 1,
-                       product_lot_id: product_lot.id,
-                       prog_batches: order[:batch_prog]
+        Order.create code: order[:codigo],
+                     recipe_id: recipe.id,
+                     client_id: client.id,
+                     user_id: 1,
+                     product_lot_id: product_lot.id,
+                     prog_batches: order[:batch_prog]
+        client = connect_sqlserver
+        if !client.nil?
+          sql = "update dbo.orden_produccion set procesada = 1 where codigo = \"#{order[:codigo]}\""
+          result = client.execute(sql)
+          result.insert
+          client.close
+        end
       end
     end
   end
