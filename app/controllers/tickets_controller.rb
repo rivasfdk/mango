@@ -4,6 +4,7 @@ include MangoModule
 
 class TicketsController < ApplicationController
   def index
+    @ttt = 0
     respond_to do |format|
       format.html do
         @states = Ticket.get_states()
