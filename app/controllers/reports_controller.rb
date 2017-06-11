@@ -259,7 +259,7 @@ class ReportsController < ApplicationController
     start_date = EasyModel.param_to_date(params[:report], 'start')
     end_date = EasyModel.param_to_date(params[:report], 'end')
 
-    @data = EasyModel.stock_adjustments(start_date, end_date)
+    @data = EasyModel.stock_adjustments(params[:report],start_date, end_date)
     if @data.nil?
 
       flash[:notice] = 'No hay registros para generar el reporte'
