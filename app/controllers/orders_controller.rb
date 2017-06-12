@@ -240,6 +240,7 @@ class OrdersController < ApplicationController
 
     mango_features = get_mango_features()
     if mango_features.include?("sap_sqlserver")
+      count = 0
       client = connect_sqlserver
       if !client.nil?
         consult = client.execute("select * from dbo.productos  where procesada = 0")
@@ -256,8 +257,15 @@ class OrdersController < ApplicationController
 
         consult = client.execute("select * from dbo.orden_produccion where procesada = 0")
         orders = consult.each(:symbolize_keys => true)
-        create_orders(orders)
+        count = create_orders(orders)
         client.close
+
+        if count > 0
+          flash[:notice] = "Se importaron #{count} ordenes con exito"
+        else
+          flash[:type] = 'warn'
+          flash[:notice] = 'No se encontraron ordenes para importar'
+        end
 
       else
         flash[:type] = 'error'

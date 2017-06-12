@@ -169,6 +169,7 @@ class ApplicationController < ActionController::Base
   end
 
   def create_orders(hash_array)
+    count = 0
     hash_array.each do |order|
       recipe = Recipe.where(code: order[:cod_receta]).last
       client = Client.find_by(code: order[:cod_cliente])
@@ -180,6 +181,7 @@ class ApplicationController < ActionController::Base
                      user_id: 1,
                      product_lot_id: product_lot.id,
                      prog_batches: order[:batch_prog]
+        count += 1
         client = connect_sqlserver
         if !client.nil?
           sql = "update dbo.orden_produccion set procesada = 1 where codigo = \"#{order[:codigo]}\""
@@ -189,6 +191,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    return count
   end
 
 end
