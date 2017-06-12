@@ -259,6 +259,9 @@ class OrdersController < ApplicationController
         create_orders(orders)
         client.close
 
+      else
+        flash[:type] = 'error'
+        flash[:notice] = 'No se pudo conectar con la base de datos'
       end
     end
     

@@ -60,11 +60,15 @@ class ApplicationController < ActionController::Base
 
   def connect_sqlserver
     sqlserver = get_mango_field('sql_server')
-    client = TinyTds::Client.new username: sqlserver["username"],
-                                 password: sqlserver["password"],
-                                 dataserver: sqlserver["dataserver"],
-                                 database: sqlserver["database"]
-    if client.closed?
+    begin
+      client = TinyTds::Client.new username: sqlserver["username"],
+                                   password: sqlserver["password"],
+                                   dataserver: sqlserver["dataserver"],
+                                   database: sqlserver["database"]
+    rescue
+      client = nil
+    end
+    if !client.nil? & client.closed?
       client = nil
     end
     return client
