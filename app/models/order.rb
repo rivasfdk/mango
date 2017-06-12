@@ -56,9 +56,9 @@ class Order < ActiveRecord::Base
     order_number = OrderNumber.first
     if self.code.nil?
       self.code = order_number.code.succ
+      order_number.code = self.code
+      order_number.save
     end
-    order_number.code = self.code
-    order_number.save
     self.product_lot_id = nil if self.auto_product_lot
   end
 
