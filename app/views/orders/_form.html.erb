@@ -12,7 +12,7 @@
 <div class="field"><%= f.collection_select :recipe_id, @recipes, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% if @medicament_recipes_enabled %>
 <label for="medicament_recipe_id" class="small">Medicamentos:</label>
-<div class="field"><%= f.collection_select :medicament_recipe_id, @medicament_recipes, :id, :code, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></div>
+<div class="field"><%= f.collection_select :medicament_recipe_id, @medicament_recipes, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></div>
 <% end %>
 <% if @factories_enabled %>
 <label for="client_id" class="small">
