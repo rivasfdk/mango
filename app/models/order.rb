@@ -437,7 +437,8 @@ class Order < ActiveRecord::Base
       files.each do |f|
         if f.downcase.include? ".txt"
           begin
-            FileUtils.mv(tmp_dir+f, sharepath+"AGROMATIC/")
+            path = sharepath+"AGROMATIC/"
+            FileUtils.mv(tmp_dir+f, path)
           rescue
             puts "++++++++++++++++++++"
             puts "+++ error de red +++"
