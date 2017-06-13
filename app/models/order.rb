@@ -357,6 +357,7 @@ class Order < ActiveRecord::Base
     data = EasyModel.order_details(self.code)
     message = ""
     sharepath = get_mango_field('share_path')
+    sharepath2 = get_mango_field('share_path2')
     tmp_dir = get_mango_field('tmp_dir')
     sap_file = get_mango_field('SAP_file')
     batch_consumption = []
@@ -437,8 +438,7 @@ class Order < ActiveRecord::Base
       files.each do |f|
         if f.downcase.include? ".txt"
           begin
-            path = sharepath+"AGROMATIC/"
-            FileUtils.mv(tmp_dir+f, path)
+            FileUtils.mv(tmp_dir+f, sharepath2)
           rescue
             puts "++++++++++++++++++++"
             puts "+++ error de red +++"
