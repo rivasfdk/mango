@@ -21,7 +21,7 @@ class Order < ActiveRecord::Base
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
   validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
-  validates :real_batches, numericality: {allow_nil: true}
+  validates :code, :real_batches, numericality: {allow_nil: true}
   validates :real_production, numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
@@ -58,6 +58,12 @@ class Order < ActiveRecord::Base
       self.code = order_number.code.succ
       order_number.code = self.code
       order_number.save
+    else
+      length = self.code.length
+      if length > 10
+        start = length -10
+        self.code = self.code[start,length]
+      end
     end
     self.product_lot_id = nil if self.auto_product_lot
   end
@@ -422,7 +428,7 @@ class Order < ActiveRecord::Base
       product_code = ProductLot.find(self.product_lot_id).product.code
       client_code = self.client.code
       results = data['results']
-      file << "#{self.code}\r\n"
+      file << "10#{self.code}\r\n"
       results.each do |result|
         file << "#{result['lot']};#{result['real_kg'].round(2)}\r\n"
       end
