@@ -434,17 +434,11 @@ class Order < ActiveRecord::Base
         file << "#{result['lot']};#{result['real_kg'].round(2)}\r\n"
       end
       file.close
-      files = Dir.entries(tmp_dir)
-      files.each do |f|
-        if f.downcase.include? ".txt"
-          begin
-            FileUtils.mv(tmp_dir+f, sharepath2)
-          rescue
-            puts "++++++++++++++++++++"
-            puts "+++ error de red +++"
-            puts "++++++++++++++++++++"
-          end
-        end
+      begin
+        FileUtils.mv(tmp_dir+File.basename(file), sharepath2)
+      rescue
+        FileUtils.rm(tmp_dir+File.basename(file))
+        message = "Error de conexión, no se pudo notificar"
       end
     when 3
     #++++++++++++++++SAP Inveravica++++++++++++++++++++++++++++++++++++++++++++++++++++

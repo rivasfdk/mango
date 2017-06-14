@@ -138,27 +138,33 @@ class ApplicationController < ActionController::Base
                       version: recipe[:version],
                       product_id: product.id,
                       comment: recipe[:comentario]
-        client = connect_sqlserver
-        if !client.nil?
-          consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
-          result = consult.each(:symbolize_keys => true)
-          create_recipe_ingredients(result)
-          sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
-          result = client.execute(sql)
-          result.insert
-          client.close
-        end
+      end
+      client = connect_sqlserver
+      if !client.nil?
+        consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
+        result = consult.each(:symbolize_keys => true)
+        create_recipe_ingredients(result, recipe[:codigo])
+        sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
+        result = client.execute(sql)
+        result.insert
+        client.close
       end
     end
   end
 
-  def create_recipe_ingredients(hash_array)
-    #binding.pry
+  def create_recipe_ingredients(hash_array, recipe_code)
+    #tmp_dir = get_mango_field('tmp_dir')
+    recipe = Recipe.where(code: recipe_code).first
+    #file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
+    #file << hash_array+"\r\n"
     hash_array.each do |ing|
-      recipe = Recipe.where(code: ing[:cod_receta]).first
       ingredient = Ingredient.find_by(code: ing[:cod_producto])
       if !recipe.nil? & !ingredient.nil?
-        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty?
+        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).first
+          #file << "ingredient #{ingredient.name} exits on recipe #{recipe.code} ****\r\n"
+          puts "ing existe"
+        else
+          #file << "create ingredient #{ingredient.name} on recipe #{recipe.code}\r\n"
           IngredientRecipe.create ingredient_id: ingredient.id,
                                   recipe_id: recipe.id,
                                   amount: ing[:cantidad_estandar],
@@ -166,6 +172,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    #file.close
   end
 
   def create_orders(hash_array)
