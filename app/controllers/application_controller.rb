@@ -144,9 +144,6 @@ class ApplicationController < ActionController::Base
         consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
         result = consult.each(:symbolize_keys => true)
         create_recipe_ingredients(result, recipe[:codigo])
-        sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
-        result = client.execute(sql)
-        result.insert
         client.close
       end
     end
@@ -173,6 +170,13 @@ class ApplicationController < ActionController::Base
       end
     end
     #file.close
+    client = connect_sqlserver
+    if !client.nil?
+      sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe_code}\""
+      result = client.execute(sql)
+      result.insert
+      client.close
+    end
   end
 
   def create_orders(hash_array)
