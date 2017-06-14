@@ -907,12 +907,21 @@ class EasyModel
     by_client = params[:by_client_4] == '1'
     ticket_by_content = params[:ticket_by_content] == '1'
     by_address = params[:by_address] == '1'
+    by_order = params[:by_order] == '1'
 
     data = self.initialize_data('Movimientos de Romana')
 
     transactions = Ticket.base_search
       .where('tickets.open = FALSE')
       .where('tickets.outgoing_date BETWEEN ? AND ?', start_date, end_date + 1.day)
+
+    if by_order
+      if params[:ticket_order] == '1'
+        transactions = transactions.order('clients.name', 'tickets.address')
+      else
+        transactions = transactions.order('tickets.address')
+      end
+    end
 
     transactions = transactions.where('tickets.address = ?', params[:client_address]) if by_address
 
