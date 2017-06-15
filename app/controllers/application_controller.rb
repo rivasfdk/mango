@@ -151,23 +151,30 @@ class ApplicationController < ActionController::Base
 
   def create_recipe_ingredients(hash_array, recipe_code)
     tmp_dir = get_mango_field('tmp_dir')
-    recipe = Recipe.where(code: recipe_code).first
     file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
-    file << hash_array+"\r\n"
+    file << "#{hash_array}\r\n"
     hash_array.each do |ing|
-      ingredient = Ingredient.find_by(code: ing[:cod_producto])
-      if !recipe.nil? & !ingredient.nil?
-        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).first
-          file << "ingredient #{ingredient.name} exits on recipe #{recipe.code} ****\r\n"
-          puts "ing existe"
-        else
-          file << "create ingredient #{ingredient.name} on recipe #{recipe.code}\r\n"
-          IngredientRecipe.create ingredient_id: ingredient.id,
-                                  recipe_id: recipe.id,
-                                  amount: ing[:cantidad_estandar],
-                                  priority: ing[:prioridad]
+
+      recip = Recipe.find_by(code: recipe_code)
+      @recipe = Recipe.find(recip.id, :include=>'ingredient_recipe')
+      ingredient = Ingredient.where(code: ing[:cod_producto]).first
+
+      if !@recipe.nil? & !ingredient.nil?
+        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: @recipe.id).first.nil?
+          file << "create ingredient #{ingredient.name} on recipe #{@recipe.code}\r\n"
+          ingredient_recipe = IngredientRecipe.new
+          ingredient_recipe.ingredient = ingredient
+          ingredient_recipe.recipe = @recipe
+          ingredient_recipe.priority = ing[:prioridad]
+          ingredient_recipe.amount = ing[:cantidad_estandar]
+          ingredient_recipe.percentage = 0.0
+
+          if ingredient_recipe.valid?
+            ingredient_recipe.save
+          end
         end
       end
+
     end
     file.close
     client = connect_sqlserver
