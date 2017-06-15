@@ -309,6 +309,17 @@ class Order < ActiveRecord::Base
         end
       end
     end
+
+    if is_mango_feature_available("log_debugger")
+      log_dir = get_mango_field('log_dir')
+      file = File.open(log_dir+"transaction_#{self.code}.log",'w')
+      consumptions.each do |csm|
+        codigolote = Lot.find(csm[0]).code
+        file << "#{codigolote} - #{csm[1]}\r\n"
+      end
+      file.close
+    end
+
     consumptions.each do |key, amount|
       previous_amount = order_transactions.inject(0) do |sum, t|
         (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum
@@ -549,6 +560,14 @@ class Order < ActiveRecord::Base
           hopper_lot.factory = true
           hopper_lot.save(validate: false)
         end
+      end
+
+      if is_mango_feature_available("log_debugger")
+        log_dir = get_mango_field('log_dir')
+        file = File.open(log_dir+"Batch_#{self.code}.log",'a')
+        codigolote = Lot.find(hopper_lot.lot_id).code
+        file << "#{params[:batch_number]} - #{codigolote} - #{params[:amount]}\r\n"
+        file.close
       end
 
       batch_hopper_lot = batch.batch_hopper_lot.new
