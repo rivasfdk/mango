@@ -150,18 +150,18 @@ class ApplicationController < ActionController::Base
   end
 
   def create_recipe_ingredients(hash_array, recipe_code)
-    #tmp_dir = get_mango_field('tmp_dir')
+    tmp_dir = get_mango_field('tmp_dir')
     recipe = Recipe.where(code: recipe_code).first
-    #file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
-    #file << hash_array+"\r\n"
+    file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
+    file << hash_array+"\r\n"
     hash_array.each do |ing|
       ingredient = Ingredient.find_by(code: ing[:cod_producto])
       if !recipe.nil? & !ingredient.nil?
         if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).first
-          #file << "ingredient #{ingredient.name} exits on recipe #{recipe.code} ****\r\n"
+          file << "ingredient #{ingredient.name} exits on recipe #{recipe.code} ****\r\n"
           puts "ing existe"
         else
-          #file << "create ingredient #{ingredient.name} on recipe #{recipe.code}\r\n"
+          file << "create ingredient #{ingredient.name} on recipe #{recipe.code}\r\n"
           IngredientRecipe.create ingredient_id: ingredient.id,
                                   recipe_id: recipe.id,
                                   amount: ing[:cantidad_estandar],
@@ -169,7 +169,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-    #file.close
+    file.close
     client = connect_sqlserver
     if !client.nil?
       sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe_code}\""
