@@ -130,12 +130,13 @@ class ApplicationController < ActionController::Base
 
   def create_recipes(hash_array)
     hash_array.each do |recipe|
-      recipe_exist = Recipe.where(code: recipe[:codigo]).first
+      recipe_exist = Recipe.where(code: recipe[:codigo], active: true).first
       product = Product.find_by(code: recipe[:cod_producto])
       if recipe_exist.nil? & !product.nil?
         Recipe.create code: recipe[:codigo],
                       name: recipe[:nombre],
                       version: recipe[:version],
+                      active: true,
                       product_id: product.id,
                       comment: recipe[:comentario]
       end
@@ -153,28 +154,32 @@ class ApplicationController < ActionController::Base
     tmp_dir = get_mango_field('tmp_dir')
     file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
     file << "#{hash_array}\r\n"
-    hash_array.each do |ing|
+    recip = Recipe.find_by(code: recipe_code, active: true)
+    if !recip.nil?
+      hash_array.each do |ing|
 
-      recip = Recipe.find_by(code: recipe_code)
-      @recipe = Recipe.find(recip.id, :include=>'ingredient_recipe')
-      ingredient = Ingredient.where(code: ing[:cod_producto]).first
+        @recipe = Recipe.find(recip.id, :include=>'ingredient_recipe')
+        ingredient = Ingredient.where(code: ing[:cod_producto]).first
 
-      if !@recipe.nil? & !ingredient.nil?
-        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: @recipe.id).first.nil?
-          file << "create ingredient #{ingredient.name} on recipe #{@recipe.code}\r\n"
-          ingredient_recipe = IngredientRecipe.new
-          ingredient_recipe.ingredient = ingredient
-          ingredient_recipe.recipe = @recipe
-          ingredient_recipe.priority = ing[:prioridad]
-          ingredient_recipe.amount = ing[:cantidad_estandar]
-          ingredient_recipe.percentage = 0.0
+        if !@recipe.nil? & !ingredient.nil?
+          if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: @recipe.id).first.nil?
+            file << "create ingredient #{ingredient.name} on recipe #{@recipe.code}\r\n"
+            ingredient_recipe = IngredientRecipe.new
+            ingredient_recipe.ingredient = ingredient
+            ingredient_recipe.recipe = @recipe
+            ingredient_recipe.priority = ing[:prioridad]
+            ingredient_recipe.amount = ing[:cantidad_estandar]
+            ingredient_recipe.percentage = 0.0
 
-          if ingredient_recipe.valid?
-            ingredient_recipe.save
+            if ingredient_recipe.valid?
+              ingredient_recipe.save
+            end
           end
         end
-      end
 
+      end
+    else
+      file << "receta no existe"
     end
     file.close
     client = connect_sqlserver
