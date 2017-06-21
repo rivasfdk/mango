@@ -17,17 +17,21 @@
 #
 # Learn more: http://github.com/javan/whenever
 #
-set :environment, 'development'
+set :environment, 'production'
 set :job_template, "bash -l -i -c ':job'"
-#set :output, {:error => "/home/gaby/mango-v2/cron_error_log.log", :standard => "/home/gaby/mango-v2/cron_log.log"}
+set :output, {:error => "/home/cron_error_log.log", :standard => "/home/cron_log.log"}
 
 every :hour do
-  rake "db:sync_remote_db"
+  rake "sync_db:local_to_remote"
 end
 
 # USAGE
 # =====
 # To write crontab:
-# $ whenever --update-crontab
+# $  whenever --update-crontab
 # To clear crontab:
 # $ whenever -c
+#
+# For rake task sync_db:local_to_remote it is needed to set up SSH keys for password-less login, to do so run:
+# $ ssh-keygen
+# $ ssh-copy-id agromaticgroup@198.1.80.116
