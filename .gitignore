@@ -1,6 +1,7 @@
 *~
 .rvmrc
 .ruby-version
+.ruby-gemset
 .bundle
 log/*.log
 config/database.yml
