@@ -21,7 +21,7 @@ class Order < ActiveRecord::Base
   validates :product_lot, presence: {unless: :auto_product_lot}
   validates :recipe, :user, :client, presence: true
   validates :prog_batches, numericality: {only_integer: true, greater_than_or_equal_to: 0}
-  validates :real_batches, numericality: {allow_nil: true}
+  validates :code, :real_batches, numericality: {allow_nil: true}
   validates :real_production, numericality: {greater_than: 0, allow_nil: true}
   validate :product_lot_factory
   validate :product_lot_recipe
@@ -56,9 +56,15 @@ class Order < ActiveRecord::Base
     order_number = OrderNumber.first
     if self.code.nil?
       self.code = order_number.code.succ
+      order_number.code = self.code
+      order_number.save
+    else
+      length = self.code.length
+      if length > 10
+        start = length -10
+        self.code = self.code[start,length]
+      end
     end
-    order_number.code = self.code
-    order_number.save
     self.product_lot_id = nil if self.auto_product_lot
   end
 
@@ -303,6 +309,17 @@ class Order < ActiveRecord::Base
         end
       end
     end
+
+    if is_mango_feature_available("log_debugger")
+      log_dir = get_mango_field('log_dir')
+      file = File.open(log_dir+"transaction_#{self.code}.log",'w')
+      consumptions.each do |csm|
+        codigolote = Lot.find(csm[0]).code
+        file << "#{codigolote} - #{csm[1]}\r\n"
+      end
+      file.close
+    end
+
     consumptions.each do |key, amount|
       previous_amount = order_transactions.inject(0) do |sum, t|
         (t.content_type == 1 and t.content_id == key) ? sum + t.amount : sum
@@ -351,6 +368,7 @@ class Order < ActiveRecord::Base
     data = EasyModel.order_details(self.code)
     message = ""
     sharepath = get_mango_field('share_path')
+    sharepath2 = get_mango_field('share_path2')
     tmp_dir = get_mango_field('tmp_dir')
     sap_file = get_mango_field('SAP_file')
     batch_consumption = []
@@ -422,22 +440,16 @@ class Order < ActiveRecord::Base
       product_code = ProductLot.find(self.product_lot_id).product.code
       client_code = self.client.code
       results = data['results']
-      file << "#{self.code}\r\n"
+      file << "10#{self.code}\r\n"
       results.each do |result|
         file << "#{result['lot']};#{result['real_kg'].round(2)}\r\n"
       end
       file.close
-      files = Dir.entries(tmp_dir)
-      files.each do |f|
-        if f.downcase.include? ".txt"
-          begin
-            FileUtils.mv(tmp_dir+f, sharepath)
-          rescue
-            puts "++++++++++++++++++++"
-            puts "+++ error de red +++"
-            puts "++++++++++++++++++++"
-          end
-        end
+      begin
+        FileUtils.mv(tmp_dir+File.basename(file), sharepath2)
+      rescue
+        FileUtils.rm(tmp_dir+File.basename(file))
+        message = "Error de conexión, no se pudo notificar"
       end
     when 3
     #++++++++++++++++SAP Inveravica++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -548,6 +560,14 @@ class Order < ActiveRecord::Base
           hopper_lot.factory = true
           hopper_lot.save(validate: false)
         end
+      end
+
+      if is_mango_feature_available("log_debugger")
+        log_dir = get_mango_field('log_dir')
+        file = File.open(log_dir+"Batch_#{self.code}.log",'a')
+        codigolote = Lot.find(hopper_lot.lot_id).code
+        file << "#{params[:batch_number]} - #{codigolote} - #{params[:amount]}\r\n"
+        file.close
       end
 
       batch_hopper_lot = batch.batch_hopper_lot.new

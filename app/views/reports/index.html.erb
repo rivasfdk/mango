@@ -567,6 +567,15 @@
       <%= form_for(:report, url: tickets_transactions_report_path(format: 'pdf'), html: {target: "_blank"}) do |f| %>
         <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
         <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+
+        <%= f.check_box :by_order, checked: false %> &nbsp; <label for="group">Ordenar por:</label>
+        <br /><br />
+        <div id="ticket_order_form">
+          <%= f.radio_button :ticket_order, 1, :checked => true %> Origen/Destino
+          <%= f.radio_button :ticket_order, 2%> Direccion
+          <br /><br />
+        </div>
+
         <%= f.check_box :by_ticket_type, checked: false %> &nbsp; <label for="group">Filtrar por tipo</label>
         <br /><br />
         <div id="ticket_type_form">

@@ -24,7 +24,7 @@
           <td><%=h imr.ingredient.code %></td>
           <td><%=h imr.ingredient.name %></td>
           <td><%=h imr.amount %></td>
-          <td><%= render_action_delete(medicament_recipe_ingredient_medicament_recipe_path(@medicament_recipe, imr), 
+          <td><%= render_action_delete(medicament_recipe_ingredient_medicament_recipes_path(@medicament_recipe, imr), 
             "Desea eliminar el ingrediente '#{imr.ingredient.code} - #{imr.ingredient.name}'?") %></td>
         </tr>
       <% end %>

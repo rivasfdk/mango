@@ -124,6 +124,9 @@ select_content = ->
   $('#stocka_ingredients_box').toggle($('#report_content_type2_1').is(':checked'))
   $('#stocka_products_box').toggle($('#report_content_type2_2').is(':checked'))
 
+ticket_by_order_changed = ->
+  $('#ticket_order_form').toggle($('#report_by_order').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -166,4 +169,5 @@ $ ->
   $('#report_content_type2_1').change select_content
   $('#report_content_type2_2').change select_content
   $('#report_by_address').change ticket_by_address_changed
+  $('#report_by_order').change ticket_by_order_changed
   return

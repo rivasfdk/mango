@@ -60,11 +60,15 @@ class ApplicationController < ActionController::Base
 
   def connect_sqlserver
     sqlserver = get_mango_field('sql_server')
-    client = TinyTds::Client.new username: sqlserver["username"],
-                                 password: sqlserver["password"],
-                                 dataserver: sqlserver["dataserver"],
-                                 database: sqlserver["database"]
-    if client.closed?
+    begin
+      client = TinyTds::Client.new username: sqlserver["username"],
+                                   password: sqlserver["password"],
+                                   dataserver: sqlserver["dataserver"],
+                                   database: sqlserver["database"]
+    rescue
+      client = nil
+    end
+    if !client.nil? & client.closed?
       client = nil
     end
     return client
@@ -126,45 +130,69 @@ class ApplicationController < ActionController::Base
 
   def create_recipes(hash_array)
     hash_array.each do |recipe|
-      recipe_exist = Recipe.where(code: recipe[:codigo]).first
+      recipe_exist = Recipe.where(code: recipe[:codigo], active: true).first
       product = Product.find_by(code: recipe[:cod_producto])
       if recipe_exist.nil? & !product.nil?
         Recipe.create code: recipe[:codigo],
                       name: recipe[:nombre],
                       version: recipe[:version],
+                      active: true,
                       product_id: product.id,
                       comment: recipe[:comentario]
-        client = connect_sqlserver
-        if !client.nil?
-          consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
-          result = consult.each(:symbolize_keys => true)
-          create_recipe_ingredients(result)
-          sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe[:codigo]}\""
-          result = client.execute(sql)
-          result.insert
-          client.close
-        end
+      end
+      client = connect_sqlserver
+      if !client.nil?
+        consult = client.execute("select * from dbo.detalle_receta where cod_receta = \"#{recipe[:codigo]}\"")
+        result = consult.each(:symbolize_keys => true)
+        create_recipe_ingredients(result, recipe[:codigo])
+        client.close
       end
     end
   end
 
-  def create_recipe_ingredients(hash_array)
-    #binding.pry
-    hash_array.each do |ing|
-      recipe = Recipe.where(code: ing[:cod_receta]).first
-      ingredient = Ingredient.find_by(code: ing[:cod_producto])
-      if !recipe.nil? & !ingredient.nil?
-        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty?
-          IngredientRecipe.create ingredient_id: ingredient.id,
-                                  recipe_id: recipe.id,
-                                  amount: ing[:cantidad_estandar],
-                                  priority: ing[:prioridad]
+  def create_recipe_ingredients(hash_array, recipe_code)
+    tmp_dir = get_mango_field('tmp_dir')
+    file = File.open(tmp_dir+"#{recipe_code}.txt",'w')
+    file << "#{hash_array}\r\n"
+    recip = Recipe.find_by(code: recipe_code, active: true)
+    if !recip.nil?
+      hash_array.each do |ing|
+
+        @recipe = Recipe.find(recip.id, :include=>'ingredient_recipe')
+        ingredient = Ingredient.where(code: ing[:cod_producto]).first
+
+        if !@recipe.nil? & !ingredient.nil?
+          if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: @recipe.id).first.nil?
+            file << "create ingredient #{ingredient.name} on recipe #{@recipe.code}\r\n"
+            ingredient_recipe = IngredientRecipe.new
+            ingredient_recipe.ingredient = ingredient
+            ingredient_recipe.recipe = @recipe
+            ingredient_recipe.priority = ing[:prioridad]
+            ingredient_recipe.amount = ing[:cantidad_estandar]
+            ingredient_recipe.percentage = 0.0
+
+            if ingredient_recipe.valid?
+              ingredient_recipe.save
+            end
+          end
         end
+
       end
+    else
+      file << "receta no existe"
+    end
+    file.close
+    client = connect_sqlserver
+    if !client.nil?
+      sql = "update dbo.recetas set procesada = 1 where codigo = \"#{recipe_code}\""
+      result = client.execute(sql)
+      result.insert
+      client.close
     end
   end
 
   def create_orders(hash_array)
+    count = 0
     hash_array.each do |order|
       recipe = Recipe.where(code: order[:cod_receta]).last
       client = Client.find_by(code: order[:cod_cliente])
@@ -176,6 +204,7 @@ class ApplicationController < ActionController::Base
                      user_id: 1,
                      product_lot_id: product_lot.id,
                      prog_batches: order[:batch_prog]
+        count += 1
         client = connect_sqlserver
         if !client.nil?
           sql = "update dbo.orden_produccion set procesada = 1 where codigo = \"#{order[:codigo]}\""
@@ -185,6 +214,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    return count
   end
 
 end

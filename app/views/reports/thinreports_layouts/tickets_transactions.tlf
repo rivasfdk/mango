@@ -96,7 +96,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 520,
+            "x": 540,
             "y": 99,
             "width": 55,
             "height": 25,
@@ -125,7 +125,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 580,
+            "x": 595,
             "y": 99,
             "width": 55,
             "height": 25,
@@ -154,7 +154,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 630,
+            "x": 645,
             "y": 99,
             "width": 50,
             "height": 25,
@@ -182,7 +182,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 240,
+            "x": 285,
             "y": 99,
             "width": 143.4,
             "height": 25,
@@ -210,7 +210,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 395,
+            "x": 440,
             "y": 99,
             "width": 110,
             "height": 25,
@@ -230,7 +230,7 @@
               ]
             },
             "texts": [
-              "Lote"
+              "Documento"
             ]
           },
           {
@@ -729,17 +729,17 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 721.9,
-            "y": 175.1,
+            "x": 458,
+            "y": 152.1,
             "width": 79.9,
-            "height": 12,
+            "height": 26,
             "style": {
               "font-family": [
                 "Helvetica"
               ],
               "font-size": 8,
               "color": "#000000",
-              "text-align": "left",
+              "text-align": "center",
               "vertical-align": "middle",
               "line-height": "",
               "line-height-ratio": "",
@@ -766,7 +766,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 520,
+            "x": 540,
             "y": 151.2,
             "width": 55,
             "height": 26.1,
@@ -803,7 +803,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 580,
+            "x": 595,
             "y": 151.2,
             "width": 55,
             "height": 26.1,
@@ -840,7 +840,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 640,
+            "x": 650,
             "y": 151.2,
             "width": 37.9,
             "height": 26.1,
@@ -912,9 +912,9 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 400,
+            "x": 337,
             "y": 151.2,
-            "width": 110,
+            "width": 85.9,
             "height": 26.1,
             "style": {
               "font-family": [
@@ -986,7 +986,7 @@
             "description": "",
             "x": 194.9,
             "y": 177.1,
-            "width": 508,
+            "width": 606.9,
             "height": 17,
             "style": {
               "font-family": [
@@ -1048,7 +1048,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 351,
+            "x": 415,
             "y": 151.2,
             "width": 43.9,
             "height": 26.1,
@@ -1158,34 +1158,6 @@
             "texts": [
               "Placa:"
             ]
-          },
-          {
-            "id": "",
-            "type": "text",
-            "display": true,
-            "description": "",
-            "x": 689.2,
-            "y": 175.1,
-            "width": 33,
-            "height": 11.9,
-            "style": {
-              "font-family": [
-                "Helvetica"
-              ],
-              "font-size": 9,
-              "color": "#000000",
-              "text-align": "right",
-              "vertical-align": "top",
-              "line-height": "",
-              "line-height-ratio": "",
-              "letter-spacing": "",
-              "font-style": [
-                "bold"
-              ]
-            },
-            "texts": [
-              "Doc:"
-            ]
           }
         ]
       },
@@ -1211,7 +1183,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 520,
+            "x": 555,
             "y": 291.8,
             "width": 65.1,
             "height": 11.1,
@@ -1239,7 +1211,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 580,
+            "x": 605,
             "y": 292.9,
             "width": 59.5,
             "height": 10,
@@ -1249,7 +1221,7 @@
               ],
               "font-size": 10,
               "color": "#000000",
-              "text-align": "center",
+              "text-align": "left",
               "vertical-align": "top",
               "line-height": "",
               "line-height-ratio": "",
