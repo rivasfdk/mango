@@ -745,6 +745,11 @@ class Order < ActiveRecord::Base
           break
         end
         order = keys.zip(values).to_h
+        length = order["order_code"].length
+        if length > 10
+          start = length -10
+          order["order_code"] = order["order_code"][start,length]
+        end
         orderfile = File.open(sharepath+file).readlines
         orderfile.delete_at(0)
         items = []
