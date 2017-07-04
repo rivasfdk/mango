@@ -161,12 +161,17 @@ server_romano_ip = ""
 
 $ ->
   url = '/tickets/get_server_romano_ip'
+  params = {}
   if (self.location.href.includes('/tickets') and self.location.href.includes('/entry'))
-    $.getJSON url, (data) ->
-      server_romano_ip = data.in
+    params['type'] = 1
+    $.getJSON url, params, (data) ->
+      server_romano_ip = data[0]
+      console.log server_romano_ip
   if (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
-    $.getJSON url, (data) ->
-      server_romano_ip = data.out
+    params['type'] = 2
+    $.getJSON url, params, (data) ->
+      server_romano_ip = data[0]
+      console.log server_romano_ip
 
 update_weight = ->
   if self.location.href.includes('/entry')

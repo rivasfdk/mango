@@ -522,7 +522,22 @@ class TicketsController < ApplicationController
   end
 
   def get_server_romano_ip
-    server_romano_ip = get_mango_field('server_romano_ip')
+    server_romano = get_mango_field('server_romano_ip')
+    settings = Settings.first
+    server_romano_ip = []
+    if settings.port1 & !settings.port2
+      server_romano_ip[0] = server_romano["in"]
+    else
+      if settings.port2 & !settings.port1
+        server_romano_ip[0] = server_romano["out"]
+      else
+        if params['type'] == '1'
+          server_romano_ip[0] = server_romano["in"]
+        else
+          server_romano_ip[0] = server_romano["out"]
+        end
+      end
+    end
     render json: server_romano_ip
   end
 

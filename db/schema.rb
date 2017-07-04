@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170326224321) do
+ActiveRecord::Schema.define(version: 20170704225402) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -563,6 +563,8 @@ ActiveRecord::Schema.define(version: 20170326224321) do
     t.datetime "updated_at",                           null: false
     t.float    "ticket_reception_diff", default: 0.5
     t.float    "ticket_dispatch_diff",  default: 0.5
+    t.boolean  "port1"
+    t.boolean  "port2"
   end
 
   create_table "tickets", force: true do |t|
