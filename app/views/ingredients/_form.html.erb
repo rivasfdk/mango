@@ -11,5 +11,9 @@
 <label for="loss" class="small">Merma (%):</label>
 <div class="field"><%= f.text_field :loss, :size=>'15' %><span>*</span></div>
 <% end %>
+
+  <label for="sacks" class="small">Activo: </label>
+  <div class="field"><%= f.check_box :active %></div><br />
+
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
