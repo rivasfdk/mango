@@ -1818,12 +1818,12 @@ adjustments = []
     date += 7.hours
     if content_type == 1
       lots = Lot.order('code asc')
-      lots = lots.where(:active => true)
+      lots = lots.where(:active => true, :empty => nil)
       lots = lots.where(:client_id => factory_id) if by_factory
       lots = lots.where(:ingredient_id => ingredients_id) if by_content
     else
       lots = ProductLot.order('code asc')
-      lots = lots.where(:active => true)
+      lots = lots.where(:active => true, :empty => nil)
       lots = lots.where(:client_id => factory_id) if by_factory
       lots = lots.where(:product_id => products_id) if by_content
     end
