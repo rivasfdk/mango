@@ -10,7 +10,7 @@ class TicketsController < ApplicationController
         @drivers = Driver.where(frequent: true)
         @carriers = Carrier.where(frequent: true)
         @ticket_types = TicketType.all
-        @ingredients = Ingredient.actives
+        @ingredients = Ingredient.all#actives
         @tickets = Ticket.search(params) 
         @factories = Client.where(factory: true) << Client.new(code: "-1", name: session[:company]['name'])
         mango_features = get_mango_features()
