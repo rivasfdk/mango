@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
 
   def show
     if session[:user_id]
-      @critical_ingredients = Ingredient.where(:stock_below_minimum => true).count
+      @critical_ingredients = Ingredient.where(:active => true, :stock_below_minimum => true).count
       @critical_hoppers = Hopper.where(:stock_below_minimum => true).count
       mango_features = get_mango_features()
       @transactions_enabled = mango_features.include?("transactions")
