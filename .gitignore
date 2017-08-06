@@ -1,6 +1,5 @@
 *~
 .rvmrc
-.ruby-version
 .bundle
 log/*.log
 config/database.yml
@@ -11,3 +10,5 @@ tmp/
 .sass-cache/
 db/dump.sql
 public/assets
+.ruby-gemset
+.ruby-version

@@ -22,6 +22,9 @@ gem 'uglifier'
 
 gem 'tiny_tds', '~> 0.7.0'
 
+# Use to write and deploy cron jobs with rake tasks
+gem 'whenever', :require => false
+
 group :development do
   gem 'quiet_assets'
   gem 'pry-rails'
