@@ -19,10 +19,11 @@ class Permission < ActiveRecord::Base
   MODES = ['global', 'module']
 
   # Rails actions
-  CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all']
+  CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all', 'get_all_reception', 'get_all_dispatch', 'get_order_client']
   MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
   DELETE = ['destroy']
-  CREATE = ['new', 'create','import', 'items', 'entry', 'close']
+  CREATE = ['new', 'create','import', 'items', 'update_items', 'entry', 'update_entry', 'close',
+           'do_close', 'get_server_romano_ip', 'get_item_warehouse', 'get_client']
 
   def self.get_modules
     MODULES
