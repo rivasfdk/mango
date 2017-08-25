@@ -331,7 +331,7 @@
             "description": "",
             "x": 20,
             "y": 154.2,
-            "width": 47.8,
+            "width": 55.9,
             "height": 18,
             "style": {
               "font-family": [
@@ -584,7 +584,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 76.9,
+            "x": 80,
             "y": 154.2,
             "width": 57.4,
             "height": 18,

@@ -6,7 +6,7 @@
       "type": "list",
       "display": true,
       "description": "",
-      "x": 40,
+      "x": 41,
       "y": 120,
       "width": 760.2,
       "height": 445.2,
@@ -14,7 +14,7 @@
         "enabled": true,
         "height": 26,
         "translate": {
-          "x": 20,
+          "x": 21,
           "y": 48
         },
         "items": [
@@ -348,7 +348,7 @@
       "detail": {
         "height": 21,
         "translate": {
-          "x": 20,
+          "x": 21,
           "y": -5.2
         },
         "items": [
@@ -359,7 +359,7 @@
             "description": "",
             "x": 20,
             "y": 154.2,
-            "width": 47.8,
+            "width": 57.9,
             "height": 18,
             "style": {
               "font-family": [
@@ -613,7 +613,7 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 76.9,
+            "x": 81,
             "y": 154.2,
             "width": 57.4,
             "height": 18,
@@ -722,7 +722,7 @@
         "enabled": false,
         "height": 0,
         "translate": {
-          "x": 20,
+          "x": 21,
           "y": -63.4
         },
         "items": []
@@ -731,7 +731,7 @@
         "enabled": true,
         "height": 19.9,
         "translate": {
-          "x": 20,
+          "x": 21,
           "y": -122.8
         },
         "items": [
