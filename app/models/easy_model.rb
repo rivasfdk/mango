@@ -1830,12 +1830,15 @@ adjustments = []
 
     return nil if lots.empty?
 
+
     lots.each do |l|
       key = l.get_content.code
       transaction = Transaction.where([
         'notified = true and created_at < ? and content_type = ? and content_id = ? ',
         date.strftime("%Y-%m-%d %H:%M:%S"), content_type, l.id
       ]).order('created_at desc').first
+
+
       if transaction
         if results.has_key?(key)
           results[key]['stock'] += transaction.stock_after
@@ -1847,13 +1850,15 @@ adjustments = []
           }
         end
       else
-        results[key] = {
-          'code' => key,
-          'name' => l.get_content.name,
-          'stock' => 0
-        }
+        #results[key] = {
+         # 'code' => key,
+          #'name' => l.get_content.name,
+          #'stock' => 0
+        #}
       end
+      
     end
+
     results.sort_by {|k,v| k}.map do |key, item|
       data['results'] << item
     end

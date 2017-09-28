@@ -403,13 +403,15 @@ class Order < ActiveRecord::Base
         message = "No se notificó la orden: Lote sin almacen asignado"
       else
         file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+        total_order = 0
         batch_consumption.each do |consump|
           total = 0
           consump.each do |lot|
             amount = lot[1]
             total = total + amount
           end
-          file << "#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
+          total_order = total_order + total
+          file << "61#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
           consump.each do |lot|
             content_lot = Lot.find_by(id: lot[0])
             i_code = content_lot.ingredient.code
@@ -421,6 +423,7 @@ class Order < ActiveRecord::Base
           end
         end
         file.close
+        puts total_order
         files = Dir.entries(tmp_dir)
         files.each do |f|
           if f.downcase.include? "notificacion"

@@ -31,7 +31,7 @@ class TicketOrder < ActiveRecord::Base
             order = keys.zip(values).to_h
             orders.push(order)
           end
-          File.delete(sharepath+file)
+          #File.delete(sharepath+file)
         end
       end
       return orders
