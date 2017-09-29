@@ -21,7 +21,8 @@ class Permission < ActiveRecord::Base
   # Rails actions
   CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all', 'get_all_reception',
             'get_all_dispatch', 'get_order_client','get_item_warehouse']
-  MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper', 'create_order_stat']
+  MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper',
+           'create_order_stat', 'fill', 'do_fill', 'change', 'do_change']
   DELETE = ['destroy']
   CREATE = ['new', 'create','import', 'items', 'update_items', 'entry', 'update_entry', 'close',
            'do_close', 'get_server_romano_ip', 'get_client']

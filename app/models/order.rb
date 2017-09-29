@@ -398,41 +398,43 @@ class Order < ActiveRecord::Base
     case sap_file
     when 1
     #++++++++++++++++SAP Lider Pollo++++++++++++++++++++++++++++++++++++++++++++++++++++
-      warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
-      if warehouse.nil?
-        message = "No se notificó la orden: Lote sin almacen asignado"
-      else
-        file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-        total_order = 0
-        batch_consumption.each do |consump|
-          total = 0
-          consump.each do |lot|
-            amount = lot[1]
-            total = total + amount
+      if self.processed_in_baan
+        warehouse = Warehouse.find_by(product_lot_id: self.product_lot_id, main: true)
+        if warehouse.nil?
+          message = "No se notificó la orden: Lote sin almacen asignado"
+        else
+          file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+          total_order = 0
+          batch_consumption.each do |consump|
+            total = 0
+            consump.each do |lot|
+              amount = lot[1]
+              total = total + amount
+            end
+            total_order = total_order + total
+            file << "10#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
+            consump.each do |lot|
+              content_lot = Lot.find_by(id: lot[0])
+              i_code = content_lot.ingredient.code
+              amount = lot[1]
+              hopper = Hopper.find(lot[2])
+              scale = Scale.find(hopper.scale_id)
+              h_code = scale.not_weighed ? '1014' : hopper.code
+              file << "#{i_code};#{amount};#{h_code}\r\n"
+            end
           end
-          total_order = total_order + total
-          file << "61#{self.code};#{total.round(3)};#{warehouse.code}\r\n"
-          consump.each do |lot|
-            content_lot = Lot.find_by(id: lot[0])
-            i_code = content_lot.ingredient.code
-            amount = lot[1]
-            hopper = Hopper.find(lot[2])
-            scale = Scale.find(hopper.scale_id)
-            h_code = scale.not_weighed ? '1014' : hopper.code
-            file << "#{i_code};#{amount};#{h_code}\r\n"
-          end
-        end
-        file.close
-        puts total_order
-        files = Dir.entries(tmp_dir)
-        files.each do |f|
-          if f.downcase.include? "notificacion"
-            begin
-              FileUtils.mv(tmp_dir+f, sharepath)
-            rescue
-              puts "++++++++++++++++++++"
-              puts "+++ error de red +++"
-              puts "++++++++++++++++++++"
+          file.close
+          puts total_order
+          files = Dir.entries(tmp_dir)
+          files.each do |f|
+            if f.downcase.include? "notificacion"
+              begin
+                FileUtils.mv(tmp_dir+f, sharepath)
+              rescue
+                puts "++++++++++++++++++++"
+                puts "+++ error de red +++"
+                puts "++++++++++++++++++++"
+              end
             end
           end
         end
@@ -769,6 +771,7 @@ class Order < ActiveRecord::Base
             items.push(item)
           end
         end
+
         if Product.where(code: order["product_code"]).empty?
           Product.create code: order["product_code"],
                          name: order["product_name"]
@@ -814,16 +817,21 @@ class Order < ActiveRecord::Base
         recipe = Recipe.find_by(code: order["recipe_code"],version: order["recipe_version"])
         client = Client.find_by(code: order["client_code"])
         product_lot = ProductLot.find_by(code: order["lot_code"])
-        if Order.where(code: order["order_code"]).empty?
-          Order.create code: order["order_code"],
-                       recipe_id: recipe.id,
-                       client_id: client.id,
-                       user_id: 1,
-                       product_lot_id: product_lot.id,
-                       prog_batches: order["batch_prog"]
-          if !(Order.find_by(code: order["order_code"])).nil?
-            order_count += 1
-            File.delete(sharepath+file)
+        if product_lot.nil?
+          message = "Error en el archivo a importar"
+        else
+          if Order.where(code: order["order_code"]).empty?
+            Order.create code: order["order_code"],
+                         recipe_id: recipe.id,
+                         client_id: client.id,
+                         user_id: 1,
+                         product_lot_id: product_lot.id,
+                         prog_batches: order["batch_prog"],
+                         processed_in_baan: true
+            if !(Order.find_by(code: order["order_code"])).nil?
+              order_count += 1
+              File.delete(sharepath+file)
+            end
           end
         end
       end

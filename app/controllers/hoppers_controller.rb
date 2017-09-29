@@ -144,29 +144,31 @@ class HoppersController < ApplicationController
     amount = params[:fill][:amount].to_f
     if warehouse.stock >= amount
       if @hopper.fill(params[:fill], session[:user_id])
-        mango_features = get_mango_features()
-        if mango_features.include?("sap_warehouse")
-          sharepath = get_mango_field('share_path')
-          tmp_dir = get_mango_field('tmp_dir')
-          ing_code = @hopper.current_hopper_lot.lot.ingredient.code
-          wh_code = warehouse.warehouse_types.sack ? warehouse.warehouse_types.code : warehouse.code
-          h_code = scale.not_weighed ? '1014' : @hopper.code
-          file = File.open(tmp_dir+"almacen_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
-          file << "#{ing_code};#{wh_code};#{h_code};#{amount}"
-          file.close
-          files = Dir.entries(tmp_dir)
-          files.each do |f|
-            if f.downcase.include? "almacen"
-              begin
-                FileUtils.mv(tmp_dir+f, sharepath)
-              rescue
-                puts "++++++++++++++++++++"
-                puts "+++ error de red +++"
-                puts "++++++++++++++++++++"
-              end
-            end
-          end
-        end
+        #mango_features = get_mango_features()
+        #if mango_features.include?("sap_warehouse")
+          #if scale.not_weighed
+           # sharepath = get_mango_field('share_path')
+           # tmp_dir = get_mango_field('tmp_dir')
+           # ing_code = @hopper.current_hopper_lot.lot.ingredient.code
+           # wh_code = warehouse.warehouse_types.sack ? warehouse.warehouse_types.code : warehouse.code
+           # h_code = scale.not_weighed ? '1014' : @hopper.code
+           # file = File.open(tmp_dir+"almacen_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+           # file << "#{ing_code};#{wh_code};#{h_code};#{amount}"
+           # file.close
+           # files = Dir.entries(tmp_dir)
+           # files.each do |f|
+           #   if f.downcase.include? "almacen"
+           #     begin
+           #      FileUtils.mv(tmp_dir+f, sharepath)
+           #     rescue
+           #       puts "++++++++++++++++++++"
+           #       puts "+++ error de red +++"
+           #       puts "++++++++++++++++++++"
+           #     end
+           #   end
+           # end
+          #end
+        #end
         flash[:notice] = "Llenado realizado con éxito"
       else
         flash[:type] = 'error'

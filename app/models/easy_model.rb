@@ -1267,6 +1267,7 @@ class EasyModel
       end
     end
 
+
     #Add recipe ingredients without any consumption in the order
     ingredients.each do |key, value|
       unless details.has_key?(key)
