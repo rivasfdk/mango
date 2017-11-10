@@ -755,6 +755,7 @@ class Order < ActiveRecord::Base
           start = length -10
           order["order_code"] = order["order_code"][start,length]
         end
+        order["recipe_code"] = order["recipe_code"].to_i
         orderfile = File.open(sharepath+file).readlines
         orderfile.delete_at(0)
         items = []
@@ -794,6 +795,7 @@ class Order < ActiveRecord::Base
                        density: 1000
           end
         end
+binding.pry
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
           Recipe.create code: order["recipe_code"],
                         name: order["recipe_name"],
