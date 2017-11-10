@@ -795,7 +795,7 @@ class Order < ActiveRecord::Base
                        density: 1000
           end
         end
-binding.pry
+
         if Recipe.where(code: order["recipe_code"], version: order["recipe_version"]).empty?
           Recipe.create code: order["recipe_code"],
                         name: order["recipe_name"],
