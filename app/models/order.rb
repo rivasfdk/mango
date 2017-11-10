@@ -403,7 +403,7 @@ class Order < ActiveRecord::Base
         if warehouse.nil?
           message = "No se notificó la orden: Lote sin almacen asignado"
         else
-          file = File.open(tmp_dir+"notificacion_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
+          file = File.open(tmp_dir+"notificacion_#{self.code}.txt",'w')
           total_order = 0
           batch_consumption.each do |consump|
             total = 0
