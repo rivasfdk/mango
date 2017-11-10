@@ -160,13 +160,16 @@ class TicketOrder < ActiveRecord::Base
       if ticket_order.order_type
         file = File.open(tmp_dir+"Entrada_Orden_Compra_#{Time.now.strftime "%Y%m%d_%H%M%S"}.txt",'w')
         total_remaining = 0
+        cant_t = ticket.transactions.count
+
         ticket.transactions.each do |t|
           if t.content_type == 1
             content_code = (Lot.find t.content_id).code
           else
             content_code = (ProductLot.find t.content_id).code
           end
-          net_weight = (ticket.incoming_weight-ticket.outgoing_weight).abs
+
+          net_weight = cant_t > 1 ? t.amount : (ticket.incoming_weight-ticket.outgoing_weight).abs
           item = TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id
           position = item.position
           warehouse = Warehouse.find(t.warehouse_id)
