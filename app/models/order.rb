@@ -403,7 +403,7 @@ class Order < ActiveRecord::Base
         if warehouse.nil?
           message = "No se notificó la orden: Lote sin almacen asignado"
         else
-          file = File.open(tmp_dir+"notificacion_#{self.code}.txt",'w')
+          file = File.open(tmp_dir+"notificacion_10#{self.code}.txt",'w')
           total_order = 0
           batch_consumption.each do |consump|
             total = 0
@@ -420,7 +420,7 @@ class Order < ActiveRecord::Base
               hopper = Hopper.find(lot[2])
               scale = Scale.find(hopper.scale_id)
               h_code = scale.not_weighed ? '1014' : hopper.code
-              file << "#{i_code};#{amount};#{h_code}\r\n"
+              file << "#{i_code};#{amount}\r\n"#;#{h_code}\r\n"
             end
           end
           file.close
