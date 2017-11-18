@@ -130,33 +130,69 @@ class OrdersController < ApplicationController
     warning = ""
     @order = Order.find params[:id]
 
-
     mango_features = get_mango_features()
     if mango_features.include?("sap_sqlserver")
-      date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-      for i in 1..@order.prog_batches
-        batch = EasyModel.batch_details(@order.code, i)
-        batch["results"].each do |ing|
+      if @order.processed_in_baan
+        sql_server_type = get_mango_field('sql_server_type')
+        case sql_server_type
+        when 1 #************************El Tunal**********************
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          for i in 1..@order.prog_batches
+            batch = EasyModel.batch_details(@order.code, i)
+            batch["results"].each do |ing|
+              client = connect_sqlserver
+              if !client.nil?
+                sql = "insert into dbo.batch "+
+                      "values (#{@order.code}, #{i}, #{ing["real_kg"]}, #{date}, "+
+                      "\"#{ing["code"]}\", \"#{@order.product_lot.code}\", #{ing["std_kg"]})"
+                puts sql
+                result = client.execute(sql)
+                result.insert
+                client.close
+              end
+            end
+          end
           client = connect_sqlserver
           if !client.nil?
-            sql = "insert into dbo.batch "+
-                  "values (#{@order.code}, #{i}, #{ing["real_kg"]}, #{date}, "+
-                  "\"#{ing["code"]}\", \"#{@order.product_lot.code}\", #{ing["std_kg"]})"
+            sql = "update dbo.orden_produccion set cerrada = 1 where codigo = #{@order.code}"
             puts sql
             result = client.execute(sql)
             result.insert
             client.close
           end
+        when 2 #*************************AgroEbenezer*************************
+          data = EasyModel.order_details(@order.code)
+          results = data['results']
+          results.each do |result|
+            client = connect_sqlserver
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            if !client.nil?
+              sql = "insert into dbo.sofos "+
+                    "values (10\"#{@order.code}\", \"#{result["code"]}\", #{result["real_kg"]}, #{date})"
+              puts sql
+              result = client.execute(sql)
+              result.insert
+              client.close
+            end
+          end
+          client = connect_sqlserver
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          if !client.nil?
+            sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10\"#{@order.code}\""
+            puts sql
+            result = client.execute(sql)
+            result.insert
+            sql = "update dbo.ordenp set fecha_cierra = \"#{date}\" where cod_orden = 10\"#{@order.code}\""
+            result = client.execute(sql)
+            result.insert
+            client.close
+          end
+        else
+
         end
+
       end
-      client = connect_sqlserver
-      if !client.nil?
-        sql = "update dbo.orden_produccion set cerrada = 1 where codigo = #{@order.code}"
-        puts sql
-        result = client.execute(sql)
-        result.insert
-        client.close
-      end
+
     end
 
 
@@ -240,36 +276,61 @@ class OrdersController < ApplicationController
 
     mango_features = get_mango_features()
     if mango_features.include?("sap_sqlserver")
+      sql_server_type = get_mango_field('sql_server_type')
       count = 0
       client = connect_sqlserver
-      if !client.nil?
-        consult = client.execute("select * from dbo.productos  where procesada = 0")
-        products = consult.each(:symbolize_keys => true)
-        create_products(products)
+      case sql_server_type
+      when 1 #************************El Tunal**********************
+        if !client.nil?
+          consult = client.execute("select * from dbo.productos  where procesada = 0")
+          products = consult.each(:symbolize_keys => true)
+          create_products(products)
 
-        consult = client.execute("select * from dbo.clientes  where procesada = 0")
-        clients = consult.each(:symbolize_keys => true)
-        create_clients(clients)
+          consult = client.execute("select * from dbo.clientes  where procesada = 0")
+          clients = consult.each(:symbolize_keys => true)
+          create_clients(clients)
 
-        consult = client.execute("select * from dbo.recetas where procesada = 0")
-        recipes = consult.each(:symbolize_keys => true)
-        create_recipes(recipes)
+          consult = client.execute("select * from dbo.recetas where procesada = 0")
+          recipes = consult.each(:symbolize_keys => true)
+          create_recipes(recipes)
 
-        consult = client.execute("select * from dbo.orden_produccion where procesada = 0")
-        orders = consult.each(:symbolize_keys => true)
-        count = create_orders(orders)
-        client.close
+          consult = client.execute("select * from dbo.orden_produccion where procesada = 0")
+          orders = consult.each(:symbolize_keys => true)
+          count = create_orders(orders)
+          client.close
 
-        if count > 0
-          flash[:notice] = "Se importaron #{count} ordenes con exito"
+          if count > 0
+            flash[:notice] = "Se importaron #{count} ordenes con exito"
+          else
+            flash[:type] = 'warn'
+            flash[:notice] = 'No se encontraron ordenes para importar'
+          end
+
         else
-          flash[:type] = 'warn'
-          flash[:notice] = 'No se encontraron ordenes para importar'
+          flash[:type] = 'error'
+          flash[:notice] = 'No se pudo conectar con la base de datos'
         end
+      when 2 #*****************************AgroEbenezer***************************
+        if !client.nil?
+          consult = client.execute("select * from dbo.ordenp  where estado = null")
+          orders = consult.each(:symbolize_keys => true)
+          consult = client.execute("select * from dbo.ordenpd  where estado = null")
+          ingrecipes = consult.each(:symbolize_keys => true)
+          count = import_orders(orders, ingrecipes)
 
+          if count > 0
+            flash[:notice] = "Se importaron #{count} ordenes con exito"
+          else
+            flash[:type] = 'warn'
+            flash[:notice] = 'No se encontraron ordenes para importar'
+          end
+
+        else
+          flash[:type] = 'error'
+          flash[:notice] = 'No se pudo conectar con la base de datos'
+        end
       else
-        flash[:type] = 'error'
-        flash[:notice] = 'No se pudo conectar con la base de datos'
+
       end
     end
     

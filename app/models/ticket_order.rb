@@ -63,11 +63,11 @@ class TicketOrder < ActiveRecord::Base
           Product.create code: order["content_code"],
                          name: order["content_name"]
         end
-        product = Product.where(code: order["content_code"])
-        if ProductLot.where(code: order["lot_code"]).empty?
-          ProductLot.create code: order["lot_code"],
-                            product_id: product[0].id
-        end
+        #product = Product.where(code: order["content_code"])
+        #if ProductLot.where(code: order["lot_code"]).empty?
+        #  ProductLot.create code: order["lot_code"],
+        #                    product_id: product[0].id
+        #end
       end
       if Client.where(code: order["client_code"]).empty?
         Client.create code: order["client_code"],
@@ -94,7 +94,7 @@ class TicketOrder < ActiveRecord::Base
       if content
         content_type = (Lot.find_by code: order["content_code"]).id
       else
-        content_type = (ProductLot.find_by code: order["lot_code"]).id
+        content_type = nil#(ProductLot.find_by code: order["lot_code"]).id
       end
       ticket_order_act = TicketOrder.find_by code: order_code
       if TicketOrderItems.where(ticket_order_id: ticket_order_act.id, 
@@ -123,26 +123,27 @@ class TicketOrder < ActiveRecord::Base
         ticket_order.ticket_orders_items.each do |item|
           if item.content_type
             warehouse = Warehouse.find_by(lot_id: item.content_id)
-          else
-            warehouse = Warehouse.find_by(product_lot_id: item.content_id)
-          end
+          #else
+          #  warehouse = Warehouse.find_by(product_lot_id: item.content_id)
+          #end
 
-          sack_weight = item.sack ? item.total_weight/item.quantity : 1
-          content_type = item.content_type ? 1 : 2
-          Transaction.create transaction_type_id: transaction_type_id,
-                             user_id: 1,
-                             amount: item.remaining,
-                             client_id: ticket_order.client_id,
-                             ticket_id: ticket_id,
-                             sack: item.sack,
-                             sack_weight: sack_weight,
-                             sacks: item.quantity,
-                             document_number: ticket_order.document_number,
-                             stock_after: item.remaining,
-                             content_id: item.content_id,
-                             content_type: content_type,
-                             notified: false,
-                             warehouse_id: warehouse.nil? ? nil : warehouse.id
+            sack_weight = item.sack ? item.total_weight/item.quantity : 1
+            content_type = item.content_type ? 1 : 2
+            Transaction.create transaction_type_id: transaction_type_id,
+                              user_id: 1,
+                              amount: item.remaining,
+                              client_id: ticket_order.client_id,
+                              ticket_id: ticket_id,
+                              sack: item.sack,
+                              sack_weight: sack_weight,
+                              sacks: item.quantity,
+                              document_number: ticket_order.document_number,
+                              stock_after: item.remaining,
+                              content_id: item.content_id,
+                              content_type: content_type,
+                              notified: false,
+                              warehouse_id: warehouse.nil? ? nil : warehouse.id
+          end
         end
       end
     end

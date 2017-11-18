@@ -74,6 +74,119 @@ class ApplicationController < ActionController::Base
     return client
   end
 
+  def import_orders(orders, ingredients)
+
+    order_count = 0
+    message = ""
+
+    orders.each do |order|
+      if Product.where(code: order[:cod_producto]).empty?
+        Product.create code: order[:cod_producto],
+                      name: order[:nom_producto]
+      end
+      product = Product.find_by(code: order[:cod_producto])
+      if ProductLot.where(code: order[:cod_producto]).empty?
+        ProductLot.create code: order[:cod_producto],
+                          product_id: product.id
+      end
+
+      ingredients.each do |ing|
+        if Ingredient.where(code: ing[:cod_material]).empty?
+          Ingredient.create code: ing[:cod_material],
+                            name: ing[:nombre_material],
+                            minimum_stock: 0.0
+        end
+        ingredient = Ingredient.find_by(code: ing[:cod_material])
+        if Lot.where(code: ing[:cod_material]).empty?
+          Lot.create code: ing[:cod_material],
+                    ingredient_id: ingredient.id,
+                    density: 1000
+        end
+      end
+
+
+      product = Product.find_by(code: order[:cod_producto])
+      if Recipe.where(code: order[:cod_receta], version: order[:ver_receta]).empty?
+        Recipe.create code: order[:cod_receta],
+                      name: order[:nom_receta],
+                      version: order[:ver_receta],
+                      product_id: product.id
+      end
+      recipe = Recipe.find_by(code: order[:cod_receta],version: order[:ver_receta])
+      ingredients.each do |ing|
+        if ing[:cod_orden] == order[:cod_orden]
+          ingredient = Ingredient.find_by(code: ing[:cod_material])
+          IngredientRecipe.create ingredient_id: ingredient.id,
+                                  recipe_id: recipe.id,
+                                  amount: ing[:cant_material]
+          client = connect_sqlserver
+          if !client.nil?
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            sql = "update dbo.ordenpd set estado = \"procesada\" where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+            binding.pry
+            result = client.execute(sql)
+            result.insert
+            sql = "update dbo.ordenpd set fecha_cierra = #{date} where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+            result = client.execute(sql)
+            result.insert
+            client.close
+          end
+        end
+      end
+      
+  
+      if Client.where(code: order[:cod_cliente]).empty?
+        Client.create code: order[:cod_cliente],
+                      name: order[:nom_cliente],
+                      ci_rif: order[:rif_cliente],
+                      address: order[:dir_cliente],
+                      tel1: order[:tel_cliente]
+      end
+
+      recipe = Recipe.find_by(code: order[:cod_receta],version: order[:ver_receta])
+      client = Client.find_by(code: order[:cod_cliente])
+      product_lot = ProductLot.find_by(code: order[:cod_producto])
+      if product_lot.nil?
+        message = "Error en el archivo a importar"
+      else
+        length = order[:cod_orden].length
+        if length > 10
+          start = length -10
+          order[:cod_orden] = order[:cod_orden][start,length]
+        end
+        if Order.where(code: order[:cod_orden]).empty?
+          cant_batches = order[:cant_batch].to_i
+          Order.create code: order[:cod_orden],
+                      recipe_id: recipe.id,
+                      client_id: client.id,
+                      user_id: 1,
+                      product_lot_id: product_lot.id,
+                      prog_batches: cant_batches,
+                      processed_in_baan: true
+          if !(Order.find_by(code: order[:cod_orden])).nil?
+            order_count += 1
+            client = connect_sqlserver
+            if !client.nil?
+              sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = 10#{order[:cod_orden]}"
+              result = client.execute(sql)
+              result.insert
+              client.close
+            end
+          end
+        end
+      end
+    end
+  
+    puts message
+
+    return order_count
+    
+  end
+
+  def close_order(order)
+
+  end
+
   def create_products(hash_array)
     hash_array.each do |ing|
       content = ing[:tipo].downcase == 'mp' ? true : false
@@ -203,7 +316,8 @@ class ApplicationController < ActionController::Base
                      client_id: client.id,
                      user_id: 1,
                      product_lot_id: product_lot.id,
-                     prog_batches: order[:batch_prog]
+                     prog_batches: order[:batch_prog],
+                     processed_in_baan: true
         count += 1
         client = connect_sqlserver
         if !client.nil?
