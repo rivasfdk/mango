@@ -111,25 +111,26 @@ class ApplicationController < ActionController::Base
                       name: order[:nom_receta],
                       version: order[:ver_receta],
                       product_id: product.id
-      end
-      recipe = Recipe.find_by(code: order[:cod_receta],version: order[:ver_receta])
-      ingredients.each do |ing|
-        if ing[:cod_orden] == order[:cod_orden]
-          ingredient = Ingredient.find_by(code: ing[:cod_material])
-          IngredientRecipe.create ingredient_id: ingredient.id,
-                                  recipe_id: recipe.id,
-                                  amount: ing[:cant_material]
-          client = connect_sqlserver
-          if !client.nil?
-            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-            sql = "update dbo.ordenpd set estado = \"procesada\" where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
-            binding.pry
-            result = client.execute(sql)
-            result.insert
-            sql = "update dbo.ordenpd set fecha_cierra = #{date} where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
-            result = client.execute(sql)
-            result.insert
-            client.close
+      
+        recipe = Recipe.find_by(code: order[:cod_receta],version: order[:ver_receta])
+
+        ingredients.each do |ing|
+          if ing[:cod_orden] == order[:cod_orden]
+            ingredient = Ingredient.find_by(code: ing[:cod_material])
+            IngredientRecipe.create ingredient_id: ingredient.id,
+                                    recipe_id: recipe.id,
+                                    amount: ing[:cant_material]
+            client = connect_sqlserver
+            if !client.nil?
+              date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+              sql = "update dbo.ordenpd set estado = \"procesada\" where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+              result = client.execute(sql)
+              result.insert
+              sql = "update dbo.ordenpd set fecha_cierra = #{date} where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+              result = client.execute(sql)
+              result.insert
+              client.close
+            end
           end
         end
       end

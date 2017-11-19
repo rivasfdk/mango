@@ -106,6 +106,29 @@ class OrdersController < ApplicationController
 
     if n_batch.between?(1, @order.prog_batches)
       if @order.repair(session[:user_id], params)
+
+        mango_features = get_mango_features()
+        if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
+          sql_server_type = get_mango_field('sql_server_type')
+          case sql_server_type
+          when 2
+            @order = Order.find params[:id]
+            client = connect_sqlserver
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            if !client.nil?
+              sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10#{@order.code}"
+              puts sql
+              result = client.execute(sql)
+              result.insert
+              sql = "update dbo.ordenp set fecha_cierra = #{date} where cod_orden = 10#{@order.code}"
+              result = client.execute(sql)
+              result.insert
+              client.close
+            end
+          else
+          end
+        end
+
         flash[:notice] = "Orden reparada exitosamente"
         redirect_to session[:return_to]
       else
@@ -131,7 +154,7 @@ class OrdersController < ApplicationController
     @order = Order.find params[:id]
 
     mango_features = get_mango_features()
-    if mango_features.include?("sap_sqlserver")
+    if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
       if @order.processed_in_baan
         sql_server_type = get_mango_field('sql_server_type')
         case sql_server_type
@@ -168,24 +191,12 @@ class OrdersController < ApplicationController
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
             if !client.nil?
               sql = "insert into dbo.sofos "+
-                    "values (10\"#{@order.code}\", \"#{result["code"]}\", #{result["real_kg"]}, #{date})"
+                    "values (10#{@order.code}, #{result["code"]}, #{result["real_kg"]}, #{date})"
               puts sql
               result = client.execute(sql)
               result.insert
               client.close
             end
-          end
-          client = connect_sqlserver
-          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-          if !client.nil?
-            sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10\"#{@order.code}\""
-            puts sql
-            result = client.execute(sql)
-            result.insert
-            sql = "update dbo.ordenp set fecha_cierra = \"#{date}\" where cod_orden = 10\"#{@order.code}\""
-            result = client.execute(sql)
-            result.insert
-            client.close
           end
         else
 
@@ -235,6 +246,29 @@ class OrdersController < ApplicationController
   def close
     @order = Order.where(code: params[:order_code]).first
     render xml: {closed: @order.close(session[:user_id])}
+
+    mango_features = get_mango_features()
+    if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
+      sql_server_type = get_mango_field('sql_server_type')
+      case sql_server_type
+      when 2
+        @order = Order.where(code: params[:order_code]).first
+        client = connect_sqlserver
+        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+        if !client.nil?
+          sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10#{@order.code}"
+          puts sql
+          result = client.execute(sql)
+          result.insert
+          sql = "update dbo.ordenp set fecha_cierra = #{date} where cod_orden = 10#{@order.code}"
+          result = client.execute(sql)
+          result.insert
+          client.close
+        end
+      else
+      end
+    end
+
   end
 
   def stop
