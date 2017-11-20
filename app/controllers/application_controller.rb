@@ -68,8 +68,12 @@ class ApplicationController < ActionController::Base
     rescue
       client = nil
     end
-    if !client.nil? & client.closed?
+    if client.nil? 
       client = nil
+    else
+      if client.closed?
+        client = nil
+      end
     end
     return client
   end
@@ -123,10 +127,10 @@ class ApplicationController < ActionController::Base
             client = connect_sqlserver
             if !client.nil?
               date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-              sql = "update dbo.ordenpd set estado = \"procesada\" where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+              sql = "update dbo.ordenpd set estado = \"procesada\" where cod_orden = #{ing[:cod_orden]} and cod_material = \"#{ing[:cod_material]}\""
               result = client.execute(sql)
               result.insert
-              sql = "update dbo.ordenpd set fecha_cierra = #{date} where cod_orden = #{ing[:cod_orden]} and cod_material = #{ing[:cod_material]}"
+              sql = "update dbo.ordenpd set fecha_cierra = #{date} where cod_orden = #{ing[:cod_orden]} and cod_material = \"#{ing[:cod_material]}\""
               result = client.execute(sql)
               result.insert
               client.close

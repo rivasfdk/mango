@@ -191,7 +191,7 @@ class OrdersController < ApplicationController
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
             if !client.nil?
               sql = "insert into dbo.sofos "+
-                    "values (10#{@order.code}, #{result["code"]}, #{result["real_kg"]}, #{date})"
+                    "values (10#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]}, #{date})"
               puts sql
               result = client.execute(sql)
               result.insert
