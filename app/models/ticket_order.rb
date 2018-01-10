@@ -174,9 +174,14 @@ class TicketOrder < ActiveRecord::Base
           item = TicketOrderItems.find_by ticket_order_id: ticket_order.id, content_id: t.content_id
           position = item.position
           warehouse = Warehouse.find(t.warehouse_id)
+          if warehouse.warehouse_types.sack?
+            wh_code = warehouse.warehouse_types.code
+          else
+            wh_code = warehouse.code
+          end
           file.puts "#{ticket_order.code[2..ticket_order.code.length]};#{position};"+
                     "#{content_code};#{ticket.incoming_weight};#{net_weight};"+
-                    "#{ticket.outgoing_weight};#{plate};#{driver};#{warehouse.code}\r\n"
+                    "#{ticket.outgoing_weight};#{plate};#{driver};#{wh_code}\r\n"
           new_remaining = item.remaining - net_weight
           if new_remaining <= 0
             TicketOrderItems.update(item.id, :remaining => 0)
@@ -186,8 +191,15 @@ class TicketOrder < ActiveRecord::Base
           total_remaining = total_remaining + new_remaining
         end
 
-        if total_remaining <= 0
-          TicketOrder.update(ticket_order.id, :closed => true)
+        if total_remaining <= 100
+          items_order_ticket = TicketOrderItems.where ticket_order_id: ticket_order.id
+          remaining_order = 0
+          items_order_ticket.each do |it|
+            remaining_order = remaining_order + it.remaining
+          end
+          if remaining_order <= 200
+            TicketOrder.update(ticket_order.id, :closed => true)
+          end
         end
         file.close
       else
