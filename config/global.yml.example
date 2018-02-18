@@ -17,6 +17,8 @@ special_features: [ticket_txt, sap_production_order, notifications,
    lot_parameter_lists, product_lot_parameter_lists, excel_reports]
    #sap_romano, sap_production_order sap_sqlserver
 
+sql_server_type: 1
+
 sql_server:
   username: 'xxxx'
   password: 'xxxx'
