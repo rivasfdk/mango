@@ -4,14 +4,14 @@ class Scale < ActiveRecord::Base
   has_many :hoppers
   validates :name, presence: true
   validates :name, uniqueness: true
-  validate :not_weighed_uniqueness
+  #validate :not_weighed_uniqueness
   validates :maximum_weight, :minimum_weight, presence: { unless: :not_weighed }
   validates :minimum_weight, numericality: { greater_than_or_equal_to: 0, less_than: :maximum_weight, allow_nil: true }
   validates :maximum_weight, numericality: { greater_than: 0, allow_nil: true }
 
-  def not_weighed_uniqueness
-    errors.add(:not_weighed, :taken) if not_weighed && Scale.where(not_weighed: true).any?
-  end
+  #def not_weighed_uniqueness
+  #  errors.add(:not_weighed, :taken) if not_weighed && Scale.where(not_weighed: true).any?
+  #end
 
   def self.get_all
     scales = Scale.order('id')
@@ -27,7 +27,7 @@ class Scale < ActiveRecord::Base
   end
 
   def self.get_hoppers_ingredients
-    scales = Scale.where(not_weighed: false)
+    scales = Scale.all
       .pluck(:id, :name, :minimum_weight, :maximum_weight)
       .map do |scale|
         {id: scale[0], name: scale[1], minimum_weight: scale[2], maximum_weight: scale[3]}
