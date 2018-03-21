@@ -1329,7 +1329,7 @@ class EasyModel
     data['repaired'] = @order.repaired ? "Si" : "No"
     data['results'] = []
 
-    details.sort_by {|k,v| k}.map do |key, value|
+    details.map do |key, value|
       element = {'code' => key}
       data['results'] << element.merge(value)
     end
@@ -1419,7 +1419,6 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot.includes({:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}})
       .where({:batch_id => batch.id})
-      .order('ingredients.code ASC')
 
     ingredients = {}
     batch.order.recipe.ingredient_recipe.each do |ir|
