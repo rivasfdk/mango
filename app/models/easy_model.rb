@@ -897,8 +897,8 @@ class EasyModel
   end
 
   def self.tickets_transactions(params, company_name)
-    start_date = EasyModel.param_to_date(params, 'start')
-    end_date = EasyModel.param_to_date(params, 'end')
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
 
     by_ticket_type = params[:by_ticket_type] == '1'
     by_factory = params[:by_factory_3] == '1'
@@ -913,7 +913,7 @@ class EasyModel
 
     transactions = Ticket.base_search
       .where('tickets.open = FALSE')
-      .where('tickets.outgoing_date BETWEEN ? AND ?', start_date, end_date + 1.day)
+      .where('tickets.outgoing_date BETWEEN ? AND ?', start_date, end_date)
 
     if by_order
       if params[:ticket_order] == '1'
@@ -979,8 +979,8 @@ class EasyModel
   end
 
   def self.daily_production(params)
-    start_date = EasyModel.param_to_date(params, 'start')
-    end_date = EasyModel.param_to_date(params, 'end')
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
 
     by_client = params[:by_client] == '1'
     by_recipe = params[:by_recipe_3] == '1'
@@ -997,7 +997,7 @@ class EasyModel
                MAX(batches.number) AS num_batches,
                SUM(amount) AS real_kg,
                SUM(standard_amount) AS std_kg')
-      .where(orders: {created_at: start_date .. end_date + 1.day})
+      .where(orders: {created_at: start_date .. end_date})
 
     batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_2]}}) if by_client
     batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_2]}}) if by_recipe
@@ -1045,7 +1045,7 @@ class EasyModel
                MAX(batches.number) AS real_batches,
                SUM(amount) AS theoric_total,
                orders.real_production AS real_total')
-      .where(batches: {created_at: start_date .. end_date + 1.day})
+      .where(batches: {created_at: start_date .. end_date})
       .group('batches.order_id')
     return nil if batch_hopper_lots.empty?
 
@@ -1129,8 +1129,8 @@ class EasyModel
   end
 
   def self.order_duration(params)
-    start_date = EasyModel.param_to_date(params, 'start')
-    end_date = EasyModel.param_to_date(params, 'end')
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
 
     data = self.initialize_data('Duración de Orden de Producción')
     data['since'] = self.print_range_date(start_date)
@@ -1140,7 +1140,7 @@ class EasyModel
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}, client: {}}}})
                         .select('orders.code AS order_code, MIN(batches.start_date) AS start_date, MAX(batches.end_date) AS end_date, recipes.name AS recipe_name, MAX(batches.number) AS num_batches, SUM(amount) AS real_kg, SUM(standard_amount) AS std_kg')
-                        .where(batches: {created_at: start_date .. end_date + 1.day})
+                        .where(batches: {created_at: start_date .. end_date})
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
@@ -1168,8 +1168,8 @@ class EasyModel
   end
 
   def self.daily_production_details(params)
-    start_date = EasyModel.param_to_date(params, 'start')
-    end_date = EasyModel.param_to_date(params, 'end')
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
 
     by_client = params[:by_client_2] == '1'
     by_recipe = params[:by_recipe_4] == '1'
@@ -1186,7 +1186,7 @@ class EasyModel
                MAX(batches.number) AS num_batches,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std')
-      .where(orders: {created_at: start_date .. end_date + 1.day})
+      .where(orders: {created_at: start_date .. end_date})
 
     batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_3]}}) if by_client
     batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_3]}}) if by_recipe
@@ -1459,8 +1459,8 @@ class EasyModel
   end
 
   def self.consumption_per_recipe(params)
-    start_date = EasyModel.param_to_date(params, 'start_date')
-    end_date = EasyModel.param_to_date(params, 'end_date')
+    start_date = EasyModel.param_to_datetime(params, 'start_date')
+    end_date = EasyModel.param_to_datetime(params, 'end_date')
     recipe_code = params[:recipe_code]
     #ingredient_inclusion = params[:ingredient_inclusion] == '1'
     by_lots = params[:by_lots_recipe] == '1'
@@ -1483,7 +1483,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day},
+      .where({orders: {created_at: start_date .. end_date},
               recipes: {code: recipe.code}})
       .order('ingredients.code')
       .group(by_lots ? 'lots.id' : 'ingredients.id')
@@ -1522,8 +1522,8 @@ class EasyModel
   end
 
   def self.consumption_per_selected_ingredients(params, user_id)
-    start_date = EasyModel.param_to_date(params, 'start')
-    end_date = EasyModel.param_to_date(params, 'end')
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
     ingredients_ids = params[:ingredients_ids_2]
     by_lots = params[:by_lots] == '1'
     by_select_ingredients = params[:by_select_ingredients] == '1'
@@ -1550,7 +1550,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day}})
+      .where({orders: {created_at: start_date .. end_date}})
 
 
     batch_hopper_lots = batch_hopper_lots.where(ingredients: {id: ingredients_ids}) if by_select_ingredients
@@ -1597,7 +1597,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
+      .where({orders: {created_at: start_date..end_date, client_id: client_id}})
       .order('ingredients.code')
       .group('ingredients.id')
 
@@ -1964,7 +1964,7 @@ adjustments = []
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}, client: {}}}})
                         .select('orders.code AS order_code, clients.code AS client_code, clients.name AS client_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where({orders: {created_at: start_date..end_date + 1.day}, recipes: {code: recipe.code}})
+                        .where({orders: {created_at: start_date..end_date}, recipes: {code: recipe.code}})
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
@@ -1984,8 +1984,8 @@ adjustments = []
   end
 
   def self.production_per_client(params)
-    start_date = EasyModel.param_to_date(params[:report], 'start')
-    end_date = EasyModel.param_to_date(params[:report], 'end')
+    start_date = EasyModel.param_to_datetime(params[:report], 'start')
+    end_date = EasyModel.param_to_datetime(params[:report], 'end')
     client = Client.find params[:report][:client_id2] rescue nil
     return nil if client.nil?
 
@@ -2000,7 +2000,7 @@ adjustments = []
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}, product_lot: {}}}})
                         .select('orders.code AS order_code, recipes.code AS recipe_code, recipes.name AS recipe_name, MAX(batches.number) as num_batches, SUM(amount) AS total_real, SUM(standard_amount) AS total_std')
-                        .where({orders: {created_at: start_date..end_date + 1.day, client_id: client.id}})
+                        .where({orders: {created_at: start_date..end_date, client_id: client.id}})
     batch_hopper_lots = batch_hopper_lots.where({products_lots: {product_id: params[:report][:products_ids]}}) if by_product
 
     batch_hopper_lots = batch_hopper_lots.group('batches.order_id')
@@ -2057,7 +2057,7 @@ adjustments = []
     (date + 1.day).strftime("%Y-%m-%d")
   end
 
-  def self.print_range_date(str_date, with_time=false)
+  def self.print_range_date(str_date, with_time=true)
     fmt = with_time ? "%d/%m/%Y %H:%M:%S" : "%d/%m/%Y"
     return str_date.strftime(fmt)
   end

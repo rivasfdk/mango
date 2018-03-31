@@ -5,8 +5,8 @@
     <h2 onclick="toggle_report_details('#daily_production')">Producción Diaria</h2>
     <div id="daily_production" class="report-details">
       <%= form_for(:report, :url=>daily_production_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime  %><br/><br/>
         <%= f.check_box :by_client, :checked=>false %> &nbsp; <label for="group">Filtrar por cliente</label><br/><br/>
         <div id="client_form">
           <label for="client_id_2" class="small">Cliente:</label>
@@ -29,8 +29,8 @@
     <h2 onclick="toggle_report_details('#daily_production_details')">Producción Diaria en detalle</h2>
     <div id="daily_production_details" class="report-details">
       <%= form_for(:report, :url=>daily_production_details_report_path(format: 'pdf'), html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= f.check_box :by_client_2, :checked=>false %> &nbsp; <label for="group">Filtrar por cliente</label><br/><br/>
         <div id="client_form_2">
           <label for="client_id_3" class="small">Cliente:</label>
@@ -53,8 +53,8 @@
     <h2 onclick="toggle_report_details('#real_production')">Producción Físico</h2>
     <div id="real_production" class="report-details">
       <%= form_for(:report, :url=>real_production_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -86,8 +86,8 @@
           <%= f.label :month, "Mes: ", :class=>'small' %> <%= f.date_select :month, discard_day: true %><br/><br/><br/>
         </div>
         <div id="by_range">
-          <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-          <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+          <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+          <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         </div>
         <%= f.check_box :by_clients, :checked=>false %> &nbsp; <label for="group">Filtrar por clientes</label><br/><br/>
         <div id="clients_form">
@@ -110,8 +110,8 @@
     <h2 onclick="toggle_report_details('#stats')">Estadísticas de producción</h2>
     <div id="stats" class="report-details">
       <%= form_for(:report, :url=>stats_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -123,8 +123,8 @@
     <h2 onclick="toggle_report_details('#stats_with_plot')">Estadísticas de producción con gráfico</h2>
     <div id="stats_with_plot" class="report-details">
       <%= form_for(:report, :url=>stats_with_plot_report_path(format: 'pdf'), html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= f.label :unit, "Unidades: ", :class=>'small' %> <%= f.collection_select :unit, @units, :first, :second, {}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -149,8 +149,8 @@
     <h2 onclick="toggle_report_details('#order_duration')">Duración de Orden</h2>
     <div id="order_duration" class="report-details">
       <%= form_for(:report, :url=>order_duration_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -202,8 +202,8 @@
     <h2 onclick="toggle_report_details('#alarms')">Alarmas</h2>
     <div id="alarms" class="report-details">
       <%= form_for(:report, :url=>alarms_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= f.check_box :by_alarm_type_1, :checked=>false %> &nbsp; <label for="group">Filtrar por tipo de alarma</label><br/><br/>
         <%= f.collection_select :alarm_type_id_1, @alarm_types, :id, :description, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/>
@@ -265,8 +265,8 @@
     <h2 onclick="toggle_report_details('#consumption_per_recipe')">Consumo por Receta</h2>
     <div id="consumption_per_recipe" class="report-details">
       <%= form_for(:report, :url=>consumption_per_recipe_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start_date, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start_date %><br/>
-        <%= f.label :end_date, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end_date %><br/><br/>
+        <%= f.label :start_date, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start_date, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end_date, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end_date, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <label for="recipe_code" class="small">Receta:</label>
         <%= f.collection_select :recipe_code, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %><br/><br/>
         <%= f.check_box :by_lots_recipe, checked: false %> &nbsp; <label for="by_lots_recipe">Desglosar por lotes</label><br/><br/>
@@ -290,8 +290,8 @@
     <h2 onclick="toggle_report_details('#consumption_per_selected_ingredients')">Consumo por Ingredientes</h2>
     <div id="consumption_per_selected_ingredients" class="report-details">
       <%= form_for(:report, :url=>consumption_per_selected_ingredients_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>      
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>      
         <%= f.check_box :by_lots, checked: false %> &nbsp; <label for="by_lots">Desglosar por lotes</label><br/><br/>
         <%= f.check_box :by_select_ingredients, checked: false %> &nbsp; <label for="by_select_ingredients">Filtrar por ingredientes</label><br/><br/>     
         <%= f.collection_select :ingredients_ids_2, @ingredients, :id, :to_collection_select, {selected: @pid_preselected_ingredient_ids}, {multiple: true, class: 'ingredients-select chzn-field-max'} %><br/><br/><br/>
@@ -343,8 +343,8 @@
     <h2 onclick="toggle_report_details('#consumption_per_ingredient_per_orders')">Consumo por Ingrediente por Ordenes de Producción</h2>
     <div id="consumption_per_ingredient_per_orders" class="report-details">
       <%= form_for(:report, :url=>consumption_per_ingredient_per_orders_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= f.label :ingredient_id, "ingrediente", :class=>'small' %>
         <%= f.collection_select :ingredient_id, @ingredients, :id, :to_collection_select, {include_blank: false}, class: 'chosen-select chzn-field-normal' %><br/><br/><br/>
         <% if @real_production_enabled %>
@@ -364,8 +364,8 @@
     <h2 onclick="toggle_report_details('#consumption_per_client')">Consumo por Cliente</h2>
     <div id="consumption_per_client" class="report-details">
       <%= form_for(:report, :url=>consumption_per_client_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <label for="client_id" class="small">Cliente/Maquila:</label>
         <%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %>
         <br/><br/>
@@ -446,8 +446,8 @@
         <%= f.radio_button :lot_type, 1, :checked => true %> Materia prima
         <%= f.radio_button :lot_type, 2%> Producto terminado<br/><br/>
         <%= f.collection_select :lot_code, @lots, :code, :to_collection_select, {}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -459,8 +459,8 @@
     <h2 onclick="toggle_report_details('#stock_adjustments')">Ajustes de Inventario</h2>
     <div id="stock_adjustments" class="report-details">
       <%= form_for(:report, :url=>stock_adjustments_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
 
         <%= f.check_box :by_type_content, checked: false %> &nbsp; <label for="group">Filtrar por tipo de rubro</label>
         <br /><br />
@@ -489,8 +489,8 @@
     <h2 onclick="toggle_report_details('#lots_incomes')">Entradas de Materia Prima</h2>
     <div id="lots_incomes" class="report-details">
       <%= form_for(:report, :url=>lots_incomes_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
     </div>
@@ -502,8 +502,8 @@
     <h2 onclick="toggle_report_details('#product_lots_dispatches')">Despachos de Producto Terminado</h2>
     <div id="product_lots_dispatches" class="report-details">
       <%= form_for(:report, :url=>product_lots_dispatches_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <%= f.label :doc_number, "Nro. Doc.: ", :class=>'small' %> <%= f.text_field :doc_number, :size=>15 %><br/><br/><br/>
         <%= submit_tag 'Generar Reporte' %>
       <% end %>
@@ -516,8 +516,8 @@
     <h2 onclick="toggle_report_details('#production_per_recipe')">Producción por Receta</h2>
     <div id="production_per_recipe" class="report-details">
       <%= form_for(:report, :url=>production_per_recipe_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <label for="recipe_code_2" class="small">Receta:</label>
         <%= f.collection_select :recipe_code_2, @recipes, :code, :to_collection_select_code, {:include_blank => true}, :class=>'chosen-select chzn-field-normal chzn-small' %>
         <br/><br/>
@@ -532,8 +532,8 @@
     <h2 onclick="toggle_report_details('#production_per_client')">Producción por Cliente</h2>
     <div id="production_per_client" class="report-details">
       <%= form_for(:report, :url=>production_per_client_report_path, html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
         <label for="client_id2" class="small">Cliente/Maquila:</label>
         <%= f.collection_select :client_id2, @clients, :id, :to_collection_select, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><br/><br/>
         <%= f.check_box :by_products_2, :checked=>false %> &nbsp; <label for="group">Filtrar por productos</label><br/><br/>
@@ -565,8 +565,8 @@
     <h2 onclick="toggle_report_details('#tickets_transactions')">Movimientos de Romana</h2>
     <div id="tickets_transactions" class="report-details">
       <%= form_for(:report, url: tickets_transactions_report_path(format: 'pdf'), html: {target: "_blank"}) do |f| %>
-        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.date_select :start %><br/>
-        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.date_select :end %><br/><br/>
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
 
         <%= f.check_box :by_order, checked: false %> &nbsp; <label for="group">Ordenar por:</label>
         <br /><br />

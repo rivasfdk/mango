@@ -18,6 +18,8 @@ class ReportsController < ApplicationController
     @ingredients = Ingredient.actives.all
     @products = Product.all
     @lots = Lot.includes(:ingredient).where(active: true).order('id desc')
+    @default_start_datetime = Time.now - (60*60*Time.now.hour) - (60*Time.now.min)
+    @default_end_datetime = Time.now + (((60*60*24)-(60*60*Time.now.hour)-(60*Time.now.min)) - 60)
     mango_features = get_mango_features()
     @real_production_enabled = mango_features.include?("real_production")
     @ingredient_inclusion_enabled = mango_features.include?("ingredient_inclusion")
