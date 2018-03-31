@@ -1091,7 +1091,7 @@ class EasyModel
                SUM(amount) AS total_real,
                standard_amount AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true},
+      .where({orders: {created_at: start_date .. end_date + 1.day},
               lots: {ingredient_id: ingredient.id}})
       .group('batches.order_id')
 
@@ -1483,7 +1483,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true},
+      .where({orders: {created_at: start_date .. end_date + 1.day},
               recipes: {code: recipe.code}})
       .order('ingredients.code')
       .group(by_lots ? 'lots.id' : 'ingredients.id')
@@ -1550,7 +1550,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date .. end_date + 1.day, notified: true}})
+      .where({orders: {created_at: start_date .. end_date + 1.day}})
 
 
     batch_hopper_lots = batch_hopper_lots.where(ingredients: {id: ingredients_ids}) if by_select_ingredients
@@ -1597,7 +1597,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id, notified: true}})
+      .where({orders: {created_at: start_date..end_date + 1.day, client_id: client_id}})
       .order('ingredients.code')
       .group('ingredients.id')
 

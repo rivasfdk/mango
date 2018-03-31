@@ -341,6 +341,8 @@ class TicketsController < ApplicationController
         error = "Debe selecionar un lote"
       elsif t.warehouse_id.nil?
         error = "El lote #{t.get_lot.to_collection_select} no esta asignado a ningún almacen"
+      elsif (Warehouse.find(t.warehouse_id).stock < t.amount)
+        error = "Almacen sin inventario suficiente"
       else
         t.update_transactions unless t.new_record? || !t.notified
       end
