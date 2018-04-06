@@ -26,8 +26,10 @@
               <%= builder.radio_button :content_type, "1" %> Materia Prima <%= builder.radio_button :content_type, "2" %> Producto terminado
               <br />
               <%= builder.collection_select :content_id, t.content_type == 1 ? @lots : @product_lots, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %><br />
-              <label>Almacen:</label>
-              <%= builder.collection_select :warehouse_id, t.content_type == 1 ? @lots_warehouses : @product_lots_warehouses, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %>
+              <% if @warehouse %>
+                <label>Almacen:</label>
+                <%= builder.collection_select :warehouse_id, t.content_type == 1 ? @lots_warehouses : @product_lots_warehouses, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %>
+              <% end %>
             <% else %>
               <%= builder.hidden_field :content_id %><%= t.get_lot.to_collection_select %><br />
               <label>Almacen:</label>

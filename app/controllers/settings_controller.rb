@@ -17,6 +17,7 @@ class SettingsController < ApplicationController
     @mango_features = get_mango_features()
     @hoppers_transactions_enabled = @mango_features.include?("hoppers_transactions")
     @romano_enabled = @mango_features.include?("romano")
+    @two_serial_port = @mango_features.include?("two_serial_port")
   end
 
   def update

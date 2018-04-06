@@ -20,7 +20,7 @@ class Permission < ActiveRecord::Base
 
   # Rails actions
   CONSULT = ['index', 'show', 'print', 'lots', 'by_recipe', 'get_all', 'all', 'get_all_reception',
-            'get_all_dispatch', 'get_order_client','get_item_warehouse']
+            'get_all_dispatch', 'get_order_client','get_item_warehouse', 'get_client']
   MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper',
            'create_order_stat', 'fill', 'do_fill', 'change', 'do_change', 'change_ingredient',
            'do_change_ingredient', 'change_product', 'do_change_product']
@@ -90,6 +90,10 @@ class Permission < ActiveRecord::Base
 
   def self.is_print_recipe?(action)
     return (action == 'print_recipe')
+  end
+
+  def self.is_manual?(action)
+    return (action == 'manual')
   end
 
   def self.get_all

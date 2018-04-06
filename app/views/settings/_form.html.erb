@@ -9,12 +9,14 @@
   <div class="field"><%= f.text_field :ticket_reception_diff, :size=>'20' %><span>*</span></div>
   <label for="ci" class="small">Diferencia de peso máxima despacho (%):</label>
   <div class="field"><%= f.text_field :ticket_dispatch_diff, :size=>'20' %><span>*</span></div>
+<% end %>
 
+<% if @two_serial_port %>
   <label for="sacks" class="small">Puerto 1: </label>
   <div class="field"><%= f.check_box :port1 %></div><br />
   <label for="sacks" class="small">Puerto 2: </label>
   <div class="field"><%= f.check_box :port2 %></div><br />
-
 <% end %>
+
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

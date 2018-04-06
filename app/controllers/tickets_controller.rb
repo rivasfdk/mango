@@ -15,6 +15,7 @@ class TicketsController < ApplicationController
         @factories = Client.where(factory: true) << Client.new(code: "-1", name: session[:company]['name'])
         mango_features = get_mango_features()
         @mango_romano =  mango_features.include?("mango_romano")
+        @warehouse =  mango_features.include?("warehouse")
         render html: @tickets
       end
       format.json do
@@ -304,6 +305,7 @@ class TicketsController < ApplicationController
         t.warehouse_id = warehouse.nil? ? nil : warehouse.id
       end
     end
+    @warehouse = mango_features.include?("warehouse")
     @lots_warehouses = []
     @product_lots_warehouses = []
     @lots = Lot.includes(:ingredient).where(active: true, empty: nil)
@@ -319,6 +321,7 @@ class TicketsController < ApplicationController
   end
 
   def update_items
+    mango_features = get_mango_features()
     @ticket = Ticket.find params[:id]
     redirect_to :tickets unless @ticket.open
     @ticket.update_attributes(params[:ticket])
@@ -339,9 +342,9 @@ class TicketsController < ApplicationController
     @ticket.transactions.each do |t|
       if t.content_id.nil?
         error = "Debe selecionar un lote"
-      elsif t.warehouse_id.nil?
+      elsif mango_features.include?("warehouse") && t.warehouse_id.nil? 
         error = "El lote #{t.get_lot.to_collection_select} no esta asignado a ningún almacen"
-      elsif (Warehouse.find(t.warehouse_id).stock < t.amount)
+      elsif mango_features.include?("warehouse") && (Warehouse.find(t.warehouse_id).stock < t.amount)
         error = "Almacen sin inventario suficiente"
       else
         t.update_transactions unless t.new_record? || !t.notified
@@ -422,14 +425,17 @@ class TicketsController < ApplicationController
     @ticket = Ticket.find params[:id], :include => :transactions
     ticket_type = @ticket.ticket_type_id == 1 ? true : false
     mango_features = get_mango_features()
+    @warehouse = mango_features.include?("warehouse")
     if mango_features.include?("sap_romano")
       if !@ticket.id_order.nil?
         @order = TicketOrder.find(@ticket.id_order)
         @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
       end
     end
-    @lots_warehouses = Warehouse.where(content_type: true)
-    @product_lots_warehouses = Warehouse.where(content_type: false)
+    if @warehouse
+      @lots_warehouses = Warehouse.where(content_type: true)
+      @product_lots_warehouses = Warehouse.where(content_type: false)
+    end
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
     @drivers = Driver.where(frequent: true)

@@ -20,7 +20,7 @@
     <tbody>
     <% @tickets.each do |t| %>
     <% tt = Transaction.find_by(ticket_id: t[:ticket_id]) %>
-    <% if tt.nil? or tt.warehouse_id.nil? %>
+    <% if tt.nil? or (tt.warehouse_id.nil? && @warehouse) %>
       <% sin_t = true %>
     <% else %>
       <% sin_t = false %>
