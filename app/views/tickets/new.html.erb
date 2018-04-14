@@ -22,9 +22,42 @@
 <div class="field"><%= f.text_field :address, :size=>'90' %><span>*</span></div>
 
 <label for="driver_id" class="small">Chofer:</label>
-<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span>
+<%= submit_tag "Nuevo", {:type => "button", :id => "new_driver"} %><br/> </div>
+
+
+<div id="new_driver_form" style="display:none;">
+<label class="small">Nombre:</label>
+<div class="field" > <input id="drivername" size="30" type="text" /><span>*</span></div>
+<label class="small">Cedula:</label>
+<div class="field" > <input id="driverci" size="15" type="text" /><span>*</span></div>
+<label class="small">Frecuente:</label>
+<div class="field"><%= check_box :frequent_driver, checked: false, :id =>"frequent_driver"%></div>
+<label class="small"></label>
+<div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_driver"} %>  </div>
+<div class="field"><%= submit_tag "Crear Chofer", {:type => "button", :id => "create_driver"} %></div>
+</div>
+
+
+
 <label for="truck_id" class="small">Camión:</label>
-<div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span>
+<%= submit_tag "Nuevo", {:type => "button", :id => "new_truck"} %><br/> </div>
+
+
+<div id="new_truck_form">
+  <%= f.fields_for :truck do |ff| %>
+    <label class="small">Placa:</label>
+    <div class="field" > <input id="truckplate" size="15" type="text" /><span>*</span></div>
+    <label class="small">Transporte:</label>
+    <div class="field"><%= ff.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><span>*</span></div>
+    <label class="small">Frecuente:</label>
+    <div class="field"><%= check_box :frequent_truck, checked: false, :id =>"frequent_truck"%></div>
+    <label class="small"></label>
+    <div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_truck"} %>  </div>
+    <div class="field"><%= submit_tag "Crear Camion", {:type => "button", :id => "create_truck"} %></div>
+  <% end %>
+</div>
 
 <div id = onlyreception>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
@@ -40,4 +73,5 @@
 <br/><span class="required">* Campos obligatorios</span>
 
 <% end %>
+
 

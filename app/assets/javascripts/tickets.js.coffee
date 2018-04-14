@@ -155,6 +155,56 @@ id_client_changed = ->
 $ ->
   $("#id_client").change id_client_changed
 
+check_driver_validation = ->
+  if $("#drivername").val().length > 3 and $("#driverci").val().length > 3
+    $("#create_driver").attr("disabled", false)
+  else
+    $("#create_driver").attr("disabled", true)
+
+$ ->
+  $("#new_driver").click show_new_driver_form
+
+show_new_driver_form = ->
+  $("#drivername").val("")
+  $("#driverci").val("")
+  $("#new_driver_form").show()
+  check_driver_validation() 
+
+$ ->
+  $("#cancel_driver").click hide_new_driver_form
+
+hide_new_driver_form = ->
+  $("#new_driver_form").hide()
+
+$ ->
+  $("#drivername").focus(check_driver_validation).keyup(check_driver_validation)
+  $("#driverci").focus(check_driver_validation).keyup(check_driver_validation)
+
+check_truck_validation = ->
+  console.log $("#ticket_truck_carrier_id").val().length
+  if $("#truckplate").val().length > 3 and $("#ticket_truck_carrier_id").val().length > 0
+    $("#create_truck").attr("disabled", false)
+  else
+    $("#create_truck").attr("disabled", true)
+
+$ ->
+  $("#new_truck").click show_new_truck_form
+
+show_new_truck_form = ->
+  $("#truckplate").val("")
+  $("#new_truck_form").show()
+  check_truck_validation()
+
+$ ->
+  $("#cancel_truck").click hide_new_truck_form
+
+hide_new_truck_form = ->
+  $("#new_truck_form").toggle()
+
+$ ->
+  $("#truckplate").focus(check_truck_validation).keyup(check_truck_validation)
+  $("#create_truck").mouseover(check_truck_validation)
+
 captura = true
 
 server_romano_ip = ""

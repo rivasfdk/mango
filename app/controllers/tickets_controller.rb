@@ -124,6 +124,7 @@ class TicketsController < ApplicationController
       @clients = Client.all
       @drivers = Driver.where(frequent: true)
       @trucks = Truck.includes(:carrier).where(frequent: true)
+      @carriers = Carrier.all
       @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
     else
       redirect_to action: 'index'
