@@ -32,7 +32,7 @@
 <label class="small">Cedula:</label>
 <div class="field" > <input id="driverci" size="15" type="text" /><span>*</span></div>
 <label class="small">Frecuente:</label>
-<div class="field"><%= check_box :frequent_driver, checked: false, :id =>"frequent_driver"%></div>
+<div class="field"><input type="checkbox" id="frequent_driver"></div>
 <label class="small"></label>
 <div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_driver"} %>  </div>
 <div class="field"><%= submit_tag "Crear Chofer", {:type => "button", :id => "create_driver"} %></div>
@@ -46,17 +46,15 @@
 
 
 <div id="new_truck_form">
-  <%= f.fields_for :truck do |ff| %>
     <label class="small">Placa:</label>
     <div class="field" > <input id="truckplate" size="15" type="text" /><span>*</span></div>
     <label class="small">Transporte:</label>
-    <div class="field"><%= ff.collection_select :carrier_id, @carriers, :id, :name, {:include_blank => true}, :class=>'chosen-select chzn-field-normal' %><span>*</span></div>
+    <div class="field"><%= select_tag :carrier_id, options_from_collection_for_select(@carriers, :id, :name), prompt: "Seleccione una opción", class: 'chosen-select chzn-field-normal'%><span>*</span></div>
     <label class="small">Frecuente:</label>
-    <div class="field"><%= check_box :frequent_truck, checked: false, :id =>"frequent_truck"%></div>
+    <div class="field"><input type="checkbox" id="frequent_truck"></div>
     <label class="small"></label>
     <div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_truck"} %>  </div>
     <div class="field"><%= submit_tag "Crear Camion", {:type => "button", :id => "create_truck"} %></div>
-  <% end %>
 </div>
 
 <div id = onlyreception>

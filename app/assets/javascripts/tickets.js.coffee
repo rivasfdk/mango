@@ -155,6 +155,8 @@ id_client_changed = ->
 $ ->
   $("#id_client").change id_client_changed
 
+#create ticket new driver
+
 check_driver_validation = ->
   if $("#drivername").val().length > 3 and $("#driverci").val().length > 3
     $("#create_driver").attr("disabled", false)
@@ -168,7 +170,7 @@ show_new_driver_form = ->
   $("#drivername").val("")
   $("#driverci").val("")
   $("#new_driver_form").show()
-  check_driver_validation() 
+  check_driver_validation()
 
 $ ->
   $("#cancel_driver").click hide_new_driver_form
@@ -176,13 +178,35 @@ $ ->
 hide_new_driver_form = ->
   $("#new_driver_form").hide()
 
+
 $ ->
   $("#drivername").focus(check_driver_validation).keyup(check_driver_validation)
   $("#driverci").focus(check_driver_validation).keyup(check_driver_validation)
 
+create_new_driver = ->
+  $.ajax '/drivers',
+    type: 'POST'
+    dataType: 'json'
+    data: { driver: {name: $("#drivername").val(), ci: $("#driverci").val(), frequent: $("#frequent_driver").is(':checked') }}
+    error: (jqXHR, textStatus, errorThrown) ->
+      alert "ERROR EN LOS DATOS, VERIFIQUE"
+    success: (data, textStatus, jqXHR) ->
+      console.log data
+      driver = data.driver
+      driver_select = $("#ticket_driver_id")
+      driver_select.empty()
+      format = driver.ci+" - "+driver.name
+      driver_select.append new Option(format,driver.id)
+      driver_select.trigger "chosen:updated"
+    $("#new_driver_form").hide()
+
+$ ->
+  $("#create_driver").click create_new_driver
+
+#create ticket new truck
+
 check_truck_validation = ->
-  console.log $("#ticket_truck_carrier_id").val().length
-  if $("#truckplate").val().length > 3 and $("#ticket_truck_carrier_id").val().length > 0
+  if $("#truckplate").val().length > 3 and $("#carrier_id").val().length > 0
     $("#create_truck").attr("disabled", false)
   else
     $("#create_truck").attr("disabled", true)
@@ -199,11 +223,34 @@ $ ->
   $("#cancel_truck").click hide_new_truck_form
 
 hide_new_truck_form = ->
-  $("#new_truck_form").toggle()
+  $("#new_truck_form").hide()
 
 $ ->
   $("#truckplate").focus(check_truck_validation).keyup(check_truck_validation)
   $("#create_truck").mouseover(check_truck_validation)
+
+create_new_truck = ->
+  $.ajax '/trucks',
+    type: 'POST'
+    dataType: 'json'
+    data: { truck: {carrier_id: $("#carrier_id").val(), license_plate: $("#truckplate").val(), frequent: $("#frequent_truck").is(':checked') }}
+    error: (jqXHR, textStatus, errorThrown) ->
+      alert "ERROR EN LOS DATOS, VERIFIQUE"
+    success: (data, textStatus, jqXHR) ->
+      console.log data.truck
+      truck = data.truck
+      truck_select = $("#ticket_truck_id")
+      truck_select.empty()
+      format = truck.license_plate+" - "+truck.carrier.name
+      truck_select.append new Option(format,truck.id)
+      truck_select.trigger "chosen:updated"
+    $("#new_truck_form").hide()
+    
+
+$ ->
+  $("#create_truck").click create_new_truck
+
+# show and capture weight
 
 captura = true
 
