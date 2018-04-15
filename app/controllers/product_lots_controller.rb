@@ -13,6 +13,7 @@ class ProductLotsController < ApplicationController
         @products = Product.all
         @factories = Client.where(factory: true)
         @transactions_enabled = is_mango_feature_available('transactions')
+        @granted_stock = User.find(session[:user_id]).has_global_permission?('product_lots', 'stock')
       end
       format.json do 
         @lots = ProductLot.includes(:product)

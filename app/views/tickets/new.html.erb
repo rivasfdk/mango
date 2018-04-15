@@ -15,16 +15,9 @@
 </div>
 <% end %>
 
-<label for="client_id" class="small">Cliente/Proveedor:</label>
-<div id="id_client" class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
-
-<label for="address" class="small">Direccion:</label>
-<div class="field"><%= f.text_field :address, :size=>'90' %><span>*</span></div>
-
 <label for="driver_id" class="small">Chofer:</label>
 <div class="field"><%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span>
 <%= submit_tag "Nuevo", {:type => "button", :id => "new_driver"} %><br/> </div>
-
 
 <div id="new_driver_form" style="display:none;">
 <label class="small">Nombre:</label>
@@ -38,12 +31,9 @@
 <div class="field"><%= submit_tag "Crear Chofer", {:type => "button", :id => "create_driver"} %></div>
 </div>
 
-
-
 <label for="truck_id" class="small">Camión:</label>
 <div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span>
 <%= submit_tag "Nuevo", {:type => "button", :id => "new_truck"} %><br/> </div>
-
 
 <div id="new_truck_form">
     <label class="small">Placa:</label>
@@ -57,13 +47,18 @@
     <div class="field"><%= submit_tag "Crear Camion", {:type => "button", :id => "create_truck"} %></div>
 </div>
 
+<label for="client_id" class="small">Cliente/Proveedor:</label>
+<div id="id_client" class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+
+<label for="address" class="small">Direccion:</label>
+<div class="field"><%= f.text_field :address, :size=>'90' %><span>*</span></div>
+
 <div id = onlyreception>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
   <div class="field"><%= f.text_field :provider_weight, :size=>'20' %><span>*</span></div>
   <label for="provider_document_number" class="small">N# documento:</label>
   <div class="field"><%= f.text_field :provider_document_number, :size=>'20' %><span>*</span></div>
 </div>
-
 
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>

@@ -100,6 +100,8 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'manual' and Permission.is_manual?(action)
         valid = true
+      elsif pm.permission.action == 'stock' and Permission.is_stock?(action)
+        valid = true
       elsif pm.permission.action == action
         valid = true
       end

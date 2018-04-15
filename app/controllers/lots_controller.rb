@@ -10,6 +10,7 @@ class LotsController < ApplicationController
         @ingredients = Ingredient.actives
         @factories = Client.where(factory: true)
         @transactions_enabled = is_mango_feature_available('transactions')
+        @granted_stock = User.find(session[:user_id]).has_global_permission?('lots', 'stock')
       end
       format.json do
         @lots = Lot.includes(:ingredient)
