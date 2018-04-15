@@ -59,4 +59,8 @@ class WarehouseTypesController < ApplicationController
     redirect_to :warehouse_types
   end
 
+  def warehouses_products
+    render xml: WarehouseTypes.get_warehouses_products, root: 'warehouses_types'
+  end
+
 end
