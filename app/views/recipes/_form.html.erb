@@ -12,10 +12,19 @@
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_field :comment, :size=>'30' %></div>
 <% if action == "edit" %>
-  <label for="active" class="small">En uso:</label>
-  <div class="field"><%= f.check_box :in_use %></div>
-  <label for="active" class="small">Activa:</label>
-  <div class="field"><%= f.check_box :active %></div>
+  <% if @recipe_approval %>
+    <% if @granted_approval %>
+      <label for="active" class="small">En uso:</label>
+      <div class="field"><%= f.check_box :in_use %></div>
+      <label for="active" class="small">Activa:</label>
+      <div class="field"><%= f.check_box :active %></div>
+    <% end %>
+  <% else %>
+    <label for="active" class="small">En uso:</label>
+    <div class="field"><%= f.check_box :in_use %></div>
+    <label for="active" class="small">Activa:</label>
+    <div class="field"><%= f.check_box :active %></div>
+  <% end %>
   <% if @internal_consumption %>
     <label for="active" class="small">Consumo interno:</label>
     <div class="field"><%= f.check_box :internal_consumption %></div>

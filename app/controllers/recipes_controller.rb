@@ -33,6 +33,8 @@ class RecipesController < ApplicationController
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
     @parameters_types = ParameterType.all
     @internal_consumption = is_mango_feature_available("internal_consumption")
+    @recipe_approval = is_mango_feature_available("recipe_approval")
+    @granted_approval = User.find(session[:user_id]).has_global_permission?('recipes', 'delete')
   end
 
   def create
@@ -58,12 +60,19 @@ class RecipesController < ApplicationController
       new_ir.save
     end
 
-    original_recipe.in_use = false
-    original_recipe.save
+    if is_mango_feature_available("recipe_approval")
+      @recipe.in_use = false
+      @recipe.save
+    else
+      original_recipe.in_use = false
+      original_recipe.save
+    end
     
     @ingredients = Ingredient.actives.all
     @products = Product.all
     @types = Recipe::TYPES
+    @recipe_approval = is_mango_feature_available("recipe_approval")
+    @granted_approval = User.find(session[:user_id]).has_global_permission?('recipes', 'delete')
     render :edit
   end
 
