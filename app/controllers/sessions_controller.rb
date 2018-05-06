@@ -33,16 +33,16 @@ class SessionsController < ApplicationController
       session[:per_page] = 12
       session[:company] = YAML::load(File.open("#{Rails.root.to_s}/config/global.yml"))['application']
       respond_to do |format|
+        format.xml do
+          render xml: {success: true, user_name: user.name, user_role_id: user.role_id}
+        end
         format.html do
           redirect_to session[:previous_url] || dashboard_path
         end
         format.json do
           @user = User.find user.id
           render :json => @user, :methods => [:allow_manual], :except => [:password_hash, :password_salt]
-        end
-        format.xml do
-          render xml: {success: true, user_name: user.name, user_role_id: user.role_id}
-        end
+        end    
       end
     else
       respond_to do |format|

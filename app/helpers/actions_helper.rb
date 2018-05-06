@@ -59,6 +59,11 @@ module ActionsHelper
     return link_to image + "Notificar", url, class: 'action', data: { confirm: confirm }
   end
 
+  def render_action_authorize(url, confirm)
+    image = image_tag('go-next.png', alt: 'Autorizar')
+    return link_to image + "Autorizar Diferencia", url, class: 'action', data: { confirm: confirm }
+  end
+
   def render_action_recalculate(url)
     image = image_tag('action-reset.png', alt: 'Recalcular')
     return link_to image + "Recalcular", url, class: 'action'

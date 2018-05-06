@@ -16,6 +16,7 @@ class TicketsController < ApplicationController
         mango_features = get_mango_features()
         @mango_romano =  mango_features.include?("mango_romano")
         @warehouse =  mango_features.include?("warehouse")
+        @granted_diff_authorized = User.find(session[:user_id]).has_global_permission?('tickets', 'authorize')
         render html: @tickets
       end
       format.json do
@@ -91,6 +92,15 @@ class TicketsController < ApplicationController
       end
     end
     flash[:notice] = 'Ticket notificado con éxito'
+    redirect_to :tickets
+  end
+
+  def authorize
+    @ticket = Ticket.find params[:id]
+    @ticket.diff_authorized = true
+    @ticket.authorized_user_id = session[:user_id]
+    @ticket.save
+    flash[:notice] = 'Ticket autorizado para salir con diferencia de peso'
     redirect_to :tickets
   end
 
@@ -184,6 +194,7 @@ class TicketsController < ApplicationController
     unless @ticket.truck.frequent
       @trucks << @ticket.truck
     end
+    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
   end
 
   def update
@@ -495,7 +506,7 @@ class TicketsController < ApplicationController
         dif_validation = porcent_dif <= dif_min ? true : false
       end
 
-      if !dif_validation
+      if !dif_validation && !@ticket.diff_authorized
         flash[:type] = 'error'
         flash[:notice] = "Diferencia de peso es #{porcent_dif}% mayor a la minima aceptada: #{dif_min}%"
         close

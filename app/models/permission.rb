@@ -96,6 +96,10 @@ class Permission < ActiveRecord::Base
     return (action == 'manual')
   end
 
+  def self.is_authorized?(action)
+    return (action == 'authorized')
+  end
+
   def self.is_stock?(action)
     return (action == 'stock')
   end

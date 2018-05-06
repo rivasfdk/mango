@@ -102,6 +102,8 @@ class User < ActiveRecord::Base
         valid = true
       elsif pm.permission.action == 'stock' and Permission.is_stock?(action)
         valid = true
+      elsif pm.permission.action == 'authorized' and Permission.is_authorized?(action)
+        valid = true
       elsif pm.permission.action == action
         valid = true
       end

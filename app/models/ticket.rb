@@ -172,6 +172,7 @@ class Ticket < ActiveRecord::Base
         tickets.provider_weight as provider_weight,
         tickets.open as ticket_open,
         tickets.notified as ticket_notified,
+        tickets.diff_authorized as diff_authorized,
         tickets_types.code as ticket_type,
         clients.ci_rif as client_cirif,
         clients.name as client_name,

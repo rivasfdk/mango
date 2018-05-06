@@ -117,6 +117,7 @@ Permission.create("name"=>"Editar Tickets", "module"=>"tickets", "action"=>"modi
 Permission.create("name"=>"Eliminar Tickets", "module"=>"tickets", "action"=>"delete", "mode"=>"global")
 Permission.create("name"=>"Crear Tickets", "module"=>"tickets", "action"=>"create", "mode"=>"global")
 Permission.create("name"=>"Ticket Manual", "module"=>"tickets", "action"=>"manual", "mode"=>"global")
+Permission.create("name"=>"Autorizar Tickets por diferencia de peso", "module"=>"tickets", "action"=>"authorize", "mode"=>"global")
 Permission.create("name"=>"Reparar Ticket", "module"=>"tickets", "action"=>"repair", "mode"=>"global")
 Permission.create("name"=>"Notificar Tickets Romana", "module"=>"tickets", "action"=>"notify", "mode"=>"global")
 

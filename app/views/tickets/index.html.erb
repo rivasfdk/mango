@@ -44,6 +44,9 @@
               <% else %>
                 <%= render_action_edit_ticket(edit_ticket_path(t[:ticket_id])) %>
                 <%= render_action_close_ticket(close_ticket_path(t[:ticket_id])) %>
+                <% if @granted_diff_authorized && !t[:diff_authorized] %>
+                  <%= render_action_authorize(authorize_ticket_path(t[:ticket_id]), "Desea Autorizar salida del ticket '#{t[:ticket_number]}'?") %> <br />
+                <% end %>
               <% end %>
             <% end %>
           <% else %>

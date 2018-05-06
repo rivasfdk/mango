@@ -19,7 +19,9 @@
         <td><%= item.rif %></td>
         <td>
           <%= render_action_edit(edit_carrier_path(item)) %>
-          <%= render_action_delete(carrier_path(item), "Desea borrar a la empresa de transporte '#{item.name}'?") %>
+          <% unless item.trucks.any? %>
+            <%= render_action_delete(carrier_path(item), "Desea borrar a la empresa de transporte '#{item.name}'?") %>
+          <% end %>
         </td>
       </tr>
     <% end %>

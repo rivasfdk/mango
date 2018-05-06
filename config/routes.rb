@@ -87,6 +87,8 @@ Mango::Application.routes.draw do
   match 'tickets/:id/update_items' => "tickets#update_items", :via => :put, :as => "update_items_ticket"
   match 'tickets/:id/update_entry' => "tickets#update_entry", :via => :put, :as => "update_entry_ticket"
 
+  match 'tickets/:id/authorize' => "tickets#authorize", :via => :get, :as => 'authorize_ticket'
+
   match 'locations/:location_id/machines/:id/fill_hours' => "machines#do_fill_hours", :via => :post
 
   # Reports
