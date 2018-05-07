@@ -21,7 +21,7 @@ Permission.create("name"=>"Consultar Recetas", "module"=>"recipes", "action"=>"c
 Permission.create("name"=>"Editar Recetas", "module"=>"recipes", "action"=>"modify", "mode"=>"global")
 Permission.create("name"=>"Eliminar Recetas", "module"=>"recipes", "action"=>"delete", "mode"=>"global")
 Permission.create("name"=>"Crear Recetas", "module"=>"recipes", "action"=>"create", "mode"=>"global")
-Permission.create("name"=>"Imprimir Recetas", "module"=>"recipes", "action"=>"print", "mode"=>"global")
+Permission.create("name"=>"Imprimir Recetas", "module"=>"recipes", "action"=>"print_recipe", "mode"=>"global")
 Permission.create("name"=>"Importar Recetas", "module"=>"recipes", "action"=>"import", "mode"=>"module")
 
 Permission.create("name"=>"Consultar Balanzas", "module"=>"scales", "action"=>"consult", "mode"=>"global")
