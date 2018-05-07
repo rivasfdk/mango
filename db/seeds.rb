@@ -46,11 +46,13 @@ Permission.create("name"=>"Consultar Lotes Materia Prima", "module"=>"lots", "ac
 Permission.create("name"=>"Editar Lotes Materia Prima", "module"=>"lots", "action"=>"modify", "mode"=>"global")
 Permission.create("name"=>"Eliminar Lotes Materia Prima", "module"=>"lots", "action"=>"delete", "mode"=>"global")
 Permission.create("name"=>"Crear Lotes Materia Prima", "module"=>"lots", "action"=>"create", "mode"=>"global")
+Permission.create("name"=>"Ver Inventario Lotes Materia Prima", "module"=>"lots", "action"=>"stock", "mode"=>"global")
 
 Permission.create("name"=>"Consultar Lotes Producto Terminado", "module"=>"product_lots", "action"=>"consult", "mode"=>"global")
 Permission.create("name"=>"Editar Lotes Producto Terminado", "module"=>"product_lots", "action"=>"modify", "mode"=>"global")
 Permission.create("name"=>"Eliminar Lotes Producto Terminado", "module"=>"product_lots", "action"=>"delete", "mode"=>"global")
 Permission.create("name"=>"Crear Lotes Producto Terminado", "module"=>"product_lots", "action"=>"create", "mode"=>"global")
+Permission.create("name"=>"Ver Inventario Lotes Producto Terminado", "module"=>"product_lots", "action"=>"stock", "mode"=>"global")
 
 Permission.create("name"=>"Consultar Materia Prima", "module"=>"ingredients", "action"=>"consult", "mode"=>"global")
 Permission.create("name"=>"Editar Materia Prima", "module"=>"ingredients", "action"=>"modify", "mode"=>"global")
