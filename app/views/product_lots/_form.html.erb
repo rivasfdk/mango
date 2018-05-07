@@ -2,7 +2,7 @@
 <label for="code" class="small">Código:</label>
 <div class="field"><%= f.text_field :code, :size=>'15' %> <span>*</span></div>
 <label for="product_id" class="small">Producto:</label>
-<div class="field"><%= f.collection_select :product_id, @products, :id, :name, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<div class="field"><%= f.collection_select :product_id, @products, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="product_id" class="small">Fábrica:</label>
 <div class="field"><%= f.collection_select :client_id, @factories, :id, :name, {include_blank: session[:company]['name']}, class: 'chosen-select chzn-field-normal' %></div>
 <% if action == "edit" %>
