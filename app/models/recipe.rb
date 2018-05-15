@@ -15,6 +15,7 @@ class Recipe < ActiveRecord::Base
     8 => 'Equinos',
     9 => 'Cerdos',
     10 => 'Vacunos',
+    11 => 'Aves',
   }
 
   has_many :ingredient_recipe, dependent: :destroy

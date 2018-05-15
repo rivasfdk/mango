@@ -18,6 +18,8 @@ class HoppersController < ApplicationController
   def create
     @hopper = Scale.find(params[:scale_id]).hoppers.new params[:hopper]
     if @hopper.save
+      Log.create type_id: 5, user_id: session[:user_id], 
+                 action: "Tolva CREADA: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}"
       # This should be an after_create callback
       @hopper_lot = @hopper.hopper_lot.new params[:hopper_lot]
       @hopper_lot.save
@@ -33,6 +35,8 @@ class HoppersController < ApplicationController
     @hopper = Hopper.find params[:id]
     @hopper.update_attributes(params[:hopper])
     if @hopper.save
+      Log.create type_id: 5, user_id: session[:user_id], 
+                 action: "Tolva EDITADA: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}"
       flash[:notice] = 'Tolva actualizada con éxito'
       redirect_to scale_path(@hopper.scale_id)
     else
@@ -51,6 +55,8 @@ class HoppersController < ApplicationController
     @hopper = Hopper.find params[:id]
     @hopper.eliminate
     if @hopper.errors.empty?
+      Log.create type_id: 5, user_id: session[:user_id], 
+                 action: "Tolva ELIMINADA: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}"
       flash[:notice] = "Tolva eliminada con éxito"
     else
       logger.error("Error eliminando tolva: #{@hopper.errors.inspect}")
@@ -79,7 +85,13 @@ class HoppersController < ApplicationController
   def do_change
     @hopper = Hopper.find params[:id]
     params[:change][:amount] = 0 unless is_mango_feature_available("hoppers_transactions")
+    old_lot = "#{@hopper.current_lot.ingredient.code} - #{@hopper.current_lot.ingredient.name} (L: #{@hopper.current_lot.code})"
     if @hopper.change(params[:change], session[:user_id])
+      new_lot = "#{@hopper.current_lot.ingredient.code} - #{@hopper.current_lot.ingredient.name} (L: #{@hopper.current_lot.code})"
+      Log.create type_id: 5, user_id: session[:user_id], 
+                 action: "Tolva CAMBIO de lote: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}\n"+
+                 "lote anterior: #{old_lot}\n"+
+                 "lote nuevo: #{new_lot}"
       flash[:notice] = "Cambio de lote realizado con éxito"
       current_hopper_lot = @hopper.current_hopper_lot
       factory_lots = Lot.where(['client_id is not null and active = true and in_use = true and ingredient_id = ?', current_hopper_lot.lot.ingredient_id]).count

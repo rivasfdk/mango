@@ -40,6 +40,8 @@ class RecipesController < ApplicationController
   def create
     @recipe = Recipe.new params[:recipe]
     if @recipe.save
+      Log.create type_id: 3, user_id: session[:user_id], 
+                 action: "Receta CREADA: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version}"
       flash[:notice] = 'Receta guardada con éxito'
       redirect_to :recipes
     else
@@ -67,6 +69,10 @@ class RecipesController < ApplicationController
       original_recipe.in_use = false
       original_recipe.save
     end
+
+    Log.create type_id: 3, user_id: session[:user_id], 
+                 action: "Receta CLONADA: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version} "+
+                 "versión anterior: #{original_recipe.version}"
     
     @ingredients = Ingredient.actives.all
     @products = Product.all
@@ -78,8 +84,22 @@ class RecipesController < ApplicationController
 
   def update
     @recipe = Recipe.find params[:id]
+    in_use_old = @recipe.in_use
+    active_old = @recipe.active
     @recipe.update_attributes(params[:recipe])
+    in_use = @recipe.in_use
+    active = @recipe.active
     if @recipe.save
+      if (in_use != in_use_old) && in_use
+        Log.create type_id: 3, user_id: session[:user_id], 
+                   action: "Receta HABILITADA para usar: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version}"
+      end
+      if (active != active_old) && !active
+        Log.create type_id: 3, user_id: session[:user_id], 
+                   action: "Receta DESACTIVADA del sistema: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version}"
+      end
+      Log.create type_id: 3, user_id: session[:user_id], 
+                 action: "Receta EDITADA: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version} "
       flash[:notice] = 'Receta actualizada con éxito'
       redirect_to :recipes
     else
@@ -93,6 +113,8 @@ class RecipesController < ApplicationController
     @ingredients = Ingredient.actives
     @recipe.eliminate
     if @recipe.errors.empty?
+      Log.create type_id: 3, user_id: session[:user_id], 
+                 action: "Receta ELIMINADA: #{@recipe.name} codigo: #{@recipe.code} versión: #{@recipe.version}"
       flash[:notice] = "Receta eliminada con éxito"
     else
       logger.error("Error eliminando receta: #{@recipe.errors.inspect}")
