@@ -8,7 +8,7 @@
       Almacen:<br />
       <%= f.collection_select :warehouse_id, @lots_warehouses, :id, :to_collection_select, {include_blank: true}, class: 'chosen-select chzn-field-normal' %></td>
     <% end %>
-  <td class="center"><%= f.check_box :sack, checked: true, class: 'sack_checkbox' %></td>
+  <td class="center"><%= f.check_box :sack, checked: false, class: 'sack_checkbox' %></td>
   <td class="center"><%= f.text_field :sacks, size: 5, class: 'sacks_field' %></td>
   <td class="center"><%= f.text_field :sack_weight, size: 5, class: 'sack_weight_field' %></td>
   <td class="center"><%= f.text_field :amount, size: 10, class: 'amount_field' %></td>

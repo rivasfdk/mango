@@ -11,6 +11,7 @@ report.start_new_page do |page|
   page.values client_rif: @data['client_rif'].upcase
   page.values client_address: @data['client_address'].upcase
   page.values comment: @data['comment']
+  page.values authorized: @data['authorized']
   #page.values document_type: @data['document_type']
 
   page.values provider_document_number: @data['provider_document_number']

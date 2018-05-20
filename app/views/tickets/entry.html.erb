@@ -14,13 +14,6 @@
   </div>
 <% end %>
 
-<label for="client_id" class="small">Cliente/Maquila:</label>
-<div class="field"><%=h @ticket.client.name %></div>
-
-
-<label for="address" class="small">Direccion:</label>
-<div class="field"><%=h @ticket.address %></div>
-
 <label for="driver_id" class="small">Chofer:</label>
 <div class="field"><%=h @ticket.driver.name%> - CI: <%=@ticket.driver.ci%></div>
 

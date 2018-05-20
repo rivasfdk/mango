@@ -87,8 +87,13 @@ class ClientsController < ApplicationController
   end
 
   def get_client
-    @client = Client.find params["id_client"]
-    render json: @client, root: false
+    client = Client.includes(:addresses).where(id: params["id_client"])
+    @addresses = []
+    @addresses << client[0].address
+    client[0].addresses.each do |addr|
+      @addresses << addr.address
+    end
+    render json: @addresses, root: false
   end
 
 end

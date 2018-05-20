@@ -60,8 +60,8 @@ module ActionsHelper
   end
 
   def render_action_authorize(url, confirm)
-    image = image_tag('go-next.png', alt: 'Autorizar')
-    return link_to image + "Autorizar Diferencia", url, class: 'action', data: { confirm: confirm }
+    image = image_tag('notice-error.png', alt: 'Autorizar')
+    return link_to image, url, class: 'action', data: { confirm: confirm }
   end
 
   def render_action_recalculate(url)
@@ -126,12 +126,12 @@ module ActionsHelper
 
   def render_action_close_ticket(url)
     image = image_tag('arrow-up.png', alt: 'Salida')
-    return link_to image + " Salida", url, class: 'action'
+    return link_to image + " Salida", url, class: 'action', :target => '_blank'
   end
 
   def render_action_items_ticket(url)
     image = image_tag('action-new.png', alt: 'Items')
-    return link_to image + " Items", url, class: 'action'
+    return link_to image + " Items", url, class: 'action', :target => '_blank'
   end
 
   def render_action_entry_ticket(url)

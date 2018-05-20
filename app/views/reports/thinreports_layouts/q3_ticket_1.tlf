@@ -105,7 +105,7 @@
       "x": 10,
       "y": 45,
       "width": 43,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -163,7 +163,7 @@
       "x": 10,
       "y": 151.8,
       "width": 49,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -221,7 +221,7 @@
       "x": 10,
       "y": 165,
       "width": 49,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -279,7 +279,7 @@
       "x": 10,
       "y": 125.6,
       "width": 67,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -337,7 +337,7 @@
       "x": 10,
       "y": 138.2,
       "width": 37,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -393,15 +393,15 @@
       "display": true,
       "description": "",
       "x": 10,
-      "y": 331.7,
+      "y": 319,
       "width": 206.7,
-      "height": 240.3,
+      "height": 253,
       "header": {
         "enabled": true,
         "height": 17,
         "translate": {
           "x": -47.6,
-          "y": 50
+          "y": 37.3
         },
         "items": [
           {
@@ -412,7 +412,7 @@
             "x": 57.6,
             "y": 281.7,
             "width": 206.7,
-            "height": 14,
+            "height": 15,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -451,7 +451,7 @@
         "height": 99.8,
         "translate": {
           "x": -47.6,
-          "y": 53.1
+          "y": 40.4
         },
         "items": [
           {
@@ -462,7 +462,7 @@
             "x": 57.6,
             "y": 325,
             "width": 32,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -569,7 +569,7 @@
             "x": 57.6,
             "y": 338.4,
             "width": 38,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -595,7 +595,7 @@
             "x": 152.6,
             "y": 338.4,
             "width": 50,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -621,7 +621,7 @@
             "x": 57.6,
             "y": 300.1,
             "width": 44,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -711,7 +711,7 @@
             "x": 57.6,
             "y": 352.1,
             "width": 56,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -802,16 +802,16 @@
         "height": 0,
         "translate": {
           "x": -47.6,
-          "y": 139
+          "y": 126.3
         },
         "items": []
       },
       "footer": {
         "enabled": true,
-        "height": 122.8,
+        "height": 135.2,
         "translate": {
           "x": -47.6,
-          "y": 128.6
+          "y": 115.9
         },
         "items": [
           {
@@ -822,7 +822,7 @@
             "x": 57.6,
             "y": 373,
             "width": 74,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -883,7 +883,7 @@
             "x": 57.6,
             "y": 319.9,
             "width": 98,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -944,7 +944,7 @@
             "x": 57.6,
             "y": 385.9,
             "width": 31,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -1036,7 +1036,7 @@
             "x": 57.6,
             "y": 345.2,
             "width": 81,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -1094,7 +1094,7 @@
             "x": 57.6,
             "y": 359.6,
             "width": 74,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -1152,7 +1152,7 @@
             "x": 57.6,
             "y": 332.2,
             "width": 98,
-            "height": 12,
+            "height": 14,
             "style": {
               "font-family": [
                 "IPAGothic"
@@ -1204,10 +1204,42 @@
               "base": "",
               "type": ""
             }
+          },
+          {
+            "id": "authorized",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 57.6,
+            "y": 442.1,
+            "width": 206.7,
+            "height": 10,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "top",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": false,
+            "format": {
+              "base": "",
+              "type": ""
+            }
           }
         ]
       },
-      "content-height": 223.3,
+      "content-height": 236,
       "auto-page-break": false
     },
     {
@@ -1285,9 +1317,9 @@
         "border-style": "solid"
       },
       "x1": 48.3,
-      "y1": 230,
+      "y1": 220,
       "x2": 178.3,
-      "y2": 230
+      "y2": 220
     },
     {
       "id": "",
@@ -1295,9 +1327,9 @@
       "display": true,
       "description": "",
       "x": 10,
-      "y": 233,
+      "y": 223,
       "width": 206.7,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -1326,9 +1358,9 @@
         "border-style": "solid"
       },
       "x1": 48.3,
-      "y1": 301.4,
+      "y1": 291.4,
       "x2": 178.3,
-      "y2": 301.4
+      "y2": 291.4
     },
     {
       "id": "",
@@ -1336,9 +1368,9 @@
       "display": true,
       "description": "",
       "x": 10,
-      "y": 303.8,
+      "y": 293.8,
       "width": 206.7,
-      "height": 12,
+      "height": 14,
       "style": {
         "font-family": [
           "IPAGothic"
@@ -1362,7 +1394,7 @@
       "display": true,
       "description": "",
       "x": 10,
-      "y": 317.2,
+      "y": 307.2,
       "width": 206.7,
       "height": 12,
       "style": {
@@ -1394,7 +1426,7 @@
       "display": true,
       "description": "",
       "x": 10,
-      "y": 245,
+      "y": 235,
       "width": 206.7,
       "height": 12,
       "style": {

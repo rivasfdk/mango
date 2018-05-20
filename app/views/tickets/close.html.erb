@@ -3,7 +3,7 @@
 <%= render_error_messages(f.error_messages) %>
 
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
-<div class="field"><%=h @ticket.ticket_type.description %></div>
+<div id="ticket_type" class="field"><%=h @ticket.ticket_type.description %></div>
 
 <% if is_mango_feature_available("sap_romano")%>
   <div id= "orders">
@@ -14,30 +14,35 @@
   </div>
 <% end %>
 
-<label for="client_id" class="small">Cliente/Maquila:</label>
-<div class="field"><%=h @ticket.client.name %></div>
-
-
-<label for="address" class="small">Direccion:</label>
-<div class="field"><%=h @ticket.address %></div>
-
 <label for="driver_id" class="small">Chofer:</label>
-<div class="field"><%=h @ticket.driver.name%> - CI: <%=@ticket.driver.ci%></div>
-
+<div class="field"><%= f.collection_select :driver_id, @drivers, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 <label for="truck_id" class="small">Camión:</label>
-<div class="field"><%=h @ticket.truck.license_plate%> - <%=@ticket.truck.carrier.name%></div>
+<div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+
+<% if @ticket.client_id.nil? %>
+  <label for="client_id" class="small">Cliente/Proveedor:</label>
+  <div id="id_client" class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+  <label for="address" class="small">Direccion:</label>
+  <div id="id_address" class="field"><%= f.collection_select :address, @address, :address, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+<% else %>
+  <label for="client_id" class="small">Cliente/Proveedor:</label>
+  <div class="field"><%=h @ticket.client.name %></div>
+  <label for="address" class="small">Direccion:</label>
+  <div class="field"><%= f.text_field :address, :size=>'60', disabled: true %></div>
+<% end %>
 
 <label for="incoming_date" class="small">Fecha entrada:</label>
 <div class="field"><%=h @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S") %></div>
 <label for="incoming_weight" class="small">Peso de entrada:</label>
-<div class="field"><%=h @ticket.incoming_weight %></div>
+<div id="inweight" class="field"><%=h @ticket.incoming_weight %></div>
 
 <% if @ticket.ticket_type_id == 1 %>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
   <div class="field"><%=h @ticket.provider_weight %></div>
-  <label for="provider_document_number" class="small">N# documento:</label>
-  <div class="field"><%=h @ticket.provider_document_number %></div>
 <% end %>
+
+<label for="provider_document_number" class="small">N# documento:</label>
+<div class="field"><%= f.text_field :provider_document_number, :size=>'20' %></div>
 
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>
@@ -52,6 +57,13 @@
   <label for="group">Pesaje Manual</label>
 <% end %>
 </div>
+
+<label for="net_weight" class="small">Peso neto:</label>
+<div id="netweight" class="field"><b>--</b></div>
+
+<% if @ticket.diff_authorized > 1%>
+  <label class="print">Ticket autorizado por: <%=h @user_authorized %></label>
+<% end %>
 
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>

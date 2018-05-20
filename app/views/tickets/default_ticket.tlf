@@ -1533,6 +1533,38 @@
             "texts": [
               "Observaciones:"
             ]
+          },
+          {
+            "id": "authorized",
+            "type": "text-block",
+            "display": true,
+            "description": "",
+            "x": 314.6,
+            "y": 686,
+            "width": 238.4,
+            "height": 10,
+            "style": {
+              "font-family": [
+                "Helvetica"
+              ],
+              "font-size": 9,
+              "color": "#000000",
+              "text-align": "right",
+              "vertical-align": "top",
+              "line-height": "",
+              "line-height-ratio": "",
+              "letter-spacing": "",
+              "font-style": [],
+              "overflow": "truncate",
+              "word-wrap": "break-word"
+            },
+            "reference-id": "",
+            "value": "",
+            "multiple-line": false,
+            "format": {
+              "base": "",
+              "type": ""
+            }
           }
         ]
       },

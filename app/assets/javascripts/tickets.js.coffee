@@ -148,12 +148,27 @@ id_client_changed = ->
   url = '/clients/get_client'
   params = {}
   params["id_client"] = $("#ticket_client_id").val()
+  address = $("#ticket_address")
   $.getJSON url, params, (data) ->
-    client = data
-    $("#ticket_address").val(client.address)
+    addresses = data
+    address.empty()
+    $.each addresses, (_, addr) ->
+      address.append new Option(addr)
+    address.trigger "chosen:updated"
+    console.log addresses
 
 $ ->
   $("#id_client").change id_client_changed
+
+calculate_net = ->
+  if $("#ticket_type").text().includes('recep')
+    net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+  else
+    net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+  $("#netweight").html("<b>#{net}</b>")
+
+$ ->
+  $("#ticket_outgoing_weight").change calculate_net
 
 #create ticket new driver
 
@@ -259,19 +274,19 @@ server_romano_ip = ""
 $ ->
   url = '/tickets/get_server_romano_ip'
   params = {}
-  if (self.location.href.includes('/tickets') and self.location.href.includes('/entry'))
+  if (self.location.href.includes('/tickets') and self.location.href.includes('entry'))
     params['type'] = 1
     $.getJSON url, params, (data) ->
       server_romano_ip = data[0]
       console.log server_romano_ip
-  if (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
+  if (self.location.href.includes('/tickets') and self.location.href.includes('close'))
     params['type'] = 2
     $.getJSON url, params, (data) ->
       server_romano_ip = data[0]
       console.log server_romano_ip
 
 update_weight = ->
-  if self.location.href.includes('/entry')
+  if self.location.href.includes('entry')
     not_manual = not $("#ticket_manual_incoming").is(':checked')
   else
     not_manual = not $("#ticket_manual_outgoing").is(':checked')
@@ -280,16 +295,22 @@ update_weight = ->
     socket.onopen = ()->
       console.log "conected!"
     socket.onmessage = (msg)->
-      if self.location.href.includes('/entry')
+      if self.location.href.includes('entry')
         $("#ticket_incoming_weight").val(msg.data)
         console.log $("#ticket_incoming_weight").val()
       else
         $("#ticket_outgoing_weight").val(msg.data)
+        if $("#ticket_type").text().includes('recep')
+          net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+        else
+          net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+        $("#netweight").html("<b>#{net}</b>")
         console.log $("#ticket_outgoing_weight").val()
 
 $ ->
-  if (self.location.href.includes('/tickets') and self.location.href.includes('/entry')) or (self.location.href.includes('/tickets') and self.location.href.includes('/close'))
-    setInterval(update_weight, 1000)
+  if self.location.href.includes('/tickets')
+    if self.location.href.includes('entry') or self.location.href.includes('close')
+      setInterval(update_weight, 1000)
 
 capture_weight = ->
   if captura

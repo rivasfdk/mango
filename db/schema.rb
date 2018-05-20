@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180509124114) do
+ActiveRecord::Schema.define(version: 20180519130115) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -599,7 +599,7 @@ ActiveRecord::Schema.define(version: 20180509124114) do
     t.string   "address"
     t.integer  "document_type_id"
     t.integer  "id_order"
-    t.boolean  "diff_authorized"
+    t.integer  "diff_authorized"
     t.integer  "authorized_user_id"
   end
 

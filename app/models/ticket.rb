@@ -18,7 +18,7 @@ class Ticket < ActiveRecord::Base
 
   validates_presence_of :truck_id, :driver_id, :ticket_type_id #:client_id, :address
 
-  #validates_presence_of :provider_document_number, :provider_weight, :if => :ticket_type_id?
+  validates_presence_of :provider_document_number, :provider_weight, :if => :ticket_type_id?
 
   validates_numericality_of :incoming_weight, allow_nil: true, greater_than: 0
   validates_numericality_of :outgoing_weight, allow_nil: true, greater_than: 0
@@ -30,6 +30,7 @@ class Ticket < ActiveRecord::Base
     0 => {name: 'Abiertos', condition: 'tickets.open = TRUE'},
     1 => {name: 'Por notificar', condition: 'tickets.open = FALSE AND tickets.notified = FALSE'},
     2 => {name: 'Notificados', condition: 'tickets.open = FALSE AND tickets.notified = TRUE'},
+    3 => {name: 'Autorizados', condition: 'tickets.diff_authorized = 2'},
   }
 
   def ticket_type_id?

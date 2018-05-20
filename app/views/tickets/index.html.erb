@@ -27,7 +27,11 @@
     <% end %>
       <% class_row, i = alternate_row_class(i) %>
       <tr class="<%= class_row %>">
-        <td class="center"><%=h t[:ticket_number] %></td>
+        <td class="center"><%=h t[:ticket_number] %>
+        <% if @granted_diff_authorized && t[:diff_authorized] == 1 && t[:ticket_open] %>
+          <%= render_action_authorize(authorize_ticket_path(t[:ticket_id]), "Desea Autorizar salida del ticket #{t[:ticket_number]}?") %> <br />
+        <% end %>
+        </td>
         <td class="center"><%=h t[:ticket_incoming_date].strftime("%d/%m/%Y %H:%M:%S") %></td>
         <td><%=h t[:ticket_type] %></td>
         <td><%=h t[:driver_name] %></td>
@@ -44,15 +48,12 @@
               <% else %>
                 <%= render_action_edit_ticket(edit_ticket_path(t[:ticket_id])) %>
                 <%= render_action_close_ticket(close_ticket_path(t[:ticket_id])) %>
-                <% if @granted_diff_authorized && !t[:diff_authorized] %>
-                  <%= render_action_authorize(authorize_ticket_path(t[:ticket_id]), "Desea Autorizar salida del ticket '#{t[:ticket_number]}'?") %> <br />
-                <% end %>
               <% end %>
             <% end %>
           <% else %>
             <%= render_action_repair(repair_ticket_path(t[:ticket_id])) %> <br />
             <% if !t[:ticket_notified] %>
-            <%= render_action_notify_confirm(notify_ticket_path(t[:ticket_id]), "Desea notificar el ticket '#{t[:ticket_number]}'?") %> <br />
+            <%= render_action_notify_confirm(notify_ticket_path(t[:ticket_id]), "¿Desea notificar el ticket #{t[:ticket_number]}?") %> <br />
             <% end %>
             <%= render_action_print(print_ticket_path(t[:ticket_id])) %>
           <% end %>

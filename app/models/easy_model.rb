@@ -849,18 +849,25 @@ class EasyModel
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
     data['net_weight'] = @ticket.get_net_weight.round(2).to_s + " Kg"
 
+    if @ticket.diff_authorized > 1
+      user_authorized = User.find(@ticket.authorized_user_id).name
+      data['authorized'] = "Ticket autorizado por: #{user_authorized}"
+    else
+      data['authorized'] = ""
+    end
+
     data['comment1'] = " "
     data['comment2'] = " "
     data['comment3'] = " "
     data['comment4'] = " "
     data['comment5'] = " "
 
-    if @ticket.ticket_type_id == 1
-      data['dif_label'] = "Dif.:"
-      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
-    else
+    if @ticket.provider_weight.nil?
       data['dif_label'] = ""
       data['dif'] = ""
+    else
+      data['dif_label'] = "Dif.:"
+      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
     end
 
     #easyreport

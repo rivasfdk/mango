@@ -97,10 +97,10 @@ class TicketsController < ApplicationController
 
   def authorize
     @ticket = Ticket.find params[:id]
-    @ticket.diff_authorized = true
+    @ticket.diff_authorized = 2
     @ticket.authorized_user_id = session[:user_id]
     @ticket.save
-    flash[:notice] = 'Ticket autorizado para salir con diferencia de peso'
+    flash[:notice] = "Ticket #{@ticket.number} autorizado para salir con diferencia de peso"
     redirect_to :tickets
   end
 
@@ -108,6 +108,7 @@ class TicketsController < ApplicationController
     @ticket = Ticket.new params[:ticket]
     @ticket.incoming_date = Time.now
     @ticket.user_id = (User.find session[:user_id]).id
+    @ticket.diff_authorized = 0
 
     respond_to do |format|
       format.json do
@@ -117,7 +118,7 @@ class TicketsController < ApplicationController
       format.html do
         if @ticket.save
           flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
-          redirect_to items_ticket_path(@ticket.id)
+          redirect_to entry_ticket_path(@ticket.id)
         else
           new
           render :new
@@ -186,6 +187,7 @@ class TicketsController < ApplicationController
     @product_lots_warehouses = Warehouse.where(lot_id: nil)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
+    @address = []
     @drivers = Driver.where(frequent: true)
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
@@ -300,6 +302,11 @@ class TicketsController < ApplicationController
       TicketOrder.create_transactions(params[:id])
     end
     @ticket = Ticket.find params[:id], :include => :transactions
+    if !@ticket.open
+      flash[:notice] = 'El ticket se encuentra cerrado'
+      flash[:type] = 'warn'
+      redirect_to :tickets
+    end
     @ticket.transactions.each do |t|
       content_type = (t.content_type == 1) ? true : false
       if t.warehouse_id.nil?
@@ -359,6 +366,7 @@ class TicketsController < ApplicationController
       elsif mango_features.include?("warehouse") && (Warehouse.find(t.warehouse_id).stock < t.amount)
         error = "Almacen sin inventario suficiente"
       else
+        t.amount = 0 if t.amount.nil?
         t.update_transactions unless t.new_record? || !t.notified
       end
     end
@@ -369,7 +377,7 @@ class TicketsController < ApplicationController
         entry
         redirect_to entry_ticket_path(@ticket.id)
       else
-        redirect_to action: 'index'
+        redirect_to action: 'close'
       end
     else
       flash[:type] = 'error'
@@ -435,6 +443,11 @@ class TicketsController < ApplicationController
 
   def close
     @ticket = Ticket.find params[:id], :include => :transactions
+    if !@ticket.open
+      flash[:notice] = 'El ticket se encuentra cerrado'
+      flash[:type] = 'warn'
+      redirect_to :tickets
+    end
     ticket_type = @ticket.ticket_type_id == 1 ? true : false
     mango_features = get_mango_features()
     @warehouse = mango_features.include?("warehouse")
@@ -450,6 +463,7 @@ class TicketsController < ApplicationController
     end
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
+    @address = Address.all
     @drivers = Driver.where(frequent: true)
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
@@ -459,11 +473,20 @@ class TicketsController < ApplicationController
       @trucks << @ticket.truck
     end
     @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+    if @ticket.diff_authorized > 1
+      @user_authorized = User.find(@ticket.authorized_user_id).name
+    end
   end
 
   def do_close
     @ticket = Ticket.find params[:id]
-    redirect_to :tickets unless @ticket.open
+    @address = @ticket.address
+    if !@ticket.open
+      flash[:notice] = 'El ticket se encuentra cerrado'
+      flash[:type] = 'warn'
+      redirect_to :tickets
+    end
+    @ticket.update(client_id: params[:ticket][:client_id], address: params[:ticket][:address]) if @ticket.client_id.nil?
     @ticket.update_attributes(params[:ticket])
     @ticket.user_id = session[:user_id]
     @ticket.transactions.each do |t|
@@ -495,46 +518,67 @@ class TicketsController < ApplicationController
         porcent_dif = (dif / @ticket.provider_weight) * 100
         dif_validation = porcent_dif <= dif_min ? true : false
       else
-        net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
-        dif_min = (Settings.find 1).ticket_dispatch_diff
-        total_transaction = 0
-        @ticket.transactions.each do |t|
-          total_transaction = total_transaction + t.amount
+        if @ticket.transactions.length > 1 or @ticket.transactions[0].sack
+          net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
+          dif_min = (Settings.find 1).ticket_dispatch_diff
+          total_transaction = 0
+          @ticket.transactions.each do |t|
+            total_transaction = total_transaction + t.amount
+          end
+          @ticket.provider_weight = total_transaction
+          dif = (total_transaction - net_weight).abs
+          porcent_dif = (dif / total_transaction) * 100
+          dif_validation = porcent_dif <= dif_min ? true : false
+        else
+          net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
+          dif_validation = true
         end
-        dif = (total_transaction - net_weight).abs
-        porcent_dif = (dif / total_transaction) * 100
-        dif_validation = porcent_dif <= dif_min ? true : false
       end
 
-      if !dif_validation && !@ticket.diff_authorized
+      if !dif_validation && @ticket.diff_authorized < 2
+        Ticket.find(@ticket.id).update(diff_authorized: 1)
         flash[:type] = 'error'
-        flash[:notice] = "Diferencia de peso es #{porcent_dif}% mayor a la minima aceptada: #{dif_min}%"
+        flash.now[:notice] = "Diferencia de peso es #{porcent_dif.round(1)}% mayor a la minima aceptada: #{dif_min}%"
         close
         render :close
       else
-        if @ticket.transactions.length > 1
-          @ticket.transactions.each do |t|
-            t.update_transactions unless t.new_record? || !t.notified
-          end
-        else
-          @ticket.transactions.each do |t|
-            t.amount = net_weight
-            t.update_transactions unless t.new_record? || !t.notified
-          end
-        end
-        mango_features = get_mango_features()
-          if mango_features.include?("sap_romano")
-            TicketOrder.close(@ticket)
-          end
-        if @ticket.valid?
-          @ticket.save
-          flash[:notice] = 'Ticket cerrado con éxito'
-          redirect_to :tickets, :action => "print"
-        else
+        if net_weight < 0
           flash[:type] = 'error'
-          flash[:notice] = "El peso de Salida no es valido"
+          flash.now[:notice] = "El peso neto no puede ser NEGATIVO"
           close
           render :close
+        else
+          if @ticket.client.nil? or @ticket.address.empty?
+              flash[:type] = 'error'
+              flash[:notice] = "No se ha seleccionado dirección de origen o desdino"
+              close
+              render :close
+          else
+            if @ticket.transactions.length > 1
+              @ticket.transactions.each do |t|
+                t.update_transactions unless t.new_record? || !t.notified
+              end
+            else
+              @ticket.transactions.each do |t|
+                t.amount = net_weight
+                t.update_transactions unless t.new_record? || !t.notified
+              end
+            end
+            mango_features = get_mango_features()
+            if mango_features.include?("sap_romano")
+              TicketOrder.close(@ticket)
+            end
+            if @ticket.valid?
+              @ticket.save
+              flash[:notice] = 'Ticket cerrado con éxito'
+              print
+            else
+              flash[:type] = 'error'
+              flash[:notice] = "El peso de Salida no es valido"
+              close
+              render :close
+            end
+          end
         end
       end
     end

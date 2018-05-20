@@ -55,6 +55,7 @@ report.start_new_page do |page|
       footer.item(:comment).value(@data['comment'])
       footer.item(:incoming_weight).value(@data['incoming_weight'])
       footer.item(:outgoing_weight).value(@data['outgoing_weight'])
+      footer.item(:authorized).value(@data['authorized'])
     end
 
 #  table.store.total_amount = @data['total_amount'].upcase
