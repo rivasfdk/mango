@@ -38,7 +38,7 @@
 
 <% if @ticket.ticket_type_id == 1 %>
   <label for="provider_weight" class="small">Peso Proveedor:</label>
-  <div class="field"><%=h @ticket.provider_weight %></div>
+  <div id="provider_weight" class="field"><%=h @ticket.provider_weight %></div>
 <% end %>
 
 <label for="provider_document_number" class="small">N# documento:</label>
@@ -60,6 +60,11 @@
 
 <label for="net_weight" class="small">Peso neto:</label>
 <div id="netweight" class="field"><b>--</b></div>
+
+<% if !@ticket.provider_weight.nil? %> 
+  <label for="diff" class="small">Diferencia:</label>
+  <div id="diff" class="field"><b>--</b></div>
+<% end %>
 
 <% if @ticket.diff_authorized > 1%>
   <label class="print">Ticket autorizado por: <%=h @user_authorized %></label>

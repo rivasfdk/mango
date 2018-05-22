@@ -358,17 +358,21 @@ class TicketsController < ApplicationController
       end
       t.amount = t.amount_was if t.marked_for_destruction?
     end
-    @ticket.transactions.each do |t|
-      if t.content_id.nil?
-        error = "Debe selecionar un lote"
-      elsif mango_features.include?("warehouse") && t.warehouse_id.nil? 
-        error = "El lote #{t.get_lot.to_collection_select} no esta asignado a ningún almacen"
-      elsif mango_features.include?("warehouse") && (Warehouse.find(t.warehouse_id).stock < t.amount)
-        error = "Almacen sin inventario suficiente"
-      else
-        t.amount = 0 if t.amount.nil?
-        t.update_transactions unless t.new_record? || !t.notified
+    if !@ticket.transactions.empty?
+      @ticket.transactions.each do |t|
+        if t.content_id.nil?
+          error = "Debe selecionar un lote"
+        elsif mango_features.include?("warehouse") && t.warehouse_id.nil? 
+          error = "El lote #{t.get_lot.to_collection_select} no esta asignado a ningún almacen"
+        elsif mango_features.include?("warehouse") && (Warehouse.find(t.warehouse_id).stock < t.amount)
+          error = "Almacen sin inventario suficiente"
+        else
+          t.amount = 0 if t.amount.nil?
+          t.update_transactions unless t.new_record? || !t.notified
+        end
       end
+    else
+      error = "Debe selecionar un rubro"
     end
     if error.nil?
       @ticket.save

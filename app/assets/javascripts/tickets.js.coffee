@@ -162,10 +162,13 @@ $ ->
 
 calculate_net = ->
   if $("#ticket_type").text().includes('recep')
-    net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+    net = $("#inweight").text() - $("#ticket_outgoing_weight").val()
+    diff = net - $("#provider_weight").text()
   else
     net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+    diff = net - $("#provider_weight").text()
   $("#netweight").html("<b>#{net}</b>")
+  $("#diff").html("<b>#{diff}</b>")
 
 $ ->
   $("#ticket_outgoing_weight").change calculate_net
@@ -302,9 +305,12 @@ update_weight = ->
         $("#ticket_outgoing_weight").val(msg.data)
         if $("#ticket_type").text().includes('recep')
           net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+          diff = net - $("#provider_weight").text()
         else
           net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+          diff = net - $("#provider_weight").text()
         $("#netweight").html("<b>#{net}</b>")
+        $("#diff").html("<b>#{diff}</b>")
         console.log $("#ticket_outgoing_weight").val()
 
 $ ->
