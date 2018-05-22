@@ -36,8 +36,12 @@
 <label for="incoming_weight" class="small">Peso de entrada:</label>
 <div id="inweight" class="field"><%=h @ticket.incoming_weight %></div>
 
-<% if @ticket.ticket_type_id == 1 %>
-  <label for="provider_weight" class="small">Peso Proveedor:</label>
+<% if !@ticket.provider_weight.nil? %> 
+  <% if @ticket.ticket_type_id == 1 %>
+    <label for="provider_weight" class="small">Peso Proveedor:</label>
+  <% else %> 
+    <label for="provider_weight" class="small">Total transacciones:</label>
+  <% end %>
   <div id="provider_weight" class="field"><%=h @ticket.provider_weight %></div>
 <% end %>
 

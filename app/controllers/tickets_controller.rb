@@ -217,7 +217,25 @@ class TicketsController < ApplicationController
             t.sack_weight = nil
           end
           t.amount = t.amount_was if t.marked_for_destruction?
+          t.amount = 0 if t.amount.nil?
         end
+
+        if @ticket.ticket_type_id == 2
+          tcount = 0
+          totalt = 0
+          tsack = false
+          @ticket.transactions.each do |t|
+            tsack = t.sack
+            totalt = totalt + t.amount
+            tcount = tcount + 1
+          end
+          if tsack or tcount > 1
+            @ticket.provider_weight = totalt
+          else
+            @ticket.provider_weight = nil
+          end
+        end
+
         @ticket.outgoing_date = Time.now
         if @ticket.valid?
           @ticket.transactions.each do |t|
@@ -357,7 +375,25 @@ class TicketsController < ApplicationController
         t.sack_weight = nil
       end
       t.amount = t.amount_was if t.marked_for_destruction?
+      t.amount = 0 if t.amount.nil?
     end
+
+    if @ticket.ticket_type_id == 2
+      tcount = 0
+      totalt = 0
+      tsack = false
+      @ticket.transactions.each do |t|
+        tsack = t.sack
+        totalt = totalt + t.amount
+        tcount = tcount + 1
+      end
+      if tsack or tcount > 1
+        @ticket.provider_weight = totalt
+      else
+        @ticket.provider_weight = nil
+      end
+    end
+
     if !@ticket.transactions.empty?
       @ticket.transactions.each do |t|
         if t.content_id.nil?
