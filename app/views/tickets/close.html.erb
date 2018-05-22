@@ -3,7 +3,7 @@
 <%= render_error_messages(f.error_messages) %>
 
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
-<div id="ticket_type" class="field"><%=h @ticket.ticket_type.description %></div>
+<div id="ticket_type" class="field"><%=h @ticket.ticket_type.description %> - <%=h @ticket.number %></div>
 
 <% if is_mango_feature_available("sap_romano")%>
   <div id= "orders">
