@@ -849,11 +849,13 @@ class EasyModel
     data['tare_weight'] = @ticket.get_tare_weight.to_s + " Kg"
     data['net_weight'] = @ticket.get_net_weight.round(2).to_s + " Kg"
 
-    if @ticket.diff_authorized > 1
-      user_authorized = User.find(@ticket.authorized_user_id).name
-      data['authorized'] = "Ticket autorizado por: #{user_authorized}"
-    else
-      data['authorized'] = ""
+    if !@ticket.diff_authorized.nil?
+      if @ticket.diff_authorized > 1
+        user_authorized = User.find(@ticket.authorized_user_id).name
+        data['authorized'] = "Ticket autorizado por: #{user_authorized}"
+      else
+        data['authorized'] = ""
+      end
     end
 
     data['comment1'] = " "
