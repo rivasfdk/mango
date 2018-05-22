@@ -1,5 +1,17 @@
 <% title "Camiones" %>
 <% i = 0 %>
+
+<div id="searchform">
+<%= form_tag trucks_path, :method => 'get' do %>
+  <label for="truck">Camión:</label>
+
+  <%= select_tag(:truck_id, options_from_collection_for_select(@trucks_filter, :id, :to_collection_select, params[:truck_id]), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %>
+
+  <%= submit_tag "Filtrar" %>
+  <%= link_to "Limpiar", trucks_path %>
+<% end %>
+</div>
+
 <% if @trucks.any? %>
 <table id="tabledata">
     <thead>

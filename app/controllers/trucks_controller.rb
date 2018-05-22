@@ -4,9 +4,8 @@ class TrucksController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @trucks = Truck.includes(:carrier)
-          .where(frequent: true)
-          .paginate(page: params[:page], per_page: session[:per_page])
+        @trucks = Truck.search(params)
+        @trucks_filter = Truck.where(frequent: true)
         render :html => @trucks
       end
       format.json do
