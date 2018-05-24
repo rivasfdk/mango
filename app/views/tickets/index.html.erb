@@ -32,7 +32,7 @@
           <%= render_action_authorize(authorize_ticket_path(t[:ticket_id]), "Desea Autorizar salida del ticket #{t[:ticket_number]}?") %> <br />
         <% end %>
         </td>
-        <td class="center"><%=h t[:ticket_incoming_date].strftime("%d/%m/%Y %H:%M:%S") %></td>
+        <td class="center"><%=h t[:ticket_incoming_date].strftime("%d/%m/%Y %H:%M:%S") %> </td>
         <td><%=h t[:ticket_type] %></td>
         <td><%=h t[:driver_name] %></td>
         <td><%=h t[:client_name] %></td>
@@ -72,6 +72,21 @@
             <td class="center"><%= tr[:lot_code] %></td>
             <td class="center"><%= tr[:transaction_amount] %></td>
             <td></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <% unless t[:ticket_incoming_weight].nil? %>
+          <tr class="<%= class_row %> tr_header">
+            <th class="center" colspan="3">Peso de entrada</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+          <tr class="<%= class_row %> tr_row">
+          <td class="center" colspan="3"><%= t[:ticket_incoming_weight] %></td>
+          <td></td>
+          <td></td>
+          <td></td>
           </tr>
         <% end %>
       <% end %>
