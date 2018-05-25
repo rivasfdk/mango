@@ -869,7 +869,7 @@ class EasyModel
       data['dif'] = ""
     else
       data['dif_label'] = "Dif.:"
-      data['dif'] = (@ticket.provider_weight - @ticket.get_net_weight).round(2).to_s + " Kg"
+      data['dif'] = (@ticket.get_net_weight - @ticket.provider_weight).round(2).to_s + " Kg"
     end
 
     #easyreport

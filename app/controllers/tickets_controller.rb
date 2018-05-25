@@ -554,9 +554,14 @@ class TicketsController < ApplicationController
       if @ticket.ticket_type_id == 1
         net_weight = @ticket.incoming_weight - @ticket.outgoing_weight
         dif_min = (Settings.find 1).ticket_reception_diff
-        dif = (@ticket.provider_weight - net_weight).abs
-        porcent_dif = (dif / @ticket.provider_weight) * 100
-        dif_validation = porcent_dif <= dif_min ? true : false
+        dif = net_weight - @ticket.provider_weight
+        if dif < 0
+          dif = (@ticket.provider_weight - net_weight).abs
+          porcent_dif = (dif / @ticket.provider_weight) * 100
+          dif_validation = porcent_dif <= dif_min ? true : false
+        else
+          dif_validation = true
+        end
       else
         if @ticket.transactions.length > 1 or @ticket.transactions[0].sack
           net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
