@@ -36,10 +36,10 @@
 <%= submit_tag "Nuevo", {:type => "button", :id => "new_truck"} %><br/> </div>
 
 <div id="new_truck_form">
-    <label class="small">Placa:</label>
-    <div class="field" > <input id="truckplate" size="15" type="text" /><span>*</span></div>
     <label class="small">Transporte:</label>
     <div class="field"><%= select_tag :carrier_id, options_from_collection_for_select(@carriers, :id, :name), prompt: "Seleccione una opción", class: 'chosen-select chzn-field-normal'%><span>*</span></div>
+    <label class="small">Placa:</label>
+    <div class="field" > <input id="truckplate" size="15" type="text" /><span>*</span></div>
     <label class="small">Frecuente:</label>
     <div class="field"><input type="checkbox" id="frequent_truck"></div>
     <label class="small"></label>
