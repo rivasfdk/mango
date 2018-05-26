@@ -82,10 +82,6 @@ Mango::Application.routes.draw do
 
   match 'tickets/:id/close' => "tickets#close", :via => :get, :as => "close_ticket"
   match 'tickets/:id/do_close' => "tickets#do_close", :via => :post, :as => "do_close_ticket"
-  match 'tickets/:id/items' => "tickets#items", :via => :get, :as => "items_ticket"
-  match 'tickets/:id/entry' => "tickets#entry", :via => :get, :as => "entry_ticket"
-  match 'tickets/:id/update_items' => "tickets#update_items", :via => :put, :as => "update_items_ticket"
-  match 'tickets/:id/update_entry' => "tickets#update_entry", :via => :put, :as => "update_entry_ticket"
 
   match 'tickets/:id/authorize' => "tickets#authorize", :via => :get, :as => 'authorize_ticket'
 

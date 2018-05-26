@@ -126,17 +126,7 @@ module ActionsHelper
 
   def render_action_close_ticket(url)
     image = image_tag('arrow-up.png', alt: 'Salida')
-    return link_to image + " Salida", url, class: 'action', :target => '_blank'
-  end
-
-  def render_action_items_ticket(url)
-    image = image_tag('action-new.png', alt: 'Items')
-    return link_to image + " Items", url, class: 'action', :target => '_blank'
-  end
-
-  def render_action_entry_ticket(url)
-    image = image_tag('arrow-down.png', alt: 'Entrada')
-    return link_to image + " Entrada", url, class: 'action'
+    return link_to image + " Salida", url, class: 'action'
   end
 
   def render_action_change_warehouse_ingredient(url)

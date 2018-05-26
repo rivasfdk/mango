@@ -298,6 +298,11 @@ module MenuHelper
     return content_tag(:li, link_to(icon, '#', :onclick => function))
   end
 
+  def render_function_newtab(caption, title, function, image)
+    icon = image_tag(image, :alt=>caption, :title=>title, :height=>28, :width=>28)
+    return content_tag(:li, link_to(icon, '#', :onclick => function, :target => '_blank'))
+  end
+
   def render_back(url)
     return render_action('Volver', 'Volver', url, 'button-back.png')
   end
@@ -1173,7 +1178,7 @@ module MenuHelper
     menu = content_tag(:p, 'Cerrar ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Cerrar', 'Cerrar ticket', "submit_ticket_close_form()", 'button-execute.png')
+      render_function_newtab('Cerrar', 'Cerrar ticket', "submit_ticket_close_form()", 'button-execute.png') 
     )
     return menu
   end
