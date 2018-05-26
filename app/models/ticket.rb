@@ -16,7 +16,7 @@ class Ticket < ActiveRecord::Base
 
   attr_accessor :index_transactions
 
-  validates_presence_of :truck_id, :driver_id, :ticket_type_id #:client_id, :address
+  validates_presence_of :truck_id, :driver_id, :ticket_type_id, :incoming_weight #:client_id, :address
 
   validates_presence_of :provider_document_number, :provider_weight, :if => :ticket_type_id?
 

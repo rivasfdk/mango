@@ -1137,7 +1137,7 @@ module MenuHelper
     menu = content_tag(:p, 'Nuevo ticket')
     menu += content_tag(:ul,
       render_back(tickets_path) +
-      render_function('Siguiente', 'Siguiente', "submit_ticket_new_form()", 'button-next.png')
+      render_function('Siguiente', 'Siguiente', "submit_ticket_new_form()", 'button-execute.png')
     )
     return menu
   end

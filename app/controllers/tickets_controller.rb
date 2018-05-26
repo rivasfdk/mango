@@ -117,8 +117,8 @@ class TicketsController < ApplicationController
       end
       format.html do
         if @ticket.save
-          flash[:notice] = 'Ticket guardado, seleccione los rubros del ticket'
-          redirect_to entry_ticket_path(@ticket.id)
+          flash[:notice] = 'Ticket guardado con exito'
+          redirect_to :tickets #entry_ticket_path(@ticket.id)
         else
           new
           render :new
@@ -424,60 +424,6 @@ class TicketsController < ApplicationController
       flash[:notice] = error
       items
       render :items
-    end
-  end
-
-  def entry
-    @ticket = Ticket.find params[:id], :include => :transactions
-    ticket_type = @ticket.ticket_type_id == 1 ? true : false
-    mango_features = get_mango_features()
-    if mango_features.include?("sap_romano")
-      if !@ticket.id_order.nil?
-        @order = TicketOrder.find(@ticket.id_order)
-        @label = TicketOrder.find(@ticket.id_order).order_type ? "Orden de Compra" : "Orden de Salida"
-      end
-    end
-    @lots = Lot.includes(:ingredient).where(active: true)
-    @clients = Client.all
-    @drivers = Driver.where(frequent: true)
-    unless @ticket.driver.frequent
-      @drivers << @ticket.driver
-    end
-    @trucks = Truck.includes(:carrier).where(frequent: true)
-    unless @ticket.truck.frequent
-      @trucks << @ticket.truck
-    end
-    @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
-  end
-
-  def update_entry
-    @ticket = Ticket.find params[:id]
-    redirect_to :tickets unless @ticket.open
-    @ticket.update_attributes(params[:ticket])
-    @ticket.user_id = session[:user_id]
-    @ticket.transactions.each do |t|
-      t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-      t.user_id = @ticket.user_id
-      t.client_id = @ticket.client_id
-      t.comment = @ticket.comment
-      t.notified = @ticket.notified
-      unless t.sack
-        t.sacks = nil
-        t.sack_weight = nil
-      end
-      t.amount = t.amount_was if t.marked_for_destruction?
-    end
-    @ticket.outgoing_date = Time.now
-    if @ticket.valid?
-      @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record? || !t.notified
-      end
-      @ticket.save
-      flash[:notice] = 'Ticket guardado con éxito'
-      redirect_to :tickets
-    else
-      entry
-      render :entry
     end
   end
 

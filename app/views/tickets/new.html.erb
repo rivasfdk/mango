@@ -56,6 +56,17 @@
 
 <label for="comment" class="small">Comentario:</label>
 <div class="field"><%= f.text_area :comment, :size=>'85x3' %></div>
+
+<label for="outgoing_weight" class="small">Peso de entrada:</label>
+<div id = "outweight" class="field"><%= f.text_field :incoming_weight, :size=>'20', class: 'chzn-field-big'%><span>*</span>
+<%= submit_tag "Capturar", {:type => "button", :id => "boton_capturar"} %><br/>
+
+<% if @granted_manual %>
+  <%= f.check_box :manual_incoming, :checked=>false %> &nbsp;
+  <label for="group">Pesaje Manual</label>
+<% end %>
+</div>
+
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
 

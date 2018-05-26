@@ -277,7 +277,7 @@ server_romano_ip = ""
 $ ->
   url = '/tickets/get_server_romano_ip'
   params = {}
-  if (self.location.href.includes('/tickets') and self.location.href.includes('entry'))
+  if (self.location.href.includes('/tickets') and self.location.href.includes('new'))
     params['type'] = 1
     $.getJSON url, params, (data) ->
       server_romano_ip = data[0]
@@ -289,7 +289,7 @@ $ ->
       console.log server_romano_ip
 
 update_weight = ->
-  if self.location.href.includes('entry')
+  if self.location.href.includes('new')
     not_manual = not $("#ticket_manual_incoming").is(':checked')
   else
     not_manual = not $("#ticket_manual_outgoing").is(':checked')
@@ -298,7 +298,7 @@ update_weight = ->
     socket.onopen = ()->
       console.log "conected!"
     socket.onmessage = (msg)->
-      if self.location.href.includes('entry')
+      if self.location.href.includes('new')
         $("#ticket_incoming_weight").val(msg.data)
         console.log $("#ticket_incoming_weight").val()
       else
@@ -315,7 +315,7 @@ update_weight = ->
 
 $ ->
   if self.location.href.includes('/tickets')
-    if self.location.href.includes('entry') or self.location.href.includes('close')
+    if self.location.href.includes('new') or self.location.href.includes('close')
       setInterval(update_weight, 1000)
 
 capture_weight = ->
