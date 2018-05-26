@@ -355,50 +355,55 @@ class TicketsController < ApplicationController
     if params[:commit] == 'Guardar'
       puts 'guardar'
       @ticket = Ticket.find params[:id]
-      redirect_to :tickets unless @ticket.open
-      @ticket.update_attributes(params[:ticket])
-      @ticket.user_id = session[:user_id]
-      @ticket.transactions.each do |t|
-        t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-        t.user_id = @ticket.user_id
-        t.client_id = @ticket.client_id
-        t.comment = @ticket.comment
-        t.notified = @ticket.notified
-        unless t.sack
-          t.sacks = nil
-          t.sack_weight = nil
-        end
-        t.amount = t.amount_was if t.marked_for_destruction?
-        t.amount = 0 if t.amount.nil?
-      end
-
-      if @ticket.ticket_type_id == 2
-        tcount = 0
-        totalt = 0
-        tsack = false
-        @ticket.transactions.each do |t|
-          tsack = t.sack
-          totalt = totalt + t.amount
-          tcount = tcount + 1
-        end
-        if tsack or tcount > 1
-          @ticket.provider_weight = totalt
-        else
-          @ticket.provider_weight = nil
-        end
-      end
-
-      @ticket.outgoing_date = Time.now
-      if @ticket.valid?
-        @ticket.transactions.each do |t|
-          t.update_transactions unless t.new_record? || !t.notified
-        end
-        @ticket.save
-        flash[:notice] = 'Ticket guardado con éxito'
+      if !@ticket.open
+        flash[:notice] = 'El ticket se encuentra cerrado'
+        flash[:type] = 'warn'
         redirect_to :tickets
       else
-        close
-        render :close
+        @ticket.update_attributes(params[:ticket])
+        @ticket.user_id = session[:user_id]
+        @ticket.transactions.each do |t|
+          t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+          t.user_id = @ticket.user_id
+          t.client_id = @ticket.client_id
+          t.comment = @ticket.comment
+          t.notified = @ticket.notified
+          unless t.sack
+            t.sacks = nil
+            t.sack_weight = nil
+          end
+          t.amount = t.amount_was if t.marked_for_destruction?
+          t.amount = 0 if t.amount.nil?
+        end
+
+        if @ticket.ticket_type_id == 2
+          tcount = 0
+          totalt = 0
+          tsack = false
+          @ticket.transactions.each do |t|
+            tsack = t.sack
+            totalt = totalt + t.amount
+            tcount = tcount + 1
+          end
+          if tsack or tcount > 1
+            @ticket.provider_weight = totalt
+          else
+            @ticket.provider_weight = nil
+          end
+        end
+
+        @ticket.outgoing_date = Time.now
+        if @ticket.valid?
+          @ticket.transactions.each do |t|
+            t.update_transactions unless t.new_record? || !t.notified
+          end
+          @ticket.save
+          flash[:notice] = 'Ticket guardado con éxito'
+          redirect_to :tickets
+        else
+          close
+          render :close
+        end
       end
 
     else
@@ -409,111 +414,113 @@ class TicketsController < ApplicationController
         flash[:notice] = 'El ticket se encuentra cerrado'
         flash[:type] = 'warn'
         redirect_to :tickets
-      end
-      @ticket.update(client_id: params[:ticket][:client_id], address: params[:ticket][:address]) if @ticket.client_id.nil?
-      @ticket.update_attributes(params[:ticket])
-      @ticket.user_id = session[:user_id]
-      @ticket.transactions.each do |t|
-        t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
-        t.user_id = @ticket.user_id
-        t.client_id = @ticket.client_id
-        t.comment = @ticket.comment
-        t.notified = @ticket.notified
-        unless t.sack
-          t.sacks = nil
-          t.sack_weight = nil
-        end
-        t.amount = t.amount_was if t.marked_for_destruction?
-      end
-      @ticket.open = false
-      @ticket.outgoing_date = Time.now
-
-      if @ticket.outgoing_weight.nil? or @ticket.outgoing_weight.zero?
-        flash[:type] = 'error'
-        flash[:notice] = 'El peso de Salida no es valido'
-        close
-        render :close
       else
-        if !@ticket.transactions.empty?
-          if @ticket.ticket_type_id == 1
-            net_weight = @ticket.incoming_weight - @ticket.outgoing_weight
-            dif_min = (Settings.find 1).ticket_reception_diff
-            dif = net_weight - @ticket.provider_weight
-            if dif < 0
-              dif = (@ticket.provider_weight - net_weight).abs
-              porcent_dif = (dif / @ticket.provider_weight) * 100
-              dif_validation = porcent_dif <= dif_min ? true : false
-            else
-              dif_validation = true
-            end
-          else
-            if @ticket.transactions.length > 1 or @ticket.transactions[0].sack
-              net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
-              dif_min = (Settings.find 1).ticket_dispatch_diff
-              total_transaction = 0
-              @ticket.transactions.each do |t|
-                total_transaction = total_transaction + t.amount
-              end
-              @ticket.provider_weight = total_transaction
-              dif = (total_transaction - net_weight).abs
-              porcent_dif = (dif / total_transaction) * 100
-              dif_validation = porcent_dif <= dif_min ? true : false
-            else
-              net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
-              dif_validation = true
-            end
+        @ticket.update(client_id: params[:ticket][:client_id], address: params[:ticket][:address]) if @ticket.client_id.nil?
+        @ticket.update_attributes(params[:ticket])
+        @ticket.user_id = session[:user_id]
+        @ticket.transactions.each do |t|
+          t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
+          t.user_id = @ticket.user_id
+          t.client_id = @ticket.client_id
+          t.comment = @ticket.comment
+          t.notified = @ticket.notified
+          unless t.sack
+            t.sacks = nil
+            t.sack_weight = nil
           end
+          t.amount = t.amount_was if t.marked_for_destruction?
+        end
+        @ticket.open = false
+        @ticket.outgoing_date = Time.now
 
-          if !dif_validation && @ticket.diff_authorized < 2
-            Ticket.find(@ticket.id).update(diff_authorized: 1)
-            flash[:type] = 'error'
-            flash.now[:notice] = "Diferencia de peso es #{porcent_dif.round(1)}% mayor a la minima aceptada: #{dif_min}%"
-            close
-            render :close
-          else
-            if net_weight < 0
+        if @ticket.outgoing_weight.nil? or @ticket.outgoing_weight.zero?
+          flash[:type] = 'error'
+          flash[:notice] = 'El peso de Salida no es valido'
+          close
+          render :close
+        else
+          if !@ticket.transactions.empty?
+            if @ticket.ticket_type_id == 1
+              net_weight = @ticket.incoming_weight - @ticket.outgoing_weight
+              dif_min = (Settings.find 1).ticket_reception_diff
+              dif = net_weight - @ticket.provider_weight
+              if dif < 0
+                dif = (@ticket.provider_weight - net_weight).abs
+                porcent_dif = (dif / @ticket.provider_weight) * 100
+                dif_validation = porcent_dif <= dif_min ? true : false
+              else
+                dif_validation = true
+              end
+            else
+              if @ticket.transactions.length > 1 or @ticket.transactions[0].sack
+                net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
+                dif_min = (Settings.find 1).ticket_dispatch_diff
+                total_transaction = 0
+                @ticket.transactions.each do |t|
+                  total_transaction = total_transaction + t.amount
+                end
+                @ticket.provider_weight = total_transaction
+                dif = (total_transaction - net_weight).abs
+                porcent_dif = (dif / total_transaction) * 100
+                dif_validation = porcent_dif <= dif_min ? true : false
+              else
+                net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
+                dif_validation = true
+              end
+            end
+
+            if !dif_validation && @ticket.diff_authorized < 2
+              Ticket.find(@ticket.id).update(diff_authorized: 1)
               flash[:type] = 'error'
-              flash.now[:notice] = "El peso neto no puede ser NEGATIVO"
+              flash.now[:notice] = "Diferencia de peso es #{porcent_dif.round(1)}% mayor a la minima aceptada: #{dif_min}%"
               close
               render :close
             else
-              if @ticket.client.nil? or @ticket.address.empty?
-                  flash[:type] = 'error'
-                  flash[:notice] = "No se ha seleccionado dirección de origen o desdino"
-                  close
-                  render :close
+              if net_weight < 0
+                flash[:type] = 'error'
+                flash.now[:notice] = "El peso neto no puede ser NEGATIVO"
+                close
+                render :close
               else
-                if @ticket.transactions.length > 1
-                  @ticket.transactions.each do |t|
-                    t.update_transactions unless t.new_record? || !t.notified
-                  end
+                if @ticket.client.nil? or @ticket.address.empty?
+                    flash[:type] = 'error'
+                    flash[:notice] = "No se ha seleccionado dirección de origen o desdino"
+                    close
+                    render :close
                 else
-                  @ticket.transactions.each do |t|
-                    t.amount = net_weight
-                    t.update_transactions unless t.new_record? || !t.notified
+                  if @ticket.transactions.length > 1
+                    @ticket.transactions.each do |t|
+                      t.update_transactions unless t.new_record? || !t.notified
+                    end
+                  else
+                    @ticket.transactions.each do |t|
+                      t.amount = net_weight
+                      t.update_transactions unless t.new_record? || !t.notified
+                    end
                   end
-                end
-                mango_features = get_mango_features()
-                if mango_features.include?("sap_romano")
-                  TicketOrder.close(@ticket)
-                end
-                if @ticket.valid?
-                  @ticket.save
-                  redirect_to :action => 'print'
-                else
-                  flash[:type] = 'error'
-                  flash[:notice] = "El peso de Salida no es valido"
-                  close
-                  render :close
+                  mango_features = get_mango_features()
+                  if mango_features.include?("sap_romano")
+                    TicketOrder.close(@ticket)
+                  end
+                  if @ticket.valid?
+                    @ticket.save
+                    flash[:notice] = 'Ticket cerrado con éxito'
+                    print
+                  else
+                    flash[:type] = 'error'
+                    flash[:notice] = "El peso de Salida no es valido"
+                    close
+                    render :close
+                  end
                 end
               end
             end
+          else
+            flash[:type] = 'error'
+            flash[:notice] = 'Debe agregar por lo menos un rubro!'
+            close
+            render :close
           end
-        else
-          flash[:type] = 'error'
-          flash[:notice] = 'Debe agregar por lo menos un rubro!'
-          close
-          render :close
         end
       end
     end
