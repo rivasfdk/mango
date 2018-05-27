@@ -1,5 +1,5 @@
 <% title "Cerrar ticket" %>
-<%= form_for @ticket, :url=>do_close_ticket_path(@ticket), :html=>{:method=>:post, :id=>'ticket_close_form', :target => '_blank'} do |f| %> 
+<%= form_for @ticket, :url=>do_close_ticket_path(@ticket), :html=>{:method=>:post, :id=>'ticket_close_form'} do |f| %> 
 <%= render_error_messages(f.error_messages) %>
 
 <label for="ticket_type_id" class="small">Tipo de ticket:</label>
