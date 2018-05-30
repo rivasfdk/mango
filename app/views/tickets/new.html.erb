@@ -20,15 +20,34 @@
 <%= submit_tag "Nuevo", {:type => "button", :id => "new_driver"} %><br/> </div>
 
 <div id="new_driver_form" style="display:none;">
-<label class="small">Nombre:</label>
-<div class="field" > <input id="drivername" size="30" type="text" /><span>*</span></div>
-<label class="small">Cedula:</label>
-<div class="field" > <input id="driverci" size="15" type="text" /><span>*</span></div>
-<label class="small">Frecuente:</label>
-<div class="field"><input type="checkbox" id="frequent_driver"></div>
-<label class="small"></label>
-<div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_driver"} %>  </div>
-<div class="field"><%= submit_tag "Crear Chofer", {:type => "button", :id => "create_driver"} %></div>
+
+  <div id="new_driver_grid">
+    <div class="clearfix"></div>
+    <h5>Nuevo Chofer</h5>
+    <table id="tabledata">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cedula</th>
+          <th>Frecuente</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td class="center"><input id="drivername" size="60" type="text" /> <span>*</span></td>
+            <td class="center"><input id="driverci" size="15" type="text" /> <span>*</span></td>
+            <td class="center"><input type="checkbox" id="frequent_driver"></td>
+          </tr>
+      </tbody>
+      <tfoot>
+        <td></td>
+        <td></td>
+        <td><%= submit_tag "Crear Chofer", {:type => "button", :id => "create_driver"} %></td>
+      </tfoot>
+    </table>
+  </div>
+  <br/>
+
 </div>
 
 <label for="truck_id" class="small">Camión:</label>
@@ -36,15 +55,69 @@
 <%= submit_tag "Nuevo", {:type => "button", :id => "new_truck"} %><br/> </div>
 
 <div id="new_truck_form">
-    <label class="small">Transporte:</label>
-    <div class="field"><%= select_tag :carrier_id, options_from_collection_for_select(@carriers, :id, :name), prompt: "Seleccione una opción", class: 'chosen-select chzn-field-normal'%><span>*</span></div>
-    <label class="small">Placa:</label>
-    <div class="field" > <input id="truckplate" size="15" type="text" /><span>*</span></div>
-    <label class="small">Frecuente:</label>
-    <div class="field"><input type="checkbox" id="frequent_truck"></div>
-    <label class="small"></label>
-    <div class="field"><%= submit_tag "Cancelar", {:type => "button", :id => "cancel_truck"} %>  </div>
-    <div class="field"><%= submit_tag "Crear Camion", {:type => "button", :id => "create_truck"} %></div>
+
+  <div id="new_truck_grid">
+    <div class="clearfix"></div>
+    <h5>Nuevo Camión</h5>
+    <table id="tabledata">
+      <thead>
+        <tr>
+          <th>Transporte</th>
+          <th>Placa</th>
+          <th>Frecuente</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td class="center">
+              <%= select_tag :carrier_id, options_from_collection_for_select(@carriers, :id, :name), prompt: "Seleccione una opción", class: 'chosen-select chzn-field-normal'%> <span>*</span>
+              <%= submit_tag "Nuevo", {:type => "button", :id => "new_carrier"} %>
+            </td>
+            <td class="center"><input id="truckplate" size="15" type="text" /> <span>*</span></td>
+            <td class="center"><input type="checkbox" id="frequent_truck"></td>
+          </tr>
+      </tbody>
+      <tfoot>
+        <td></td>
+        <td></td>
+        <td><%= submit_tag "Crear Camión", {:type => "button", :id => "create_truck"} %></td>
+      </tfoot>
+    </table>
+  </div>
+  <br/>
+
+
+  <div id="new_carrier_form" style="display:none;">
+
+    <div id="new_truck_grid">
+      <div class="clearfix"></div>
+      <h5>Nuevo Transporte</h5>
+      <table id="tabledata">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Rif</th>
+            <th>Frecuente</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td class="center"><input id="carriername" size="60" type="text" /> <span>*</span></td>
+              <td class="center"><input id="carrierrif" size="15" type="text" /></td>
+              <td class="center"><input type="checkbox" id="frequent_carrier"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+          <td></td>
+          <td></td>
+          <td><%= submit_tag "Crear Transporte", {:type => "button", :id => "create_carrier"} %></td>
+        </tfoot>
+      </table>
+    </div>
+    <br/>
+
+  </div>
+
 </div>
 
 <div id = onlyreception>

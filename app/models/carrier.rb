@@ -6,6 +6,7 @@ class Carrier < ActiveRecord::Base
 
   validates_presence_of :name
   validates_length_of :name, :within => 3..40
+  validates :name, uniqueness: { case_sensitive: false }
   before_save :create_code
 
   def create_code

@@ -185,17 +185,15 @@ $ ->
   $("#new_driver").click show_new_driver_form
 
 show_new_driver_form = ->
-  $("#drivername").val("")
-  $("#driverci").val("")
-  $("#new_driver_form").show()
-  check_driver_validation()
-
-$ ->
-  $("#cancel_driver").click hide_new_driver_form
-
-hide_new_driver_form = ->
-  $("#new_driver_form").hide()
-
+  if $("#new_driver").val() == "Nuevo"
+    $("#drivername").val("")
+    $("#driverci").val("")
+    $("#new_driver_form").show()
+    check_driver_validation()
+    $("#new_driver").val("Cancelar")
+  else
+    $("#new_driver_form").hide()
+    $("#new_driver").val("Nuevo")
 
 $ ->
   $("#drivername").focus(check_driver_validation).keyup(check_driver_validation)
@@ -217,6 +215,7 @@ create_new_driver = ->
       driver_select.append new Option(format,driver.id)
       driver_select.trigger "chosen:updated"
     $("#new_driver_form").hide()
+    $("#new_driver").val("Nuevo")
 
 $ ->
   $("#create_driver").click create_new_driver
@@ -233,15 +232,14 @@ $ ->
   $("#new_truck").click show_new_truck_form
 
 show_new_truck_form = ->
-  $("#truckplate").val("")
-  $("#new_truck_form").show()
-  check_truck_validation()
-
-$ ->
-  $("#cancel_truck").click hide_new_truck_form
-
-hide_new_truck_form = ->
-  $("#new_truck_form").hide()
+  if $("#new_truck").val() == "Nuevo"
+    $("#truckplate").val("")
+    $("#new_truck_form").show()
+    check_truck_validation()
+    $("#new_truck").val("Cancelar")
+  else
+    $("#new_truck_form").hide()
+    $("#new_truck").val("Nuevo")
 
 $ ->
   $("#truckplate").focus(check_truck_validation).keyup(check_truck_validation)
@@ -263,6 +261,7 @@ create_new_truck = ->
       truck_select.append new Option(format,truck.id)
       truck_select.trigger "chosen:updated"
     $("#new_truck_form").hide()
+    $("#new_truck").val("Nuevo")
     
 
 $ ->
@@ -345,6 +344,52 @@ manual_outgoing = ->
 
 $ ->
   $("#ticket_manual_outgoing").change manual_outgoing
+
+
+#create ticket new carrier
+
+check_carrier_validation = ->
+  if $("#carriername").val().length > 3
+    $("#create_carrier").attr("disabled", false)
+  else
+    $("#create_carrier").attr("disabled", true)
+
+$ ->
+  $("#new_carrier").click show_new_carrier_form
+
+show_new_carrier_form = ->
+  if $("#new_carrier").val() == "Nuevo"
+    $("#carriername").val("")
+    $("#new_carrier_form").show()
+    check_carrier_validation()
+    $("#new_carrier").val("Cancelar")
+  else
+    $("#new_carrier_form").hide()
+    $("#new_carrier").val("Nuevo")
+
+$ ->
+  $("#carriername").focus(check_carrier_validation).keyup(check_carrier_validation)
+
+create_new_carrier = ->
+  $.ajax '/carriers',
+    type: 'POST'
+    dataType: 'json'
+    data: { carrier: {name: $("#carriername").val(), rif: $("#carrierrif").val(), frequent: $("#frequent_carrier").is(':checked') }}
+    error: (jqXHR, textStatus, errorThrown) ->
+      alert "EL TRANSPORTE YA EXISTE"
+    success: (data, textStatus, jqXHR) ->
+      console.log data
+      carrier = data.carrier
+      carrier_select = $("#carrier_id")
+      carrier_select.empty()
+      carrier_select.append new Option(carrier.name,carrier.id)
+      carrier_select.trigger "chosen:updated"
+    $("#new_carrier_form").hide()
+    $("#new_carrier").val("Nuevo")
+
+$ ->
+  $("#create_carrier").click create_new_carrier
+
 
 
 
