@@ -40,9 +40,7 @@
           <% if t[:ticket_open] %>
             <%= render_action_delete(ticket_path(t[:ticket_id]), "Desea borrar el ticket '#{t[:ticket_number]}'?") %><br />
             <% if @mango_romano %>
-              <% if @granted_diff_authorized %>
-                <%= render_action_edit_ticket(edit_ticket_path(t[:ticket_id])) %>
-              <% end %>
+              <%= render_action_edit_ticket(edit_ticket_path(t[:ticket_id])) %>
               <%= render_action_close_ticket(close_ticket_path(t[:ticket_id])) %>
             <% end %>
           <% else %>
