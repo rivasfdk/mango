@@ -19,7 +19,7 @@
 <label for="truck_id" class="small">Camión:</label>
 <div class="field"><%= f.collection_select :truck_id, @trucks, :id, :to_collection_select, {}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
 
-<% if @ticket.client_id.nil? %>
+<% if @ticket.client_id.nil? or @ticket.address.empty?%>
   <label for="client_id" class="small">Cliente/Proveedor:</label>
   <div id="id_client" class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
   <label for="address" class="small">Direccion:</label>
@@ -28,7 +28,7 @@
   <label for="client_id" class="small">Cliente/Proveedor:</label>
   <div class="field"><%=h @ticket.client.name %></div>
   <label for="address" class="small">Direccion:</label>
-  <div class="field"><%= f.text_field :address, :size=>'60', disabled: true %></div>
+  <div class="field"><%=  h @ticket.address %></div>
 <% end %>
 
 <label for="incoming_date" class="small">Fecha entrada:</label>

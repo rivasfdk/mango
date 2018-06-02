@@ -109,6 +109,7 @@ class TicketsController < ApplicationController
     @ticket.incoming_date = Time.now
     @ticket.user_id = (User.find session[:user_id]).id
     @ticket.diff_authorized = 0
+    @ticket.address = ""
 
     respond_to do |format|
       format.json do
@@ -187,7 +188,7 @@ class TicketsController < ApplicationController
     @product_lots_warehouses = Warehouse.where(lot_id: nil)
     @lots = Lot.includes(:ingredient).where(active: true)
     @clients = Client.all
-    @address = []
+    @address = Address.all
     @drivers = Driver.where(frequent: true)
     unless @ticket.driver.frequent
       @drivers << @ticket.driver

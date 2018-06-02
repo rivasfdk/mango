@@ -21,13 +21,25 @@
 <label for="truck_id" class="small">Camión:</label>
 <div class="field"><%=h @ticket.truck.license_plate%> - <%=@ticket.truck.carrier.name%></div>
 
-<% if !@ticket.client_id.nil? %>
-  <label for="client_id" class="small">Cliente/Maquila:</label>
-  <div class="field"><%=h @ticket.client.name %></div>
+<div id="client_address">
+  <% if !@ticket.client_id.nil?%>
+    <label for="client_id" class="small">Cliente/Proveedor:</label>
+    <div class="field"><%=h @ticket.client.name %></div>
+    <label for="address" class="small">Direccion:</label>
+    <div class="field"><%= h @ticket.address %><br/>
+    <%= submit_tag "Cambiar Dirección", {:type => "button", :id => "change_address"} %></div>  
+  <% else %>
+    <label class="print"><%= submit_tag "Seleccionar Dirección", {:type => "button", :id => "change_address"} %></label>
+  <% end %>
+</div>
 
+<div id="client_address_edit">
+  <label for="client_id" class="small">Cliente/Proveedor:</label>
+  <div id="id_client" class="field"><%= f.collection_select :client_id, @clients, :id, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
   <label for="address" class="small">Direccion:</label>
-  <div class="field"><%=h @ticket.address %></div>
-<% end %>
+  <div id="id_address" class="field"><%= f.collection_select :address, @address, :address, :to_collection_select, {:include_blank => true}, class: 'chosen-select chzn-field-normal' %> <span>*</span></div>
+</div>
+
 
 <label for="incoming_date" class="small">Fecha entrada:</label>
 <div class="field"><%=h @ticket.incoming_date.strftime("%d/%m/%Y %H:%M:%S") %></div>

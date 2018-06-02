@@ -159,6 +159,8 @@ id_client_changed = ->
 
 $ ->
   $("#id_client").change id_client_changed
+  $("#id_address").mouseover(id_client_changed)
+
 
 calculate_net = ->
   if $("#ticket_type").text().includes('recep')
@@ -389,6 +391,13 @@ create_new_carrier = ->
 
 $ ->
   $("#create_carrier").click create_new_carrier
+
+change_address = ->
+  $("#client_address").hide()
+  $("#client_address_edit").show()
+
+$ ->
+  $("#change_address").click change_address
 
 
 

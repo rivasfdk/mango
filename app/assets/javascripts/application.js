@@ -67,6 +67,7 @@ $(function(){
     $('#report_by_address').trigger('change');
     $('#report_by_order').trigger('change');
     $("#new_truck_form").hide();
+    $("#client_address_edit").hide();
     hideProductLots();
 });
 
