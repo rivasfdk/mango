@@ -36,5 +36,5 @@ share_path: /home/mango/sharedir/
 tmp_dir: /home/mango/tmp/
 
 server_romano_ip: 
-    in: 'ws://x.x.x.x:2000'
-    out: 'ws://x.x.x.x:2020'
+    in: 'http://x.x.x.x:3000'
+    out: 'http://x.x.x.x:3000'
