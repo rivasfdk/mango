@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180519130115) do
+ActiveRecord::Schema.define(version: 20180614145525) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -350,6 +350,7 @@ ActiveRecord::Schema.define(version: 20180519130115) do
     t.integer  "parameter_list_id"
     t.boolean  "auto_product_lot",     default: false
     t.boolean  "notified",             default: true
+    t.datetime "completed_at"
   end
 
   add_index "orders", ["client_id"], name: "fk_orders_client_id", using: :btree

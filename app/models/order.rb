@@ -253,12 +253,15 @@ class Order < ActiveRecord::Base
 
       self.create_product_lot if self.auto_product_lot
 
+      self.update_column(:completed_at, self.batch.first.start_date) if !self.completed
+
       Order.where(id: self.id)
         .update_all({prog_batches: n_batch,
                      real_batches: n_batch,
                      completed: true,
                      repaired: true,
                      updated_at: now})
+      
     end
 
     transaction do
@@ -481,6 +484,7 @@ class Order < ActiveRecord::Base
       self.create_product_lot if self.auto_product_lot
       self.generate_transactions(user_id) if is_mango_feature_available("transactions") && !is_mango_feature_available("notifications")
       self.update_column(:completed, true)
+      self.update_column(:completed_at, Time.now)
     else
       false
     end

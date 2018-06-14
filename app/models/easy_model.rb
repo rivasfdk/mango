@@ -1006,7 +1006,7 @@ class EasyModel
                MAX(batches.number) AS num_batches,
                SUM(amount) AS real_kg,
                SUM(standard_amount) AS std_kg')
-      .where(batches: {start_date: start_date .. end_date}) 
+      .where(orders: {completed_at: start_date .. end_date}) 
   
     batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_2]}}) if by_client
     batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_2]}}) if by_recipe
@@ -1055,7 +1055,7 @@ class EasyModel
                MAX(batches.number) AS real_batches,
                SUM(amount) AS theoric_total,
                orders.real_production AS real_total')
-      .where(batches: {created_at: start_date .. end_date})
+      .where(orders: {completed_at: start_date .. end_date})
       .group('batches.order_id')
     return nil if batch_hopper_lots.empty?
 
@@ -1101,7 +1101,7 @@ class EasyModel
                SUM(amount) AS total_real,
                standard_amount AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batches: {start_date: start_date .. end_date + 1.day},
+      .where({orders: {completed_at: start_date .. end_date + 1.day},
               lots: {ingredient_id: ingredient.id}})
       .group('batches.order_id')
 
@@ -1149,8 +1149,14 @@ class EasyModel
 
     batch_hopper_lots = BatchHopperLot
                         .joins({batch: {order: {recipe: {}, client: {}}}})
-                        .select('orders.code AS order_code, MIN(batches.start_date) AS start_date, MAX(batches.end_date) AS end_date, recipes.name AS recipe_name, MAX(batches.number) AS num_batches, SUM(amount) AS real_kg, SUM(standard_amount) AS std_kg')
-                        .where(batches: {created_at: start_date .. end_date})
+                        .select('orders.code AS order_code,
+                                MIN(batches.start_date) AS start_date,
+                                MAX(batches.end_date) AS end_date,
+                                recipes.name AS recipe_name,
+                                MAX(batches.number) AS num_batches,
+                                SUM(amount) AS real_kg,
+                                SUM(standard_amount) AS std_kg')
+                        .where(orders: {completed_at: start_date .. end_date})
                         .group('batches.order_id')
 
     return nil if batch_hopper_lots.empty?
@@ -1196,7 +1202,7 @@ class EasyModel
                MAX(batches.number) AS num_batches,
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std')
-      .where(batches: {start_date: start_date .. end_date})
+      .where(orders: {completed_at: start_date .. end_date})
 
     batch_hopper_lots = batch_hopper_lots.where({orders: {client_id: params[:client_id_3]}}) if by_client
     batch_hopper_lots = batch_hopper_lots.where({recipes: {code: params[:recipe_code_3]}}) if by_recipe
@@ -1493,7 +1499,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batches: {start_date: start_date .. end_date},
+      .where({orders: {completed_at: start_date .. end_date},
               recipes: {code: recipe.code}})
       .order('ingredients.code')
       .group(by_lots ? 'lots.id' : 'ingredients.id')
@@ -1560,7 +1566,7 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({batches: {start_date: start_date .. end_date}})
+      .where(orders: {completed_at: start_date .. end_date})
 
 
     batch_hopper_lots = batch_hopper_lots.where(ingredients: {id: ingredients_ids}) if by_select_ingredients
@@ -1607,11 +1613,9 @@ class EasyModel
                SUM(amount) AS total_real,
                SUM(standard_amount) AS total_std,
                SUM(real_amount) AS total_real_real')
-      .where({orders: {client_id: client_id}})
+      .where(orders: {completed_at: start_date .. end_date, client_id: client_id})
       .order('ingredients.code')
       .group('ingredients.id')
-
-    batch_hopper_lots = batch_hopper_lots.where(batches: {start_date: start_date..end_date})
 
     return nil if batch_hopper_lots.empty?
 
