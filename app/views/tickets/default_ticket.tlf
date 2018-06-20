@@ -1124,7 +1124,7 @@
             "type": "text",
             "display": true,
             "description": "",
-            "x": 60,
+            "x": 30,
             "y": 606.2,
             "width": 40.9,
             "height": 12,
@@ -1152,10 +1152,10 @@
             "type": "text-block",
             "display": true,
             "description": "",
-            "x": 110,
+            "x": 75,
             "y": 606.2,
-            "width": 126.1,
-            "height": 10,
+            "width": 153,
+            "height": 19,
             "style": {
               "font-family": [
                 "Helvetica"
@@ -1173,7 +1173,7 @@
             },
             "reference-id": "",
             "value": "",
-            "multiple-line": false,
+            "multiple-line": true,
             "format": {
               "base": "",
               "type": ""

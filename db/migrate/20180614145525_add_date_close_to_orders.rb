@@ -3,7 +3,7 @@ class AddDateCloseToOrders < ActiveRecord::Migration
     add_column :orders, :completed_at, :datetime
     Order.find_each do |order|
       order.completed_at = order.created_at if order.completed
-      order.save!
+      order.save!(:validate => false)
     end
   end
 end
