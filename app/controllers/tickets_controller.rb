@@ -105,26 +105,32 @@ class TicketsController < ApplicationController
   end
 
   def create
-    @ticket = Ticket.new params[:ticket]
-    @ticket.incoming_date = Time.now
-    @ticket.user_id = (User.find session[:user_id]).id
-    @ticket.diff_authorized = 0
-    @ticket.address = ""
-
-    respond_to do |format|
-      format.json do
-        @ticket.save
-        render json: @ticket.errors
-      end
-      format.html do
-        if @ticket.save
-          flash[:notice] = 'Ticket guardado con exito'
-          redirect_to :tickets #entry_ticket_path(@ticket.id)
-        else
-          new
-          render :new
+    encre = TicketNumber.first
+    if encre.enable_create
+      @ticket = Ticket.new params[:ticket]
+      @ticket.incoming_date = Time.now
+      @ticket.user_id = (User.find session[:user_id]).id
+      @ticket.diff_authorized = 0
+      @ticket.address = ""
+      encre.enable_create = false
+      encre.save
+      respond_to do |format|
+        format.json do
+          @ticket.save
+          render json: @ticket.errors
+        end
+        format.html do
+          if @ticket.save
+            flash[:notice] = 'Ticket guardado con exito'
+            redirect_to :tickets #entry_ticket_path(@ticket.id)
+          else
+            new
+            render :new
+          end
         end
       end
+    else
+      redirect_to :tickets
     end
   end
 
@@ -138,6 +144,9 @@ class TicketsController < ApplicationController
       @trucks = Truck.includes(:carrier).where(frequent: true)
       @carriers = Carrier.all
       @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
+      encre = TicketNumber.first
+      encre.enable_create = true
+      encre.save
     else
       redirect_to action: 'index'
     end

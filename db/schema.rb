@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180614145525) do
+ActiveRecord::Schema.define(version: 20180630183642) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -611,9 +611,10 @@ ActiveRecord::Schema.define(version: 20180614145525) do
   add_index "tickets", ["user_id"], name: "fk_tickets_user_id", using: :btree
 
   create_table "tickets_numbers", force: true do |t|
-    t.string   "number",     default: "0000000001"
+    t.string   "number",        default: "0000000001"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "enable_create"
   end
 
   create_table "tickets_order", force: true do |t|

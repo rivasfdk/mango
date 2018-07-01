@@ -159,7 +159,6 @@ id_client_changed = ->
 
 $ ->
   $("#id_client").change id_client_changed
-  $("#id_address").mouseover(id_client_changed)
 
 
 calculate_net = ->
@@ -289,7 +288,7 @@ $ ->
       server_romano_ip = data[0]
       console.log server_romano_ip
 
-update_weight3 = ->
+update_weight2 = ->
   url = "#{server_romano_ip}/weight_server/get_weight.json"
   if self.location.href.includes('new')
     not_manual = not $("#ticket_manual_incoming").is(':checked')
@@ -341,7 +340,7 @@ update_weight = ->
 $ ->
   if self.location.href.includes('/tickets')
     if self.location.href.includes('new') or self.location.href.includes('close')
-      setInterval(update_weight3, 1000)
+      setInterval(update_weight, 1000)
 
 capture_weight = ->
   if captura

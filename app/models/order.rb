@@ -573,7 +573,7 @@ class Order < ActiveRecord::Base
 
       if is_mango_feature_available("log_debugger")
         log_dir = get_mango_field('log_dir')
-        file = File.open(log_dir+"Batch_#{self.code}.log",'a')
+        file = File.open(log_dir+"Batch_#{order.code}.log",'a')
         codigolote = Lot.find(hopper_lot.lot_id).code
         file << "#{params[:batch_number]} - #{codigolote} - #{params[:amount]}\r\n"
         file.close
@@ -592,6 +592,13 @@ class Order < ActiveRecord::Base
           batch_hopper_lot.generate_hopper_transaction(user_id)
         end
       end
+
+      if order.real_batches.nil?
+        order.update_column(:real_batches, params[:batch_number])
+      elsif order.real_batches < params[:batch_number].to_i
+        order.update_column(:real_batches, params[:batch_number]) 
+      end
+      
     end
     errors
   end
@@ -729,7 +736,7 @@ class Order < ActiveRecord::Base
 
   def self.get_open
     orders = Order.includes(:recipe, :client)
-      .where(completed: false)
+      .where(completed: false, real_batches: nil)
       .pluck('orders.code AS order_code', 'clients.name AS client_name', 'recipes.name AS recipe_name',
         'recipes.code AS recipe_code', 'orders.prog_batches')
       .map do |order|
