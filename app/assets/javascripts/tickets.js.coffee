@@ -352,6 +352,23 @@ capture_weight = ->
 $ ->
   $("#boton_capturar").click capture_weight
 
+save_weight = ->
+  if captura
+    captura = false
+    $("#boton_capturar").toggleClass('capture_button')
+    $("#ticket_outgoing_weight").val($("#saveweight").text())
+  if $("#ticket_type").text().includes('recep')
+    net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+    diff = net - $("#provider_weight").text()
+  else
+    net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+    diff = net - $("#provider_weight").text()
+  $("#netweight").html("<b>#{net}</b>")
+  $("#diff").html("<b>#{diff}</b>")
+
+$ ->
+  $("#peso_guardado").click save_weight
+
 manual_incoming = ->
   if $("#ticket_manual_incoming").is(':checked')
     $("#ticket_incoming_weight").prop('readOnly', false)

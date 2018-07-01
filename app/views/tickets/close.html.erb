@@ -54,20 +54,26 @@
 
 <label for="outgoing_weight" class="small">Peso de salida:</label>
 <div id = "outweight" class="field"><%= f.text_field :outgoing_weight, :size=>'20', class: 'chzn-field-big'%><span>*</span>
-<%= submit_tag "Capturar", {:type => "button", :id => "boton_capturar"} %><br/>
+<%= submit_tag "Capturar", {:type => "button", :id => "boton_capturar"} %>
+<% if !@ticket.outgoing_weight.nil? %>
+  <%= submit_tag "Usar Peso Guardado", {:type => "button", :id => "peso_guardado"} %>
+  <label class="print">-->Peso Guardado: 
+  <label id="saveweight" class="print"><%= @ticket.outgoing_weight %></label>
+  </label>
+<% end %>
 
 <% if @granted_manual %>
-  <%= f.check_box :manual_outgoing, :checked=>false %> &nbsp;
+  <br/><%= f.check_box :manual_outgoing, :checked=>false %> &nbsp;
   <label for="group">Pesaje Manual</label>
 <% end %>
 </div>
 
 <label for="net_weight" class="small">Peso neto:</label>
-<div id="netweight" class="field"><b>--</b></div>
+<div id="netweight" class="field"><b>- -</b></div>
 
 <% if !@ticket.provider_weight.nil? %> 
   <label for="diff" class="small">Diferencia:</label>
-  <div id="diff" class="field"><b>--</b></div>
+  <div id="diff" class="field"><b>- -</b></div>
 <% end %>
 
 <% if @ticket.diff_authorized > 1%>

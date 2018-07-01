@@ -372,7 +372,7 @@ class TicketsController < ApplicationController
       else
         @ticket.update_attributes(params[:ticket])
         @ticket.user_id = session[:user_id]
-        @ticket.outgoing_weight = nil
+        #@ticket.outgoing_weight = nil
         @ticket.transactions.each do |t|
           t.transaction_type_id = @ticket.ticket_type_id == 1 ? 4 : 5
           t.user_id = @ticket.user_id
