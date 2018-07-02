@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180630183642) do
+ActiveRecord::Schema.define(version: 20180701211025) do
 
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(version: 20180630183642) do
     t.float    "capacity",            default: 1000.0, null: false
     t.boolean  "stock_below_minimum", default: false
     t.string   "code"
+    t.integer  "priority"
   end
 
   add_index "hoppers", ["scale_id"], name: "fk_hoppers_scale_id", using: :btree

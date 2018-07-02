@@ -18,6 +18,7 @@ class Hopper < ActiveRecord::Base
     else
       self.number = hopper.last.number += 1
     end
+    self.priority = self.number
   end
 
   def check_stock
@@ -144,6 +145,25 @@ class Hopper < ActiveRecord::Base
     self.update_attributes(main: true)
   end
 
+  def validate_priority(old_priority)
+    error = ""
+    hoppers = Hopper.where(scale_id: self.scale_id)
+    max = hoppers.maximum(:number)
+    if (1..max).include?(self.priority)
+      hoppers.each do |hop|
+        if self.priority == hop.priority && self.number != hop.number
+          hop.priority = old_priority
+          hop.save
+        end
+      end
+    else
+      self.priority = old_priority
+      self.save
+      error = "prioridad fuera de rango"
+    end
+    return error
+  end
+
   def eliminate
     begin
       b = BatchHopperLot.includes(:hopper_lot).where({hoppers_lots: {hopper_id: self.id}})
@@ -191,7 +211,8 @@ class Hopper < ActiveRecord::Base
         :main => hl.hopper.main,
         :stock_string => stock_string,
         :stock_below_minimum => hl.hopper.stock_below_minimum,
-        :code => hl.hopper.code
+        :code => hl.hopper.code,
+        :priority => hl.hopper.priority
       }
     end
     actives

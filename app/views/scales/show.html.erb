@@ -4,11 +4,13 @@
 <table id="tabledata">
     <thead>
       <tr>
-        <th>Codigo<span class="order_arrow"></span></th>
-        <th>Nombre<span class="order_arrow"></span></th>
+        <th>Tolva<span class="order_arrow"></span></th>
         <th>Ingrediente (Lote)<span class="order_arrow"></span></th>
         <% if @hoppers_transactions_enabled %>
           <th>Existencia<span class="order_arrow"></span></th>
+        <% end %>
+        <% if !@scale.not_weighed %>
+          <th>Prioridad<span class="order_arrow"></span></th>
         <% end %>
         <th>Principal</th>
         <th class="actions_small">Acciones</th>
@@ -20,12 +22,14 @@
       <% ingredient = "#{obj[:lot].lot.ingredient.code} - #{obj[:lot].lot.ingredient.name} (L: #{obj[:lot].lot.code})" %>
       <% class_row = "red_" + class_row if obj[:stock_below_minimum] if @hoppers_transactions_enabled %>
       <tr class="<%= class_row %>">
-        <td class="center"><%=h obj[:code].nil? ? "-" : obj[:code] %></td>
-        <td class="center"><%=h obj[:name] %></td>
+        <td class="center"><%=h obj[:code].nil? ? obj[:name] : obj[:name]+"("+obj[:name]+")" %></td>
         <td><%=h ingredient %></td>
         <% if @hoppers_transactions_enabled %>
           <td class="right"><%=h obj[:stock_string] %></td>
         <% end %>
+        <% if !@scale.not_weighed %>
+          <td class="center"><%=h obj[:priority] %></td>
+         <% end %>
         <td class="center">
           <%= check_box_tag :main, 
                             set_as_main_hopper_path(@scale, obj[:hopper_id]),

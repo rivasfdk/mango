@@ -34,14 +34,21 @@ class HoppersController < ApplicationController
   def update
     @hopper = Hopper.find params[:id]
     @hopper.update_attributes(params[:hopper])
-    if @hopper.save
-      Log.create type_id: 5, user_id: session[:user_id], 
-                 action: "Tolva EDITADA: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}"
-      flash[:notice] = 'Tolva actualizada con éxito'
-      redirect_to scale_path(@hopper.scale_id)
+    error = @hopper.validate_priority(params[:old_priority])
+    if error.empty?
+      if @hopper.save
+        Log.create type_id: 5, user_id: session[:user_id], 
+                  action: "Tolva EDITADA: #{@hopper.name} codigo: #{@hopper.code} balanza: #{@hopper.scale.name}"
+        flash[:notice] = 'Tolva actualizada con éxito'
+        redirect_to scale_path(@hopper.scale_id)
+      else
+        fill_edit
+        render :edit
+      end
     else
-      fill_edit
-      render :edit
+      flash[:type] = 'error'
+      flash[:notice] = error
+      redirect_to scale_path(@hopper.scale_id)
     end
   end
 

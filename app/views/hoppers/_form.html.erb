@@ -8,8 +8,13 @@
 <div class="field"><%= f.text_field :capacity, :size=>'10' %></div>
 <% end %>
 <% unless @lots.nil? %>
-<label for="ingredient" class="small">Ingrediente (Lote):</label>
-<div class="field"><%= collection_select :hopper_lot, :lot_id, @lots, :id, :to_collection_select, {}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
+    <label for="ingredient" class="small">Ingrediente (Lote):</label>
+    <div class="field"><%= collection_select :hopper_lot, :lot_id, @lots, :id, :to_collection_select, {}, :class=>'chosen-select chzn-field-normal' %> <span>*</span></div>
 <% end %>
+<% unless @hopper.nil? %>
+    <%= hidden_field_tag "old_priority", @hopper.priority %>
+<% end %>  
+<label for="priority" class="small">Prioridad:</label>
+<div class="field"><%= f.text_field :priority, :size=>'2' %></div>
 <div class="clearfix"></div>
 <br/><span class="required">* Campos obligatorios</span>
