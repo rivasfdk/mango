@@ -53,6 +53,7 @@ Mango::Application.routes.draw do
   match 'scales/:scale_id/hoppers/:id/adjust' => "hoppers#do_adjust", :via => :post
   match 'scales/:scale_id/hoppers/:id/change_factory_lots' => "hoppers#do_change_factory_lots", :via => :put
   match 'scales/hoppers_ingredients' => "scales#hoppers_ingredients", :via => :get
+  match 'hoppers/change_main' => "hoppers#change_main", :via => :post, :as => 'hoppers_change_main'
   match 'settings.json' => "settings#show", via: :get
   match 'settings/features.json' => "settings#features", via: :get
   match 'settings' => "settings#edit", :via => :get, :as => "settings"

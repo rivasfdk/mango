@@ -58,6 +58,16 @@ class HoppersController < ApplicationController
     redirect_to scale_path(@hopper.scale_id)
   end
 
+  def change_main
+    hopper1 = Hopper.where(scale_id: params[:scale][:scale_id], number: params[:scale][:tolva1]).first
+    hopper2 = Hopper.where(scale_id: params[:scale][:scale_id], number: params[:scale][:tolva2]).first
+    priorityhopper1 = hopper1.priority
+    hopper1.update_attributes(priority: hopper2.priority)
+    hopper2.update_attributes(priority: priorityhopper1)
+    hopper2.set_as_main_hopper()
+    render xml: {success: true}
+  end
+
   def destroy
     @hopper = Hopper.find params[:id]
     @hopper.eliminate
