@@ -2037,6 +2037,31 @@ adjustments = []
     return data
   end
 
+  def self.logs_actions(params)
+    start_date = EasyModel.param_to_datetime(params, 'start')
+    end_date = EasyModel.param_to_datetime(params, 'end')
+    by_user = params[:by_user] == "1"
+    by_module = params[:by_module] == "1"
+    logs = Log.joins(:user)
+              .where(created_at: start_date..end_date)
+    logs = logs.where(user_id: params[:user_id]) if by_user
+    logs = logs.where(type_id: params[:type_id]) if by_module
+
+    return nil if logs.empty?
+    data = self.initialize_data('Registro de Acciones')
+    data['since'] = self.print_range_date(start_date)
+    data['until'] = self.print_range_date(end_date)
+    data['results'] = []
+    logs.each do |log|
+      data['results'] << {
+        'user_name' => log.user.name,
+        'module' => Log::TYPES[log.type_id],
+        'action' => log.action,
+      }
+    end
+    return data
+  end
+
   # ================================================================
   # Utilities
   # ================================================================

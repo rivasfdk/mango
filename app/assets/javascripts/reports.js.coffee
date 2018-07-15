@@ -127,6 +127,12 @@ select_content = ->
 ticket_by_order_changed = ->
   $('#ticket_order_form').toggle($('#report_by_order').is(':checked'))
 
+report_log_by_user = ->
+  $('#log_user_report_form').toggle($('#report_by_user').is(':checked'))
+
+report_log_by_module = ->
+  $('#log_module_report_form').toggle($('#report_by_module').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -170,4 +176,6 @@ $ ->
   $('#report_content_type2_2').change select_content
   $('#report_by_address').change ticket_by_address_changed
   $('#report_by_order').change ticket_by_order_changed
+  $('#report_by_user').change report_log_by_user
+  $('#report_by_module').change report_log_by_module
   return

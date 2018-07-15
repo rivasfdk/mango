@@ -125,6 +125,23 @@ class OrdersController < ApplicationController
               result.insert
               client.close
             end
+          when 3 #*************************Alceca*************************
+            if @order.processed_in_baan
+              data = EasyModel.order_details(@order.code)
+              results = data['results']
+              results.each do |result|
+                client = connect_sqlserver
+                date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+                if !client.nil?
+                  sql = "insert into dbo.ordenpcons "+
+                        "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+                  puts sql
+                  result = client.execute(sql)
+                  result.insert
+                  client.close
+                end
+              end
+            end
           else
           end
         end
@@ -265,6 +282,23 @@ class OrdersController < ApplicationController
           result.insert
           client.close
         end
+      when 3 #*************************Alceca*************************
+        if @order.processed_in_baan
+          data = EasyModel.order_details(@order.code)
+          results = data['results']
+          results.each do |result|
+            client = connect_sqlserver
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            if !client.nil?
+              sql = "insert into dbo.ordenpcons "+
+                    "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+              puts sql
+              result = client.execute(sql)
+              result.insert
+              client.close
+            end
+          end
+        end
       else
       end
     end
@@ -363,8 +397,35 @@ class OrdersController < ApplicationController
           flash[:type] = 'error'
           flash[:notice] = 'No se pudo conectar con la base de datos'
         end
-      else
+      when 3 #***********************Alceca*************************************
+        if !client.nil?
+          plant = get_mango_field('application')
+          if plant["name"].include?("Sur")
+            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 1000")
+            orders = consult.each(:symbolize_keys => true)
+          elsif plant["name"].include?("Norte")
+            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 1001")
+            orders = consult.each(:symbolize_keys => true)
+          else
+            orders = []
+          end
+          consult = client.execute("select * from dbo.ordenpd  where estado = null")
+          ingrecipes = consult.each(:symbolize_keys => true)
+          count = import_orders(orders, ingrecipes)
 
+          if count > 0
+            flash[:notice] = "Se importaron #{count} ordenes con exito"
+          else
+            flash[:type] = 'warn'
+            flash[:notice] = 'No se encontraron ordenes para importar'
+          end
+
+        else
+          flash[:type] = 'error'
+          flash[:notice] = 'No se pudo conectar con la base de datos'
+        end
+
+      else
       end
     end
     

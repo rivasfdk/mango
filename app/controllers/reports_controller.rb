@@ -36,6 +36,8 @@ class ReportsController < ApplicationController
     recipe_types.delete(0)
     @recipe_types = recipe_types
     @client_addresses = Address.all
+    @all_users = User.all
+    @modules = Log::TYPES
   end
 
   def daily_production
@@ -547,4 +549,19 @@ class ReportsController < ApplicationController
       redirect_to reports_path
     end
   end
+
+  def logs_actions
+    @data = EasyModel.logs_actions(params[:report])
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to reports_path
+    else
+      rendered = render_to_string formats: [:pdf], template: 'reports/logs_actions'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
+    end
+  end
+
 end
+
+

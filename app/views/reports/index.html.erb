@@ -633,5 +633,36 @@
     </div>
   </div>
   <% end %>
+
+  <% if session[:reports_permissions].include?('logs_actions') %>
+  <div class="report-content">
+    <h2 onclick="toggle_report_details('#logs_actions')">Registros de acciones</h2>
+    <div id="logs_actions" class="report-details">
+      <%= form_for(:report, :url=>logs_actions_report_path(format: 'pdf'), html: {target: "_blank"}) do |f| %>
+
+        <%= f.label :start, "Fecha Inicio: ", :class=>'small' %> <%= f.datetime_select :start, :ampm => true, :default => @default_start_datetime %><br/>
+        <%= f.label :end, "Fecha Fin: ", :class=>'small' %> <%= f.datetime_select :end, :ampm => true, :default => @default_end_datetime %><br/><br/>
+        
+        <%= f.check_box :by_user, checked: false %> &nbsp; <label for="group">Filtrar por Usuario</label>
+        <br /><br />
+        <div id="log_user_report_form">
+          <%= f.collection_select :user_id, @all_users, :id, :name, {}, class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+
+        <%= f.check_box :by_module, checked: false %> &nbsp; <label for="group">Filtrar por Módulo</label>
+        <br /><br />
+        <div id="log_module_report_form">
+          <%= f.collection_select :type_id, @modules, :first, :second , class: 'chosen-select chzn-field-normal' %>
+          <br /><br />
+        </div>
+
+
+        <%= submit_tag 'Generar Reporte' %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
 </div>
 <div class="clearfix"></div>
