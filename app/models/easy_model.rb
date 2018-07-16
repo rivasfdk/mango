@@ -2062,6 +2062,85 @@ adjustments = []
     return data
   end
 
+  def self.batch_consumptions(params)
+
+    by_ingredients = params[:batches_by_ingredients] == "1"
+
+    order = Order.where(code: params[:order]).first
+
+    return nil if order.nil?
+
+    batches = Batch.includes({:order => {:recipe => {:ingredient_recipe => {:ingredient => {}}}, :medicament_recipe => {:ingredient_medicament_recipe => {:ingredient =>{}}}}})
+      .where({:orders => {:code => params[:order]}})
+
+
+    return nil if batches.nil?
+
+    data = self.initialize_data('Consumo por Batches')
+    data['order'] = params[:order]
+    data['recipe'] = "#{order.recipe.code} - #{order.recipe.name}"
+    data['start_date'] = order.batch.empty? ? "" : order.batch
+                                                          .first
+                                                          .created_at
+                                                          .strftime("%d/%m/%Y %H:%M:%S")
+    data['end_date'] = order.batch.empty? ? "" : order.batch
+                                                        .last
+                                                        .end_date
+                                                        .strftime("%d/%m/%Y %H:%M:%S")
+    data['results'] = []
+
+    batches.each do |batch|
+
+      batch_hopper_lots = BatchHopperLot.includes({:hopper_lot => {:hopper => {}, :lot => {:ingredient => {}}}})
+        .where({:batch_id => batch.id})
+
+      batch_hopper_lots = batch_hopper_lots.where(ingredients: {id: params[:batches_ingredients_ids]}) if by_ingredients
+
+      ingredients = {}
+      order.recipe.ingredient_recipe.each do |ir|
+          ingredients[ir.ingredient.code] = ir.amount
+      end
+
+      unless order.medicament_recipe.nil?
+        order.medicament_recipe.ingredient_medicament_recipe.each do |imr|
+          ingredients[imr.ingredient.code] = imr.amount
+        end
+      end
+
+      batch_hopper_lots.each do |bhl|
+        real_kg = bhl.amount.to_f
+        std_kg = 0
+        var_kg = 0
+        var_perc = 0
+        if ingredients.has_key?(bhl.hopper_lot.lot.ingredient.code)
+          std_kg = ingredients[bhl.hopper_lot.lot.ingredient.code]
+          var_kg = real_kg - std_kg
+          var_perc = var_kg * 100 / std_kg rescue 0
+        end
+
+        hopper_name = bhl.hopper_lot.hopper.name.present? ? bhl.hopper_lot.hopper.name : bhl.hopper_lot.hopper.number
+        
+        data['results'] << {
+          'batch_number' => batch.number,
+          'code' => bhl.hopper_lot.lot.ingredient.code,
+          'ingredient' => bhl.hopper_lot.lot.ingredient.name,
+          'real_kg' => real_kg.round(2),
+          'std_kg' => std_kg.round(2),
+          'var_kg' => var_kg.round(2),
+          'var_perc' => var_perc.round(2),
+          'hopper' => hopper_name,
+          'lot' => bhl.hopper_lot.lot.code,
+        }
+      end
+    end
+
+    return nil if data['results'].empty?
+
+    return data
+
+
+  end
+
   # ================================================================
   # Utilities
   # ================================================================

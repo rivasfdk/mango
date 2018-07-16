@@ -133,6 +133,9 @@ report_log_by_user = ->
 report_log_by_module = ->
   $('#log_module_report_form').toggle($('#report_by_module').is(':checked'))
 
+report_batches_by_ingredients = ->
+  $('#batches_ingredients_form').toggle($('#report_batches_by_ingredients').is(':checked'))
+
 $ ->
   $('#report_by_alarm_type_1').change type_changed_1
   $('#report_by_alarm_type_2').change type_changed_2
@@ -178,4 +181,5 @@ $ ->
   $('#report_by_order').change ticket_by_order_changed
   $('#report_by_user').change report_log_by_user
   $('#report_by_module').change report_log_by_module
+  $('#report_batches_by_ingredients').change report_batches_by_ingredients
   return

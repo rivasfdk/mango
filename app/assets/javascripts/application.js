@@ -67,6 +67,8 @@ $(function(){
     $('#report_by_address').trigger('change');
     $('#report_by_order').trigger('change');
     $('#report_logs_actions').trigger('change');
+    $('#report_batch_consumptions').trigger('change');
+    $('#report_batches_by_ingredients').trigger('change');
     $('#report_by_user').trigger('change');
     $('#report_by_module').trigger('change');
     $("#new_truck_form").hide();

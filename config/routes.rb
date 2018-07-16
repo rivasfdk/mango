@@ -127,6 +127,7 @@ Mango::Application.routes.draw do
   match 'reports/sales' => 'reports#sales', via: :post, as: 'sales_report'
   match 'reports/production_note' => 'reports#production_note', via: :post, as: 'production_note_report'
   match 'reports/logs_actions' => 'reports#logs_actions', via: :post, as: 'logs_actions_report'
+  match 'reports/batch_consumptions' => 'reports#batch_consumptions', via: :post, as: 'batch_consumptions_report'
   resources :sessions, :users, :ingredients, :clients, :factories, :products, :orders, :lots, :schedules, :batches,
     :transaction_types, :product_lots, :permissions, :drivers, :carriers, :trucks, :alarm_types, :parameter_types, :order_stat_types,
     :lot_parameter_types, :product_lot_parameter_types, :ingredient_parameter_type_ranges, :product_parameter_type_ranges, :tickets

@@ -562,6 +562,18 @@ class ReportsController < ApplicationController
     end
   end
 
+  def batch_consumptions
+    @data = EasyModel.batch_consumptions(params[:report])
+    if @data.nil?
+      flash[:notice] = 'No hay registros para generar el reporte'
+      flash[:type] = 'warn'
+      redirect_to reports_path
+    else
+      rendered = render_to_string formats: [:pdf], template: 'reports/batch_consumptions'
+      send_data rendered, filename: "#{@data['title']}.pdf", type: "application/pdf", disposition: 'inline'
+    end
+  end
+
 end
 
 
