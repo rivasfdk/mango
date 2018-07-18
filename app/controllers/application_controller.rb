@@ -170,13 +170,13 @@ class ApplicationController < ActionController::Base
                       processed_in_baan: true
           if !(Order.find_by(code: order[:cod_orden])).nil?
             order_count += 1
-            client = connect_sqlserver
-            if !client.nil?
-              sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = 10#{order[:cod_orden]}"
-              result = client.execute(sql)
-              result.insert
-              client.close
-            end
+            #client = connect_sqlserver
+            #if !client.nil?
+            #  sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = #{order[:cod_orden]}"
+            #  result = client.execute(sql)
+            #  result.insert
+            #  client.close
+            #end
           end
         end
       end

@@ -387,6 +387,15 @@ class OrdersController < ApplicationController
           count = import_orders(orders, ingrecipes)
 
           if count > 0
+            client = connect_sqlserver
+            orders.each do |order| 
+              if !client.nil?
+                sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = 10#{order[:cod_orden]}"
+                result = client.execute(sql)
+                result.insert
+              end
+            end
+            client.close
             flash[:notice] = "Se importaron #{count} ordenes con exito"
           else
             flash[:type] = 'warn'
@@ -400,11 +409,11 @@ class OrdersController < ApplicationController
       when 3 #***********************Alceca*************************************
         if !client.nil?
           plant = get_mango_field('application')
-          if plant["name"].include?("Sur")
-            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 1000")
+          if plant["name"].include?("NORTE")
+            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 0001")
             orders = consult.each(:symbolize_keys => true)
-          elsif plant["name"].include?("Norte")
-            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 1001")
+          elsif plant["name"].include?("SUR")
+            consult = client.execute("select * from dbo.ordenp  where estado = null and cod_cliente = 0002")
             orders = consult.each(:symbolize_keys => true)
           else
             orders = []
@@ -414,6 +423,15 @@ class OrdersController < ApplicationController
           count = import_orders(orders, ingrecipes)
 
           if count > 0
+            client = connect_sqlserver
+            orders.each do |order| 
+              if !client.nil?
+                sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = #{order[:cod_orden]}"
+                result = client.execute(sql)
+                result.insert
+              end
+            end
+            client.close
             flash[:notice] = "Se importaron #{count} ordenes con exito"
           else
             flash[:type] = 'warn'
