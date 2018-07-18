@@ -126,22 +126,26 @@ class OrdersController < ApplicationController
               client.close
             end
           when 3 #*************************Alceca*************************
-            if @order.processed_in_baan
-              data = EasyModel.order_details(@order.code)
-              results = data['results']
-              results.each do |result|
-                client = connect_sqlserver
-                date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-                if !client.nil?
-                  sql = "insert into dbo.ordenpcons "+
-                        "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
-                  puts sql
-                  result = client.execute(sql)
-                  result.insert
-                  client.close
-                end
+            data = EasyModel.order_details(@order.code)
+            results = data['results']
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            client = connect_sqlserver
+            if !client.nil?
+              sql = "update dbo.ordenp set cant_batchreal = #{@order.batch.count}, fecha_cierra = #{date} where cod_orden = #{@order.code}"
+              puts sql
+              result = client.execute(sql)
+              result.insert
+            end
+            results.each do |result|
+              if !client.nil?
+                sql = "insert into dbo.ordenpcons "+
+                      "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+                puts sql
+                result = client.execute(sql)
+                result.insert
               end
             end
+            client.close
           else
           end
         end
@@ -283,22 +287,26 @@ class OrdersController < ApplicationController
           client.close
         end
       when 3 #*************************Alceca*************************
-        if @order.processed_in_baan
-          data = EasyModel.order_details(@order.code)
-          results = data['results']
-          results.each do |result|
-            client = connect_sqlserver
-            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-            if !client.nil?
-              sql = "insert into dbo.ordenpcons "+
-                    "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
-              puts sql
-              result = client.execute(sql)
-              result.insert
-              client.close
-            end
+        data = EasyModel.order_details(@order.code)
+        results = data['results']
+        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+        client = connect_sqlserver
+        if !client.nil?
+          sql = "update dbo.ordenp set cant_batchreal = #{@order.batch.count}, fecha_cierra = #{date} where cod_orden = #{@order.code}"
+          puts sql
+          result = client.execute(sql)
+          result.insert
+        end
+        results.each do |result|
+          if !client.nil?
+            sql = "insert into dbo.ordenpcons "+
+                  "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+            puts sql
+            result = client.execute(sql)
+            result.insert
           end
         end
+        client.close
       else
       end
     end
