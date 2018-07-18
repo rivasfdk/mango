@@ -6,6 +6,10 @@
 <div class="field"><%=h @recipe.name %></div>
 <label for="version" class="small">Versión:</label>
 <div class="field"><%=h @recipe.version %></div>
+
+<label for="date" class="small">Fecha de creación:</label>
+<div class="field"><%=h @recipe.created_at.strftime '%d-%m-%Y %H:%M' %></div>
+
 <label for="product" class="small">Producto:</label>
 <div class="field"><%=h @recipe.product.name %></div>
 <label for="type_id" class="small">Tipo:</label>
