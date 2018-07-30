@@ -111,7 +111,7 @@ class OrdersController < ApplicationController
         if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
           sql_server_type = get_mango_field('sql_server_type')
           case sql_server_type
-          when 2
+          when 2 #**************************Agroebenezer***************************
             @order = Order.find params[:id]
             client = connect_sqlserver
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
