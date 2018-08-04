@@ -112,17 +112,25 @@ class OrdersController < ApplicationController
           sql_server_type = get_mango_field('sql_server_type')
           case sql_server_type
           when 2 #**************************Agroebenezer***************************
-            @order = Order.find params[:id]
-            client = connect_sqlserver
+            data = EasyModel.order_details(@order.code)
+            results = data['results']
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            client = connect_sqlserver
             if !client.nil?
-              sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10#{@order.code}"
+              sql = "update dbo.ordenp set cant_batchreal = #{@order.batch.count} where cod_orden = 10#{@order.code}"
               puts sql
               result = client.execute(sql)
               result.insert
               sql = "update dbo.ordenp set fecha_cierra = #{date} where cod_orden = 10#{@order.code}"
               result = client.execute(sql)
               result.insert
+              results.each do |result|
+                sql = "insert into dbo.sofos "+
+                      "values (10#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]}, #{date})"
+                puts sql
+                result = client.execute(sql)
+                result.insert
+              end
               client.close
             end
           when 3 #*************************Alceca*************************
@@ -388,9 +396,9 @@ class OrdersController < ApplicationController
         end
       when 2 #*****************************AgroEbenezer***************************
         if !client.nil?
-          consult = client.execute("select * from dbo.ordenp  where estado = null")
+          consult = client.execute("select * from dbo.ordenp") #where estado = null
           orders = consult.each(:symbolize_keys => true)
-          consult = client.execute("select * from dbo.ordenpd  where estado = null")
+          consult = client.execute("select * from dbo.ordenpd")
           ingrecipes = consult.each(:symbolize_keys => true)
           count = import_orders(orders, ingrecipes)
 
@@ -398,7 +406,7 @@ class OrdersController < ApplicationController
             client = connect_sqlserver
             orders.each do |order| 
               if !client.nil?
-                sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = 10#{order[:cod_orden]}"
+                sql = "update dbo.ordenp set estado = \"procesada\" where cod_orden = #{order[:cod_orden]}"
                 result = client.execute(sql)
                 result.insert
               end
