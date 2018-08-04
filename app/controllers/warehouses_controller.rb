@@ -111,19 +111,26 @@ class WarehousesController < ApplicationController
 
   def do_fill
     @warehouse = Warehouse.find params[:id]
-    new_stock = params[:do_fill][:amount].to_f + @warehouse.stock
+    new_stock = params[:fill][:amount].to_f + @warehouse.stock
     if @warehouse.update_attributes(stock: new_stock)
-      flash[:notice] = "Llenado realizado con éxito"
-    else
-      flash[:type] = 'error'
-      flash[:notice] = "No se pudo realizar el llenado de la tolva"
-  end
-    respond_to do |format|
-      format.html do
-        redirect_to warehouse_type_path(@warehouse.warehouse_types_id) 
+      respond_to do |format|
+        format.html do
+          flash[:notice] = "Llenado realizado con éxito"
+          redirect_to warehouse_type_path(@warehouse.warehouse_types_id) 
+        end
+        format.xml do
+          render xml: {fill: true}
+        end
       end
-      format.xml do
-        render xml: {fill: true}
+    else
+      respond_to do |format|
+        format.html do
+          flash[:type] = 'error'
+          flash[:notice] = "No se pudo realizar el llenado de la tolva"
+        end
+        format.xml do
+          render xml: {fill: false}
+        end
       end
     end
   end
@@ -134,21 +141,28 @@ class WarehousesController < ApplicationController
 
   def do_adjust
     @warehouse = Warehouse.find params[:id]
-    WarehouseTransactions.create transaction_type_id: @warehouse.stock < params[:stock].to_f ? 2 : 3,
-                                 warehouse_id: @warehouse.id,
-                                 amount: params[:stock].to_f,
-                                 stock_after: params[:stock].to_f,
-                                 lot_id: @warehouse.lot_id.nil? ? @warehouse.product_lot_id : @warehouse.lot_id,
-                                 content_type: @warehouse.warehouse_types.content_type,
-                                 user_id: session[:user_id]
-    @warehouse.update_attributes(stock: params[:stock])
-    if @warehouse.save
-      flash[:notice] = "Almacen ajustado exitosamente"
+    if @warehouse.update_attributes(stock: params[:stock])
+      respond_to do |format|
+        format.html do  
+          WarehouseTransactions.create transaction_type_id: @warehouse.stock < params[:stock].to_f ? 2 : 3,
+                                    warehouse_id: @warehouse.id,
+                                    amount: params[:stock].to_f,
+                                    stock_after: params[:stock].to_f,
+                                    lot_id: @warehouse.lot_id.nil? ? @warehouse.product_lot_id : @warehouse.lot_id,
+                                    content_type: @warehouse.warehouse_types.content_type,
+                                    user_id: session[:user_id]
+          flash[:notice] = "Almacen ajustado exitosamente"
+          redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+        end
+        format.xml do
+          render xml: {adjust: true}
+        end
+      end
     else
       flash[:type] = 'error'
       flash[:notice] = "No se pudo realizar el ajuste"
+      redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
     end
-    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
   end
 
   def set_as_main_warehouse

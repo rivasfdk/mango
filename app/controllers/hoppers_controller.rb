@@ -173,9 +173,16 @@ class HoppersController < ApplicationController
         end
       end
     else
-      flash[:type] = 'error'
-      flash[:notice] = "No se pudo realizar el llenado de la tolva"
-      redirect_to scale_path(@hopper.scale_id) 
+      respond_to do |format|
+        format.html do
+          flash[:type] = 'error'
+          flash[:notice] = "No se pudo realizar el llenado de la tolva"
+          redirect_to scale_path(@hopper.scale_id) 
+        end
+        format.xml do
+          render xml: {fill: false}
+        end
+      end 
     end 
   end
 
