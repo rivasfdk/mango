@@ -36,9 +36,13 @@ class Scale < ActiveRecord::Base
       scale[:hoppers] = HopperLot.includes({lot: {ingredient: {}}, hopper: {scale: {}}})
         .where(active: true)
         .where(hoppers: {scale_id: scale[:id]})
-        .pluck('hoppers.number', 'hoppers.name AS hopper_name', 'hoppers.priority AS hopper_priority', 'ingredients.name AS ingredient_name', 'ingredients.code AS ingredient_code')
+        .pluck('hoppers.number', 'hoppers.name AS hopper_name', 'hoppers.priority AS hopper_priority', 
+               'ingredients.name AS ingredient_name', 'ingredients.code AS ingredient_code',
+               'hoppers_lots.stock AS hopper_stock', 'hoppers.id')
         .map do |hopper|
-          {number: hopper[0], name: hopper[1], hopper_priority: hopper[2], ingredient_name: hopper[3], ingredient_code: hopper[4]}
+          capacity = Hopper.find(hopper[6]).capacity_in_kg
+          {number: hopper[0], name: hopper[1], hopper_priority: hopper[2], ingredient_name: hopper[3],
+           ingredient_code: hopper[4], hopper_stock: hopper[5], hopper_capacity: capacity}
         end
     end
 

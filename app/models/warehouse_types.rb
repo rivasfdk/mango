@@ -20,10 +20,10 @@ class WarehouseTypes < ActiveRecord::Base
       end
     warehouses_types.each do |warehouse_type|
       warehouse_type[:warehouses] = Warehouse.where(warehouse_types_id: warehouse_type[:id]) 
-        .pluck('code', 'name', 'lot_id', 'product_lot_id', 'stock')
+        .pluck('code', 'name', 'lot_id', 'product_lot_id', 'stock', 'size')
         .map do |warehouse|
           product = warehouse[2].nil? ? ProductLot.find(warehouse[3]).product : Lot.find(warehouse[2]).ingredient
-          {code: warehouse[0], name: warehouse[1],  product_code: product.code, product_name: product.name, stock: warehouse[4]}
+          {code: warehouse[0], name: warehouse[1],  product_code: product.code, product_name: product.name, stock: warehouse[4], size: warehouse[5]}
         end
     end
     warehouses_types

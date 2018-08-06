@@ -90,13 +90,29 @@ class WarehousesController < ApplicationController
     new_product = params[:change_product][:new_product_lot_id]  # Gets new product chosen by user
     new_stock = params[:change_product][:stock]
     if (@warehouse.stock == 0) && (@warehouse.update_attributes(product_lot_id: new_product, stock: new_stock)) 
-      flash[:notice] = "Cambio de producto terminado realizado con éxito"
+      respond_to do |format|
+        format.html do
+          flash[:notice] = "Cambio de producto terminado realizado con éxito"
+          @warehouse.set_main_warehouse
+          redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+        end
+        format.xml do
+          render xml: {change: true}
+        end
+      end
     else
-      flash[:type] = 'error'
-      flash[:notice] = "No se pudo cambiar el producto terminado del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
+      respond_to do |format|
+        format.html do
+          flash[:type] = 'error'
+          flash[:notice] = "No se pudo cambiar el producto terminado del almacen. Compruebe que la existencia sea nula, de no serlo, realice un ajuste."
+          redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+        end
+        format.xml do
+          render xml: {change: false}
+        end
+      end
     end
-    @warehouse.set_main_warehouse
-    redirect_to warehouse_type_path(@warehouse.warehouse_types_id)
+    
   end
 
 

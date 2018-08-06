@@ -35,7 +35,20 @@ class ProductLotsController < ApplicationController
     @lots = ProductLot.includes(:product)
       .where(active: true)
       .order('id desc')
-    render json: @lots, methods: [:to_collection_select], root: false
+    respond_to do |format|
+      format.json do 
+        render json: @lots, methods: [:to_collection_select], root: false
+      end
+      format.xml do
+        @lots = ProductLot.includes(:product)
+          .where(active: true)
+          .pluck('products_lots.id AS lot_id', 'products_lots.code AS lot_code', 'products.name AS product_name')
+          .map do |lot|
+            {lot_id: lot[0], lot_code: lot[1], product_name: lot[2]}
+          end
+        render xml: @lots, root: 'products'
+      end
+    end
   end
 
   # New order

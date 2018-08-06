@@ -1,6 +1,6 @@
 <% title "Llenar almacen" %>
 <%= form_for :fill, :url=>fill_warehouse_type_warehouse_path(@warehouse.warehouse_types_id, @warehouse.id), :html=>{:id=>'warehouse_fill_form'} do |f| %>
-  <label for="code" class="small">Capacidad (m3):</label>
+  <label for="code" class="small">Capacidad (Kg):</label>
   <div class="field"><%=h @warehouse.size %></div>
   <label for="code" class="small">Existencia (kg):</label>
   <div class="field"><%=h @warehouse.stock %></div>
