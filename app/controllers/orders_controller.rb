@@ -348,7 +348,8 @@ class OrdersController < ApplicationController
   end
 
   def open
-    render xml: Order.get_open, root: 'orders'
+    orders = Order.get_open
+    render xml: orders, root: 'orders'
   end
 
   def validate

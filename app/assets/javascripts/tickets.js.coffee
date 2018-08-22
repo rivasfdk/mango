@@ -289,7 +289,7 @@ $ ->
       console.log server_romano_ip
 
 update_weight2 = ->
-  url = "#{server_romano_ip}/weight_server/get_weight.json"
+  url = "#{server_romano_ip}/serial_weight/get_weight.json"
   if self.location.href.includes('new')
     not_manual = not $("#ticket_manual_incoming").is(':checked')
   else
@@ -302,14 +302,14 @@ update_weight2 = ->
         $("#ticket_incoming_weight").val(weight)
       else
         $("#ticket_outgoing_weight").val(weight)
-    if $("#ticket_type").text().includes('recep')
-      net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
-      diff = net - $("#provider_weight").text()
-    else
-      net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
-      diff = net - $("#provider_weight").text()
-    $("#netweight").html("<b>#{net}</b>")
-    $("#diff").html("<b>#{diff}</b>")
+        if $("#ticket_type").text().includes('recep')
+          net = $("#inweight").text() - $("#ticket_outgoing_weight").val() 
+          diff = net - $("#provider_weight").text()
+        else
+          net = $("#ticket_outgoing_weight").val() - $("#inweight").text()
+          diff = net - $("#provider_weight").text()
+        $("#netweight").html("<b>#{net}</b>")
+        $("#diff").html("<b>#{diff}</b>")
 
 
 update_weight = ->

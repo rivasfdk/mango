@@ -13,7 +13,11 @@ class RecipesController < ApplicationController
     @types = Recipe::TYPES
     @total = @recipe.get_total()
     @parameter_list_enabled = is_mango_feature_available("recipe_parameters")
-    @parameter_list = ParameterList.find_by_recipe(@recipe.code)
+    if params[:format].nil?
+      @parameter_list = ParameterList.find_by_recipe(@recipe.code)
+    else
+      @parameter_list = ParameterList.includes(:parameters).where(id: params[:format]).first
+    end
     @internal_consumption = is_mango_feature_available("internal_consumption")
   end
 

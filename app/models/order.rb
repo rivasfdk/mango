@@ -735,12 +735,13 @@ class Order < ActiveRecord::Base
   end
 
   def self.get_open
-    orders = Order.includes(:recipe, :client)
+    orders = Order.includes(:recipe, :client, :product_lot)
       .where(completed: false, real_batches: nil)
       .pluck('orders.code AS order_code', 'clients.name AS client_name', 'recipes.name AS recipe_name',
-        'recipes.code AS recipe_code', 'orders.prog_batches')
+        'recipes.code AS recipe_code', 'orders.prog_batches', 'products_lots.code')
       .map do |order|
-        {code: order[0], client_name: order[1], recipe_name: order[2], recipe_code: order[3], prog_batches: order[4]}
+        {code: order[0], client_name: order[1], recipe_name: order[2], recipe_code: order[3], 
+          prog_batches: order[4], product_lot_code: order[5]}
       end
   end
 
