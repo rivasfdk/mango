@@ -60,7 +60,8 @@ class WarehouseTypesController < ApplicationController
   end
 
   def warehouses_products
-    render xml: WarehouseTypes.get_warehouses_products, root: 'warehouses_types'
+    warehouses_products = WarehouseTypes.get_warehouses_products
+    render xml: warehouses_products, root: 'warehouses_types'
   end
 
 end
