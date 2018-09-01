@@ -627,6 +627,7 @@ ActiveRecord::Schema.define(version: 20180701211025) do
     t.boolean  "closed"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "remaining"
   end
 
   create_table "tickets_order_items", force: true do |t|

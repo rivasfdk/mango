@@ -336,4 +336,90 @@ class ApplicationController < ActionController::Base
     return count
   end
 
+  def products(products)
+    products.each do |product|
+      if Product.where(code: product[:code]).empty?
+        new_product = Product.new
+        new_product.code = product[:code]
+        new_product.name = product[:name]
+        new_product.save
+      end
+    end
+  end
+
+  def product_lots(product_lots)
+    product_lots.each do |product_lot|
+      product = Product.where(code: product_lot[:product_code]).first
+      unless product.nil?
+        if ProductLot.where(code: product_lot[:lot_code]).empty?
+          new_product_lot = ProductLot.new
+          new_product_lot.code = product_lot[:lot_code]
+          new_product_lot.product_id = product.id
+          new_product_lot.save
+        end
+      end
+    end
+  end
+
+  def ingredients(ingredients)
+    ingredients.each do |ingredient|
+      if Ingredient.where(code: ingredient[:code]).empty?
+        new_ingredient = Ingredient.new
+        new_ingredient.code = ingredient[:code]
+        new_ingredient.name = ingredient[:name]
+        new_ingredient.save
+      end
+    end
+  end
+
+  def lots(lots)
+    lots.each do |lot|
+      ingredient = Ingredient.where(code: lot[:ingredient_code]).first
+      unless ingredient.nil?
+        if Lot.where(code: lot[:lot_code]).empty?
+          new_lot = Lot.new
+          new_lot.code = lot[:lot_code]
+          new_lot.ingredient_id = ingredient.id
+          new_lot.density = 1000
+          new_lot.save
+        end
+      end
+    end
+  end
+
+  def recipes(recipes)
+    count = 0
+    recipes.each do |recipe|
+      product = Product.where(code: recipe[:product_code]).first
+      unless product.nil?
+        if Recipe.where(code: recipe[:code], version: recipe[:version]).empty?
+          new_recipe = Recipe.new
+          new_recipe.code = recipe[:code]
+          new_recipe.name = recipe[:name]
+          new_recipe.version = recipe[:version]
+          new_recipe.product_id = product.id
+          new_recipe.save
+          count += 1
+        end
+      end
+    end
+    return count
+  end
+
+  def ingredients_recipes(ingredients_recipes)
+    ingredients_recipes.each do |irecipe|
+      ingredient = Ingredient.where(code: irecipe[:ingredient_code]).first
+      recipe = Recipe.where(code: irecipe[:recipe_code], version: irecipe[:version]).first
+      unless ingredient.nil? or recipe.nil?
+        if IngredientRecipe.where(ingredient_id: ingredient.id, recipe_id: recipe.id).empty?
+          ingredient_recipe = IngredientRecipe.new
+          ingredient_recipe.ingredient = ingredient
+          ingredient_recipe.recipe = recipe
+          ingredient_recipe.amount = irecipe[:amount]
+          ingredient_recipe.save
+        end
+      end
+    end
+  end
+
 end

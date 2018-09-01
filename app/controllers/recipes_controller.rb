@@ -155,6 +155,135 @@ class RecipesController < ApplicationController
     redirect_to request.referer + "#parameters"
   end
 
+  def import
+    mango_features = get_mango_features()
+    if mango_features.include?("import_recipes")
+      company = get_mango_field('company')
+      case company
+      when 5 #************************Tecavi**************************
+        client = connect_sqlserver
+
+        consult = client.execute("select * from dbo.Formula where nForEstado < 2")
+        recipes_sql = consult.each(:symbolize_keys => true)
+
+        products_sql = []
+        recipes_sql.each do |recipe|
+          consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]}")
+          products_sql << consult.each(:symbolize_keys => true)[0]
+        end
+
+        products = []
+        products_sql.each do |product|
+          hash = {}
+          unless product.nil?
+            hash[:code] = product[:Producto_Id]
+            hash[:name] = product[:sProNombre]
+            products << hash
+          end
+        end
+
+        products(products)
+
+        product_lots = []
+        products_sql.each do |product|
+          consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{product[:Producto_Id]}")
+          lots_sql = consult.each(:symbolize_keys => true)
+          unless product.nil?
+            unless lots_sql.empty?
+              lots_sql.each do |lot|
+                hash = {}
+                hash[:product_code] = lot[:Producto_Id]
+                hash[:lot_code] = lot[:sPLoNumeroLote]
+                product_lots << hash
+              end
+            end
+          end
+        end
+
+        product_lots(product_lots)
+
+        ingredients = []
+        recipes_sql.each do |recipe|
+          consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
+          ingredients_sql = consult.each(:symbolize_keys => true)
+          ingredients_sql.each do |ingredient|
+            consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]}")
+            product = consult.each(:symbolize_keys => true)[0]
+            hash = {}
+            hash[:code] = ingredient[:Producto_Id]
+            hash[:name] = product[:sProNombre]
+            ingredients << hash
+          end
+        end
+        ingredients = ingredients & ingredients
+
+        ingredients(ingredients)
+
+        lots = []
+        ingredients.each do |ingredient|
+          consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{ingredient[:code]}")
+          lots_sql = consult.each(:symbolize_keys => true)
+          unless ingredient.nil?
+            unless lots_sql.empty?
+              lots_sql.each do |lot|
+                hash = {}
+                hash[:ingredient_code] = lot[:Producto_Id]
+                hash[:lot_code] = lot[:sPLoNumeroLote]
+                lots << hash
+              end
+            end
+          end
+        end
+
+        lots(lots)
+  
+        recipes = []
+        recipes_sql.each do |recipe|
+          consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]}")
+          product = consult.each(:symbolize_keys => true)[0]
+          hash = {}
+          hash[:code] = recipe[:sForNumero]
+          hash[:name] = product[:sProNombre]
+          hash[:version] = 1
+          hash[:product_code] = product[:Producto_Id]
+          recipes << hash
+        end
+
+        count = recipes(recipes)
+
+        ingredients_recipes = []
+        recipes_sql.each do |recipe|
+          consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
+          ingredients_sql = consult.each(:symbolize_keys => true)
+          ingredients_sql.each do |ingredient|
+            consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]}")
+            product = consult.each(:symbolize_keys => true)[0]
+            hash = {}
+            hash[:recipe_code] = recipe[:sForNumero]
+            hash[:version] = 1
+            hash[:ingredient_code] = ingredient[:Producto_Id]
+            hash[:amount] = ingredient[:nFDeCantidad]
+            ingredients_recipes << hash
+          end
+          sql = "update dbo.Formula set nForEstado = 2 where Formula_Id = #{recipe[:Formula_Id]}"
+          result = client.execute(sql)
+          result.insert
+        end
+
+        ingredients_recipes(ingredients_recipes)
+
+
+      else
+      end
+      if count > 0
+        flash[:notice] = "Se importaron #{count} Recetas con éxito"
+      else
+        flash[:notice] = "No se encontraron Recetas para importar"
+      end
+      redirect_to :action => 'index'
+    end 
+  end
+
   def upload
     if params[:recipe]['datafile'].nil?
       flash[:type] = 'error'

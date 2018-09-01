@@ -110,6 +110,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.3.0)
+    ruby-oci8 (2.1.8)
     ruby-units (2.0.1)
     rubyzip (1.0.0)
     sass (3.4.22)
@@ -169,6 +170,7 @@ DEPENDENCIES
   quiet_assets
   railroady
   rails (= 4.0.13)
+  ruby-oci8 (= 2.1.8)
   ruby-units
   sass-rails
   thin
@@ -180,4 +182,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   1.14.6
+   1.16.1

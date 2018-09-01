@@ -54,12 +54,40 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new params[:order]
     @order.parameter_list = ParameterList.find_by_recipe(@order.recipe.code) unless @order.recipe_id.nil?
-    if @order.save
-      flash[:notice] = 'Orden de producción guardada con éxito'
-      redirect_to :orders
+    mango_features = get_mango_features()
+    if mango_features.include?("export_orders") 
+      company = get_mango_field('company')
+      case company
+      when 5 #************************Tecavi****************************
+        @order.processed_in_baan = true
+        if @order.save
+          client = connect_sqlserver
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          if !client.nil?
+            consult = client.execute("select * from dbo.Formula where sForNumero = \"#{@order.recipe.code}\"")
+            recipe = consult.each(:symbolize_keys => true)[0]
+            sql = "insert into dbo.OrdenProduccion values (#{@order.code}, 2, #{recipe[:Formula_Id]}, 1, "+
+                                                          "#{date}, #{@order.prog_batches}, 0, 0, #{@order.code}, 0)"                      
+            puts sql
+            result = client.execute(sql)
+            result.insert
+          end
+          flash[:notice] = 'Orden de producción guardada con éxito'
+          redirect_to :orders
+        else
+          new
+          render :new
+        end
+      else
+      end
     else
-      new
-      render :new
+      if @order.save
+        flash[:notice] = 'Orden de producción guardada con éxito'
+        redirect_to :orders
+      else
+        new
+        render :new
+      end
     end
   end
 
@@ -108,9 +136,9 @@ class OrdersController < ApplicationController
       if @order.repair(session[:user_id], params)
 
         mango_features = get_mango_features()
-        if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
-          sql_server_type = get_mango_field('sql_server_type')
-          case sql_server_type
+        if mango_features.include?("import_orders") and @order.processed_in_baan
+          company = get_mango_field('company')
+          case company
           when 2 #**************************Agroebenezer***************************
             data = EasyModel.order_details(@order.code)
             results = data['results']
@@ -154,6 +182,28 @@ class OrdersController < ApplicationController
               end
             end
             client.close
+          when 5 #**********************Tecavi********************************
+            data = EasyModel.order_details(@order.code)
+            results = data['results']
+            date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+            client = connect_sqlserver
+            if !client.nil?
+              sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} sOPrNumeroOrden = \"#{@order.code}\""
+              puts sql
+              result = client.execute(sql)
+              result.insert
+            end
+            results.each do |result|
+              if !client.nil?
+                consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
+                order = consult.each(:symbolize_keys => true)[0]
+                sql = "insert into dbo.OrdenProduccionDetalle "+
+                      "values (#{@order[:OrdenProduccion_Id]}, 0, ,NULL, #{date}, NULL)"
+                puts sql
+                result = client.execute(sql)
+                result.insert
+              end
+            end
           else
           end
         end
@@ -183,10 +233,10 @@ class OrdersController < ApplicationController
     @order = Order.find params[:id]
 
     mango_features = get_mango_features()
-    if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
+    if mango_features.include?("import_orders") and @order.processed_in_baan
       if @order.processed_in_baan
-        sql_server_type = get_mango_field('sql_server_type')
-        case sql_server_type
+        company = get_mango_field('company')
+        case company
         when 1 #************************El Tunal**********************
           date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
           for i in 1..@order.prog_batches
@@ -277,9 +327,9 @@ class OrdersController < ApplicationController
     render xml: {closed: @order.close(session[:user_id])}
 
     mango_features = get_mango_features()
-    if mango_features.include?("sap_sqlserver") and @order.processed_in_baan
-      sql_server_type = get_mango_field('sql_server_type')
-      case sql_server_type
+    if mango_features.include?("import_orders") and @order.processed_in_baan
+      company = get_mango_field('company')
+      case company
       when 2
         @order = Order.where(code: params[:order_code]).first
         client = connect_sqlserver
@@ -360,12 +410,12 @@ class OrdersController < ApplicationController
   def import
 
     mango_features = get_mango_features()
-    if mango_features.include?("sap_sqlserver")
-      sql_server_type = get_mango_field('sql_server_type')
-      count = 0
-      client = connect_sqlserver
-      case sql_server_type
+    if mango_features.include?("import_orders")
+      company = get_mango_field('company')
+      case company
       when 1 #************************El Tunal**********************
+        count = 0
+        client = connect_sqlserver
         if !client.nil?
           consult = client.execute("select * from dbo.productos  where procesada = 0")
           products = consult.each(:symbolize_keys => true)
@@ -396,6 +446,8 @@ class OrdersController < ApplicationController
           flash[:notice] = 'No se pudo conectar con la base de datos'
         end
       when 2 #*****************************AgroEbenezer***************************
+        count = 0
+        client = connect_sqlserver
         if !client.nil?
           consult = client.execute("select * from dbo.ordenp") #where estado = null
           orders = consult.each(:symbolize_keys => true)
@@ -424,6 +476,8 @@ class OrdersController < ApplicationController
           flash[:notice] = 'No se pudo conectar con la base de datos'
         end
       when 3 #***********************Alceca*************************************
+        count = 0
+        client = connect_sqlserver
         if !client.nil?
           plant = get_mango_field('application')
           if plant["name"].include?("NORTE")
@@ -438,7 +492,6 @@ class OrdersController < ApplicationController
           consult = client.execute("select * from dbo.ordenpd  where estado = null")
           ingrecipes = consult.each(:symbolize_keys => true)
           count = import_orders(orders, ingrecipes)
-
           if count > 0
             client = connect_sqlserver
             orders.each do |order| 
@@ -454,12 +507,26 @@ class OrdersController < ApplicationController
             flash[:type] = 'warn'
             flash[:notice] = 'No se encontraron ordenes para importar'
           end
-
         else
           flash[:type] = 'error'
           flash[:notice] = 'No se pudo conectar con la base de datos'
         end
-
+      when 4 #************************Inporca*********************************
+        oci = OCI8.new('sicbatch','inporca','191.40.100.11:1521/baanip')
+        cursor = oci.parse('select * from baan.TTISFC937310 where T$STAT = 2')
+        cursor.exec
+        columns = cursor.getColNames
+        orders = []
+        while row = cursor.fetch
+          reg = {}
+          columns.zip(row) { |a,b| reg[a.to_sym] = b }
+          orders << reg
+          puts "+++++++++++++++++++++++++"
+        end
+        puts orders
+      when 5 #*************************Tecavi**********************************
+        count = 0
+        client = connect_sqlserver
       else
       end
     end
