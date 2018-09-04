@@ -337,17 +337,22 @@ class ApplicationController < ActionController::Base
   end
 
   def products(products)
+    saved = []
     products.each do |product|
       if Product.where(code: product[:code]).empty?
         new_product = Product.new
         new_product.code = product[:code]
         new_product.name = product[:name]
-        new_product.save
+        if new_product.save
+          saved << product[:code]
+        end
       end
     end
+    return saved
   end
 
   def product_lots(product_lots)
+    saved = []
     product_lots.each do |product_lot|
       product = Product.where(code: product_lot[:product_code]).first
       unless product.nil?
@@ -355,40 +360,53 @@ class ApplicationController < ActionController::Base
           new_product_lot = ProductLot.new
           new_product_lot.code = product_lot[:lot_code]
           new_product_lot.product_id = product.id
-          new_product_lot.save
+          if new_product_lot.save
+            puts new_product_lot
+            saved << [product_lot[:lot_code], product.id]
+          end
         end
       end
     end
+    return saved
   end
 
   def ingredients(ingredients)
+    saved = []
     ingredients.each do |ingredient|
       if Ingredient.where(code: ingredient[:code]).empty?
         new_ingredient = Ingredient.new
         new_ingredient.code = ingredient[:code]
         new_ingredient.name = ingredient[:name]
-        new_ingredient.save
+        if new_ingredient.save
+          saved << ingredient[:code]
+        end
       end
     end
+    return saved
   end
 
   def lots(lots)
+    saved = []
     lots.each do |lot|
       ingredient = Ingredient.where(code: lot[:ingredient_code]).first
       unless ingredient.nil?
-        if Lot.where(code: lot[:lot_code]).empty?
+        if Lot.where(code: lot[:lot_code], ingredient_id: ingredient.id).empty?
           new_lot = Lot.new
           new_lot.code = lot[:lot_code]
           new_lot.ingredient_id = ingredient.id
           new_lot.density = 1000
-          new_lot.save
+          if new_lot.save
+            puts new_lot
+            saved << [lot[:lot_code], ingredient.code]
+          end
         end
       end
     end
+    return saved
   end
 
   def recipes(recipes)
-    count = 0
+    saved = []
     recipes.each do |recipe|
       product = Product.where(code: recipe[:product_code]).first
       unless product.nil?
@@ -398,12 +416,13 @@ class ApplicationController < ActionController::Base
           new_recipe.name = recipe[:name]
           new_recipe.version = recipe[:version]
           new_recipe.product_id = product.id
-          new_recipe.save
-          count += 1
+          if new_recipe.save
+            saved << [recipe[:code], recipe[:version]]
+          end
         end
       end
     end
-    return count
+    return saved
   end
 
   def ingredients_recipes(ingredients_recipes)

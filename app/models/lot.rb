@@ -16,8 +16,8 @@ class Lot < ActiveRecord::Base
   before_destroy :check_hopper_lots
 
   validates :code, presence: true,
-                   uniqueness: true,
-                   length: {within: 3..20}
+                   uniqueness: {scope: :ingredient_id},
+                   length: {within: 1..20}
   validates :ingredient_id, presence: true
   validates :density, numericality: {greater_than: 0}
   validate :factory

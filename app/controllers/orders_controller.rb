@@ -188,22 +188,26 @@ class OrdersController < ApplicationController
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
             client = connect_sqlserver
             if !client.nil?
-              sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} sOPrNumeroOrden = \"#{@order.code}\""
+              sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} where sOPrNumeroOrden = \"#{@order.code}\""
               puts sql
               result = client.execute(sql)
               result.insert
             end
+            consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
+            ordersql = consult.each(:symbolize_keys => true)[0]
             results.each do |result|
+              consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\"")
+              lotsql = consult.each(:symbolize_keys => true)[0]
               if !client.nil?
-                consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
-                order = consult.each(:symbolize_keys => true)[0]
-                sql = "insert into dbo.OrdenProduccionDetalle "+
-                      "values (#{@order[:OrdenProduccion_Id]}, 0, ,NULL, #{date}, NULL)"
+                sql = "insert into dbo.OrdenProduccion_Detalle "+
+                      "values (#{ordersql[:OrdenProduccion_Id]}, 0, \"#{result["code"]}\", \"#{lotsql[:Producto_Lote_Id]}\","+
+                      " 0,#{result["std_kg"]}, #{result["real_kg"]}, #{result["var_kg"]}, 0, \"A\", 0, 2, 1)"
                 puts sql
-                result = client.execute(sql)
-                result.insert
+                resultsql = client.execute(sql)
+                resultsql.insert
               end
             end
+            client.close
           else
           end
         end
@@ -362,6 +366,32 @@ class OrdersController < ApplicationController
             puts sql
             result = client.execute(sql)
             result.insert
+          end
+        end
+        client.close
+      when 5 #**********************Tecavi********************************
+        data = EasyModel.order_details(@order.code)
+        results = data['results']
+        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+        client = connect_sqlserver
+        if !client.nil?
+          sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} where sOPrNumeroOrden = \"#{@order.code}\""
+          puts sql
+          result = client.execute(sql)
+          result.insert
+        end
+        consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
+        ordersql = consult.each(:symbolize_keys => true)[0]
+        results.each do |result|
+          consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\"")
+          lotsql = consult.each(:symbolize_keys => true)[0]
+          if !client.nil?
+            sql = "insert into dbo.OrdenProduccion_Detalle "+
+                  "values (#{ordersql[:OrdenProduccion_Id]}, 0, \"#{result["code"]}\", \"#{lotsql[:Producto_Lote_Id]}\","+
+                  " 0,#{result["std_kg"]}, #{result["real_kg"]}, #{result["var_kg"]}, 0, \"A\", 0, 2, 1)"
+            puts sql
+            resultsql = client.execute(sql)
+            resultsql.insert
           end
         end
         client.close
@@ -524,9 +554,6 @@ class OrdersController < ApplicationController
           puts "+++++++++++++++++++++++++"
         end
         puts orders
-      when 5 #*************************Tecavi**********************************
-        count = 0
-        client = connect_sqlserver
       else
       end
     end

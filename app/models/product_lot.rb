@@ -10,8 +10,8 @@ class ProductLot < ActiveRecord::Base
   has_one :product_lot_parameter_list
 
   validates :code, presence: true,
-                   uniqueness: true,
-                   length: {within: 3..20}
+                   uniqueness: {scope: :product_id},
+                   length: {within: 1..20}
   validates :product_id, presence: true
 
   def content_id
