@@ -22,7 +22,6 @@ gem 'uglifier'
 
 gem 'tiny_tds', '~> 0.7.0'
 
-gem 'ruby-oci8', '=2.1.8'
 
 group :development do
   gem 'quiet_assets'
