@@ -162,156 +162,141 @@ class RecipesController < ApplicationController
       case company
       when 5 #************************Tecavi**************************
         client = connect_sqlserver
-
-        consult = client.execute("select * from dbo.Formula where nForEstado < 2")
-        recipes_sql = consult.each(:symbolize_keys => true)
-
-        products_sql = []
-        recipes_sql.each do |recipe|
-          consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]} and nProEstado < 2")
-          products_sql << consult.each(:symbolize_keys => true)[0]
-        end
-
-        products = []
-        products_sql.each do |product|
-          hash = {}
-          unless product.nil?
-            hash[:code] = product[:Producto_Id]
-            hash[:name] = product[:sProNombre]
-            products << hash
+        if !client.nil?
+          consult = client.execute("select * from dbo.Formula where nForEstado < 2")
+          recipes_sql = consult.each(:symbolize_keys => true)
+          products_sql = []
+          recipes_sql.each do |recipe|
+            consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]} and nProEstado < 2")
+            products_sql << consult.each(:symbolize_keys => true)[0]
           end
-        end
-
-        saved_products = products(products)
-
-        saved_products.each do |code|
-          sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
-          result = client.execute(sql)
-          result.insert
-        end
-
-        all_products = Product.all
-
-        product_lots = []
-        all_products.each do |product|
-          consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{product.code}")
-          lots_sql = consult.each(:symbolize_keys => true)
-          unless product.nil?
-            unless lots_sql.empty?
-              lots_sql.each do |lot|
-                hash = {}
-                hash[:product_code] = lot[:Producto_Id]
-                hash[:lot_code] = lot[:sPLoNumeroLote]
-                product_lots << hash
-              end
-            end
-          end
-        end
-
-        saved_product_lots = product_lots(product_lots)
-
-        saved_product_lots.each do |lot|
-          sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
-          result = client.execute(sql)
-          result.insert
-        end
-
-        ingredients = []
-        recipes_sql.each do |recipe|
-          consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
-          ingredients_sql = consult.each(:symbolize_keys => true)
-          ingredients_sql.each do |ingredient|
-            consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]} and nProEstado < 2")
-            product = consult.each(:symbolize_keys => true)[0]
+          products = []
+          products_sql.each do |product|
+            hash = {}
             unless product.nil?
-              hash = {}
-              hash[:code] = ingredient[:Producto_Id]
+              hash[:code] = product[:Producto_Id]
               hash[:name] = product[:sProNombre]
-              ingredients << hash
+              products << hash
             end
           end
-        end
-        ingredients = ingredients & ingredients
-
-        saved_ingredients = ingredients(ingredients)
-
-        saved_ingredients.each do |code|
-          sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
-          result = client.execute(sql)
-          result.insert
-        end
-
-        all_ingredients = Ingredient.all
-
-        lots = []
-        all_ingredients.each do |ingredient|
-          consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{ingredient.code}")
-          lots_sql = consult.each(:symbolize_keys => true)
-          unless ingredient.nil?
-            unless lots_sql.empty?
-              lots_sql.each do |lot|
-                hash = {}
-                hash[:ingredient_code] = lot[:Producto_Id]
-                hash[:lot_code] = lot[:sPLoNumeroLote]
-                lots << hash
+          saved_products = products(products)
+          saved_products.each do |code|
+            sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
+            result = client.execute(sql)
+            result.insert
+          end
+          all_products = Product.all
+          product_lots = []
+          all_products.each do |product|
+            consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{product.code}")
+            lots_sql = consult.each(:symbolize_keys => true)
+            unless product.nil?
+              unless lots_sql.empty?
+                lots_sql.each do |lot|
+                  hash = {}
+                  hash[:product_code] = lot[:Producto_Id]
+                  hash[:lot_code] = lot[:sPLoNumeroLote]
+                  product_lots << hash
+                end
               end
             end
           end
-        end
-
-        saved_lots = lots(lots)
-
-        saved_lots.each do |lot|
-          sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
-          result = client.execute(sql)
-          result.insert
-        end
-  
-        recipes = []
-        recipes_sql.each do |recipe|
-          consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]}")
-          product = consult.each(:symbolize_keys => true)[0]
-          hash = {}
-          hash[:code] = recipe[:sForNumero]
-          hash[:name] = product[:sProNombre]
-          hash[:version] = 1
-          hash[:product_code] = product[:Producto_Id]
-          recipes << hash
-        end
-
-        saved_recipes = recipes(recipes)
-
-        saved_recipes.each do |recipe|
-          sql = "update dbo.Formula set nForEstado = 2 where sForNumero = \"#{recipe[0]}\""
-          result = client.execute(sql)
-          result.insert
-        end
-
-        ingredients_recipes = []
-        recipes_sql.each do |recipe|
-          consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
-          ingredients_sql = consult.each(:symbolize_keys => true)
-          ingredients_sql.each do |ingredient|
-            consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]}")
+          saved_product_lots = product_lots(product_lots)
+          saved_product_lots.each do |lot|
+            sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
+            result = client.execute(sql)
+            result.insert
+          end
+          ingredients = []
+          recipes_sql.each do |recipe|
+            consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
+            ingredients_sql = consult.each(:symbolize_keys => true)
+            ingredients_sql.each do |ingredient|
+              consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]} and nProEstado < 2")
+              product = consult.each(:symbolize_keys => true)[0]
+              unless product.nil?
+                hash = {}
+                hash[:code] = ingredient[:Producto_Id]
+                hash[:name] = product[:sProNombre]
+                ingredients << hash
+              end
+            end
+          end
+          ingredients = ingredients & ingredients
+          saved_ingredients = ingredients(ingredients)
+          saved_ingredients.each do |code|
+            sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
+            result = client.execute(sql)
+            result.insert
+          end
+          all_ingredients = Ingredient.all
+          lots = []
+          all_ingredients.each do |ingredient|
+            consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{ingredient.code}")
+            lots_sql = consult.each(:symbolize_keys => true)
+            unless ingredient.nil?
+              unless lots_sql.empty?
+                lots_sql.each do |lot|
+                  hash = {}
+                  hash[:ingredient_code] = lot[:Producto_Id]
+                  hash[:lot_code] = lot[:sPLoNumeroLote]
+                  lots << hash
+                end
+              end
+            end
+          end
+          saved_lots = lots(lots)
+          saved_lots.each do |lot|
+            sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
+            result = client.execute(sql)
+            result.insert
+          end
+          recipes = []
+          recipes_sql.each do |recipe|
+            consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]}")
             product = consult.each(:symbolize_keys => true)[0]
             hash = {}
-            hash[:recipe_code] = recipe[:sForNumero]
+            hash[:code] = recipe[:sForNumero]
+            hash[:name] = product[:sProNombre]
             hash[:version] = 1
-            hash[:ingredient_code] = ingredient[:Producto_Id]
-            hash[:amount] = ingredient[:nFDeCantidad]
-            ingredients_recipes << hash
+            hash[:product_code] = product[:Producto_Id]
+            recipes << hash
           end
+          saved_recipes = recipes(recipes)
+          saved_recipes.each do |recipe|
+            sql = "update dbo.Formula set nForEstado = 2 where sForNumero = \"#{recipe[0]}\""
+            result = client.execute(sql)
+            result.insert
+          end
+          ingredients_recipes = []
+          recipes_sql.each do |recipe|
+            consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
+            ingredients_sql = consult.each(:symbolize_keys => true)
+            ingredients_sql.each do |ingredient|
+              consult = client.execute("select * from dbo.Producto where Producto_Id = #{ingredient[:Producto_Id]}")
+              product = consult.each(:symbolize_keys => true)[0]
+              hash = {}
+              hash[:recipe_code] = recipe[:sForNumero]
+              hash[:version] = 1
+              hash[:ingredient_code] = ingredient[:Producto_Id]
+              hash[:amount] = ingredient[:nFDeCantidad]
+              ingredients_recipes << hash
+            end
+          end
+          ingredients_recipes(ingredients_recipes)
+          if saved_products.length > 0 or saved_product_lots.length > 0 or saved_ingredients.length > 0 or saved_lots.length > 0 or saved_recipes.length > 0
+            flash[:notice] = "Se importaron  #{saved_products.length} PT, #{saved_product_lots.length} LPT, #{saved_ingredients.length} MP,"+
+                            " #{saved_lots.length} LMP, #{saved_recipes.length} Recetas con éxito"
+          else
+            flash[:type] = 'warn'
+            flash[:notice] = "No se encontraron datos para importar"
+          end
+          client.close
+        else
+          flash[:type] = 'error'
+          flash[:notice] = "Falló conexión con base de datos intermedia"
         end
-
-        ingredients_recipes(ingredients_recipes)
-
       else
-      end
-      if saved_products.length > 0 or saved_product_lots.length > 0 or saved_ingredients.length > 0 or saved_lots.length > 0 or saved_recipes.length > 0
-        flash[:notice] = "Se importaron  #{saved_products.length} PT, #{saved_product_lots.length} LPT, #{saved_ingredients.length} MP,"+
-                         " #{saved_lots.length} LMP, #{saved_recipes.length} Recetas con éxito"
-      else
-        flash[:notice] = "No se encontraro datos para importar"
       end
       redirect_to :action => 'index'
     end 
