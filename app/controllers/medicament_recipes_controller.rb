@@ -2,7 +2,7 @@
 
 class MedicamentRecipesController < ApplicationController
   def index
-    @medicament_recipes = MedicamentRecipe.where(active: true).paginate :page=>params[:page], :per_page=>session[:per_page]
+    @medicament_recipes = MedicamentRecipe.where(active: true).order('id desc').paginate :page=>params[:page], :per_page=>session[:per_page]
   end
 
   def show

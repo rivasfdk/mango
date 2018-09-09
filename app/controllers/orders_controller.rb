@@ -281,6 +281,19 @@ class OrdersController < ApplicationController
               client.close
             end
           end
+        when 4 #************************Inporca*********************************
+          require 'oci8'
+          oci = OCI8.new('sicbatch','inporca','191.40.100.11:1521/baanip')
+          data = EasyModel.order_details(@order.code)
+          results = data['results']
+          date = Time.now.strftime "'%Y-%m-%d'"
+          time = Time.now.strftime "'%H:%M:%S'"
+          results.each do |result|
+            cursor = oci.parse("insert into baan.TTCST901310(T$PDNO, T$ITEM, T$QANA, T$PROC, T$DATE, T$TIME, T$USER, T$REFCNTD, T$REFCNTU) values(#{@order.code}, #{result["code"]})', #{result["real_kg"]}, 2, #{date}, #{time}, 'e', 0, 0")
+            cursor.exec
+          end
+          cursor = oci.parse("update baan.TTISFC937310 set T$STAT = 7, T$BPRO = #{@order.batch_prog}, T$BREA = #{@order.batch.count} where T$PDNO = #{@order.code}")
+          cursor.exec
         else
 
         end
@@ -542,18 +555,65 @@ class OrdersController < ApplicationController
           flash[:notice] = 'No se pudo conectar con la base de datos'
         end
       when 4 #************************Inporca*********************************
+        require 'oci8'
         oci = OCI8.new('sicbatch','inporca','191.40.100.11:1521/baanip')
         cursor = oci.parse('select * from baan.TTISFC937310 where T$STAT = 2')
         cursor.exec
         columns = cursor.getColNames
-        orders = []
+        ordersbaan = []
         while row = cursor.fetch
           reg = {}
           columns.zip(row) { |a,b| reg[a.to_sym] = b }
-          orders << reg
-          puts "+++++++++++++++++++++++++"
+          ordersbaan << reg
         end
-        puts orders
+        orders = []
+        medicaments = []
+        ordersbaan.each do |order|
+          if order[:"T$MEDI"]
+            hashm = {}
+            imr = []
+            hashm[:code] = order[:"T$FORM"]
+            imr << [order[:"T$MDTO1"], order[:"T$CANT1"]]
+            imr << [order[:"T$MDTO2"], order[:"T$CANT2"]]
+            imr << [order[:"T$MDTO3"], order[:"T$CANT3"]]
+            imr << [order[:"T$MDTO4"], order[:"T$CANT4"]]
+            imr << [order[:"T$MDTO5"], order[:"T$CANT5"]]
+            imr << [order[:"T$MDTO6"], order[:"T$CANT6"]]
+            imr << [order[:"T$MDTO7"], order[:"T$CANT7"]]
+            imr << [order[:"T$MDTO8"], order[:"T$CANT8"]]
+            imr << [order[:"T$MDTO9"], order[:"T$CANT9"]]
+            imr << [order[:"T$MDTO10"], order[:"T$CANT10"]]
+            hashm[:imr] = imr
+            medicaments << hashm
+          end
+          if order[:"T$CUNO"].include?(" ")
+            order[:"T$CUNO"] = "212110"
+          end
+          order[:"T$PDNO"] = order[:"T$PDNO"].to_i
+          hasho = {}
+          hasho[:code] = order[:"T$PDNO"].to_s
+          hasho[:recipe_code] = order[:"T$MITM"].to_i
+          hasho[:client_code] = order[:"T$CUNO"]
+          hasho[:product_lot_code] = "21103001"
+          hasho[:batch_prog] = order[:"T$BPRO"].to_i
+          hasho[:mr] = order[:"T$MEDI"]
+          hasho[:mr_code] = order[:"T$FORM"]
+          orders << hasho
+        end
+        error = medicament_recipes(medicaments)
+        if error.empty?
+          count = orders(orders)
+          if count > 0
+            flash[:notice] = "Se importaron #{count} ordenes con exito"
+          else
+            flash[:type] = 'warn'
+            flash[:notice] = 'No se encontraron ordenes para importar'
+          end          
+        else
+          flash[:type] = 'error'
+          flash[:notice] = error
+        end
+        
       else
       end
     end

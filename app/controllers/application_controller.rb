@@ -441,4 +441,65 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def medicament_recipes(medicament_recipes)
+    msg = ""
+    medicament_recipes.each do |recipe|
+      mr = MedicamentRecipe.where(code: recipe[:code]).first
+      if mr.nil?
+        new_mr = MedicamentRecipe.new
+        new_mr.code = recipe[:code]
+        new_mr.name = recipe[:code]
+        new_mr.save
+      end
+      recipe[:imr].each do |i|
+        if i[1] > 0
+          ing = Ingredient.where(code: i[0]).last
+          if ing.nil?
+            msg = "ERROR: No existe medicamento con el codigo #{i[0]}"
+          else
+            mr = MedicamentRecipe.where(code: recipe[:code]).first
+            if !mr.nil?
+              if IngredientMedicamentRecipe.where(ingredient_id: ing.id, medicament_recipe_id: mr.id).last.nil?
+                new_imr = IngredientMedicamentRecipe.new
+                new_imr.ingredient_id = ing.id
+                new_imr.medicament_recipe_id = mr.id
+                new_imr.amount = i[1]
+                new_imr.save
+              end
+            else
+              msg = "ERROR: No existe receta de medicamentos con el codigo #{recipe[:code]}"
+            end
+          end
+        end
+        return msg unless msg.empty?
+      end
+    end
+    return msg
+  end
+
+  def orders(orders)
+    count = 0
+    orders.each do |order|
+      recipe = Recipe.where(code: order[:recipe_code]).last
+      client = Client.find_by(code: order[:client_code])
+      product_lot = ProductLot.find_by(code: order[:product_lot_code])
+      medicament_recipe = order[:mr] ? MedicamentRecipe.where(code: order[:mr_code]).last : nil
+      if Order.where(code: order[:code]).empty? & !recipe.nil? & !client.nil? & !product_lot.nil?
+        new_order = Order.new
+        new_order.medicament_recipe_id = medicament_recipe.id unless medicament_recipe.nil?
+        new_order.code = order[:code]
+        new_order.recipe_id = recipe.id
+        new_order.client_id = client.id
+        new_order.user_id = 1
+        new_order.product_lot_id = product_lot.id
+        new_order.prog_batches = order[:batch_prog]
+        new_order.processed_in_baan = true
+        if new_order.save
+          count += 1
+        end
+      end
+    end
+    return count
+  end
+
 end

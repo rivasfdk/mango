@@ -16,14 +16,14 @@ ActiveRecord::Schema.define(version: 20180701211025) do
   create_table "addresses", force: true do |t|
     t.integer  "client_id",  null: false
     t.string   "address",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "alarm_types", force: true do |t|
     t.string   "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "alarms", force: true do |t|
@@ -114,8 +114,8 @@ ActiveRecord::Schema.define(version: 20180701211025) do
 
   create_table "documents_types", force: true do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "drivers", force: true do |t|
@@ -483,8 +483,6 @@ ActiveRecord::Schema.define(version: 20180701211025) do
     t.boolean  "empty"
   end
 
-  add_index "products_lots", ["product_id"], name: "fk_products_lots_product_id", using: :btree
-
   create_table "products_lots_parameters", force: true do |t|
     t.integer  "product_lot_parameter_list_id", null: false
     t.integer  "product_lot_parameter_type_id", null: false
@@ -606,7 +604,6 @@ ActiveRecord::Schema.define(version: 20180701211025) do
   end
 
   add_index "tickets", ["client_id"], name: "fk_tickets_client_id", using: :btree
-  add_index "tickets", ["driver_id"], name: "fk_tickets_driver_id", using: :btree
   add_index "tickets", ["driver_id"], name: "index_tickets_on_driver_id", using: :btree
   add_index "tickets", ["truck_id"], name: "fk_tickets_truck_id", using: :btree
   add_index "tickets", ["user_id"], name: "fk_tickets_user_id", using: :btree
@@ -627,7 +624,6 @@ ActiveRecord::Schema.define(version: 20180701211025) do
     t.boolean  "closed"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "remaining"
   end
 
   create_table "tickets_order_items", force: true do |t|
@@ -659,9 +655,9 @@ ActiveRecord::Schema.define(version: 20180701211025) do
   end
 
   create_table "transactions", force: true do |t|
-    t.integer  "transaction_type_id",                                          null: false
-    t.integer  "user_id",                                                      null: false
-    t.float    "amount",                                                       null: false
+    t.integer  "transaction_type_id"
+    t.integer  "user_id"
+    t.float    "amount"
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
