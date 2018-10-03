@@ -177,10 +177,10 @@ class RecipesController < ApplicationController
               hash[:code] = product[:Producto_Id]
               hash[:name] = product[:sProNombre]
               products << hash
+              sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{product[:Producto_Id]}"
+              result = client.execute(sql)
+              result.insert
             end
-            sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{product[:Producto_Id]}"
-            result = client.execute(sql)
-            result.insert
           end
           saved_products = products(products)
           #saved_products.each do |code|
