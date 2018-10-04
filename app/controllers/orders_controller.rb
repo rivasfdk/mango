@@ -188,7 +188,7 @@ class OrdersController < ApplicationController
             date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
             client = connect_sqlserver
             if !client.nil?
-              sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} where sOPrNumeroOrden = \"#{@order.code}\""
+              sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count}, nOPrEstado = 1 where sOPrNumeroOrden = \"#{@order.code}\""
               puts sql
               result = client.execute(sql)
               result.insert
@@ -388,7 +388,7 @@ class OrdersController < ApplicationController
         date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
         client = connect_sqlserver
         if !client.nil?
-          sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count} where sOPrNumeroOrden = \"#{@order.code}\""
+          sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count}, nOPrEstado = 1 where sOPrNumeroOrden = \"#{@order.code}\""
           puts sql
           result = client.execute(sql)
           result.insert
