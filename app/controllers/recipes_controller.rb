@@ -183,36 +183,7 @@ class RecipesController < ApplicationController
             end
           end
           saved_products = products(products)
-          #saved_products.each do |code|
-          #  sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
-          #  result = client.execute(sql)
-          #  result.insert
-          #end
-          all_products = Product.all
-          product_lots = []
-          all_products.each do |product|
-            consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{product.code}")
-            lots_sql = consult.each(:symbolize_keys => true)
-            unless product.nil?
-              unless lots_sql.empty?
-                lots_sql.each do |lot|
-                  hash = {}
-                  hash[:product_code] = lot[:Producto_Id]
-                  hash[:lot_code] = lot[:sPLoNumeroLote]
-                  product_lots << hash
-                  sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[:sPLoNumeroLote]}\" and Producto_Id = #{lot[:Producto_Id]}"
-                  result = client.execute(sql)
-                  result.insert
-                end
-              end
-            end
-          end
-          saved_product_lots = product_lots(product_lots)
-          #saved_product_lots.each do |lot|
-          #  sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
-          #  result = client.execute(sql)
-          #  result.insert
-          #end
+
           ingredients = []
           recipes_sql.each do |recipe|
             consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")
@@ -233,36 +204,35 @@ class RecipesController < ApplicationController
           end
           ingredients = ingredients & ingredients
           saved_ingredients = ingredients(ingredients)
-          #saved_ingredients.each do |code|
-          #  sql = "update dbo.Producto set nProEstado = 2 where Producto_Id = #{code}"
-          #  result = client.execute(sql)
-          #  result.insert
-          #end
-          all_ingredients = Ingredient.all
+
+          consult = client.execute("select * from dbo.Producto_Lote where nPLoEstado < 2")
+          lots_sql = consult.each(:symbolize_keys => true)
           lots = []
-          all_ingredients.each do |ingredient|
-            consult = client.execute("select * from dbo.Producto_Lote where Producto_Id = #{ingredient.code}")
-            lots_sql = consult.each(:symbolize_keys => true)
-            unless ingredient.nil?
-              unless lots_sql.empty?
-                lots_sql.each do |lot|
-                  hash = {}
-                  hash[:ingredient_code] = lot[:Producto_Id]
-                  hash[:lot_code] = lot[:sPLoNumeroLote]
-                  lots << hash
-                  sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[:sPLoNumeroLote]}\" and Producto_Id = #{lot[:Producto_Id]}"
-                  result = client.execute(sql)
-                  result.insert
-                end
-              end
+          product_lots = []
+          lots_sql.each do |lot|
+            ingredient = Ingredient.where(code: lot[:Producto_Id]).first
+            product = Product.where(code: lot[:Producto_Id]).first
+            if !ingredient.nil?
+              hash = {}
+              hash[:ingredient_code] = lot[:Producto_Id]
+              hash[:lot_code] = lot[:sPLoNumeroLote]
+              lots << hash
+              sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[:sPLoNumeroLote]}\" and Producto_Id = #{lot[:Producto_Id]}"
+              result = client.execute(sql)
+              result.insert
+            elsif !product.nil?
+              hash = {}
+              hash[:product_code] = lot[:Producto_Id]
+              hash[:lot_code] = lot[:sPLoNumeroLote]
+              product_lots << hash
+              sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[:sPLoNumeroLote]}\" and Producto_Id = #{lot[:Producto_Id]}"
+              result = client.execute(sql)
+              result.insert
             end
           end
+          saved_product_lots = product_lots(product_lots)
           saved_lots = lots(lots)
-          #saved_lots.each do |lot|
-          #  sql = "update dbo.Producto_Lote set nPLoEstado = 2 where sPLoNumeroLote = \"#{lot[0]}\" and Producto_Id = #{lot[1]}"
-          #  result = client.execute(sql)
-          #  result.insert
-          #end
+
           recipes = []
           recipes_sql.each do |recipe|
             consult = client.execute("select * from dbo.Producto where Producto_Id = #{recipe[:nForAlimento_Id]}")
@@ -278,11 +248,7 @@ class RecipesController < ApplicationController
             result.insert
           end
           saved_recipes = recipes(recipes)
-          #saved_recipes.each do |recipe|
-          #  sql = "update dbo.Formula set nForEstado = 2 where sForNumero = \"#{recipe[0]}\""
-          #  result = client.execute(sql)
-          #  result.insert
-          #end
+
           ingredients_recipes = []
           recipes_sql.each do |recipe|
             consult = client.execute("select * from dbo.Formula_Detalle where Formula_Id = #{recipe[:Formula_Id]}")

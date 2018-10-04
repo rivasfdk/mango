@@ -20,7 +20,7 @@ class Ingredient < ActiveRecord::Base
 
   validates :name, :code, :minimum_stock, presence: true
   validates :code, uniqueness: true
-  validates :code, :name, length: {within: 3..40}
+  validates :code, :name, length: {within: 1..40}
   validates :minimum_stock, :loss, numericality: {greater_than_or_equal_to: 0}
 
   def to_collection_select

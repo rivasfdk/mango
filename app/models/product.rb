@@ -12,7 +12,7 @@ class Product < ActiveRecord::Base
 
   validates :code, uniqueness: true
   validates :name, :code, presence: true
-  validates :code, :name, length: {within: 3..40}
+  validates :code, :name, length: {within: 1..40}
 
   def to_collection_select
     "#{self.name} - #{self.code}"
