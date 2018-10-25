@@ -63,11 +63,12 @@ class OrdersController < ApplicationController
         if @order.save
           client = connect_sqlserver
           date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          @user = User.find session[:user_id]
           if !client.nil?
             consult = client.execute("select * from dbo.Formula where sForNumero = \"#{@order.recipe.code}\"")
             recipe = consult.each(:symbolize_keys => true)[0]
             sql = "insert into dbo.OrdenProduccion values (#{@order.code}, 2, #{recipe[:Formula_Id]}, 1, "+
-                                                          "#{date}, #{@order.prog_batches}, 0, 0, #{@order.code}, 0)"                      
+                                                          "#{date}, #{@order.prog_batches}, 0, 0, #{@order.code}, 0, \"#{@user.login}\")"                      
             puts sql
             result = client.execute(sql)
             result.insert

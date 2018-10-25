@@ -12,8 +12,8 @@ class Permission < ActiveRecord::Base
     'product_lots', 'ingredients', 'ingredients_recipes', 'products', 'clients', 'factories', 'transaction_types',
     'schedules', 'users', 'roles', 'permissions', 'reports', 'medicament_recipes', 'drivers', 'carriers',
     'trucks', 'tickets', 'alarm_types', 'parameters', 'parameter_types', 'parameter_lists', 'scales',
-    'lot_parameters', 'lot_parameter_types', 'lot_parameter_lists', 'settings', 'product_lot_parameters',
-    'product_lot_parameter_types', 'product_lot_parameter_lists', 'warehouse_types', 'warehouses', 'locations', 'machines']
+    'lot_parameters', 'lot_parameter_types', 'ingredient_parameter_type_ranges', 'lot_parameter_lists', 'settings', 'product_lot_parameters',
+    'product_lot_parameter_types', 'product_parameter_type_ranges', 'product_lot_parameter_lists', 'warehouse_types', 'warehouses', 'locations', 'machines']
   # Permission actions
   ACTIONS = ['consult', 'modify', 'delete', 'create']
   MODES = ['global', 'module']
@@ -23,7 +23,7 @@ class Permission < ActiveRecord::Base
             'get_all_dispatch', 'get_order_client','get_item_warehouse', 'get_client']
   MODIFY = ['edit', 'update', 'clone', 'adjust', 'do_adjust', 'deactivate', 'set_as_main_hopper',
            'create_order_stat', 'fill', 'do_fill', 'change', 'do_change', 'change_ingredient',
-           'do_change_ingredient', 'change_product', 'do_change_product']
+           'do_change_ingredient', 'change_product', 'do_change_product', 'set_as_main_warehouse']
   DELETE = ['destroy']
   CREATE = ['new', 'create','import', 'items', 'update_items', 'entry', 'update_entry', 'close',
            'do_close', 'get_server_romano_ip', 'get_client']
