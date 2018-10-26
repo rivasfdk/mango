@@ -60,19 +60,23 @@ class OrdersController < ApplicationController
       case company
       when 5 #************************Tecavi****************************
         @order.processed_in_baan = true
-        if @order.save
-          client = connect_sqlserver
-          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-          @user = User.find session[:user_id]
-          if !client.nil?
-            consult = client.execute("select * from dbo.Formula where sForNumero = \"#{@order.recipe.code}\"")
-            recipe = consult.each(:symbolize_keys => true)[0]
-            sql = "insert into dbo.OrdenProduccion values (#{@order.code}, 2, #{recipe[:Formula_Id]}, 1, "+
-                                                          "#{date}, #{@order.prog_batches}, 0, 0, #{@order.code}, 0, \"#{@user.login}\")"                      
-            puts sql
-            result = client.execute(sql)
-            result.insert
-          end
+        client = connect_sqlserver
+        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+        @user = User.find session[:user_id]
+        code = OrderNumber.first.code.succ
+        if !client.nil?
+          consult = client.execute("select * from dbo.Formula where sForNumero = \"#{@order.recipe.code}\"")
+          recipe = consult.each(:symbolize_keys => true)[0]
+          sql = "insert into dbo.OrdenProduccion values (\"#{code}\", 2, #{recipe[:Formula_Id]}, 1, "+
+                                                        "#{date}, #{@order.prog_batches}, 0, 0, #{code}, 0, \"#{@user.login}\")"                      
+          puts sql
+          result = client.execute(sql)
+          result.insert
+        end
+        consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = #{code}")
+        ordersql = consult.each(:symbolize_keys => true)
+        if !ordersql.empty?
+          @order.save
           flash[:notice] = 'Orden de producción guardada con éxito'
           redirect_to :orders
         else
@@ -197,7 +201,7 @@ class OrdersController < ApplicationController
             consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
             ordersql = consult.each(:symbolize_keys => true)[0]
             results.each do |result|
-              consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\"")
+              consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\" and Producto_Id = #{result["code"]}")
               lotsql = consult.each(:symbolize_keys => true)[0]
               if !client.nil?
                 sql = "insert into dbo.OrdenProduccion_Detalle "+
@@ -397,7 +401,7 @@ class OrdersController < ApplicationController
         consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
         ordersql = consult.each(:symbolize_keys => true)[0]
         results.each do |result|
-          consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\"")
+          consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\" and Producto_Id = #{result["code"]}")
           lotsql = consult.each(:symbolize_keys => true)[0]
           if !client.nil?
             sql = "insert into dbo.OrdenProduccion_Detalle "+
