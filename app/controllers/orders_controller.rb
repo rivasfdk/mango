@@ -67,7 +67,7 @@ class OrdersController < ApplicationController
         if !client.nil?
           consult = client.execute("select * from dbo.Formula where sForNumero = \"#{@order.recipe.code}\"")
           recipe = consult.each(:symbolize_keys => true)[0]
-          sql = "insert into dbo.OrdenProduccion values (\"#{code}\", 2, #{recipe[:Formula_Id]}, 1, "+
+          sql = "insert into dbo.OrdenProduccion values (#{code}, 2, #{recipe[:Formula_Id]}, 1, "+
                                                         "#{date}, #{@order.prog_batches}, 0, 0, #{code}, 0, \"#{@user.login}\")"                      
           puts sql
           result = client.execute(sql)
@@ -346,77 +346,80 @@ class OrdersController < ApplicationController
 
   def close
     @order = Order.where(code: params[:order_code]).first
-    render xml: {closed: @order.close(session[:user_id])}
+    #render xml: {closed: @order.close(session[:user_id])}
 
-    mango_features = get_mango_features()
-    if mango_features.include?("import_orders") and @order.processed_in_baan
-      company = get_mango_field('company')
-      case company
-      when 2
-        @order = Order.where(code: params[:order_code]).first
-        client = connect_sqlserver
-        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-        if !client.nil?
-          sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10#{@order.code}"
-          puts sql
-          result = client.execute(sql)
-          result.insert
-          sql = "update dbo.ordenp set fecha_cierra = #{date} where cod_orden = 10#{@order.code}"
-          result = client.execute(sql)
-          result.insert
-          client.close
-        end
-      when 3 #*************************Alceca*************************
-        data = EasyModel.order_details(@order.code)
-        results = data['results']
-        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-        client = connect_sqlserver
-        if !client.nil?
-          sql = "update dbo.ordenp set cant_batchreal = #{@order.batch.count}, fecha_cierra = #{date} where cod_orden = #{@order.code}"
-          puts sql
-          result = client.execute(sql)
-          result.insert
-        end
-        results.each do |result|
+    if !@order.completed
+      mango_features = get_mango_features()
+      if mango_features.include?("import_orders") and @order.processed_in_baan
+        company = get_mango_field('company')
+        case company
+        when 2 #**********************************Agroebenezer****************************
+          client = connect_sqlserver
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
           if !client.nil?
-            sql = "insert into dbo.ordenpcons "+
-                  "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+            sql = "update dbo.ordenp set cant_batchreal = #{@order.real_batches} where cod_orden = 10#{@order.code}"
+            puts sql
+            result = client.execute(sql)
+            result.insert
+            sql = "update dbo.ordenp set fecha_cierra = #{date} where cod_orden = 10#{@order.code}"
+            result = client.execute(sql)
+            result.insert
+            client.close
+          end
+        when 3 #*************************Alceca*************************
+          data = EasyModel.order_details(@order.code)
+          results = data['results']
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          client = connect_sqlserver
+          if !client.nil?
+            sql = "update dbo.ordenp set cant_batchreal = #{@order.batch.count}, fecha_cierra = #{date} where cod_orden = #{@order.code}"
             puts sql
             result = client.execute(sql)
             result.insert
           end
-        end
-        client.close
-      when 5 #**********************Tecavi********************************
-        data = EasyModel.order_details(@order.code)
-        results = data['results']
-        date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
-        client = connect_sqlserver
-        if !client.nil?
-          sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count}, nOPrEstado = 1 where sOPrNumeroOrden = \"#{@order.code}\""
-          puts sql
-          result = client.execute(sql)
-          result.insert
-        end
-        consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
-        ordersql = consult.each(:symbolize_keys => true)[0]
-        results.each do |result|
-          consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\" and Producto_Id = #{result["code"]}")
-          lotsql = consult.each(:symbolize_keys => true)[0]
-          if !client.nil?
-            sql = "insert into dbo.OrdenProduccion_Detalle "+
-                  "values (#{ordersql[:OrdenProduccion_Id]}, 0, \"#{result["code"]}\", \"#{lotsql[:Producto_Lote_Id]}\","+
-                  " 0,#{result["std_kg"]}, #{result["real_kg"]}, #{result["var_kg"]}, 0, \"A\", 0, 2, 1)"
-            puts sql
-            resultsql = client.execute(sql)
-            resultsql.insert
+          results.each do |result|
+            if !client.nil?
+              sql = "insert into dbo.ordenpcons "+
+                    "values (#{@order.code}, \"#{result["code"]}\", #{result["real_kg"]},NULL, #{date}, NULL)"
+              puts sql
+              result = client.execute(sql)
+              result.insert
+            end
           end
+          client.close
+        when 5 #**********************Tecavi********************************
+          data = EasyModel.order_details(@order.code)
+          results = data['results']
+          date = Time.now.strftime "'%Y-%m-%d %H:%M:%S'"
+          client = connect_sqlserver
+          if !client.nil?
+            sql = "update dbo.OrdenProduccion set nOPrNroBatchPesado = #{@order.batch.count}, nOPrEstado = 1 where sOPrNumeroOrden = \"#{@order.code}\""
+            puts sql
+            result = client.execute(sql)
+            result.insert
+          end
+          consult = client.execute("select * from dbo.OrdenProduccion where sOPrNumeroOrden = \"#{@order.code}\"")
+          ordersql = consult.each(:symbolize_keys => true)[0]
+          results.each do |result|
+            consult = client.execute("select * from dbo.Producto_Lote where sPLoNumeroLote = \"#{result["lot"]}\" and Producto_Id = #{result["code"]}")
+            lotsql = consult.each(:symbolize_keys => true)[0]
+            if !client.nil?
+              sql = "insert into dbo.OrdenProduccion_Detalle "+
+                    "values (#{ordersql[:OrdenProduccion_Id]}, 0, \"#{result["code"]}\", \"#{lotsql[:Producto_Lote_Id]}\","+
+                    " 0,#{result["std_kg"]}, #{result["real_kg"]}, #{result["var_kg"]}, 0, \"A\", 0, 2, 1)"
+              puts sql
+              resultsql = client.execute(sql)
+              resultsql.insert
+            end
+          end
+          client.close
+        else
         end
-        client.close
-      else
       end
+      render xml: {closed: @order.close(session[:user_id])}
+    else
+      render xml: {closed: @order.close(session[:user_id])}
     end
-
   end
 
   def stop
