@@ -38,11 +38,12 @@ class Scale < ActiveRecord::Base
         .where(hoppers: {scale_id: scale[:id]})
         .pluck('hoppers.number', 'hoppers.name AS hopper_name', 'hoppers.priority AS hopper_priority', 
                'ingredients.name AS ingredient_name', 'ingredients.code AS ingredient_code',
-               'hoppers_lots.stock AS hopper_stock', 'hoppers.id')
+               'hoppers_lots.stock AS hopper_stock', 'hoppers.id', 'lots.code AS lot_code', 'lots.stock AS lot_stock')
         .map do |hopper|
           capacity = Hopper.find(hopper[6]).capacity_in_kg
           {number: hopper[0], name: hopper[1], hopper_priority: hopper[2], ingredient_name: hopper[3],
-           ingredient_code: hopper[4], hopper_stock: hopper[5], hopper_capacity: capacity}
+           ingredient_code: hopper[4], hopper_stock: hopper[5], hopper_capacity: capacity, lot_code: hopper[7],
+           lot_stock: hopper[8]}
         end
     end
 
