@@ -2,7 +2,11 @@
 
 class UsersController < ApplicationController
   def index
-    @users = User.order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
+    if session[:user_id] == 1
+      @users = User.order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
+    else
+      @users = User.where.not(id: 1).order('name ASC').paginate :page=>params[:page], :per_page=>session[:per_page]
+    end
   end
 
   def new

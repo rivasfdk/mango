@@ -32,6 +32,7 @@ class TicketsController < ApplicationController
     @clients = Client.all
     @drivers = Driver.where(frequent: true)
     @lots_warehouses = Warehouse.where(product_lot_id: nil)
+    @address = Address.all
     unless @ticket.driver.frequent
       @drivers << @ticket.driver
     end
@@ -55,11 +56,45 @@ class TicketsController < ApplicationController
         t.sack_weight = nil
       end
       t.amount = t.amount_was if t.marked_for_destruction?
+      t.amount = 0 if t.amount.nil?
     end
-    if @ticket.valid?
+
+    if @ticket.ticket_type_id == 2
+      tcount = 0
+      totalt = 0
+      tsack = false
       @ticket.transactions.each do |t|
-        t.update_transactions unless t.new_record? || !t.notified
+        tsack = t.sack
+        totalt = totalt + t.amount
+        tcount = tcount + 1
       end
+      
+      if tsack or tcount > 1
+        @ticket.provider_weight = totalt
+      else
+        @ticket.provider_weight = nil
+      end
+    end
+
+    if @ticket.ticket_type_id == 1
+      net_weight = @ticket.incoming_weight - @ticket.outgoing_weight 
+    else
+      net_weight = @ticket.outgoing_weight - @ticket.incoming_weight
+    end
+
+    if @ticket.valid? && @ticket.transactions.length > 0
+
+      if @ticket.transactions.length > 1
+        @ticket.transactions.each do |t|
+          t.update_transactions unless t.new_record? || !t.notified
+        end
+      else
+        @ticket.transactions.each do |t|
+          t.amount = net_weight
+          t.update_transactions unless t.new_record? || !t.notified
+        end
+      end
+
       @ticket.repaired = true
       @ticket.save
       flash[:notice] = 'Ticket reparado con éxito'
@@ -68,10 +103,17 @@ class TicketsController < ApplicationController
       @lots = Lot.includes(:ingredient).where(active: true)
       @product_lots = ProductLot.includes(:product).where(active: true)
       @clients = Client.all
+      @address = Address.all
       @drivers = Driver.where(frequent: true)
       unless @ticket.driver.frequent
         @drivers << @ticket.driver
       end
+      @trucks = Truck.includes(:carrier).where(frequent: true)
+      unless @ticket.truck.frequent
+        @trucks << @ticket.truck
+      end
+      flash[:type] = 'error'
+      flash[:notice] = 'Error! No se pudó reparar el Ticket'
       render :repair
     end
   end
