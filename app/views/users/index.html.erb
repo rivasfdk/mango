@@ -1,5 +1,17 @@
 <% title "Usuarios" %>
 <% i = 0 %>
+
+<div id="searchform">
+<%= form_tag users_path, :method => 'get' do %>
+  <label for="name">Usuario:</label>
+
+  <%= select_tag(:user_id, options_from_collection_for_select(@users, :id, :to_collection_select, params[:user_id]), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %>
+
+  <%= submit_tag "Filtrar" %>
+  <%= link_to "Limpiar", users_path %>
+<% end %>
+</div>
+
 <% if @users.any? %>
 <table id="tabledata">
     <thead>

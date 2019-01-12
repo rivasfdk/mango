@@ -7,13 +7,7 @@ class ClientsController < ApplicationController
     respond_to do |format|
       # Mango
       format.html do
-        @clients = Client
-          .where(factory: false)
-          .order('code ASC')
-          .paginate(
-            page: params[:page],
-            per_page: session[:per_page]
-          )
+        @clients = Client.search(params)
         render html: @clients
       end
       # Romano

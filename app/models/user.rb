@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
   attr_accessor :password, :password_confirmation
   attr_protected :id, :password_salt
 
+  def to_collection_select
+    "#{self.login} - #{self.name}"
+  end
+
   def self.auth(login, password)
     user = User.includes(:role).where(["login = ?", login]).first
     return nil if user.nil?
@@ -143,6 +147,12 @@ class User < ActiveRecord::Base
 
   def self.generate_salt
     return [Array.new(6){rand(256).chr}.join].pack("m").chomp
+  end
+
+  def self.search(params)
+    @users = User.order("name asc")
+    @users = @users.where(id: params["user_id"]) if params["user_id"].present?
+    @users.paginate page: params[:page], per_page: params[:per_page]
   end
 
 end

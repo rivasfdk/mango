@@ -40,4 +40,12 @@ class Client < ActiveRecord::Base
     #Client.where(factory: true).unshift Client.where(id: 980190963).first
     Client.all
   end
+
+  def self.search(params)
+    @clients = Client.order("name asc")
+    @clients = Client.where(factory: false)
+    @clients = @clients.where(id: params["client_id"]) if params["client_id"].present?
+    @clients.paginate page: params[:page], per_page: params[:per_page]
+  end
+
 end

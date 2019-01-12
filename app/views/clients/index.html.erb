@@ -1,5 +1,17 @@
 <% title "Clientes" %>
 <% i = 0 %>
+
+<div id="searchform">
+<%= form_tag clients_path, :method => 'get' do %>
+  <label for="name">Cliente:</label>
+
+  <%= select_tag(:client_id, options_from_collection_for_select(@clients, :id, :to_collection_select, params[:client_id]), include_blank: true, class: 'chosen-select chzn-field-normal chzn-small') %>
+
+  <%= submit_tag "Filtrar" %>
+  <%= link_to "Limpiar", clients_path %>
+<% end %>
+</div>
+
 <% if @clients.any? %>
 <table id="tabledata">
     <thead>
