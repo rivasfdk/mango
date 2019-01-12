@@ -398,8 +398,10 @@ class TicketsController < ApplicationController
       @trucks << @ticket.truck
     end
     @granted_manual = User.find(session[:user_id]).has_global_permission?('tickets', 'manual')
-    if @ticket.diff_authorized > 1
-      @user_authorized = User.find(@ticket.authorized_user_id).name
+    unless @ticket.diff_authorized.nil?
+      if @ticket.diff_authorized > 1
+        @user_authorized = User.find(@ticket.authorized_user_id).name
+      end
     end
   end
 
